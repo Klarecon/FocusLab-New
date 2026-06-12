@@ -1,0 +1,141 @@
+// Best-practice solutions library. Read-only reference data from research
+// (HBR, Bain, Shopify, McKinsey, Asana, Atlassian, DORA, Salesforce, Ziflow,
+// Gartner, Stripe, ProductPlan, Gloria Mark, etc.).
+//
+// Each solution targets one or more waste-source slugs (see waste-sources.ts).
+// effort/impact drive the Effort x Impact matrix; a Quick Win = low effort +
+// high impact (the "do now" quadrant). owner = who can actually enact it.
+
+export type Level = "low" | "medium" | "high";
+
+export interface Solution {
+  id: string;
+  /** Waste-source slugs this solution addresses (one solution can serve many). */
+  wasteSlugs: string[];
+  title: string;
+  description: string;
+  effort: Level;
+  impact: Level;
+  /** Human reclaim hint, e.g. "~2-4 hrs/wk". */
+  reclaimHint: string;
+  owner: "self" | "manager" | "team";
+  source: { name: string; url: string };
+}
+
+export const LEVEL_SCORE: Record<Level, number> = { low: 1, medium: 2, high: 3 };
+
+/** A Quick Win: low effort + real impact -- the matrix's top-left "do now". */
+export function isQuickWin(s: Pick<Solution, "effort" | "impact">): boolean {
+  return s.effort === "low" && s.impact !== "low";
+}
+
+// Slug groups keyed to the waste taxonomy (see waste-sources.ts).
+const ALL_MEETINGS = ["meet-not-needed", "meet-status", "meet-recurring", "meet-overlong", "mgr-1on1-autopilot"];
+const ALL_EMAIL = ["email-triage", "chat-reply-all", "exec-email-delegable"];
+const ALL_INTERRUPT = ["focus-tool-switch", "focus-refind", "overdo-multitask", "overdo-procrastination", "prod-firefighting", "mgr-unblock"];
+const ALL_SEARCH = ["focus-search", "sales-lead-research", "sales-asset-hunt"];
+const ALL_COORD = ["coord-status-chase", "coord-trackers", "prod-realign", "exec-decide-through-you", "prod-status-repackage", "mkt-report-byhand", "mkt-data-stitch"];
+const ALL_ADMIN = ["admin-data-entry", "admin-forms", "mgr-approvals"];
+const ALL_WAIT = ["wait-approval", "wait-handoff", "overdo-incomplete-kit", "mkt-brand-signoff", "sales-deal-desk", "eng-pr-wait", "eng-ci-wait"];
+const ALL_DUP = ["rework-duplicate", "mgr-ic-work", "exec-recheck"];
+const ALL_UNCLEAR = ["rework-unclear", "overdo-overspec", "prod-spec-rework", "mkt-revisions", "design-feedback-redo", "eng-req-rework"];
+
+export const SOLUTIONS: Solution[] = [
+  // ---- Meetings
+  { id: "mtg-no-agenda", wasteSlugs: ALL_MEETINGS, title: "No agenda, no meeting", description: "Auto-decline or cancel any invite without a written agenda and a decision/outcome.", effort: "low", impact: "high", reclaimHint: "agendas cut meeting time up to 80%", owner: "team", source: { name: "HBR", url: "https://hbr.org/2018/02/how-to-fix-the-most-soul-crushing-meetings" } },
+  { id: "mtg-default-30", wasteSlugs: ALL_MEETINGS, title: "Default to 25\u201330 min", description: "Reset the calendar default to 25\u201330 min; require senior sign-off for anything over 90.", effort: "low", impact: "high", reclaimHint: "defaults drive behavior", owner: "manager", source: { name: "Bain/HBR", url: "https://www.bain.com/insights/yes-you-can-make-meetings-more-productive-hbr/" } },
+  { id: "mtg-kill-recurring", wasteSlugs: ALL_MEETINGS, title: "Kill recurring 3+ person status meetings", description: "Delete standing status meetings; replace with a written async update.", effort: "low", impact: "high", reclaimHint: "Shopify: meeting time \u221214%, +18% projects", owner: "manager", source: { name: "Shopify/CNN", url: "https://www.cnn.com/2023/07/12/tech/shopify-meeting-cost-calculator/index.html" } },
+  { id: "mtg-cost", wasteSlugs: ALL_MEETINGS, title: "Show the meeting\u2019s cost", description: "Surface a live $ estimate (attendees \u00D7 loaded salary \u00D7 duration) at scheduling time.", effort: "medium", impact: "medium", reclaimHint: "friction deters low-value meetings", owner: "manager", source: { name: "Shopify/CBS", url: "https://www.cbsnews.com/news/shopify-meeting-cost-calculator-tool/" } },
+
+  // ---- Email / messaging
+  { id: "email-batch", wasteSlugs: ALL_EMAIL, title: "Batch email/chat into 2\u20133 windows", description: "Check messages at set times instead of continuously; close the client between windows.", effort: "low", impact: "high", reclaimHint: "email \u2248 28% of the week", owner: "self", source: { name: "McKinsey", url: "https://www.mckinsey.com/industries/technology-media-and-telecommunications/our-insights/the-social-economy" } },
+  { id: "email-notif-off", wasteSlugs: [...ALL_EMAIL, ...ALL_INTERRUPT], title: "Turn off notifications + DND blocks", description: "Disable badge/push alerts; set Do-Not-Disturb for focus hours with a status note.", effort: "low", impact: "high", reclaimHint: "interrupted ~every 2 min; batching cut it ~40%", owner: "self", source: { name: "Microsoft WTI", url: "https://www.microsoft.com/en-us/worklab/work-trend-index/breaking-down-infinite-workday" } },
+  { id: "email-async", wasteSlugs: ALL_EMAIL, title: "Async-first / 24-hour response norm", description: "Make async the default; no expectation of instant replies; reserve sync for true urgency.", effort: "medium", impact: "high", reclaimHint: "protects deep work team-wide", owner: "team", source: { name: "Doist", url: "https://blog.doist.com/focused-teamwork/" } },
+
+  // ---- Context switching / interruptions / focus
+  { id: "focus-block", wasteSlugs: ALL_INTERRUPT, title: "Daily protected deep-work block", description: "Time-block 2\u20134 hrs of no-meeting, no-chat focus on the calendar.", effort: "low", impact: "high", reclaimHint: "~23 min to refocus per interruption", owner: "self", source: { name: "Gloria Mark / UCI", url: "https://www.informatics.uci.edu/forbes-brain-based-tips-for-sharpening-your-focus-gloria-mark-cited/" } },
+  { id: "no-meeting-day", wasteSlugs: [...ALL_INTERRUPT, ...ALL_MEETINGS], title: "Org-wide No-Meeting Day", description: "A weekly focus day (e.g. No-Meeting Wednesday).", effort: "low", impact: "high", reclaimHint: "Shopify cut Wed meetings 26%, no slowdown", owner: "manager", source: { name: "Shopify", url: "https://libertymind.co.uk/shopify-meetings-calculator-an-experiment-to-end-unnecessary-meetings/" } },
+  { id: "single-task", wasteSlugs: ["focus-tool-switch", "overdo-multitask"], title: "Single-task + theme days", description: "One task in one window; group like tasks so you reorient once, not all day.", effort: "low", impact: "high", reclaimHint: "kills the toggle tax (~4 hrs/wk)", owner: "self", source: { name: "Microsoft WTI", url: "https://www.microsoft.com/en-us/worklab/work-trend-index/breaking-down-infinite-workday" } },
+  { id: "where-left-off", wasteSlugs: ["focus-refind", "focus-tool-switch"], title: "\u201CWhere I left off\u201D notes", description: "Leave a one-line next-step note before switching so re-entry is instant.", effort: "low", impact: "medium", reclaimHint: "shrinks attention residue", owner: "self", source: { name: "UCI/Forbes", url: "https://www.informatics.uci.edu/forbes-brain-based-tips-for-sharpening-your-focus-gloria-mark-cited/" } },
+
+  // ---- Work about work / status / coordination
+  { id: "async-standup", wasteSlugs: ALL_COORD, title: "Async standups replace status meetings", description: "Post written updates in a shared tracker; managers read instead of convening.", effort: "low", impact: "high", reclaimHint: "~3 hrs/wk per team", owner: "manager", source: { name: "Asana/Honeycomb", url: "https://www.honeycomb.io/blog/standup-meetings-are-dead" } },
+  { id: "single-tracker", wasteSlugs: ALL_COORD, title: "One project tracker as source of truth", description: "One board shows owner, status, due date so no one has to chase updates.", effort: "low", impact: "high", reclaimHint: "kills status-chasing", owner: "team", source: { name: "Asana", url: "https://asana.com/resources/anatomy-of-work-summary" } },
+  { id: "dri", wasteSlugs: [...ALL_COORD, ...ALL_DUP], title: "One owner (DRI) per task", description: "Name one Directly Responsible Individual on every task to stop ambiguity loops.", effort: "low", impact: "medium", reclaimHint: "removes \u201Cwho owns this?\u201D", owner: "team", source: { name: "Asana", url: "https://asana.com/resources/anatomy-of-work-summary" } },
+
+  // ---- Info search
+  { id: "ssot", wasteSlugs: ALL_SEARCH, title: "Single source of truth (knowledge base)", description: "One canonical, owned knowledge base for docs, templates, and decisions.", effort: "medium", impact: "high", reclaimHint: "search \u2248 19% of the week", owner: "team", source: { name: "Atlassian", url: "https://www.atlassian.com/work-management/knowledge-sharing/documentation/building-a-single-source-of-truth-ssot-for-your-team" } },
+  { id: "naming-convention", wasteSlugs: ALL_SEARCH, title: "Naming + tagging convention", description: "Consistent file/page names and tags so search actually returns the right doc.", effort: "low", impact: "high", reclaimHint: "makes existing search work", owner: "team", source: { name: "Atlassian", url: "https://www.atlassian.com/work-management/knowledge-sharing/documentation/building-a-single-source-of-truth-ssot-for-your-team" } },
+  { id: "document-answer", wasteSlugs: ALL_SEARCH, title: "Document-the-answer rule", description: "When a question is answered in chat, paste it into the knowledge base once.", effort: "low", impact: "medium", reclaimHint: "stops repeat lookups", owner: "self", source: { name: "Atlassian", url: "https://www.atlassian.com/blog/confluence/how-to-create-and-maintain-a-single-source-of-truth" } },
+
+  // ---- Duplicated work
+  { id: "search-before-build", wasteSlugs: ALL_DUP, title: "Search/check before you build", description: "Norm: search the KB and ask the channel before creating any new doc/asset.", effort: "low", impact: "high", reclaimHint: "~308 hrs/yr on duplicated work", owner: "self", source: { name: "Asana", url: "https://asana.com/resources/anatomy-of-work-summary" } },
+  { id: "template-library", wasteSlugs: [...ALL_DUP, ...ALL_ADMIN, ...ALL_UNCLEAR, "mkt-social-reformat", "sales-quote-build", "design-file-admin", "design-export", "design-handoff-redo"], title: "Template & reusable-asset library", description: "Maintain canonical templates so people adapt, not recreate.", effort: "low", impact: "high", reclaimHint: "\u201Cno one starts from scratch\u201D", owner: "team", source: { name: "Asana", url: "https://asana.com/resources/anatomy-of-work-summary" } },
+
+  // ---- Admin / low-value
+  { id: "no-code-automate", wasteSlugs: [...ALL_ADMIN, "coord-trackers", "mkt-report-byhand", "mkt-data-stitch", "mkt-social-reformat", "sales-crm-entry", "sales-double-entry", "sales-quote-build", "design-file-admin", "design-export"], title: "Automate with no-code rules", description: "Build simple triggers (Zapier/Power Automate) for routine data entry, routing, reminders.", effort: "low", impact: "high", reclaimHint: "invoice 10\u201315 min \u2192 <2 min", owner: "self", source: { name: "Power Automate/Flobotics", url: "https://flobotics.io/blog/rpa-statistics/" } },
+  { id: "canned-responses", wasteSlugs: [...ALL_ADMIN, ...ALL_EMAIL], title: "Templates & canned responses", description: "Snippets/saved replies for recurring emails and forms.", effort: "low", impact: "medium", reclaimHint: "daily small wins", owner: "self", source: { name: "Atlassian", url: "https://www.atlassian.com/work-management/knowledge-sharing/documentation/building-a-single-source-of-truth-ssot-for-your-team" } },
+  { id: "eliminate-task", wasteSlugs: ALL_ADMIN, title: "Eliminate / consolidate the task", description: "Question whether the report or step is needed at all before automating it.", effort: "low", impact: "medium", reclaimHint: "removing it saves 100%", owner: "manager", source: { name: "Flobotics", url: "https://flobotics.io/blog/rpa-statistics/" } },
+
+  // ---- Waiting / approvals
+  { id: "raise-thresholds", wasteSlugs: ALL_WAIT, title: "Raise approval thresholds / pre-authorize", description: "Let people approve their own spend or scope under a set $ or risk limit \u2014 sign-off only above it.", effort: "low", impact: "high", reclaimHint: "removes routine wait states", owner: "manager", source: { name: "Ideawake (Lean)", url: "https://ideawake.com/8-forms-lean-waste-applied-business-waiting/" } },
+  { id: "approval-sla", wasteSlugs: ALL_WAIT, title: "Response-time SLAs on approvals", description: "Set a rule \u2014 approve, reject, or escalate within X hours \u2014 and auto-escalate to a backup approver when the clock runs out.", effort: "low", impact: "high", reclaimHint: "bounds queue/wait time", owner: "manager", source: { name: "Ideawake", url: "https://ideawake.com/8-forms-lean-waste-applied-business-waiting/" } },
+  { id: "parallel-approval", wasteSlugs: ["wait-approval", "mkt-brand-signoff", "sales-deal-desk"], title: "Approve in parallel, not in sequence", description: "Send the request to all reviewers at once instead of one-after-another, so the slowest approver sets the clock \u2014 not the sum of everyone.", effort: "low", impact: "medium", reclaimHint: "serial chains are the hidden delay", owner: "manager", source: { name: "Ideawake (Lean)", url: "https://ideawake.com/8-forms-lean-waste-applied-business-waiting/" } },
+  { id: "wip-limit", wasteSlugs: ["wait-handoff", "overdo-incomplete-kit", "overdo-multitask", "eng-pr-wait"], title: "Limit work-in-progress (WIP)", description: "Cap concurrent active items so the team finishes (and unblocks) before starting more.", effort: "medium", impact: "high", reclaimHint: "lower WIP \u2192 shorter cycle time", owner: "team", source: { name: "Planview", url: "https://www.planview.com/resources/articles/wip-limits/" } },
+
+  // ---- Doing more than needed (gold-plating)
+  { id: "good-enough-bar", wasteSlugs: ["overdo-overspec", "overdo-procrastination"], title: "Agree the \u201Cgood enough\u201D bar up front", description: "Define what \u201Cdone\u201D looks like before you start (a v1 checklist), and ship at that bar instead of polishing past it.", effort: "low", impact: "high", reclaimHint: "stops invisible scope creep", owner: "self", source: { name: "Atlassian", url: "https://www.atlassian.com/agile/project-management/definition-of-done" } },
+  { id: "timebox-tasks", wasteSlugs: ["overdo-overspec", "overdo-procrastination", "overdo-multitask"], title: "Timebox the task, then stop", description: "Give each task a fixed time budget; when it\u2019s up, ship what you have and move on rather than refining further.", effort: "low", impact: "medium", reclaimHint: "caps perfecting beyond the ask", owner: "self", source: { name: "Asana", url: "https://asana.com/resources/timeboxing" } },
+
+  // ---- Unclear goals / rework
+  { id: "definition-of-ready", wasteSlugs: [...ALL_UNCLEAR], title: "Definition-of-ready + acceptance criteria", description: "Nothing enters a sprint/queue without clear acceptance criteria.", effort: "low", impact: "high", reclaimHint: "prevents build-the-wrong-thing rework", owner: "manager", source: { name: "Atlassian DevEx", url: "https://www.atlassian.com/blog/development/developer-experience-report-2024" } },
+  { id: "brief-template", wasteSlugs: ["rework-unclear", "mkt-revisions", "design-feedback-redo", "prod-spec-rework"], title: "Standardized brief template", description: "Mandate a structured brief (objective, audience, success criteria) before work starts.", effort: "low", impact: "high", reclaimHint: "3\u00D7 more likely to finish in 1\u20132 rounds", owner: "self", source: { name: "HubSpot", url: "https://blog.hubspot.com/marketing/creative-brief" } },
+  { id: "online-proofing", wasteSlugs: ["mkt-brand-signoff", "design-feedback-redo", "mkt-revisions"], title: "Online proofing / centralized review", description: "Consolidate feedback in one annotated proof instead of scattered threads.", effort: "low", impact: "high", reclaimHint: "4\u20136 \u2192 2 versions; 30\u201350% shorter cycle", owner: "team", source: { name: "Ziflow", url: "https://www.ziflow.com/blog/review-and-approval-process" } },
+
+  // ---- Role-specific highlights
+  { id: "auto-dashboards", wasteSlugs: ["mkt-report-byhand", "mkt-data-stitch", "prod-status-repackage"], title: "Automated data integration & dashboards", description: "Connect sources to a live BI dashboard so reports refresh automatically.", effort: "low", impact: "high", reclaimHint: "recovers most of ~10 hrs/wk", owner: "team", source: { name: "Adverity", url: "https://www.adverity.com/marketing-analytics-state-of-play-2022-data-capabilities-aspirations" } },
+  { id: "auto-capture-crm", wasteSlugs: ["sales-crm-entry", "sales-double-entry"], title: "Auto-capture / activity logging", description: "Auto-log calls, emails, and meetings to the CRM instead of manual entry.", effort: "low", impact: "high", reclaimHint: "targets the ~25% of week on CRM entry", owner: "team", source: { name: "AskElephant", url: "https://www.askelephant.ai/blog/why-reps-spend-25-percent-of-time-on-crm" } },
+  { id: "lead-scoring", wasteSlugs: ["sales-bad-leads", "sales-lead-research"], title: "Lead scoring + ICP filter", description: "Score and route only fit leads to reps; recycle the rest.", effort: "medium", impact: "high", reclaimHint: "30\u201350% of time lost to unqualified leads", owner: "manager", source: { name: "ZoomInfo", url: "https://pipeline.zoominfo.com/marketing/lead-scoring" } },
+  { id: "data-enrichment", wasteSlugs: ["sales-lead-research", "sales-bad-leads"], title: "Sales-intelligence / data enrichment", description: "Auto-pull firmographic/contact data instead of manual web research.", effort: "low", impact: "high", reclaimHint: "cuts the ~15% on prospect research", owner: "self", source: { name: "Salesforce", url: "https://www.salesforce.com/sales/state-of-sales/sales-statistics/" } },
+  { id: "smaller-prs", wasteSlugs: ["eng-pr-wait", "eng-ci-wait"], title: "Smaller PRs + review SLA", description: "Cap PR size and set a same-day review target to shrink queue time.", effort: "low", impact: "high", reclaimHint: "cuts the queue wait dominating lead time", owner: "team", source: { name: "DORA 2024", url: "https://getdx.com/blog/2024-dora-report/" } },
+  { id: "lint-ci", wasteSlugs: ["eng-tech-debt", "eng-env-fix", "eng-ci-wait"], title: "Automated linting / static analysis in CI", description: "Catch quality issues automatically so they don\u2019t accrete as debt.", effort: "low", impact: "high", reclaimHint: "reduces ongoing bad-code drag", owner: "team", source: { name: "Atlassian DevEx", url: "https://www.atlassian.com/blog/development/developer-experience-report-2024" } },
+  { id: "debt-budget", wasteSlugs: ["eng-tech-debt", "eng-env-fix"], title: "Dedicated debt budget (e.g. 20% capacity)", description: "Reserve fixed sprint capacity for refactoring so debt stops compounding.", effort: "medium", impact: "high", reclaimHint: "chips at ~17 hrs/wk lost to debt", owner: "manager", source: { name: "Stripe", url: "https://stripe.com/files/reports/the-developer-coefficient.pdf" } },
+  { id: "spec-handoff", wasteSlugs: ["design-handoff-redo", "eng-req-rework"], title: "Spec-generating handoff tool (Dev Mode)", description: "Auto-generate specs/assets/measurements so devs don\u2019t re-ask or redo.", effort: "low", impact: "high", reclaimHint: "targets the 62% of devs redoing designs", owner: "team", source: { name: "UXPin", url: "https://www.uxpin.com/studio/blog/10-ways-to-improve-design-to-development-handoff/" } },
+  { id: "stack-audit", wasteSlugs: ["focus-tool-switch"], title: "Stack audit & consolidation", description: "Inventory tools, kill overlapping/unused licenses, cut complexity.", effort: "medium", impact: "high", reclaimHint: "utilization only 33\u201349% today", owner: "manager", source: { name: "Gartner", url: "https://martech.org/marketers-are-only-using-one-third-of-their-stacks-capability/" } },
+
+  // ---- Marketing -- repurposing
+  { id: "social-scheduler", wasteSlugs: ["mkt-social-reformat"], title: "One scheduler that auto-resizes per channel", description: "Write the post once in a tool (Buffer/Later/Metricool) that crops, resizes, and tailors it to each platform\u2019s specs on publish.", effort: "low", impact: "high", reclaimHint: "one source post \u2192 every channel", owner: "self", source: { name: "Buffer", url: "https://buffer.com/resources/repurpose-content/" } },
+  { id: "master-creative", wasteSlugs: ["mkt-social-reformat", "design-export"], title: "Master file with per-channel artboards", description: "Build one design with sized artboards for every channel up front, so a swap updates all sizes at once instead of re-cropping each.", effort: "medium", impact: "medium", reclaimHint: "design once, export all sizes", owner: "self", source: { name: "Canva", url: "https://www.canva.com/learn/social-media-sizes/" } },
+
+  // ---- Sales -- CRM hygiene & deals
+  { id: "crm-required-fields", wasteSlugs: ["sales-crm-entry", "sales-double-entry"], title: "Trim CRM to the fields that matter", description: "Cut required fields to the few that drive decisions, and add picklists/defaults so logging is a couple of clicks, not free typing.", effort: "low", impact: "medium", reclaimHint: "less to key = more gets logged", owner: "manager", source: { name: "HubSpot", url: "https://blog.hubspot.com/sales/crm-data-entry" } },
+  { id: "single-system-record", wasteSlugs: ["sales-double-entry"], title: "Pick one system of record + sync the rest", description: "Name one tool as the source of truth and connect the others to it (native sync or Zapier) so the same deal is never keyed twice.", effort: "medium", impact: "high", reclaimHint: "kills duplicate entry at the root", owner: "manager", source: { name: "Salesforce", url: "https://www.salesforce.com/sales/state-of-sales/sales-statistics/" } },
+  { id: "icp-disqualify", wasteSlugs: ["sales-bad-leads"], title: "Write a hard disqualify list", description: "Define the deal-breakers (wrong size, region, budget) and let reps drop or recycle leads that hit them \u2014 no time spent re-qualifying.", effort: "low", impact: "medium", reclaimHint: "stops re-chasing dead leads", owner: "manager", source: { name: "HubSpot", url: "https://blog.hubspot.com/sales/sales-qualification" } },
+  { id: "cpq-quoting", wasteSlugs: ["sales-quote-build"], title: "CPQ / quote-from-template generator", description: "Use a configure-price-quote tool or templated generator that pulls products and pricing automatically instead of building each doc by hand.", effort: "medium", impact: "high", reclaimHint: "assembles quotes in minutes", owner: "manager", source: { name: "Salesforce CPQ", url: "https://www.salesforce.com/sales/cpq/what-is-cpq/" } },
+  { id: "preapproved-discounts", wasteSlugs: ["sales-deal-desk", "sales-quote-build"], title: "Pre-approved discount bands", description: "Publish a discount grid reps can apply without sign-off up to a set %, so only true exceptions go to deal-desk.", effort: "low", impact: "high", reclaimHint: "most deals skip the queue", owner: "manager", source: { name: "Salesforce", url: "https://www.salesforce.com/sales/cpq/what-is-cpq/" } },
+
+  // ---- Engineering -- debt & environments
+  { id: "test-coverage-guardrail", wasteSlugs: ["eng-tech-debt"], title: "Tests + ratchet on the fragile areas", description: "Add regression tests around the brittle code and a coverage ratchet in CI, so the same area stops breaking on every change.", effort: "medium", impact: "high", reclaimHint: "stops the same fire re-igniting", owner: "team", source: { name: "Google Testing", url: "https://testing.googleblog.com/2020/08/code-coverage-best-practices.html" } },
+  { id: "boy-scout-rule", wasteSlugs: ["eng-tech-debt"], title: "Boy-Scout rule + a debt register", description: "Log debt as you hit it and leave each touched file a little cleaner, so it\u2019s chipped down continuously instead of in a scary big-bang.", effort: "low", impact: "medium", reclaimHint: "compounding small cleanups", owner: "self", source: { name: "Atlassian", url: "https://www.atlassian.com/agile/software-development/technical-debt" } },
+  { id: "containerize-env", wasteSlugs: ["eng-env-fix"], title: "Containerized / scripted dev environment", description: "Define the environment as code (Docker/devcontainer/setup script) so a fresh checkout runs with one command and stops drifting.", effort: "medium", impact: "high", reclaimHint: "\u201Cworks on my machine\u201D, gone", owner: "team", source: { name: "Docker", url: "https://docs.docker.com/get-started/" } },
+  { id: "automate-deploy", wasteSlugs: ["eng-env-fix", "eng-ci-wait"], title: "One-command / automated deploys", description: "Replace manual deploy steps with a scripted pipeline so releases don\u2019t break from a missed step or a tired hand.", effort: "medium", impact: "high", reclaimHint: "removes manual deploy breakage", owner: "team", source: { name: "DORA 2024", url: "https://getdx.com/blog/2024-dora-report/" } },
+
+  // ---- Design -- handoff & file ops
+  { id: "design-system-components", wasteSlugs: ["design-handoff-redo", "design-feedback-redo"], title: "Shared design system / component library", description: "Hand off reusable components devs already have in code, so they assemble from known parts instead of rebuilding from a static mockup.", effort: "medium", impact: "high", reclaimHint: "build from parts, not pixels", owner: "team", source: { name: "Nielsen Norman", url: "https://www.nngroup.com/articles/design-systems-101/" } },
+  { id: "auto-export-assets", wasteSlugs: ["design-export", "design-file-admin"], title: "Auto-export presets + slices", description: "Set up export presets/slices once (Figma export settings, batch export) so every needed size and format ships in one click.", effort: "low", impact: "high", reclaimHint: "one click, every size", owner: "self", source: { name: "Figma", url: "https://help.figma.com/hc/en-us/articles/360040028114-Export-from-Figma" } },
+  { id: "file-structure-convention", wasteSlugs: ["design-file-admin"], title: "Project file-structure + naming convention", description: "Adopt one folder structure, page order, and layer-naming rule for every project so versioning and finding files stops being manual work.", effort: "low", impact: "medium", reclaimHint: "no more file wrangling", owner: "team", source: { name: "Figma Best Practices", url: "https://www.figma.com/best-practices/" } },
+  { id: "delegate-ic", wasteSlugs: ["mgr-ic-work", "exec-recheck", "exec-decide-through-you", "mgr-approvals"], title: "Delegate IC work / build decision rights", description: "Hand off the hands-on work and push routine decisions down so you can lead.", effort: "medium", impact: "high", reclaimHint: "frees the ~31% spent on IC tasks", owner: "self", source: { name: "McKinsey", url: "https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/stop-wasting-your-most-precious-resource-middle-managers" } },
+  { id: "chief-of-staff", wasteSlugs: ["prod-firefighting", "mgr-unblock", "exec-email-delegable"], title: "Gatekeeper (chief of staff / EA)", description: "A gatekeeper triages inbound so you aren\u2019t pulled into every fire.", effort: "medium", impact: "high", reclaimHint: "protects strategic time", owner: "self", source: { name: "HBR", url: "https://hbr.org/2025/05/how-ceos-should-manage-their-time" } },
+  { id: "protect-strategy", wasteSlugs: ["exec-recheck", "exec-decide-through-you", "prod-firefighting"], title: "Protected strategy blocks on the calendar", description: "Pre-commit recurring deep-work blocks for strategy so they stop getting squeezed.", effort: "low", impact: "high", reclaimHint: "moves toward 40\u201350% strategic", owner: "self", source: { name: "ProductPlan", url: "https://www.productplan.com/learn/product-managers-focus" } },
+];
+
+/** Solutions that address a given waste-source slug, quick-wins first. */
+export function solutionsForWaste(slug: string): Solution[] {
+  return SOLUTIONS.filter((s) => s.wasteSlugs.includes(slug)).sort(
+    (a, b) => Number(isQuickWin(b)) - Number(isQuickWin(a)),
+  );
+}
+
+export function solutionById(id: string): Solution | undefined {
+  return SOLUTIONS.find((s) => s.id === id);
+}

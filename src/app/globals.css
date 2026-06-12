@@ -1,0 +1,169 @@
+@import "tailwindcss";
+
+/* ============================================
+   FocusLab — "Time Ledger" Design System
+   Warm, paper-like, confrontational about waste
+   ============================================ */
+
+:root {
+  /* Core palette — Bold Warm (inspired by reference) */
+  --color-paper: #f4edde;
+  --color-ink: #2c2418;
+  --color-ink-soft: #7a6f5f;
+  --color-waste: #e03e12;
+  --color-reclaim: #c4186a;
+  --color-gold: #edb215;
+  --color-line: #ddd4c0;
+  --color-card: #faf6ec;
+
+  /* Semantic aliases */
+  --color-danger: var(--color-waste);
+  --color-success: var(--color-reclaim);
+  --color-accent: var(--color-gold);
+  --color-muted: var(--color-ink-soft);
+  --color-border: var(--color-line);
+  --color-surface: var(--color-card);
+}
+
+/* Tailwind CSS 4 theme integration */
+@theme inline {
+  --color-paper: var(--color-paper);
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-waste: var(--color-waste);
+  --color-reclaim: var(--color-reclaim);
+  --color-gold: var(--color-gold);
+  --color-line: var(--color-line);
+  --color-card: var(--color-card);
+
+  --font-serif: var(--font-fraunces);
+  --font-sans: var(--font-plus-jakarta);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* ---- Base styles ---- */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
+  font-size: 18.5px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Paper grain overlay — subtle noise texture */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* Selection highlight — burnt orange tinted */
+::selection {
+  background-color: rgba(224, 62, 18, 0.2);
+  color: var(--color-ink);
+}
+
+::-moz-selection {
+  background-color: rgba(224, 62, 18, 0.2);
+  color: var(--color-ink);
+}
+
+/* ---- Typography defaults ---- */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
+}
+
+h1 { font-size: 3rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.25rem; }
+
+/* Monospace figures — for data-heavy displays */
+.font-figures {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* ---- Utilities ---- */
+
+/* Gradient text — waste to gold */
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-waste), var(--color-gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Gradient text — waste to reclaim */
+.gradient-text-hot {
+  background: linear-gradient(135deg, var(--color-waste), var(--color-reclaim));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Gradient border utility */
+.gradient-border-top {
+  border-top: 3px solid transparent;
+  border-image: linear-gradient(90deg, var(--color-waste), var(--color-reclaim), var(--color-gold)) 1;
+}
+
+.gradient-border-left {
+  border-left: 4px solid transparent;
+  border-image: linear-gradient(180deg, var(--color-waste), var(--color-reclaim)) 1;
+}
+
+/* Divider line */
+.divider {
+  border-color: var(--color-line);
+}
+
+/* Card surface */
+.surface-card {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-line);
+  border-radius: 0.75rem;
+}
+
+/* Focus ring style — gold accent */
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-line);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-ink-soft);
+}

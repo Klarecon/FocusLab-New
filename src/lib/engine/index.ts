@@ -1,0 +1,47 @@
+export { computePareto, resolveHourlyRate, selectVitalFewCount, comfortSizeFor, splitIntoTiers, cliffCount } from "./pareto";
+export type {
+  WasteAllocationInput,
+  MoneyInput,
+  ParetoInput,
+  ParetoOptions,
+  ZoneCutoffs,
+  CategoryResult,
+  ParetoResult,
+  ParetoChartPoint,
+  BenchmarkComparison,
+  BenchmarkDirection,
+  Zone,
+  Concentration,
+  Score,
+  Level,
+  QuadrantLabel,
+  ChosenSolution,
+  WasteBucket,
+  PayoffResult,
+} from "./types";
+export {
+  computePayoff,
+  quadrant,
+  isQuickWinScore,
+  reclaimContribution,
+  reclaimRationale,
+  impactCutPhrase,
+  concreteEquivalent,
+  IMPACT_FRACTION,
+  QUICK_WIN_CAP,
+  SCORE_FROM_LEVEL,
+  EFFORT_NAMES,
+  IMPACT_NAMES,
+  QUADRANT_META,
+} from "./solutions-logic";
+export {
+  weeklyFromDaily,
+  weeklyWaste,
+  bucketWaste,
+  totalWeeklyWaste,
+  keptButZeroSlugs,
+  buildMoneyInput,
+  fillTypicalWeek,
+  runAudit,
+} from "./audit-logic";
+export type { Cadence, PayMode, ChainEntry, AuditInput, FillSource, FillValue } from "./audit-logic";
