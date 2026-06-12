@@ -4,88 +4,91 @@
 
 ## Quick orient
 - **Project:** FocusLab — productivity tool suite helping knowledge workers find time waste (Pareto Analyzer) and fix it (Focus Table & EVI Matrix)
-- **Repo:** https://github.com/mona2611-alt/FocusLab-New
+- **Repo:** https://github.com/mona2611-alt/FocusLab-New (PRIVATE)
 - **Production URL:** https://focuslab-omega.vercel.app
 - **Active branch:** main
-- **Active work:** Session 2 complete — all bugs fixed, visual redesign applied, TDD test suite written, deployed
-- **Owner:** Mona Mehta — non-technical product owner, wants fast autonomous execution (no permission prompts), values visual quality highly, expects TDD discipline, will call out half-done work
+- **Active work:** Session 3 complete — all Pareto Analyzer user feedback (18 items) fixed and deployed. Focus Table / EVI Matrix not yet reviewed by user.
+- **Owner:** Mona Mehta — non-technical product owner, wants fast autonomous execution (no permission prompts), values visual quality highly, expects TDD discipline, will call out half-done work. Demands natural English copy, hates corporate/generic aesthetics, wants illustrative visuals not placeholder emoji.
 
 ## Branch state
-- 1 commit on main: `cdaffaa FocusLab Session 2: Full bug fix, visual redesign, TDD test suite`
-- Branch is pushed to origin and deployed to Vercel
-- Clean working tree, nothing uncommitted
+- 5 commits on main, all pushed to origin and deployed to Vercel
+- Latest: `d77c11d Session 3: Fix all user feedback — hero redesign, role+level, copy, validation`
+- Working tree has uncommitted changes: moved feedback log to new `Feedback Log/` folder, AGENTS.md/CLAUDE.md minor modifications
 
-## What's done in this session (2026-06-12)
+## What's done in this session (2026-06-12, Session 3)
 
-### Phase A — Critical & Medium Bug Fixes
-- **Unified ParetoResult types** — store now uses engine's ParetoResult directly, removed dual-type adapter and `as unknown` cast in FocusStage
-- **Removed window.__paretoFullResult hack** — full engine result stored in Zustand with localStorage persistence, survives page refresh
-- **Fixed quick-win seeding** — levelToScore now uses SCORE_FROM_LEVEL (low=2, med=3, high=4), quick-win badges appear on first load
-- **Replaced all rogue green rgba(29,107,88)** with reclaim pink across IntakeStep, Payoff, SolutionPicker, EviMatrix
-- **Fixed EviMatrix zone colors** — updated from old palette to current (#e03e12, #edb215, #7a6f5f)
-- **Fixed CustomDot null check** — `cx == null` instead of `!cx` so dots at position 0 render
-- **Wired secondary roles to Zustand** — was local state in RoleStep, now persisted
-- **Persisted owner overrides in Zustand** — was local useState in FocusTable, now survives tab switches
-- **SolutionPicker empty drain state** — shows "No pre-built fixes" instead of hiding drains with no solutions
+### QA Audit (pre-work)
+- Ran 4 parallel QA agents against all Session 2 claims — confirmed all 12 bug fixes actually landed
+- Found 10 corporate emoji violations (📊📋✅🚀) that Session 2 missed — fixed all
+- Found 3 button sizing inconsistencies — fixed all
+- Found landing page copy still implying sequential tool flow — fixed
 
-### Phase B — Visual Redesign
-- All wizard step headers: text-3xl sm:text-4xl font-bold + Fraunces serif
-- All CTA buttons: reclaim pink with glow boxShadow, px-10 py-4, rounded-xl
-- Card accents: gold left-border on ContextStep, waste left-border on WeighStep, zone-colored left-border on FocusTable mobile cards
-- FocusStage: text-4xl sm:text-5xl header, reclaim pink active tabs with white text
-- EviMatrix: gradient top-border (waste→gold), quadrant labels hidden on mobile
-- Payoff: reclaim top-border on big card, pink "after" card (was green)
-- Footer: gradient top-line (waste→gold→reclaim)
-- Page wrappers: py-8 → py-12 sm:py-16
+### User Feedback Fixes (18 items from Pareto Analyzer review)
+All logged in `Feedback Log/Session 3 - User Feedback Log.md` with item IDs FB-01 through FB-16 + MW-01/MW-02.
 
-### Phase C — Focus Tool Fixes
-- Payoff "Start with quick win" button navigates to Assign Fixes tab
-- Custom fix drain selector dropdown (was always tied to first drain)
-- AnimatePresence moved inside tbody (was wrapping it — invalid HTML)
-- $50/hr fallback indicator shown when no salary set
-- Dead imports cleaned: useTransform, Solution, quadrant, IMPACT_FRACTION, reclaimContribution
-- Fixed old palette rgba values to match current CSS variables
+**Landing page:**
+- FB-01: Added scroll indicator (animated chevron) at bottom of hero
+- FB-02: Rewrote hero copy — "Most of your week isn't real work." replaces broken English
+- FB-03: Built illustrative calendar week visual (Mon-Fri grid with waste/work blocks)
+- FB-04: Removed "Your role. Your waste." (RoleLenses) section entirely
+- FB-05: Cleaned FinalCTA — removed "$500+" headline, "Let that sink in", "No data leaves your browser"; kept 🤯 with "6 full work weeks per year"
 
-### Phase D — TDD & QA
-- **40 new tests written** (182 total across 8 files):
-  - `audit-store.test.ts` — quick-win seeding, type unification, secondary roles, owner overrides, defaults
-  - `phase-a-checks.test.ts` — SCORE_FROM_LEVEL values, quick-win detection, old mapping would fail
-  - `phase-b-visual.test.tsx` — grep-based: Fraunces headers, reclaim CTAs, no rogue colors, correct zone colors
-  - `focus-components.test.tsx` — SolutionPicker rendering/clicking, FocusTable rendering/owner cycling, EviMatrix/Payoff empty states, $50 fallback, onGoToAssign callback
-  - `phase-d-e2e.test.tsx` — AnimatedEmoji all 8 variants + 4 sizes, scroll-to-top on step/tab changes, Zustand persistence, full flow store→ResultsView→FocusStage
-- **Scroll-to-top on FocusStage tab switches** — was missing, added useEffect on activeTab
-- All QA checks pass: tsc, vitest 182/182, next build, zero rogue colors/old palette/window hacks/unicode issues
+**Step 1 (Role):**
+- FB-06: Replaced boring role emoji with expressive ones (🎯🤝🛠️🧭🎨)
+- FB-07: Redesigned to role+level picker in one view — function grid (5 roles) + level selector (IC / Manager / Director+). Manager and Executive are now levels, not standalone roles. Hidden "I also spend time on" pattern removed entirely.
 
-### Repo & Deploy
-- Created new GitHub repo: https://github.com/mona2611-alt/FocusLab-New
-- Deployed to Vercel: https://focuslab-omega.vercel.app
+**Step 2 (Context):**
+- FB-08: Hours input changed to text field + stepper buttons only — no native number spinners
+- FB-09: "Salary" toggle label → "Fixed"
+
+**Step 3 (Intake):**
+- FB-10: "Add your own" moved from isolated top into each expanded pain prompt section
+- FB-11: Audited all waste source names — removed embedded solutions (e.g. "Status meetings that could've been a message" → "Recurring status update meetings")
+- FB-12: Removed redundant "Still doing the team's work yourself?" manager pain prompt
+
+**Step 5 (Results):**
+- FB-13: Capped waste % display at 100% maximum
+- FB-14: Removed chart label truncation — full labels with 45° rotation
+- FB-15: Over-allocation warning now appears in WeighStep and BLOCKS "See results" button until user corrects
+- FB-16: Warning colors changed from gold (invisible on beige) to waste orange
+
+**App-wide:**
+- MW-01: Copy quality pass — natural English throughout
+- MW-02: No solutions embedded in waste source names
+
+### Organization
+- Created `Feedback Log/` folder (separate from `Session Log/`) per user request
 
 ## What's next (for the NEXT Claude Code session to pick up)
 
-1. **Get user's visual review feedback** — she hasn't reviewed the deployed app yet. Expect section-by-section feedback on what looks right/wrong.
-2. **Focus Table & EVI Matrix user review** — these have never been reviewed by the user. May need work after feedback.
-3. **"Wow" features not yet built:**
-   - "Your Week" calendar visualization (waste as colored blocks on Mon-Fri strip)
+1. **Focus Table & EVI Matrix user review** — user has NOT reviewed /focus yet. Expect detailed feedback similar to this session's Pareto feedback. Be ready for a full redesign pass.
+2. **"Wow" features not yet built:**
    - Before/After week comparison in Payoff
    - Shareable Waste Scorecard card (1200x630 OG image)
    - Lottie animations for key reveal moments
-4. **Landing page copy** — a direct response copywriter approach was discussed but current copy is generic
-5. **Oren's feedback** — user shared the Vercel link with Oren Yonash (original Pareto app creator). His feedback may come in.
+3. **Landing page may need more work** — the calendar visual and copy changes are deployed but user hasn't reviewed them yet
+4. **Oren's feedback** — user shared the Vercel link with Oren Yonash (original Pareto app creator). His feedback may come in.
+5. **Commit the Feedback Log folder move** — the move from Session Log/ to Feedback Log/ is uncommitted
 
 ## Decisions made (non-obvious choices)
 
-- **Two separate tools, not one flow:** /analyzer finds problems, /focus solves them. Different routes, different mental modes. User was explicit about this.
-- **Static data, no database:** All 52 waste sources, 53 solutions, 46 benchmarks are TypeScript constants. Supabase deferred to post-launch.
-- **Hot pink reclaim (#c4186a):** User chose this over teal. Deliberate.
-- **Plus Jakarta Sans body font:** Replaced Hanken Grotesk because user said it looked like "typical Claude style."
-- **SCORE_FROM_LEVEL (low=2, med=3, high=4):** In solutions-logic.ts. The store's addSolution seeds scores from this. Critical for quick-win detection (needs impact≥4).
-- **Engine ParetoResult stored directly in Zustand:** No adapter, no window global. The full engine result (with categories, chart, warnings, benchmarks) is persisted in localStorage.
+- **Two separate tools, not one flow:** /analyzer finds problems, /focus solves them. Different routes, different mental modes. User was explicit about this. Landing page copy was rewritten to NOT imply sequential flow.
+- **Manager and Executive are now LEVELS, not roles:** RoleStep shows 5 function roles (Marketing, Sales, Engineering, Product, Design) + a level picker (IC / Manager / Director+). Selecting Manager level adds manager waste sources as secondaryRoles in Zustand. This was a significant redesign from Session 2.
+- **Static data, no database:** All waste sources, solutions, benchmarks are TypeScript constants. No Supabase.
+- **Hot pink reclaim (#c4186a):** All CTA, success, selected states. Green is BANNED.
+- **Plus Jakarta Sans body font:** NOT Hanken Grotesk (user rejected as "typical Claude style").
+- **SCORE_FROM_LEVEL (low=2, med=3, high=4):** Critical for quick-win detection (needs impact≥4).
+- **Over-allocation blocks progression:** If waste hours > work week hours in WeighStep, the "See results" button is disabled. User explicitly asked for this to prevent absurd 250% results.
+- **Feedback logs live in `Feedback Log/`, session logs in `Session Log/`** — user requested separation.
+- **Waste source names describe problems only:** Never embed a solution in the label (e.g. "that could've been a message" is banned). This is a content standard going forward.
+- **"Add your own" is per-section in IntakeStep:** Not a single isolated input at the top. Each pain prompt section has its own add-your-own field when expanded.
 
 ## Open questions waiting on user
 
-- **Visual review feedback** — user hasn't seen the redesigned app yet
+- **Focus Table / EVI Matrix review** — user hasn't looked at /focus page yet
+- **Landing page visual review** — calendar visual and copy changes deployed but not yet reviewed
 - **Oren's feedback** — may arrive between sessions
-- **Color palette satisfaction** — previous session the user called the palette changes "lousy" because they were too subtle. This session made bolder changes but hasn't been reviewed.
+- **Role+level design validation** — the IC/Manager/Director+ picker is new and hasn't been user-tested
 
 ## Critical file paths
 
@@ -95,30 +98,38 @@ src/lib/engine/pareto.ts         — Core Pareto engine (142 tests)
 src/lib/engine/solutions-logic.ts — Payoff calculator + SCORE_FROM_LEVEL
 src/lib/engine/types.ts          — ParetoResult, CategoryResult, ChosenSolution
 src/lib/data/solutions.ts        — 53 solutions catalog
-src/lib/data/waste-sources.ts    — 52 waste sources
+src/lib/data/waste-sources.ts    — 47 waste sources (cleaned labels)
+src/lib/data/roles.ts            — 7 role lenses (emoji defined here)
 src/components/analyzer/AuditWizard.tsx  — Wizard orchestrator (scroll-to-top here)
-src/components/analyzer/WeighStep.tsx    — Stores engine result in Zustand
-src/components/analyzer/ResultsView.tsx  — Reads from Zustand (no window hack)
-src/components/focus/FocusStage.tsx      — Focus tool orchestrator (scroll-to-top here)
+src/components/analyzer/RoleStep.tsx     — Role+level picker (redesigned Session 3)
+src/components/analyzer/ContextStep.tsx  — Hours/days/pay input (fixed Session 3)
+src/components/analyzer/IntakeStep.tsx   — Pain prompts with per-section add-your-own
+src/components/analyzer/WeighStep.tsx    — Hours+avoidable sliders, over-allocation guard
+src/components/analyzer/ResultsView.tsx  — Pareto chart + results (capped %, full labels)
+src/components/focus/FocusStage.tsx      — Focus tool orchestrator
 src/components/focus/EviMatrix.tsx       — Effort × Impact scatter
 src/components/focus/Payoff.tsx          — Cost-of-doing-nothing closer
 src/components/ui/AnimatedEmoji.tsx      — 8 animation variants (no spring+multi-keyframe)
 src/app/globals.css                      — Design system palette + utilities
+Feedback Log/                            — User feedback logs (separate from session logs)
 ```
 
 ## Known gotchas
 
 - **visx React 19 peer deps:** `.npmrc` has `legacy-peer-deps=true`. Required for Vercel deploys.
 - **Framer Motion keyframes:** Spring transitions only support 2 keyframes. All AnimatedEmoji animations use tween with custom easing. Don't introduce spring + multi-keyframe.
-- **Unicode escapes:** `\uXXXX` in JSX text renders as raw backslash text. Always use actual characters. Solutions.ts uses `\u2014` etc. but those are in JS strings (fine) — just don't put them in JSX template literals.
-- **Vercel project:** Linked to `mona-3035s-projects/focuslab`. Deploy with `npx vercel --prod` from the project directory.
-- **Old repo still exists:** `/Users/monamehta/Documents/FocusLab/focuslab` is the original. New repo is at `/Users/monamehta/Documents/FocusLab New/`. Work in the new one.
+- **Unicode escapes:** `\uXXXX` in JSX text renders as raw backslash text. Always use actual characters in JSX.
+- **Vercel project:** Linked to `mona-3035s-projects/focuslab`. Deploy with `npx vercel --prod`.
+- **Old repo still exists:** `/Users/monamehta/Documents/FocusLab/focuslab` is the original. Work in `/Users/monamehta/Documents/FocusLab New/`.
+- **RoleLenses.tsx is dead code:** Still exists on disk but removed from page.tsx. Can be deleted.
+- **roles.ts emoji are stale:** The emoji in `src/lib/data/roles.ts` still use corporate emoji (📊📋 etc.) but RoleStep.tsx overrides them with ROLE_EMOJI map. If roles.ts emoji are used elsewhere, they need updating.
 
 ## How to resume work
 1. Read this file top to bottom
 2. Run `git status` and `git log --oneline -10` to confirm state
-3. Read memory files at `~/.claude/projects/-Users-monamehta-Documents-FocusLab/memory/`
+3. Read the feedback log at `Feedback Log/Session 3 - User Feedback Log.md` for context on user preferences
 4. User wants autonomous execution — don't ask permissions, just do the work
-5. TDD discipline: write tests first, implement, verify, then show
-6. Never say "done" until tests pass, build succeeds, and QA checklist is green
-7. Ask the user what they want to work on next
+5. Run QA agents BEFORE showing work to user — she will reject half-done fixes
+6. TDD discipline: write tests first, implement, verify, then show
+7. Never say "done" until tests pass, build succeeds, and QA checklist is green
+8. Ask the user what they want to work on next
