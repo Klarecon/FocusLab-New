@@ -1,35 +1,126 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef, useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
 
-function CountUp({ target, duration = 2000 }: { target: number; duration?: number }) {
-  const [value, setValue] = useState(0);
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true });
+/** An illustrative calendar week showing how much time goes to waste. */
+function WeekCalendar() {
+  const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+  // Each day: array of blocks. "waste" = wasted time, "work" = real work.
+  // Shows ~58% waste visually.
+  const schedule = [
+    [
+      { type: "waste", label: "Meetings", h: 2 },
+      { type: "work", label: "", h: 1 },
+      { type: "waste", label: "Email", h: 1.5 },
+      { type: "work", label: "", h: 1.5 },
+      { type: "waste", label: "Status sync", h: 2 },
+    ],
+    [
+      { type: "work", label: "", h: 1 },
+      { type: "waste", label: "Rework", h: 2 },
+      { type: "waste", label: "Admin", h: 1 },
+      { type: "work", label: "", h: 2 },
+      { type: "waste", label: "Slack", h: 2 },
+    ],
+    [
+      { type: "waste", label: "Meetings", h: 3 },
+      { type: "work", label: "", h: 1 },
+      { type: "waste", label: "Waiting", h: 1.5 },
+      { type: "work", label: "", h: 1 },
+      { type: "waste", label: "Email", h: 1.5 },
+    ],
+    [
+      { type: "work", label: "", h: 2 },
+      { type: "waste", label: "Coordination", h: 2 },
+      { type: "waste", label: "Meetings", h: 1.5 },
+      { type: "work", label: "", h: 1 },
+      { type: "waste", label: "Reports", h: 1.5 },
+    ],
+    [
+      { type: "waste", label: "Email", h: 1 },
+      { type: "waste", label: "Meetings", h: 2 },
+      { type: "work", label: "", h: 2 },
+      { type: "waste", label: "Admin", h: 1 },
+      { type: "work", label: "", h: 2 },
+    ],
+  ];
 
-  useEffect(() => {
-    if (!inView) return;
-    const start = performance.now();
-    const tick = (now: number) => {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      // ease-out cubic
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setValue(Math.round(target * eased));
-      if (progress < 1) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  }, [inView, target, duration]);
-
-  return <span ref={ref}>{value.toLocaleString()}</span>;
+  return (
+    <div className="w-full max-w-lg mx-auto">
+      <div className="grid grid-cols-5 gap-1.5">
+        {days.map((day, di) => (
+          <div key={day} className="text-center">
+            <span
+              className="block text-xs font-semibold mb-1.5"
+              style={{ color: "var(--color-ink-soft)" }}
+            >
+              {day}
+            </span>
+            <div className="flex flex-col gap-0.5">
+              {schedule[di].map((block, bi) => (
+                <motion.div
+                  key={bi}
+                  initial={{ scaleY: 0, opacity: 0 }}
+                  animate={{ scaleY: 1, opacity: 1 }}
+                  transition={{ delay: 0.8 + di * 0.1 + bi * 0.05, duration: 0.3 }}
+                  className="rounded-sm flex items-center justify-center overflow-hidden"
+                  style={{
+                    height: `${block.h * 20}px`,
+                    backgroundColor:
+                      block.type === "waste"
+                        ? "rgba(224, 62, 18, 0.15)"
+                        : "rgba(196, 24, 106, 0.08)",
+                    borderLeft:
+                      block.type === "waste"
+                        ? "2px solid var(--color-waste)"
+                        : "2px solid var(--color-reclaim)",
+                    transformOrigin: "top",
+                  }}
+                >
+                  {block.label && (
+                    <span
+                      className="text-[9px] sm:text-[10px] font-medium truncate px-0.5"
+                      style={{
+                        color:
+                          block.type === "waste"
+                            ? "var(--color-waste)"
+                            : "var(--color-reclaim)",
+                      }}
+                    >
+                      {block.label}
+                    </span>
+                  )}
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="flex items-center justify-center gap-6 mt-3">
+        <div className="flex items-center gap-1.5">
+          <div
+            className="w-3 h-3 rounded-sm"
+            style={{ backgroundColor: "rgba(224, 62, 18, 0.15)", borderLeft: "2px solid var(--color-waste)" }}
+          />
+          <span className="text-xs" style={{ color: "var(--color-ink-soft)" }}>Waste</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <div
+            className="w-3 h-3 rounded-sm"
+            style={{ backgroundColor: "rgba(196, 24, 106, 0.08)", borderLeft: "2px solid var(--color-reclaim)" }}
+          />
+          <span className="text-xs" style={{ color: "var(--color-ink-soft)" }}>Real work</span>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default function Hero() {
   return (
-    <section className="relative min-h-[90vh] flex flex-col items-center justify-center text-center px-6 py-28 overflow-hidden">
+    <section className="relative min-h-[100vh] flex flex-col items-center justify-center text-center px-6 py-20 overflow-hidden">
       {/* Background decorative emoji */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.04] select-none overflow-hidden">
         <div className="absolute top-[10%] left-[8%] text-7xl rotate-[-15deg]">😴</div>
@@ -58,57 +149,44 @@ export default function Hero() {
 
         {/* Main headline */}
         <h1
-          className="text-5xl sm:text-6xl md:text-7xl font-bold leading-[1.05] mb-8"
+          className="text-5xl sm:text-6xl md:text-7xl font-bold leading-[1.05] mb-6"
           style={{ fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif" }}
         >
-          How much of your week{" "}
+          Most of your week{" "}
           <span className="gradient-text">
-            are you wasting?
+            isn&apos;t real work.
           </span>
         </h1>
-
-        {/* Stat callout */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.5, duration: 0.6 }}
-          className="inline-flex items-center gap-4 rounded-xl px-8 py-5 mb-10"
-          style={{
-            backgroundColor: "var(--color-card)",
-            borderLeft: "4px solid transparent",
-            borderImage: "linear-gradient(180deg, var(--color-waste), var(--color-reclaim)) 1",
-            boxShadow: "0 4px 24px rgba(224, 62, 18, 0.08)",
-          }}
-        >
-          <AnimatedEmoji emoji="😱" animation="shake" size="lg" delay={0.8} />
-          <div className="text-left">
-            <p className="text-3xl sm:text-4xl font-bold" style={{ color: "var(--color-waste)", fontFamily: "var(--font-geist-mono), monospace" }}>
-              <CountUp target={58} />% of your week
-            </p>
-            <p className="text-sm mt-1" style={{ color: "var(--color-ink-soft)" }}>
-              is spent on work that isn&apos;t your actual job
-            </p>
-          </div>
-        </motion.div>
 
         {/* Subheadline */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.7 }}
-          className="text-lg sm:text-xl mb-12 max-w-2xl mx-auto leading-relaxed"
+          transition={{ delay: 0.4 }}
+          className="text-lg sm:text-xl mb-10 max-w-2xl mx-auto leading-relaxed"
           style={{ color: "var(--color-ink-soft)" }}
         >
-          FocusLab finds the <strong style={{ color: "var(--color-ink)" }}>vital few</strong> drains
-          eating most of your time — then gives you research-backed fixes
-          to <strong style={{ color: "var(--color-reclaim)" }}>reclaim your week</strong>.
+          Meetings, email, coordination, admin — the average knowledge worker
+          spends <strong style={{ color: "var(--color-waste)" }}>58% of their week</strong> on
+          tasks that don&apos;t move the needle. FocusLab shows you exactly where
+          your time goes, and what to do about it.
         </motion.p>
+
+        {/* Calendar visual */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.6 }}
+          className="mb-10"
+        >
+          <WeekCalendar />
+        </motion.div>
 
         {/* CTA buttons */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.9 }}
+          transition={{ delay: 1.2 }}
           className="flex flex-col sm:flex-row items-center gap-5"
         >
           <Link
@@ -126,6 +204,33 @@ export default function Hero() {
           <span className="text-sm" style={{ color: "var(--color-ink-soft)" }}>
             Takes 3 minutes. No signup required.
           </span>
+        </motion.div>
+      </motion.div>
+
+      {/* Scroll indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+      >
+        <motion.div
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          className="flex flex-col items-center gap-1"
+        >
+          <span className="text-xs font-medium" style={{ color: "var(--color-ink-soft)" }}>
+            Scroll
+          </span>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path
+              d="M5 8L10 13L15 8"
+              stroke="var(--color-ink-soft)"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </motion.div>
       </motion.div>
     </section>

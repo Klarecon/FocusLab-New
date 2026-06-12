@@ -137,6 +137,9 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
     return e && e.hoursPerDay === 0 && !confirmedZeros.has(src.slug);
   });
 
+  // Over-allocation: total waste exceeds work week
+  const isOverAllocated = totalWaste > workHoursPerWeek;
+
   return (
     <div>
       {/* Header with running total */}
@@ -327,6 +330,29 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
         })}
       </div>
 
+      {/* Over-allocation warning */}
+      {isOverAllocated && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="surface-card p-5 mb-8 flex items-start gap-3"
+          style={{
+            borderLeft: "4px solid var(--color-waste)",
+            backgroundColor: "rgba(224, 62, 18, 0.06)",
+          }}
+        >
+          <span className="text-xl flex-shrink-0">😬</span>
+          <div>
+            <p className="font-semibold text-sm" style={{ color: "var(--color-waste)" }}>
+              Your waste hours ({totalWaste.toFixed(1)} hrs) exceed your work week ({workHoursPerWeek} hrs).
+            </p>
+            <p className="text-sm mt-1" style={{ color: "var(--color-ink-soft)" }}>
+              Go back and adjust your time estimates above before continuing.
+            </p>
+          </div>
+        </motion.div>
+      )}
+
       {/* Nav */}
       <div className="flex items-center justify-between">
         <button
@@ -339,14 +365,15 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
         </button>
         <motion.button
           type="button"
+          disabled={isOverAllocated}
           onClick={handleCompute}
-          className="px-10 py-4 rounded-xl text-base font-bold text-white transition-all duration-200"
+          className="px-10 py-4 rounded-xl text-base font-bold text-white transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
           style={{
-            backgroundColor: "var(--color-reclaim)",
-            boxShadow: "0 4px 16px rgba(196, 24, 106, 0.25)",
+            backgroundColor: isOverAllocated ? "var(--color-ink-soft)" : "var(--color-reclaim)",
+            boxShadow: isOverAllocated ? undefined : "0 4px 16px rgba(196, 24, 106, 0.25)",
           }}
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
+          whileHover={isOverAllocated ? {} : { scale: 1.03 }}
+          whileTap={isOverAllocated ? {} : { scale: 0.97 }}
         >
           <AnimatedEmoji emoji={"🤯"} animation="pop" size="sm" />{" "}
           See your results

@@ -63,13 +63,15 @@ export default function ContextStep({ onNext, onBack }: ContextStepProps) {
             />
             <div className="flex-1 text-center">
               <input
-                type="number"
-                min={10}
-                max={100}
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 value={workHoursPerWeek}
-                onChange={(e) =>
-                  setContext({ workHoursPerWeek: Math.max(10, Math.min(100, Number(e.target.value) || 10)) })
-                }
+                onChange={(e) => {
+                  const val = e.target.value.replace(/\D/g, "");
+                  if (val === "") return;
+                  setContext({ workHoursPerWeek: Math.max(10, Math.min(100, Number(val))) });
+                }}
                 className="w-20 text-center text-2xl font-semibold bg-transparent border-b-2 focus:outline-none font-figures"
                 style={{ borderColor: "var(--color-waste)", color: "var(--color-ink)" }}
               />
@@ -119,13 +121,13 @@ export default function ContextStep({ onNext, onBack }: ContextStepProps) {
                 key={mode}
                 type="button"
                 onClick={() => setContext({ payMode: mode })}
-                className="flex-1 py-2 text-sm font-semibold capitalize transition-all duration-150"
+                className="flex-1 py-2 text-sm font-semibold transition-all duration-150"
                 style={{
                   backgroundColor: payMode === mode ? "var(--color-waste)" : "transparent",
                   color: payMode === mode ? "#fff" : "var(--color-ink-soft)",
                 }}
               >
-                {mode}
+                {mode === "salary" ? "Fixed" : "Hourly"}
               </button>
             ))}
           </div>

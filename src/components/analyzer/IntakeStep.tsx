@@ -30,20 +30,9 @@ const ROLE_PAIN_PROMPTS: Partial<Record<RoleSlug, { prompt: string; emoji: strin
   sales: [{ prompt: "CRM admin stealing your selling time?", emoji: "📞", groups: ["CRM & data", "Prospecting", "Quotes & proposals"] }],
   engineering: [{ prompt: "Tech debt and slow builds grinding you down?", emoji: "💻", groups: ["Code", "Builds & reviews"] }],
   design: [{ prompt: "File wrangling and revision rounds?", emoji: "🎨", groups: ["Files & assets", "Creative"] }],
-  manager: [{ prompt: "Still doing the team's work yourself?", emoji: "👥", groups: ["Leading vs doing"] }],
+  manager: [{ prompt: "Back-to-back meetings draining you?", emoji: "😬", groups: ["Meetings", "Admin"] }],
   executive: [{ prompt: "Calendar gravity pulling you everywhere?", emoji: "👑", groups: ["Leading vs doing"] }],
   product: [{ prompt: "Status packaging and firefighting?", emoji: "🫠", groups: ["Reporting", "Coordination"] }],
-};
-
-const MUDA_EMOJI: Record<MudaType, string> = {
-  rework: "🔄",
-  overproduction: "📦",
-  waiting: "⏳",
-  "underused-skill": "🧩",
-  handoffs: "📤",
-  "pile-ups": "📚",
-  "switching-searching": "🔍",
-  "over-processing": "⚙️",
 };
 
 const MIN_SOURCES = 5;
@@ -60,8 +49,7 @@ export default function IntakeStep({ onNext, onBack }: IntakeStepProps) {
   const removeSource = useAuditStore((s) => s.removeSource);
 
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
-  const [customLabel, setCustomLabel] = useState("");
-  const [customMuda, setCustomMuda] = useState<MudaType>("over-processing");
+  const [customLabels, setCustomLabels] = useState<Record<number, string>>({});
   const [customCounter, setCustomCounter] = useState(0);
 
   const painCardRefs = useRef<Map<number, HTMLDivElement | null>>(new Map());
@@ -106,21 +94,22 @@ export default function IntakeStep({ onNext, onBack }: IntakeStepProps) {
     }
   };
 
-  const addCustom = () => {
-    const label = customLabel.trim();
+  const addCustomForSection = (painIndex: number, groups: string[]) => {
+    const label = (customLabels[painIndex] ?? "").trim();
     if (!label) return;
     const slug = `custom-${customCounter}`;
     setCustomCounter((c) => c + 1);
+    const primaryGroup = groups[0] ?? "Custom";
     addSource({
       slug,
-      group: "Custom",
+      group: primaryGroup,
       label,
-      muda: customMuda,
+      muda: "over-processing",
       whatCounts: "Your own custom waste source",
       scope: "universal",
-      emoji: MUDA_EMOJI[customMuda],
+      emoji: "✏️",
     });
-    setCustomLabel("");
+    setCustomLabels((prev) => ({ ...prev, [painIndex]: "" }));
   };
 
   // Find which groups a pain prompt maps to
@@ -179,54 +168,6 @@ export default function IntakeStep({ onNext, onBack }: IntakeStepProps) {
             source{count !== 1 ? "s" : ""} selected
           </span>
         </motion.div>
-      </div>
-
-      {/* Add your own — at the top so users see it immediately */}
-      <div className="surface-card p-4 mb-8">
-        <p className="text-sm font-semibold mb-3" style={{ color: "var(--color-ink)" }}>
-          Something missing? Add your own:
-        </p>
-        <div className="flex gap-2 mb-3">
-          <input
-            type="text"
-            value={customLabel}
-            onChange={(e) => setCustomLabel(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && addCustom()}
-            placeholder="e.g. Weekly all-hands that could be an email"
-            className="flex-1 px-3 py-2 text-sm rounded-lg bg-transparent focus:outline-none"
-            style={{
-              border: "1.5px solid var(--color-line)",
-              color: "var(--color-ink)",
-            }}
-          />
-          <button
-            type="button"
-            onClick={addCustom}
-            disabled={!customLabel.trim()}
-            className="px-3 py-2 rounded-lg text-white text-sm font-semibold transition-all duration-150 disabled:opacity-40"
-            style={{ backgroundColor: "var(--color-waste)" }}
-          >
-            <Plus size={16} />
-          </button>
-        </div>
-        {/* Muda type picker */}
-        <div className="flex flex-wrap gap-1.5">
-          {(Object.entries(MUDA_EMOJI) as [MudaType, string][]).map(([muda, emoji]) => (
-            <button
-              key={muda}
-              type="button"
-              onClick={() => setCustomMuda(muda)}
-              className="px-2 py-1 rounded-md text-xs transition-all duration-100"
-              style={{
-                border: `1.5px solid ${customMuda === muda ? "var(--color-gold)" : "var(--color-line)"}`,
-                backgroundColor: customMuda === muda ? "rgba(237, 178, 21, 0.1)" : "transparent",
-              }}
-              title={muda}
-            >
-              {emoji}
-            </button>
-          ))}
-        </div>
       </div>
 
       {/* Pain prompt cards */}
@@ -326,6 +267,31 @@ export default function IntakeStep({ onNext, onBack }: IntakeStepProps) {
                           </motion.label>
                         )),
                       )}
+
+                      {/* Add your own — per section */}
+                      <div className="flex items-center gap-2 pt-3 mt-2" style={{ borderTop: "1px solid var(--color-line)" }}>
+                        <input
+                          type="text"
+                          value={customLabels[pi] ?? ""}
+                          onChange={(e) => setCustomLabels((prev) => ({ ...prev, [pi]: e.target.value }))}
+                          onKeyDown={(e) => e.key === "Enter" && addCustomForSection(pi, pain.groups)}
+                          placeholder="Add your own..."
+                          className="flex-1 px-3 py-2 text-sm rounded-lg bg-transparent focus:outline-none"
+                          style={{
+                            border: "1.5px solid var(--color-line)",
+                            color: "var(--color-ink)",
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => addCustomForSection(pi, pain.groups)}
+                          disabled={!(customLabels[pi] ?? "").trim()}
+                          className="px-3 py-2 rounded-lg text-white text-sm font-semibold transition-all duration-150 disabled:opacity-40"
+                          style={{ backgroundColor: "var(--color-waste)" }}
+                        >
+                          <Plus size={16} />
+                        </button>
+                      </div>
                     </div>
                   </motion.div>
                 )}

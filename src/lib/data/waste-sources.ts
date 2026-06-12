@@ -84,13 +84,13 @@ function emojiFor(group: string): string {
 export const UNIVERSAL_WASTE: WasteSource[] = [
   // Meetings — only the avoidable slices (the activity itself can add value)
   { slug: "meet-not-needed", group: "Meetings", label: "Meetings you weren\u2019t needed in", muda: "over-processing", whatCounts: "Invited \u201Cjust in case\u201D, sat through it, added nothing.", scope: "universal", emoji: emojiFor("Meetings") },
-  { slug: "meet-status", group: "Meetings", label: "Status meetings that could\u2019ve been a message", muda: "over-processing", whatCounts: "Round-the-room updates with no decision made.", scope: "universal", emoji: emojiFor("Meetings") },
-  { slug: "meet-recurring", group: "Meetings", label: "Recurring meetings nobody cancels", muda: "over-processing", whatCounts: "Standing syncs that outlived their purpose.", scope: "universal", emoji: emojiFor("Meetings") },
-  { slug: "meet-overlong", group: "Meetings", label: "Meetings stretched to fill the slot", muda: "over-processing", whatCounts: "Done in 20, ran 60 because the slot was 60.", scope: "universal", emoji: emojiFor("Meetings") },
+  { slug: "meet-status", group: "Meetings", label: "Recurring status update meetings", muda: "over-processing", whatCounts: "Round-the-room updates with no decision made.", scope: "universal", emoji: emojiFor("Meetings") },
+  { slug: "meet-recurring", group: "Meetings", label: "Standing meetings that outlived their purpose", muda: "over-processing", whatCounts: "Recurring syncs nobody questions or cancels.", scope: "universal", emoji: emojiFor("Meetings") },
+  { slug: "meet-overlong", group: "Meetings", label: "Meetings that run longer than needed", muda: "over-processing", whatCounts: "Done in 20, ran 60 because the slot was 60.", scope: "universal", emoji: emojiFor("Meetings") },
 
   // Email & chat
   { slug: "email-triage", group: "Email & chat", label: "Triaging low-value email & CC chains", muda: "handoffs", whatCounts: "Reading and clearing mail you didn\u2019t need to be on.", scope: "universal", emoji: emojiFor("Email & chat") },
-  { slug: "chat-reply-all", group: "Email & chat", label: "Reply-all threads you didn\u2019t need", muda: "over-processing", whatCounts: "Pile-ons, \u201Cthanks!\u201D chains, noise you read anyway.", scope: "universal", emoji: emojiFor("Email & chat") },
+  { slug: "chat-reply-all", group: "Email & chat", label: "Noisy group threads and reply-all chains", muda: "over-processing", whatCounts: "Pile-ons, thanks chains, noise you read anyway.", scope: "universal", emoji: emojiFor("Email & chat") },
 
   // Coordination (work-about-work)
   { slug: "coord-status-chase", group: "Coordination", label: "Chasing people for status updates", muda: "handoffs", whatCounts: "Pinging for where things stand, nudging for replies.", scope: "universal", emoji: emojiFor("Coordination") },
@@ -110,21 +110,21 @@ export const UNIVERSAL_WASTE: WasteSource[] = [
   { slug: "rework-duplicate", group: "Rework", label: "Doing work that was already done", muda: "rework", whatCounts: "Rebuilding something a teammate already finished.", scope: "universal", emoji: emojiFor("Rework") },
 
   // Doing more than needed
-  { slug: "overdo-overspec", group: "Doing more than needed", label: "Polishing work past what was needed", muda: "over-processing", whatCounts: "Extra detail, gold-plating, perfecting beyond the ask.", scope: "universal", emoji: emojiFor("Doing more than needed") },
+  { slug: "overdo-overspec", group: "Doing more than needed", label: "Over-polishing and gold-plating work", muda: "over-processing", whatCounts: "Extra detail, perfecting beyond what was asked.", scope: "universal", emoji: emojiFor("Doing more than needed") },
   { slug: "overdo-multitask", group: "Doing more than needed", label: "Juggling several tasks at once", muda: "switching-searching", whatCounts: "Splitting attention across tasks, finishing none cleanly.", scope: "universal", emoji: emojiFor("Doing more than needed") },
-  { slug: "overdo-incomplete-kit", group: "Waiting & blocked", label: "Starting tasks you can\u2019t finish yet", muda: "waiting", whatCounts: "Missing inputs, info or access, so it stalls half-done.", scope: "universal", emoji: emojiFor("Waiting & blocked") },
-  { slug: "overdo-procrastination", group: "Focus", label: "Busywork to dodge the hard task", muda: "switching-searching", whatCounts: "Easy filler while the task that matters waits.", scope: "universal", emoji: emojiFor("Focus") },
+  { slug: "overdo-incomplete-kit", group: "Waiting & blocked", label: "Tasks stalled by missing inputs or access", muda: "waiting", whatCounts: "Started but can\u2019t finish \u2014 missing info, people, or permissions.", scope: "universal", emoji: emojiFor("Waiting & blocked") },
+  { slug: "overdo-procrastination", group: "Focus", label: "Low-value busywork while real work waits", muda: "switching-searching", whatCounts: "Easy filler tasks instead of the hard thing.", scope: "universal", emoji: emojiFor("Focus") },
 
   // Admin
   { slug: "admin-data-entry", group: "Admin", label: "Manual, repetitive data entry", muda: "underused-skill", whatCounts: "Copy-paste between tools, re-keying the same data.", scope: "universal", emoji: emojiFor("Admin") },
-  { slug: "admin-forms", group: "Admin", label: "Filling out forms, expenses & timesheets", muda: "underused-skill", whatCounts: "Routine paperwork the system could mostly capture.", scope: "universal", emoji: emojiFor("Admin") },
+  { slug: "admin-forms", group: "Admin", label: "Forms, expenses, and timesheets", muda: "underused-skill", whatCounts: "Routine paperwork and manual compliance tasks.", scope: "universal", emoji: emojiFor("Admin") },
 ];
 
 export const ROLE_WASTE: WasteSource[] = [
   // MARKETING
   { slug: "mkt-report-byhand", group: "Reporting", label: "Building the same report by hand", muda: "underused-skill", whatCounts: "Re-pulling weekly numbers, rebuilding the same dashboard.", scope: ["marketing"], emoji: emojiFor("Reporting") },
   { slug: "mkt-data-stitch", group: "Reporting", label: "Stitching campaign data across platforms", muda: "handoffs", whatCounts: "Exporting and merging numbers from each tool by hand.", scope: ["marketing"], emoji: emojiFor("Reporting") },
-  { slug: "mkt-revisions", group: "Creative", label: "Revision rounds from a vague brief", muda: "rework", whatCounts: "Redoing creative because nobody said what they wanted.", scope: ["marketing"], emoji: emojiFor("Creative") },
+  { slug: "mkt-revisions", group: "Creative", label: "Endless revision rounds on creative work", muda: "rework", whatCounts: "Redoing work because direction was unclear.", scope: ["marketing"], emoji: emojiFor("Creative") },
   { slug: "mkt-social-reformat", group: "Creative", label: "Reformatting the same post for each platform", muda: "over-processing", whatCounts: "Resizing, rewording and re-cropping per channel.", scope: ["marketing"], emoji: emojiFor("Creative") },
   { slug: "mkt-brand-signoff", group: "Waiting & blocked", label: "Waiting on brand or legal sign-off", muda: "waiting", whatCounts: "Work parked until review comes back.", scope: ["marketing"], emoji: emojiFor("Waiting & blocked") },
 
@@ -158,8 +158,8 @@ export const ROLE_WASTE: WasteSource[] = [
 
   // MANAGER
   { slug: "mgr-1on1-autopilot", group: "Meetings", label: "1:1s & reviews running on autopilot", muda: "over-processing", whatCounts: "Recurring slots kept out of habit, not need.", scope: ["manager"], emoji: emojiFor("Meetings") },
-  { slug: "mgr-ic-work", group: "Leading vs doing", label: "Doing the team\u2019s work yourself", muda: "underused-skill", whatCounts: "\u201CFaster if I just do it\u201D instead of delegating.", scope: ["manager"], emoji: emojiFor("Leading vs doing") },
-  { slug: "mgr-approvals", group: "Admin", label: "Rubber-stamp approvals routed through you", muda: "over-processing", whatCounts: "Expense/PTO/access sign-offs you never really gate.", scope: ["manager"], emoji: emojiFor("Admin") },
+  { slug: "mgr-ic-work", group: "Leading vs doing", label: "Doing IC work instead of managing", muda: "underused-skill", whatCounts: "Handling tasks yourself instead of empowering the team.", scope: ["manager"], emoji: emojiFor("Leading vs doing") },
+  { slug: "mgr-approvals", group: "Admin", label: "Low-stakes approvals routed through you", muda: "over-processing", whatCounts: "Expense, PTO, and access sign-offs you never really gate.", scope: ["manager"], emoji: emojiFor("Admin") },
   { slug: "mgr-unblock", group: "Focus", label: "Fielding \u201Cgot a sec?\u201D requests all day", muda: "switching-searching", whatCounts: "Being the unblock-everything hub for the team.", scope: ["manager"], emoji: emojiFor("Focus") },
 
   // EXECUTIVE

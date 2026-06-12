@@ -26,36 +26,14 @@ export default function FinalCTA() {
         viewport={{ once: true }}
         className="max-w-2xl mx-auto relative z-10"
       >
-        <AnimatedEmoji emoji="⏰" animation="shake" size="xl" />
-
-        <h2
-          className="text-3xl sm:text-4xl md:text-5xl font-bold mt-8 mb-6"
-          style={{ fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif" }}
-        >
-          Every week you wait costs you{" "}
-          <span
-            className="inline-block"
-            style={{
-              color: "var(--color-waste)",
-              fontSize: "1.2em",
-              fontFamily: "var(--font-geist-mono), monospace",
-            }}
-          >
-            $500+
-          </span>
-        </h2>
-
         <p
-          className="text-lg sm:text-xl mb-12 leading-relaxed"
+          className="text-lg sm:text-xl mb-8 leading-relaxed"
           style={{ color: "var(--color-ink-soft)" }}
         >
           The average knowledge worker wastes 10+ hours a week on things that
           don&apos;t matter. That&apos;s{" "}
-          <strong style={{ color: "var(--color-ink)" }}>6 full work weeks per year</strong>.
-          <br />
-          <span className="inline-block mt-2">
-            <AnimatedEmoji emoji="🤯" animation="pop" size="md" /> Let that sink in.
-          </span>
+          <strong style={{ color: "var(--color-ink)" }}>6 full work weeks per year</strong>.{" "}
+          <AnimatedEmoji emoji="🤯" animation="pop" size="md" />
         </p>
 
         <Link
@@ -72,8 +50,7 @@ export default function FinalCTA() {
         </Link>
 
         <p className="mt-6 text-sm" style={{ color: "var(--color-ink-soft)" }}>
-          3 minutes. No signup. No data leaves your browser.{" "}
-          <AnimatedEmoji emoji="🔒" animation="pop" size="sm" delay={0.5} />
+          3 minutes. No signup.
         </p>
       </motion.div>
     </section>

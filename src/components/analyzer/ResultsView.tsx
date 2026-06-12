@@ -32,8 +32,8 @@ function fmtHours(n: number, decimals = 1): string {
   return n.toFixed(decimals);
 }
 
-function truncate(s: string, max = 18): string {
-  return s.length > max ? s.slice(0, max - 1) + "…" : s;
+function truncate(s: string): string {
+  return s;
 }
 
 /* --- Severity tiers --- */
@@ -216,7 +216,7 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
           <p className="text-base mt-2 font-medium" style={{ color: "var(--color-ink-soft)" }}>
             {fmtHours(totalHours)} hrs/week of avoidable waste &middot;{" "}
             <span style={{ color: "var(--color-waste)", fontWeight: 700 }}>
-              {Math.round((totalHours / workHoursPerWeek) * 100)}%
+              {Math.min(100, Math.round((totalHours / workHoursPerWeek) * 100))}%
             </span>{" "}
             of your work week
           </p>
@@ -230,20 +230,20 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
           <p className="text-xs mb-4" style={{ color: "var(--color-ink-soft)" }}>
             Bars = hours/week waste. Line = cumulative %. Red bars are your vital few (Zone A).
           </p>
-          <div style={{ width: "100%", height: 340 }}>
+          <div style={{ width: "100%", height: 420 }}>
             <ResponsiveContainer>
               <ComposedChart
                 data={chartData}
-                margin={{ top: 10, right: 30, left: 0, bottom: 60 }}
+                margin={{ top: 10, right: 30, left: 0, bottom: 100 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--color-line)" />
                 <XAxis
                   dataKey="name"
-                  tick={{ fontSize: 11, fill: "var(--color-ink-soft)" }}
-                  angle={-35}
+                  tick={{ fontSize: 10, fill: "var(--color-ink-soft)" }}
+                  angle={-45}
                   textAnchor="end"
                   interval={0}
-                  height={70}
+                  height={110}
                 />
                 <YAxis
                   yAxisId="left"
@@ -414,10 +414,14 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
         {paretoResult.warnings.length > 0 && (
           <div
             className="surface-card p-4 mb-10"
-            style={{ borderColor: "var(--color-gold)", borderWidth: "1.5px" }}
+            style={{
+              borderColor: "var(--color-waste)",
+              borderWidth: "1.5px",
+              backgroundColor: "rgba(224, 62, 18, 0.05)",
+            }}
           >
             {paretoResult.warnings.map((w) => (
-              <p key={w} className="text-sm" style={{ color: "var(--color-gold)" }}>
+              <p key={w} className="text-sm font-medium" style={{ color: "var(--color-waste)" }}>
                 {"⚠️"} {w}
               </p>
             ))}

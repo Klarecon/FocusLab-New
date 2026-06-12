@@ -1,11 +1,29 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { useAuditStore } from "@/stores/audit-store";
 import { ROLE_LENSES, type RoleLens } from "@/lib/data/roles";
 import type { RoleSlug } from "@/lib/data/benchmarks";
 import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
+
+const LEVELS = [
+  { id: "ic", label: "Individual Contributor", description: "Doing the work yourself" },
+  { id: "manager", label: "Manager / Team Lead", description: "Leading a team day-to-day" },
+  { id: "executive", label: "Director+", description: "Setting strategy, running orgs" },
+] as const;
+
+type LevelId = (typeof LEVELS)[number]["id"];
+
+/** Map level selection to secondary roles to pull in */
+function secondaryRolesForLevel(level: LevelId, primaryRole: RoleSlug): RoleSlug[] {
+  if (level === "manager" && primaryRole !== "manager") return ["manager"];
+  if (level === "executive") {
+    const extras: RoleSlug[] = ["executive"];
+    if (primaryRole !== "manager") extras.push("manager");
+    return extras;
+  }
+  return [];
+}
 
 interface RoleStepProps {
   onNext: () => void;
@@ -16,23 +34,31 @@ export default function RoleStep({ onNext }: RoleStepProps) {
   const setRole = useAuditStore((s) => s.setRole);
   const secondaryRoles = useAuditStore((s) => s.secondaryRoles);
   const setSecondaryRoles = useAuditStore((s) => s.setSecondaryRoles);
-  const [showSecondary, setShowSecondary] = useState(false);
 
-  const handleSelect = (slug: RoleSlug) => {
+  // Derive current level from secondary roles
+  const currentLevel: LevelId | null = secondaryRoles.includes("executive" as RoleSlug)
+    ? "executive"
+    : secondaryRoles.includes("manager" as RoleSlug)
+      ? "manager"
+      : roleSlug
+        ? "ic"
+        : null;
+
+  const handleSelectRole = (slug: RoleSlug) => {
     setRole(slug);
-    // Clear secondary if it matches new primary
-    setSecondaryRoles(secondaryRoles.filter((r) => r !== slug));
+    // Default to IC, clear secondaries
+    setSecondaryRoles([]);
   };
 
-  const toggleSecondary = (slug: RoleSlug) => {
-    setSecondaryRoles(
-      secondaryRoles.includes(slug)
-        ? secondaryRoles.filter((r) => r !== slug)
-        : [...secondaryRoles, slug],
-    );
+  const handleSelectLevel = (level: LevelId) => {
+    if (!roleSlug) return;
+    setSecondaryRoles(secondaryRolesForLevel(level, roleSlug as RoleSlug));
   };
 
-  const otherRoles = ROLE_LENSES.filter((r) => r.slug !== roleSlug);
+  // Filter out manager/executive from the main grid since they're levels now
+  const functionRoles = ROLE_LENSES.filter(
+    (r) => r.slug !== "manager" && r.slug !== "executive",
+  );
 
   return (
     <div>
@@ -44,69 +70,76 @@ export default function RoleStep({ onNext }: RoleStepProps) {
           What do you do?
         </h2>
         <p style={{ color: "var(--color-ink-soft)" }}>
-          Pick the role that best describes your day-to-day.
+          Pick your function, then your level.
         </p>
       </div>
 
-      {/* Role grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
-        {ROLE_LENSES.map((role, i) => (
+      {/* Function grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
+        {functionRoles.map((role, i) => (
           <RoleCard
             key={role.slug}
             role={role}
             isSelected={roleSlug === role.slug}
-            onSelect={() => handleSelect(role.slug)}
+            onSelect={() => handleSelectRole(role.slug)}
             index={i}
           />
         ))}
       </div>
 
-      {/* Secondary role toggle */}
+      {/* Level selector — visible immediately after role pick */}
       {roleSlug && (
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          transition={{ duration: 0.3 }}
           className="mb-10"
         >
-          <button
-            type="button"
-            onClick={() => setShowSecondary(!showSecondary)}
-            className="text-sm font-medium transition-colors duration-150"
-            style={{ color: "var(--color-ink-soft)" }}
-          >
-            {showSecondary ? "▼" : "▶"} I also spend time on...
-          </button>
-
-          {showSecondary && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="flex flex-wrap gap-2 mt-3"
-            >
-              {otherRoles.map((role) => (
+          <p className="text-sm font-semibold mb-3" style={{ color: "var(--color-ink)" }}>
+            Your level
+          </p>
+          <div className="grid grid-cols-3 gap-3">
+            {LEVELS.map((level) => {
+              const isActive = currentLevel === level.id;
+              return (
                 <button
-                  key={role.slug}
+                  key={level.id}
                   type="button"
-                  onClick={() => toggleSecondary(role.slug)}
-                  className="px-3 py-1.5 rounded-full text-sm font-medium border transition-all duration-150"
+                  onClick={() => handleSelectLevel(level.id)}
+                  className="p-4 rounded-xl text-left transition-all duration-200"
                   style={{
-                    borderColor: secondaryRoles.includes(role.slug)
-                      ? "var(--color-gold)"
-                      : "var(--color-line)",
-                    backgroundColor: secondaryRoles.includes(role.slug)
-                      ? "rgba(237, 178, 21, 0.1)"
-                      : "transparent",
-                    color: secondaryRoles.includes(role.slug)
-                      ? "var(--color-gold)"
-                      : "var(--color-ink-soft)",
+                    border: isActive
+                      ? "2px solid var(--color-reclaim)"
+                      : "1.5px solid var(--color-line)",
+                    backgroundColor: isActive ? "rgba(196, 24, 106, 0.04)" : "var(--color-card)",
+                    boxShadow: isActive
+                      ? "0 0 0 1px var(--color-reclaim), 0 2px 8px rgba(196, 24, 106, 0.1)"
+                      : undefined,
                   }}
                 >
-                  {role.emoji} {role.label}
+                  <span
+                    className="block text-sm font-bold mb-1"
+                    style={{ color: isActive ? "var(--color-reclaim)" : "var(--color-ink)" }}
+                  >
+                    {level.label}
+                  </span>
+                  <span className="block text-xs" style={{ color: "var(--color-ink-soft)" }}>
+                    {level.description}
+                  </span>
                 </button>
-              ))}
-            </motion.div>
+              );
+            })}
+          </div>
+          {currentLevel && currentLevel !== "ic" && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-xs mt-3"
+              style={{ color: "var(--color-ink-soft)" }}
+            >
+              We'll include {currentLevel === "executive" ? "leadership & executive" : "management"} waste sources alongside your{" "}
+              {ROLE_LENSES.find((r) => r.slug === roleSlug)?.label ?? "role"} ones.
+            </motion.p>
           )}
         </motion.div>
       )}
@@ -134,6 +167,15 @@ export default function RoleStep({ onNext }: RoleStepProps) {
 
 /* ---------- Role Card ---------- */
 
+/** Better, more expressive emoji per role */
+const ROLE_EMOJI: Partial<Record<string, string>> = {
+  marketing: "🎯",
+  sales: "🤝",
+  engineering: "🛠️",
+  product: "🧭",
+  design: "🎨",
+};
+
 function RoleCard({
   role,
   isSelected,
@@ -145,6 +187,8 @@ function RoleCard({
   onSelect: () => void;
   index: number;
 }) {
+  const emoji = ROLE_EMOJI[role.slug] ?? role.emoji;
+
   return (
     <motion.button
       type="button"
@@ -170,7 +214,7 @@ function RoleCard({
     >
       <div className="mb-3">
         <AnimatedEmoji
-          emoji={role.emoji}
+          emoji={emoji}
           animation={isSelected ? "bounce" : "pop"}
           size="xl"
           delay={index * 0.05}
