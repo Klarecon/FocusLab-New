@@ -1,128 +1,124 @@
 # FocusLab Project State
 
-**Last updated:** 2026-06-11 by Claude via /handover
+**Last updated:** 2026-06-12 by Claude via /handover
 
 ## Quick orient
-- **Project:** FocusLab — a productivity tool suite that helps knowledge workers find time waste (Pareto Analyzer) and fix it (Focus Table & EVI Matrix). Reverse-engineered from Oren Yonash's Pareto repo and rebuilt with an upgraded stack.
-- **Repo:** Local at `/Users/monamehta/Documents/FocusLab/focuslab` (no GitHub remote yet)
+- **Project:** FocusLab — productivity tool suite helping knowledge workers find time waste (Pareto Analyzer) and fix it (Focus Table & EVI Matrix)
+- **Repo:** https://github.com/mona2611-alt/FocusLab-New
 - **Production URL:** https://focuslab-omega.vercel.app
 - **Active branch:** main
-- **Active work:** Visual design overhaul — user is unhappy with the current visual quality. Needs dramatic, bold redesign matching a vibrant reference image (burnt orange, hot pink, gold on warm parchment).
-- **Owner:** Mona Mehta — non-technical product owner, wants fast autonomous execution, no permission prompts, values visual quality highly, previous product was considered a failure (lost weeks on it). Has a hard deadline mentality.
+- **Active work:** Session 2 complete — all bugs fixed, visual redesign applied, TDD test suite written, deployed
+- **Owner:** Mona Mehta — non-technical product owner, wants fast autonomous execution (no permission prompts), values visual quality highly, expects TDD discipline, will call out half-done work
 
 ## Branch state
-- 1 commit on main: `9e665a9 Initial commit from Create Next App`
-- All work is uncommitted (all new files are untracked)
-- Deployed to Vercel at https://focuslab-omega.vercel.app
+- 1 commit on main: `cdaffaa FocusLab Session 2: Full bug fix, visual redesign, TDD test suite`
+- Branch is pushed to origin and deployed to Vercel
+- Clean working tree, nothing uncommitted
 
-## What's done in this session
+## What's done in this session (2026-06-12)
 
-### Research & Planning
-- Cloned and reverse-engineered Oren's Pareto repo (https://github.com/Drizzt1414/Pareto.git) at `/tmp/pareto-study`
-- Analyzed full codebase: 52 waste sources, 53 solutions, 7 roles, 46 benchmarks, Pareto engine with tier-based zones
-- Discussed upgraded tech stack (Recharts instead of ECharts, Zustand instead of local state, shadcn/ui, Plus Jakarta Sans font)
-- Created comprehensive HTML build plan at `/Users/monamehta/Documents/FocusLab/FOCUSLAB-BUILD-PLAN.html`
-- Created color palette explorations at `COLOR-PALETTES.html` and `NEW-PALETTE.html`
+### Phase A — Critical & Medium Bug Fixes
+- **Unified ParetoResult types** — store now uses engine's ParetoResult directly, removed dual-type adapter and `as unknown` cast in FocusStage
+- **Removed window.__paretoFullResult hack** — full engine result stored in Zustand with localStorage persistence, survives page refresh
+- **Fixed quick-win seeding** — levelToScore now uses SCORE_FROM_LEVEL (low=2, med=3, high=4), quick-win badges appear on first load
+- **Replaced all rogue green rgba(29,107,88)** with reclaim pink across IntakeStep, Payoff, SolutionPicker, EviMatrix
+- **Fixed EviMatrix zone colors** — updated from old palette to current (#e03e12, #edb215, #7a6f5f)
+- **Fixed CustomDot null check** — `cx == null` instead of `!cx` so dots at position 0 render
+- **Wired secondary roles to Zustand** — was local state in RoleStep, now persisted
+- **Persisted owner overrides in Zustand** — was local useState in FocusTable, now survives tab switches
+- **SolutionPicker empty drain state** — shows "No pre-built fixes" instead of hiding drains with no solutions
 
-### Built (all in focuslab/)
-- **Scaffold:** Next.js 16 + React 19 + TypeScript + Tailwind CSS 4 app
-- **Design system:** globals.css with Bold Warm palette (paper #f4edde, waste #e03e12, reclaim #c4186a, gold #edb215), Plus Jakarta Sans body font, Fraunces serif headlines, paper grain overlay
-- **AnimatedEmoji component:** 8 animation types (pop, shake, pulse, bounce, spin, flicker, float, explode) — fixed spring/keyframe crash
-- **Data layer:** Ported all static data from Oren's repo — waste-sources.ts (52 sources with emojis), solutions.ts (53 solutions), roles.ts (7 roles), salary.ts (BLS data), benchmarks.ts (46 benchmarks embedded as static TS)
-- **Zustand store:** audit-store.ts with persist middleware (localStorage), holds audit state + solutions state, bridges Tool 1 → Tool 2
-- **Pareto engine:** pareto.ts (tier-based zone assignment), solutions-logic.ts (payoff with de-overlap), audit-logic.ts — 142 unit tests all passing
-- **Landing page:** Hero with animated 58% counter, ToolCards, BenchmarkProof (dark section with sourced stats), RoleLenses (7 role cards), FinalCTA
-- **Pareto Analyzer (/analyzer):** 5-step wizard — RoleStep (primary + secondary role), ContextStep (hours/pay), IntakeStep (progressive disclosure by pain prompts), WeighStep (dynamic hour cap, 3-button avoidable picker), ResultsView (dramatic reveal, Recharts Pareto chart, scorecard)
-- **Focus Table (/focus):** FocusStage (3-tab orchestrator), SolutionPicker (per-drain solutions with quick-win badges), FocusTable (editable action plan), EviMatrix (Recharts scatter), Payoff (cost-of-doing-nothing closer)
-- **Nav:** Sticky with gradient accent bar (waste→reclaim→gold)
+### Phase B — Visual Redesign
+- All wizard step headers: text-3xl sm:text-4xl font-bold + Fraunces serif
+- All CTA buttons: reclaim pink with glow boxShadow, px-10 py-4, rounded-xl
+- Card accents: gold left-border on ContextStep, waste left-border on WeighStep, zone-colored left-border on FocusTable mobile cards
+- FocusStage: text-4xl sm:text-5xl header, reclaim pink active tabs with white text
+- EviMatrix: gradient top-border (waste→gold), quadrant labels hidden on mobile
+- Payoff: reclaim top-border on big card, pink "after" card (was green)
+- Footer: gradient top-line (waste→gold→reclaim)
+- Page wrappers: py-8 → py-12 sm:py-16
 
-### Bug Fixes Applied
-- Fixed Framer Motion spring + multi-keyframe crash (switched to tween with custom easing)
-- Fixed all Unicode escape sequences rendering as raw text (\u2014, \u2190, \u2192) across all analyzer components
-- Fixed "Rendered fewer hooks than expected" crash in AuditWizard (rewrote to use switch statement)
-- Added scroll-to-top on every step change
-- Moved "Add your own" to top of intake section
-- Fixed Muda type picker icons (broken Unicode → real emojis)
-- Made hour slider max dynamic (based on work hours/days from context step)
-- Replaced avoidable % slider with 3-tap buttons (All/Half/A little)
-- Toned down Focus Table link in results (subtle suggestion, not continuation)
-- Changed body font from Hanken Grotesk to Plus Jakarta Sans
-- Increased base font size to 18.5px
+### Phase C — Focus Tool Fixes
+- Payoff "Start with quick win" button navigates to Assign Fixes tab
+- Custom fix drain selector dropdown (was always tied to first drain)
+- AnimatePresence moved inside tbody (was wrapping it — invalid HTML)
+- $50/hr fallback indicator shown when no salary set
+- Dead imports cleaned: useTransform, Solution, quadrant, IMPACT_FRACTION, reclaimContribution
+- Fixed old palette rgba values to match current CSS variables
+
+### Phase D — TDD & QA
+- **40 new tests written** (182 total across 8 files):
+  - `audit-store.test.ts` — quick-win seeding, type unification, secondary roles, owner overrides, defaults
+  - `phase-a-checks.test.ts` — SCORE_FROM_LEVEL values, quick-win detection, old mapping would fail
+  - `phase-b-visual.test.tsx` — grep-based: Fraunces headers, reclaim CTAs, no rogue colors, correct zone colors
+  - `focus-components.test.tsx` — SolutionPicker rendering/clicking, FocusTable rendering/owner cycling, EviMatrix/Payoff empty states, $50 fallback, onGoToAssign callback
+  - `phase-d-e2e.test.tsx` — AnimatedEmoji all 8 variants + 4 sizes, scroll-to-top on step/tab changes, Zustand persistence, full flow store→ResultsView→FocusStage
+- **Scroll-to-top on FocusStage tab switches** — was missing, added useEffect on activeTab
+- All QA checks pass: tsc, vitest 182/182, next build, zero rogue colors/old palette/window hacks/unicode issues
+
+### Repo & Deploy
+- Created new GitHub repo: https://github.com/mona2611-alt/FocusLab-New
+- Deployed to Vercel: https://focuslab-omega.vercel.app
 
 ## What's next (for the NEXT Claude Code session to pick up)
 
-1. **CRITICAL — Visual redesign is the top priority.** The user showed a bold, vibrant reference image (bright orange headlines, hot pink CTAs, yellow accents on warm cream). The current implementation looks too similar to the old version despite palette changes. The user called the work "lousy" twice. Next session must:
-   - Take screenshots from the user of EACH section they're unhappy with
-   - Get specific direction on what each section should look like
-   - Make dramatic visual changes, not incremental CSS tweaks
-   - Verify by asking user to review in browser before deploying
-
-2. **The Focus Table and EVI Matrix have NOT been reviewed by the user yet.** She explicitly said "I am not checking the focus table and focus matrix right now." These may have bugs or visual issues similar to the analyzer.
-
-3. **Commit all work to git.** Everything is currently uncommitted — 40+ new files.
-
-4. **Consider the "wow" moments discussed but not fully implemented:**
-   - "Your Week" calendar visualization (showing waste as colored blocks on a Mon-Fri strip)
-   - Before/After week comparison in the Payoff section
+1. **Get user's visual review feedback** — she hasn't reviewed the deployed app yet. Expect section-by-section feedback on what looks right/wrong.
+2. **Focus Table & EVI Matrix user review** — these have never been reviewed by the user. May need work after feedback.
+3. **"Wow" features not yet built:**
+   - "Your Week" calendar visualization (waste as colored blocks on Mon-Fri strip)
+   - Before/After week comparison in Payoff
    - Shareable Waste Scorecard card (1200x630 OG image)
    - Lottie animations for key reveal moments
-
-5. **The landing page copy could be stronger.** A direct response copywriter approach was discussed but the current copy is generic.
+4. **Landing page copy** — a direct response copywriter approach was discussed but current copy is generic
+5. **Oren's feedback** — user shared the Vercel link with Oren Yonash (original Pareto app creator). His feedback may come in.
 
 ## Decisions made (non-obvious choices)
 
-- **Two separate tools, not one flow:** Pareto Analyzer finds problems, Focus Table solves them. Different mental modes, separate routes (/analyzer and /focus). User was very clear these should NOT be connected as a continuation.
-- **Static data, no database:** All 52 waste sources, 53 solutions, and 46 benchmarks are embedded as TypeScript constants. Supabase/Drizzle deferred to post-launch. This removes a deploy dependency.
-- **Recharts for Pareto chart, visx planned for EVI scatter (but Recharts used instead):** visx has React 19 peer dep issues. Both charts currently use Recharts. The EVI scatter uses a click-to-edit pattern instead of drag-to-rescore.
-- **3-button avoidable picker:** Replaced the confusing 0-100% slider with "All of it" (100%) / "About half" (50%) / "A little" (25%). User approved this approach.
-- **Progressive disclosure intake:** Waste sources shown behind emotional pain prompts ("😴 Drowning in meetings?") instead of flat checkbox list. User approved.
-- **Hot pink reclaim color (#c4186a):** User chose Option A (hot pink) over Option B (teal) for the action/reclaim color. This was a deliberate choice.
-- **Plus Jakarta Sans:** Replaced Hanken Grotesk because user said the font looked like "typical Claude style."
+- **Two separate tools, not one flow:** /analyzer finds problems, /focus solves them. Different routes, different mental modes. User was explicit about this.
+- **Static data, no database:** All 52 waste sources, 53 solutions, 46 benchmarks are TypeScript constants. Supabase deferred to post-launch.
+- **Hot pink reclaim (#c4186a):** User chose this over teal. Deliberate.
+- **Plus Jakarta Sans body font:** Replaced Hanken Grotesk because user said it looked like "typical Claude style."
+- **SCORE_FROM_LEVEL (low=2, med=3, high=4):** In solutions-logic.ts. The store's addSolution seeds scores from this. Critical for quick-win detection (needs impact≥4).
+- **Engine ParetoResult stored directly in Zustand:** No adapter, no window global. The full engine result (with categories, chart, warnings, benchmarks) is persisted in localStorage.
 
 ## Open questions waiting on user
 
-- **Visual quality:** User is frustrated with the current look. Needs specific section-by-section direction on what "bold enough" means.
-- **Focus Table / EVI Matrix review:** Not yet reviewed. May need significant work.
-- **Oren's feedback:** User shared the Vercel link with Oren Yonash (the original Pareto app creator). His feedback hasn't come in yet.
-- **Color palette finalization:** User liked the palette preview images but the implementation didn't match expectations.
+- **Visual review feedback** — user hasn't seen the redesigned app yet
+- **Oren's feedback** — may arrive between sessions
+- **Color palette satisfaction** — previous session the user called the palette changes "lousy" because they were too subtle. This session made bolder changes but hasn't been reviewed.
 
 ## Critical file paths
 
 ```
-focuslab/
-├── src/app/globals.css              # Design system — palette, fonts, utilities
-├── src/app/layout.tsx               # Root layout — font imports
-├── src/app/page.tsx                 # Landing page
-├── src/app/analyzer/page.tsx        # Pareto Analyzer entry
-├── src/app/focus/page.tsx           # Focus Table entry
-├── src/stores/audit-store.ts        # Zustand store — THE cross-tool bridge
-├── src/lib/engine/pareto.ts         # Core Pareto engine (142 tests)
-├── src/lib/engine/solutions-logic.ts # Payoff calculator
-├── src/lib/data/waste-sources.ts    # 52 waste sources
-├── src/lib/data/solutions.ts        # 53 solutions
-├── src/lib/data/benchmarks.ts       # 46 benchmarks (static)
-├── src/components/ui/AnimatedEmoji.tsx        # Reusable animated emoji
-├── src/components/analyzer/AuditWizard.tsx    # Wizard orchestrator
-├── src/components/analyzer/IntakeStep.tsx     # Progressive disclosure intake
-├── src/components/analyzer/WeighStep.tsx      # Hour + avoidable weighting
-├── src/components/analyzer/ResultsView.tsx    # Dramatic reveal + Pareto chart
-├── src/components/focus/FocusStage.tsx        # Focus tool orchestrator
-├── src/components/focus/EviMatrix.tsx         # Effort × Impact scatter
-├── src/components/focus/Payoff.tsx            # Cost-of-doing-nothing closer
+src/stores/audit-store.ts        — Zustand store, THE cross-tool bridge
+src/lib/engine/pareto.ts         — Core Pareto engine (142 tests)
+src/lib/engine/solutions-logic.ts — Payoff calculator + SCORE_FROM_LEVEL
+src/lib/engine/types.ts          — ParetoResult, CategoryResult, ChosenSolution
+src/lib/data/solutions.ts        — 53 solutions catalog
+src/lib/data/waste-sources.ts    — 52 waste sources
+src/components/analyzer/AuditWizard.tsx  — Wizard orchestrator (scroll-to-top here)
+src/components/analyzer/WeighStep.tsx    — Stores engine result in Zustand
+src/components/analyzer/ResultsView.tsx  — Reads from Zustand (no window hack)
+src/components/focus/FocusStage.tsx      — Focus tool orchestrator (scroll-to-top here)
+src/components/focus/EviMatrix.tsx       — Effort × Impact scatter
+src/components/focus/Payoff.tsx          — Cost-of-doing-nothing closer
+src/components/ui/AnimatedEmoji.tsx      — 8 animation variants (no spring+multi-keyframe)
+src/app/globals.css                      — Design system palette + utilities
 ```
 
 ## Known gotchas
 
-- **visx React 19 peer deps:** `.npmrc` has `legacy-peer-deps=true` to work around this. Required for Vercel deploys.
-- **Framer Motion keyframes:** Spring transitions only support 2 keyframes. All multi-keyframe animations must use tween with custom easing curves. The AnimatedEmoji component was fixed but other components might introduce the same bug.
-- **Unicode escapes:** Any `\u{XXXX}` emoji escapes in JSX render correctly at runtime, but `\uXXXX` for text characters (em dashes, arrows) render as raw backslash text. Always use actual characters in JSX strings.
-- **The original Pareto repo** is cloned at `/tmp/pareto-study` — this is a temp directory and may be cleaned up by the OS. Re-clone from https://github.com/Drizzt1414/Pareto.git if needed.
-- **Vercel project:** Linked to `mona-3035s-projects/focuslab`. Deploy with `npx vercel --prod` from the focuslab directory.
+- **visx React 19 peer deps:** `.npmrc` has `legacy-peer-deps=true`. Required for Vercel deploys.
+- **Framer Motion keyframes:** Spring transitions only support 2 keyframes. All AnimatedEmoji animations use tween with custom easing. Don't introduce spring + multi-keyframe.
+- **Unicode escapes:** `\uXXXX` in JSX text renders as raw backslash text. Always use actual characters. Solutions.ts uses `\u2014` etc. but those are in JS strings (fine) — just don't put them in JSX template literals.
+- **Vercel project:** Linked to `mona-3035s-projects/focuslab`. Deploy with `npx vercel --prod` from the project directory.
+- **Old repo still exists:** `/Users/monamehta/Documents/FocusLab/focuslab` is the original. New repo is at `/Users/monamehta/Documents/FocusLab New/`. Work in the new one.
 
 ## How to resume work
 1. Read this file top to bottom
 2. Run `git status` and `git log --oneline -10` to confirm state
-3. Read the memory files at `~/.claude/projects/-Users-monamehta-Documents-FocusLab/memory/` for user preferences
-4. **Priority 1:** Ask the user for specific visual feedback — screenshots of what's wrong and what it should look like
-5. Do NOT make incremental CSS tweaks — the user wants dramatic, visible changes
-6. Do NOT ask for permissions — user wants autonomous execution (see memory/feedback_autonomous_workflow.md)
+3. Read memory files at `~/.claude/projects/-Users-monamehta-Documents-FocusLab/memory/`
+4. User wants autonomous execution — don't ask permissions, just do the work
+5. TDD discipline: write tests first, implement, verify, then show
+6. Never say "done" until tests pass, build succeeds, and QA checklist is green
+7. Ask the user what they want to work on next
