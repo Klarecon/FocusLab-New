@@ -40,10 +40,9 @@
   --font-sans: var(--font-plus-jakarta);
   --font-mono: var(--font-geist-mono);
 
-  --animate-shimmer-slide: shimmer-slide var(--speed) ease-in-out infinite alternate;
-  --animate-spin-around: spin-around calc(var(--speed) * 2) infinite linear;
-  --animate-orbit: orbit calc(var(--duration) * 1s) linear infinite;
 }
+
+/* ---- Magic UI Animations ---- */
 
 @keyframes shimmer-slide {
   to {
@@ -77,6 +76,18 @@
       translateY(calc(var(--radius) * 1px))
       rotate(calc(var(--angle) * -1deg - 360deg));
   }
+}
+
+.animate-shimmer-slide {
+  animation: shimmer-slide var(--speed) ease-in-out infinite alternate;
+}
+
+.animate-spin-around {
+  animation: spin-around calc(var(--speed) * 2) infinite linear;
+}
+
+.animate-orbit {
+  animation: orbit calc(var(--duration) * 1s) linear infinite;
 }
 
 /* ---- Base styles ---- */
