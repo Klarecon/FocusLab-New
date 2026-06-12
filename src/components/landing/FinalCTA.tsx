@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
+import { Highlighter } from "@/components/ui/highlighter";
 
 export default function FinalCTA() {
   return (
@@ -32,21 +34,20 @@ export default function FinalCTA() {
         >
           The average knowledge worker wastes 10+ hours a week on things that
           don&apos;t matter. That&apos;s{" "}
-          <strong style={{ color: "var(--color-ink)" }}>6 full work weeks per year</strong>.{" "}
+          <Highlighter action="underline" color="var(--color-waste)" isView><strong style={{ color: "var(--color-ink)" }}>6 full work weeks per year</strong></Highlighter>.{" "}
           <AnimatedEmoji emoji="🤯" animation="pop" size="md" />
         </p>
 
-        <Link
-          href="/analyzer"
-          className="inline-flex items-center gap-3 px-12 py-6 rounded-xl text-xl font-bold no-underline transition-all duration-200 hover:scale-[1.04] hover:shadow-2xl"
-          style={{
-            backgroundColor: "var(--color-reclaim)",
-            color: "#fff",
-            boxShadow: "0 6px 30px rgba(196, 24, 106, 0.3)",
-          }}
-        >
-          <AnimatedEmoji emoji="🔥" animation="bounce" size="md" />
-          Start Your Free Audit Now
+        <Link href="/analyzer" className="no-underline">
+          <ShimmerButton
+            borderRadius="12px"
+            className="px-12 py-6 text-xl font-bold"
+          >
+            <span className="flex items-center gap-3">
+              <AnimatedEmoji emoji="🔥" animation="bounce" size="md" />
+              Start Your Free Audit Now
+            </span>
+          </ShimmerButton>
         </Link>
 
         <p className="mt-6 text-sm" style={{ color: "var(--color-ink-soft)" }}>

@@ -3,6 +3,9 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
+import { Highlighter } from "@/components/ui/highlighter";
+import { OrbitingCircles } from "@/components/ui/orbiting-circles";
 
 /** An illustrative calendar week showing how much time goes to waste. */
 function WeekCalendar() {
@@ -121,13 +124,20 @@ function WeekCalendar() {
 export default function Hero() {
   return (
     <section className="relative min-h-[100vh] flex flex-col items-center justify-center text-center px-6 py-20 overflow-hidden">
-      {/* Background decorative emoji */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.04] select-none overflow-hidden">
-        <div className="absolute top-[10%] left-[8%] text-7xl rotate-[-15deg]">😴</div>
-        <div className="absolute top-[20%] right-[12%] text-6xl rotate-[10deg]">🫠</div>
-        <div className="absolute bottom-[25%] left-[15%] text-5xl rotate-[20deg]">🤦</div>
-        <div className="absolute bottom-[15%] right-[8%] text-7xl rotate-[-8deg]">💀</div>
-        <div className="absolute top-[50%] left-[50%] text-8xl rotate-[5deg]">😱</div>
+      {/* Background orbiting emoji */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.07] select-none flex items-center justify-center">
+        <OrbitingCircles radius={140} iconSize={40} speed={0.7} path={false}>
+          <span className="text-3xl">😴</span>
+          <span className="text-3xl">🫠</span>
+          <span className="text-3xl">🤦</span>
+          <span className="text-3xl">😤</span>
+          <span className="text-3xl">💀</span>
+        </OrbitingCircles>
+        <OrbitingCircles radius={220} iconSize={36} speed={0.4} reverse path={false}>
+          <span className="text-2xl">🤯</span>
+          <span className="text-2xl">😬</span>
+          <span className="text-2xl">🥲</span>
+        </OrbitingCircles>
       </div>
 
       <motion.div
@@ -153,9 +163,9 @@ export default function Hero() {
           style={{ fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif" }}
         >
           Most of your week{" "}
-          <span className="gradient-text">
-            isn&apos;t real work.
-          </span>
+          <Highlighter action="highlight" color="rgba(224, 62, 18, 0.2)" strokeWidth={2} isView>
+            <span className="gradient-text">isn&apos;t real work.</span>
+          </Highlighter>
         </h1>
 
         {/* Subheadline */}
@@ -167,7 +177,7 @@ export default function Hero() {
           style={{ color: "var(--color-ink-soft)" }}
         >
           Meetings, email, coordination, admin — the average knowledge worker
-          spends <strong style={{ color: "var(--color-waste)" }}>58% of their week</strong> on
+          spends <Highlighter action="underline" color="var(--color-waste)" isView><strong style={{ color: "var(--color-waste)" }}>58% of their week</strong></Highlighter> on
           tasks that don&apos;t move the needle. FocusLab shows you exactly where
           your time goes, and what to do about it.
         </motion.p>
@@ -189,17 +199,16 @@ export default function Hero() {
           transition={{ delay: 1.2 }}
           className="flex flex-col sm:flex-row items-center gap-5"
         >
-          <Link
-            href="/analyzer"
-            className="inline-flex items-center gap-2 px-10 py-5 rounded-xl text-lg font-bold no-underline transition-all duration-200 hover:scale-[1.04] hover:shadow-xl"
-            style={{
-              backgroundColor: "var(--color-reclaim)",
-              color: "#fff",
-              boxShadow: "0 4px 20px rgba(196, 24, 106, 0.3)",
-            }}
-          >
-            <AnimatedEmoji emoji="🔍" animation="pulse" size="sm" />
-            Start Your Free Audit
+          <Link href="/analyzer" className="no-underline">
+            <ShimmerButton
+              borderRadius="12px"
+              className="px-10 py-5 text-lg font-bold"
+            >
+              <span className="flex items-center gap-2">
+                <AnimatedEmoji emoji="🔍" animation="pulse" size="sm" />
+                Start Your Free Audit
+              </span>
+            </ShimmerButton>
           </Link>
           <span className="text-sm" style={{ color: "var(--color-ink-soft)" }}>
             Takes 3 minutes. No signup required.

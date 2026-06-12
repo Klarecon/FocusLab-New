@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Minus, Plus } from "lucide-react";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { useAuditStore } from "@/stores/audit-store";
 import { SALARY_DEFAULTS, salaryCitation } from "@/lib/data/salary";
 import type { RoleSlug } from "@/lib/data/benchmarks";
@@ -186,19 +187,14 @@ export default function ContextStep({ onNext, onBack }: ContextStepProps) {
         >
           ← Back
         </button>
-        <motion.button
-          type="button"
+        <ShimmerButton
           onClick={onNext}
-          className="px-10 py-4 rounded-xl text-base font-bold text-white"
-          style={{
-            backgroundColor: "var(--color-reclaim)",
-            boxShadow: "0 4px 16px rgba(196, 24, 106, 0.25)",
-          }}
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
+          borderRadius="12px"
+          background="var(--color-reclaim)"
+          className="px-10 py-4 text-base font-bold"
         >
           Continue →
-        </motion.button>
+        </ShimmerButton>
       </div>
     </div>
   );

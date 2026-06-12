@@ -3,6 +3,7 @@
 import { useState, useMemo, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp, Plus } from "lucide-react";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { useAuditStore } from "@/stores/audit-store";
 import {
   wasteSourcesForRole,
@@ -317,20 +318,15 @@ export default function IntakeStep({ onNext, onBack }: IntakeStepProps) {
               Add {remaining} more source{remaining !== 1 ? "s" : ""}
             </p>
           )}
-          <motion.button
-            type="button"
+          <ShimmerButton
             disabled={!canContinue}
             onClick={onNext}
-            className="px-10 py-4 rounded-xl text-base font-bold text-white transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
-            style={{
-              backgroundColor: canContinue ? "var(--color-reclaim)" : "var(--color-ink-soft)",
-              boxShadow: canContinue ? "0 4px 16px rgba(196, 24, 106, 0.25)" : undefined,
-            }}
-            whileHover={canContinue ? { scale: 1.03 } : {}}
-            whileTap={canContinue ? { scale: 0.97 } : {}}
+            borderRadius="12px"
+            background={canContinue ? "var(--color-reclaim)" : "var(--color-ink-soft)"}
+            className="px-10 py-4 text-base font-bold disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Continue →
-          </motion.button>
+          </ShimmerButton>
         </div>
       </div>
     </div>

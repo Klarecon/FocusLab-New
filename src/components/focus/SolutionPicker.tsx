@@ -7,6 +7,7 @@ import { solutionsForWaste, isQuickWin } from "@/lib/data/solutions";
 import type { Solution } from "@/lib/data/solutions";
 import { wasteSourceBySlug } from "@/lib/data/waste-sources";
 import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
 
 interface DrainInfo {
   slug: string;
@@ -406,15 +407,18 @@ export default function SolutionPicker({
             {chosenSolutions.length === 1 ? "fix" : "fixes"} selected
           </span>
         </div>
-        <button
+        <ShimmerButton
           onClick={onGoToPlan}
           disabled={chosenSolutions.length === 0}
-          className="inline-flex items-center gap-2 px-10 py-4 rounded-xl text-base font-bold text-white transition-all duration-200 disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed"
-          style={{ backgroundColor: "var(--color-reclaim)", boxShadow: "0 4px 16px rgba(196, 24, 106, 0.25)" }}
+          borderRadius="12px"
+          background={chosenSolutions.length > 0 ? "var(--color-reclaim)" : "var(--color-ink-soft)"}
+          className="px-10 py-4 text-base font-bold disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          See your action plan
-          <span aria-hidden="true">&rarr;</span>
-        </button>
+          <span className="flex items-center gap-2">
+            See your action plan
+            <span aria-hidden="true">&rarr;</span>
+          </span>
+        </ShimmerButton>
       </div>
     </div>
   );

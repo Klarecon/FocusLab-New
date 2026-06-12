@@ -12,6 +12,7 @@ import {
   type RoleSlug,
 } from "@/lib/data/benchmarks";
 import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
 
 interface WeighStepProps {
   onNext: () => void;
@@ -363,21 +364,18 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
         >
           ← Back
         </button>
-        <motion.button
-          type="button"
+        <ShimmerButton
           disabled={isOverAllocated}
           onClick={handleCompute}
-          className="px-10 py-4 rounded-xl text-base font-bold text-white transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
-          style={{
-            backgroundColor: isOverAllocated ? "var(--color-ink-soft)" : "var(--color-reclaim)",
-            boxShadow: isOverAllocated ? undefined : "0 4px 16px rgba(196, 24, 106, 0.25)",
-          }}
-          whileHover={isOverAllocated ? {} : { scale: 1.03 }}
-          whileTap={isOverAllocated ? {} : { scale: 0.97 }}
+          borderRadius="12px"
+          background={isOverAllocated ? "var(--color-ink-soft)" : "var(--color-reclaim)"}
+          className="px-10 py-4 text-base font-bold disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          <AnimatedEmoji emoji={"🤯"} animation="pop" size="sm" />{" "}
-          See your results
-        </motion.button>
+          <span className="flex items-center gap-2">
+            <AnimatedEmoji emoji={"🤯"} animation="pop" size="sm" />
+            See your results
+          </span>
+        </ShimmerButton>
       </div>
     </div>
   );

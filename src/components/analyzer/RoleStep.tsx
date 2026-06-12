@@ -5,6 +5,7 @@ import { useAuditStore } from "@/stores/audit-store";
 import { ROLE_LENSES, type RoleLens } from "@/lib/data/roles";
 import type { RoleSlug } from "@/lib/data/benchmarks";
 import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
 
 const LEVELS = [
   { id: "ic", label: "Individual Contributor", description: "Doing the work yourself" },
@@ -146,20 +147,15 @@ export default function RoleStep({ onNext }: RoleStepProps) {
 
       {/* Continue */}
       <div className="flex justify-end">
-        <motion.button
-          type="button"
+        <ShimmerButton
           disabled={!roleSlug}
           onClick={onNext}
-          className="px-10 py-4 rounded-xl text-base font-bold text-white transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
-          style={{
-            backgroundColor: roleSlug ? "var(--color-reclaim)" : "var(--color-ink-soft)",
-            boxShadow: roleSlug ? "0 4px 16px rgba(196, 24, 106, 0.25)" : undefined,
-          }}
-          whileHover={roleSlug ? { scale: 1.03 } : {}}
-          whileTap={roleSlug ? { scale: 0.97 } : {}}
+          borderRadius="12px"
+          background={roleSlug ? "var(--color-reclaim)" : "var(--color-ink-soft)"}
+          className="px-10 py-4 text-base font-bold disabled:opacity-40 disabled:cursor-not-allowed"
         >
           Continue →
-        </motion.button>
+        </ShimmerButton>
       </div>
     </div>
   );

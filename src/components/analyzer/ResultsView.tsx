@@ -16,6 +16,8 @@ import {
 } from "recharts";
 import { useAuditStore } from "@/stores/audit-store";
 import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
+import { Highlighter } from "@/components/ui/highlighter";
 import { wasteSourceBySlug } from "@/lib/data/waste-sources";
 
 /* --- Formatters --- */
@@ -208,7 +210,9 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
             className="font-figures font-bold mb-3 text-4xl sm:text-5xl"
             style={{ color: "var(--color-waste)" }}
           >
-            {fmtDollars(totalCost)}/year
+            <Highlighter action="circle" color="var(--color-waste)" strokeWidth={2} isView>
+              {fmtDollars(totalCost)}/year
+            </Highlighter>
           </h2>
           <p className="text-xl font-medium" style={{ color: "var(--color-ink-soft)" }}>
             {severity.text}
@@ -319,7 +323,9 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
         {/* -- SCORECARD: VITAL FEW -- */}
         <div className="mb-10">
           <h3 className="text-xl font-bold mb-5" style={{ color: "var(--color-ink)" }}>
-            Your Vital Few (Zone A)
+            <Highlighter action="underline" color="var(--color-waste)" isView>
+              Your Vital Few (Zone A)
+            </Highlighter>
           </h3>
           <div className="space-y-4">
             {vitalFew.map((item, i) => {
@@ -383,7 +389,9 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
         {paretoResult.categories.filter((c) => c.zone === "B").length > 0 && (
           <div className="surface-card p-6 mb-10" style={{ borderLeft: "4px solid var(--color-gold)" }}>
             <h3 className="text-lg font-bold mb-3" style={{ color: "var(--color-ink)" }}>
-              The Useful Many (Zone B)
+              <Highlighter action="underline" color="var(--color-gold)" isView>
+                The Useful Many (Zone B)
+              </Highlighter>
             </h3>
             <div className="space-y-2">
               {paretoResult.categories
@@ -433,16 +441,13 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
           <p className="text-base mb-4 font-medium" style={{ color: "var(--color-ink-soft)" }}>
             Want to prioritize what to fix first?
           </p>
-          <Link
-            href="/focus"
-            className="inline-flex items-center gap-2 px-10 py-4 rounded-xl text-base font-bold no-underline transition-all duration-200 hover:scale-[1.03] hover:shadow-lg"
-            style={{
-              backgroundColor: "var(--color-reclaim)",
-              color: "#fff",
-              boxShadow: "0 4px 16px rgba(196, 24, 106, 0.25)",
-            }}
-          >
-            Fix it with Focus Table →
+          <Link href="/focus" className="no-underline">
+            <ShimmerButton
+              borderRadius="12px"
+              className="px-10 py-4 text-base font-bold"
+            >
+              Fix it with Focus Table →
+            </ShimmerButton>
           </Link>
         </div>
 

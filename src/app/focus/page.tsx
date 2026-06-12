@@ -5,6 +5,8 @@ import FocusStage from "@/components/focus/FocusStage";
 import { useAuditStore } from "@/stores/audit-store";
 import Link from "next/link";
 import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
+import { OrbitingCircles } from "@/components/ui/orbiting-circles";
 
 export default function FocusPage() {
   const paretoResult = useAuditStore((s) => s.paretoResult);
@@ -17,7 +19,15 @@ export default function FocusPage() {
           <FocusStage />
         ) : (
           <div className="flex flex-col items-center justify-center gap-6 py-24 text-center">
-            <AnimatedEmoji emoji="🔍" animation="float" size="xl" />
+            <div className="relative flex items-center justify-center h-[240px] w-[240px]">
+              <AnimatedEmoji emoji="🔍" animation="float" size="xl" />
+              <OrbitingCircles radius={100} iconSize={32} speed={0.6}>
+                <span className="text-xl">🎯</span>
+                <span className="text-xl">🛠️</span>
+                <span className="text-xl">😤</span>
+                <span className="text-xl">🥲</span>
+              </OrbitingCircles>
+            </div>
             <h1
               className="text-3xl font-semibold"
               style={{
@@ -33,16 +43,16 @@ export default function FocusPage() {
               Run the Pareto Analyzer first to identify your biggest time drains,
               then come back here to build your action plan.
             </p>
-            <Link
-              href="/analyzer"
-              className="inline-flex items-center gap-2 px-10 py-4 rounded-xl text-white font-bold no-underline transition-all hover:scale-[1.03]"
-              style={{
-                backgroundColor: "var(--color-reclaim)",
-                boxShadow: "0 4px 16px rgba(196, 24, 106, 0.25)",
-              }}
-            >
-              <span>Go to Analyzer</span>
-              <span aria-hidden="true">&rarr;</span>
+            <Link href="/analyzer" className="no-underline">
+              <ShimmerButton
+                borderRadius="12px"
+                className="px-10 py-4 text-base font-bold"
+              >
+                <span className="flex items-center gap-2">
+                  Go to Analyzer
+                  <span aria-hidden="true">&rarr;</span>
+                </span>
+              </ShimmerButton>
             </Link>
           </div>
         )}

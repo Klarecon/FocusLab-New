@@ -42,9 +42,21 @@ vi.mock("framer-motion", () => {
     motion: motionProxy,
     AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
     useMotionValue: () => ({ get: () => 0, set: () => {} }),
+    useInView: () => true,
     animate: () => ({ stop: () => {} }),
   };
 });
+
+// ResizeObserver stub for jsdom (used by Highlighter / rough-notation)
+global.ResizeObserver = class {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+} as unknown as typeof ResizeObserver;
+
+vi.mock("rough-notation", () => ({
+  annotate: () => ({ show: () => {}, hide: () => {}, remove: () => {} }),
+}));
 
 vi.mock("recharts", () => ({
   ResponsiveContainer: ({ children }: { children: React.ReactNode }) => (

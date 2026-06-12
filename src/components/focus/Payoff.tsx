@@ -10,6 +10,8 @@ import type {
   Score,
 } from "@/lib/engine/types";
 import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
+import { Highlighter } from "@/components/ui/highlighter";
 
 interface DrainInfo {
   slug: string;
@@ -178,12 +180,14 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-2">
             <AnimatedEmoji emoji="🎯" animation="pulse" size="lg" />
-            <span
-              className="text-sm uppercase tracking-wider font-medium"
-              style={{ color: "var(--color-reclaim)" }}
-            >
-              Reclaimable per week
-            </span>
+            <Highlighter action="underline" color="var(--color-reclaim)" isView>
+              <span
+                className="text-sm uppercase tracking-wider font-medium"
+                style={{ color: "var(--color-reclaim)" }}
+              >
+                Reclaimable per week
+              </span>
+            </Highlighter>
           </div>
           <div
             className="text-5xl font-bold mb-1"
@@ -369,15 +373,17 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
       >
         <div className="flex items-center gap-2 mb-3">
           <AnimatedEmoji emoji="😬" animation="shake" size="md" />
-          <h3
-            className="text-lg font-semibold"
-            style={{
-              fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
-              color: "var(--color-waste)",
-            }}
-          >
-            The cost of doing nothing
-          </h3>
+          <Highlighter action="box" color="var(--color-waste)" strokeWidth={2} isView>
+            <h3
+              className="text-lg font-semibold"
+              style={{
+                fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
+                color: "var(--color-waste)",
+              }}
+            >
+              The cost of doing nothing
+            </h3>
+          </Highlighter>
         </div>
         <p className="text-sm mb-4" style={{ color: "var(--color-ink-soft)" }}>
           If you change nothing in the next 12 months:
@@ -437,23 +443,20 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
           transition={{ delay: 0.7 }}
           className="text-center"
         >
-          <button
-            className="inline-flex items-center gap-2 px-10 py-4 rounded-xl text-white font-bold text-base transition-all cursor-pointer hover:scale-105 active:scale-95"
-            style={{
-              backgroundColor: "var(--color-reclaim)",
-              boxShadow: "0 4px 16px rgba(196, 24, 106, 0.25)",
-            }}
+          <ShimmerButton
+            borderRadius="12px"
+            className="px-10 py-4 text-base font-bold"
             onClick={() => {
               window.scrollTo({ top: 0, behavior: "smooth" });
               onGoToAssign?.();
             }}
           >
-            <AnimatedEmoji emoji="🔥" animation="bounce" size="sm" />
-            <span>
+            <span className="flex items-center gap-2">
+              <AnimatedEmoji emoji="🔥" animation="bounce" size="sm" />
               Start with your{" "}
               {quickWinCount > 0 ? "first quick win" : "top fix"}
             </span>
-          </button>
+          </ShimmerButton>
         </motion.div>
       </div>
     </div>

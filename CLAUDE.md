@@ -260,7 +260,70 @@ Report the output of each check when declaring done.
 
 ---
 
-## 12. Pending Features (Not Started)
+## 12. QA Gate (Separate Verifier Pattern)
+
+Work is verified in two layers. Neither can be skipped.
+
+### Layer 1: Automated Gate (Hook)
+
+A pre-commit hook runs `.claude/hooks/verify-done.sh` before every `git commit`. If any check fails, the commit is **hard-blocked** (exit code 2). The checks:
+
+| # | Check | What it catches |
+|---|-------|----------------|
+| 1 | `tsc --noEmit` | Type errors |
+| 2 | `vitest --run` | Test failures / regressions |
+| 3 | Banned color grep | Rogue green, old palette values |
+| 4 | `window.__` grep | Global state hacks |
+| 5 | Hanken Grotesk grep | Wrong font |
+| 6 | Corporate emoji grep | 📊📋✅📈🚀💡 in components |
+| 7 | Green success states | `text-green-`, `bg-green-`, rgba green |
+| 8 | SCORE_FROM_LEVEL | Mapping regression (must be 2/3/4) |
+
+**To add a new check:** Edit `.claude/hooks/verify-done.sh` and add a new block. Every repeated miss should become a permanent automated check.
+
+You can run it standalone anytime:
+```bash
+bash .claude/hooks/verify-done.sh
+```
+
+### Layer 2: QA Agent Gate (Judgment Checks)
+
+After completing work and before declaring "done", spawn a **separate QA agent** that verifies against the original requirements. The QA agent:
+
+- Gets the **original feedback/requirements as a numbered checklist**
+- Can ONLY answer **PASS or FAIL per item** with exact misses
+- Does NOT see the implementation conversation (fresh context = no self-grading bias)
+- Must verify by **reading actual files and running actual checks**, not trusting claims
+
+**Pattern — copy this when spawning the QA agent:**
+
+```
+Agent({
+  subagent_type: "Reality Checker",
+  prompt: "You are the QA gate for FocusLab. You must verify each item below by reading the actual source files — do not trust any claims, verify everything yourself.
+
+  CHECKLIST (from user feedback / requirements):
+  [ ] Item 1: ...
+  [ ] Item 2: ...
+  [ ] Item 3: ...
+
+  For EACH item, report exactly:
+  - PASS or FAIL
+  - If FAIL: what exactly is wrong and where (file:line)
+  - No opinions, no suggestions, no 'looks good' — just pass/fail with evidence.
+
+  At the end, give a single verdict: GATE PASSED or GATE FAILED (N items)."
+})
+```
+
+**Rules:**
+1. The main session does the work. The QA agent only verifies — it never fixes.
+2. If the QA agent reports failures, the main session fixes them and spawns a **new** QA agent (don't reuse — fresh eyes every time).
+3. Never declare "done" until both Layer 1 (automated) and Layer 2 (QA agent) pass.
+
+---
+
+## 13. Pending Features (Not Started)
 
 These are committed but not yet built. Do not accidentally start them unless explicitly asked:
 
@@ -272,7 +335,7 @@ These are committed but not yet built. Do not accidentally start them unless exp
 
 ---
 
-## 13. Session End Ritual
+## 14. Session End Ritual
 
 At the end of every session, before stopping:
 
@@ -284,7 +347,7 @@ At the end of every session, before stopping:
 
 ---
 
-## 14. Quick Reference Card
+## 15. Quick Reference Card
 
 ```
 Project:     FocusLab
