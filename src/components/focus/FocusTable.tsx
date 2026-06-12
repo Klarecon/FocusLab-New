@@ -385,7 +385,7 @@ export default function FocusTable({ vitalFew, usefulMany }: FocusTableProps) {
   if (chosenSolutions.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
-        <AnimatedEmoji emoji="📋" animation="float" size="xl" />
+        <AnimatedEmoji emoji="😤" animation="float" size="xl" />
         <p className="text-lg" style={{ color: "var(--color-ink-soft)" }}>
           No fixes selected yet. Go to <strong>Assign Fixes</strong> to pick
           some.

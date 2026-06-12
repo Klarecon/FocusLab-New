@@ -67,7 +67,7 @@ export default function FinalCTA() {
             boxShadow: "0 6px 30px rgba(196, 24, 106, 0.3)",
           }}
         >
-          <AnimatedEmoji emoji="🚀" animation="bounce" size="md" />
+          <AnimatedEmoji emoji="🔥" animation="bounce" size="md" />
           Start Your Free Audit Now
         </Link>
 

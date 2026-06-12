@@ -22,7 +22,7 @@ const tools = [
     emoji: "🎯",
     animation: "pulse" as const,
     description:
-      "Fix the problems Pareto found. Research-backed solutions scored by effort and impact. Know exactly what to fix first.",
+      "Pick from 134 research-backed fixes, scored by effort and impact. Know exactly what to fix first.",
     href: "/focus",
     cta: "Fix your week",
     color: "var(--color-reclaim)",
@@ -51,7 +51,7 @@ export default function ToolCards() {
         className="text-center text-lg mb-14"
         style={{ color: "var(--color-ink-soft)" }}
       >
-        Find the waste. Then fix it.
+        Two ways to reclaim your week.
       </motion.p>
 
       <div className="grid md:grid-cols-2 gap-8">

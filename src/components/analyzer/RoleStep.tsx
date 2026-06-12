@@ -117,7 +117,7 @@ export default function RoleStep({ onNext }: RoleStepProps) {
           type="button"
           disabled={!roleSlug}
           onClick={onNext}
-          className="px-10 py-4 rounded-lg text-base font-bold text-white transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+          className="px-10 py-4 rounded-xl text-base font-bold text-white transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
           style={{
             backgroundColor: roleSlug ? "var(--color-reclaim)" : "var(--color-ink-soft)",
             boxShadow: roleSlug ? "0 4px 16px rgba(196, 24, 106, 0.25)" : undefined,

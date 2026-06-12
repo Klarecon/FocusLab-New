@@ -88,7 +88,7 @@ function SolutionCard({
       <div className="flex items-start gap-3">
         <div className="flex-shrink-0 mt-0.5">
           {isChosen ? (
-            <AnimatedEmoji emoji="✅" animation="pop" size="sm" />
+            <AnimatedEmoji emoji="🥲" animation="pop" size="sm" />
           ) : (
             <span
               className="w-5 h-5 rounded-full border-2 inline-flex"
@@ -409,8 +409,8 @@ export default function SolutionPicker({
         <button
           onClick={onGoToPlan}
           disabled={chosenSolutions.length === 0}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium text-white transition-opacity disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed"
-          style={{ backgroundColor: "var(--color-reclaim)" }}
+          className="inline-flex items-center gap-2 px-10 py-4 rounded-xl text-base font-bold text-white transition-all duration-200 disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed"
+          style={{ backgroundColor: "var(--color-reclaim)", boxShadow: "0 4px 16px rgba(196, 24, 106, 0.25)" }}
         >
           See your action plan
           <span aria-hidden="true">&rarr;</span>

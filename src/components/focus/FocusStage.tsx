@@ -10,7 +10,7 @@ import Payoff from "./Payoff";
 
 const TABS = [
   { id: "assign", label: "Assign Fixes", emoji: "🎯" },
-  { id: "plan", label: "Action Plan", emoji: "📋" },
+  { id: "plan", label: "Action Plan", emoji: "😤" },
   { id: "matrix", label: "Impact Matrix", emoji: "⚡" },
 ] as const;
 

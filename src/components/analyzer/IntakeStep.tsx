@@ -26,13 +26,13 @@ const PAIN_PROMPTS: { prompt: string; emoji: string; groups: string[] }[] = [
 
 /* Role-specific pain prompts */
 const ROLE_PAIN_PROMPTS: Partial<Record<RoleSlug, { prompt: string; emoji: string; groups: string[] }[]>> = {
-  marketing: [{ prompt: "Reporting and data-wrangling eating your day?", emoji: "📊", groups: ["Reporting", "Creative"] }],
+  marketing: [{ prompt: "Reporting and data-wrangling eating your day?", emoji: "😬", groups: ["Reporting", "Creative"] }],
   sales: [{ prompt: "CRM admin stealing your selling time?", emoji: "📞", groups: ["CRM & data", "Prospecting", "Quotes & proposals"] }],
   engineering: [{ prompt: "Tech debt and slow builds grinding you down?", emoji: "💻", groups: ["Code", "Builds & reviews"] }],
   design: [{ prompt: "File wrangling and revision rounds?", emoji: "🎨", groups: ["Files & assets", "Creative"] }],
   manager: [{ prompt: "Still doing the team's work yourself?", emoji: "👥", groups: ["Leading vs doing"] }],
   executive: [{ prompt: "Calendar gravity pulling you everywhere?", emoji: "👑", groups: ["Leading vs doing"] }],
-  product: [{ prompt: "Status packaging and firefighting?", emoji: "📋", groups: ["Reporting", "Coordination"] }],
+  product: [{ prompt: "Status packaging and firefighting?", emoji: "🫠", groups: ["Reporting", "Coordination"] }],
 };
 
 const MUDA_EMOJI: Record<MudaType, string> = {

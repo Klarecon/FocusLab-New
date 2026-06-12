@@ -7,7 +7,7 @@ const STEPS = [
   { label: "Context", emoji: "⚙️" },
   { label: "Intake", emoji: "🧠" },
   { label: "Weigh", emoji: "⚖️" },
-  { label: "Results", emoji: "📊" },
+  { label: "Results", emoji: "🤯" },
 ];
 
 interface StepperProps {

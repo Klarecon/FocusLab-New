@@ -186,7 +186,7 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.04, duration: 0.3 }}
               className="surface-card p-6 sm:p-8"
-              style={{ borderLeft: "3px solid var(--color-waste)" }}
+              style={{ borderLeft: "4px solid var(--color-waste)" }}
             >
               {/* Source header */}
               <div className="flex items-center gap-2 mb-4">
@@ -348,7 +348,7 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
         >
-          <AnimatedEmoji emoji={"📊"} animation="pop" size="sm" />{" "}
+          <AnimatedEmoji emoji={"🤯"} animation="pop" size="sm" />{" "}
           See your results
         </motion.button>
       </div>

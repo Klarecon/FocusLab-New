@@ -431,7 +431,7 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
           </p>
           <Link
             href="/focus"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-base font-bold no-underline transition-all duration-200 hover:scale-[1.03] hover:shadow-lg"
+            className="inline-flex items-center gap-2 px-10 py-4 rounded-xl text-base font-bold no-underline transition-all duration-200 hover:scale-[1.03] hover:shadow-lg"
             style={{
               backgroundColor: "var(--color-reclaim)",
               color: "#fff",

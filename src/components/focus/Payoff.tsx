@@ -263,7 +263,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
                 transition={{ delay: i * 0.06 }}
                 className="flex items-start gap-2 text-sm"
               >
-                <span className="flex-shrink-0 mt-0.5">✅</span>
+                <span className="flex-shrink-0 mt-0.5">🥲</span>
                 <span>
                   <strong>{item.title}</strong>
                   <span style={{ color: "var(--color-ink-soft)" }}>
@@ -448,7 +448,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
               onGoToAssign?.();
             }}
           >
-            <AnimatedEmoji emoji="🚀" animation="bounce" size="sm" />
+            <AnimatedEmoji emoji="🔥" animation="bounce" size="sm" />
             <span>
               Start with your{" "}
               {quickWinCount > 0 ? "first quick win" : "top fix"}
