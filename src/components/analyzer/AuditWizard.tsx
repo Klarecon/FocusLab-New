@@ -50,23 +50,24 @@ export default function AuditWizard() {
   const paretoResult = useAuditStore((s) => s.paretoResult);
 
   // Fresh start: if user navigates to /analyzer after completing a session,
-  // reset wizard state so previous WeighStep selections don't persist.
-  // Because zustand persist hydrates asynchronously, we subscribe to hydration
-  // and check *after* the persisted state has been loaded.
+  // reset wizard state so previous selections don't persist.
   useEffect(() => {
-    const unsub = useAuditStore.persist.onFinishHydration((state) => {
-      if (state.paretoResult && state.step === 0) {
-        reset();
+    const checkAndReset = () => {
+      const s = useAuditStore.getState();
+      if (s.paretoResult) {
+        s.reset();
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("focuslab-audit");
+        }
       }
-    });
+    };
+    // Check after hydration
+    const unsub = useAuditStore.persist.onFinishHydration(() => checkAndReset());
     // Also check immediately in case hydration already happened
-    const current = useAuditStore.getState();
-    if (current.paretoResult && current.step === 0) {
-      reset();
-    }
+    checkAndReset();
     return unsub;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Run once on mount only
+  }, []);
 
   // Scroll to top on every step transition
   useEffect(() => {
@@ -76,11 +77,13 @@ export default function AuditWizard() {
   const goNext = () => setStep(Math.min(step + 1, 4));
   const goBack = () => setStep(Math.max(step - 1, 0));
   const handleRestart = () => {
-    // Set step to 0 first so the wizard immediately renders RoleStep
-    // instead of ResultsView trying to render with null paretoResult
+    // Reset all data first, then ensure step is 0
+    reset();
+    // Force-clear localStorage to prevent persist rehydration from restoring old state
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("focuslab-audit");
+    }
     setStep(0);
-    // Then reset all data on the next tick to avoid render-during-transition errors
-    setTimeout(() => reset(), 0);
   };
 
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Minus, Plus } from "lucide-react";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
@@ -78,35 +78,11 @@ export default function ContextStep({ onNext, onBack }: ContextStepProps) {
           <label className="block text-sm font-semibold mb-3" style={{ color: "var(--color-ink)" }}>
             Hours per week
           </label>
-          <div className="flex items-center gap-4">
-            <StepperButton
-              onClick={() => setContext({ workHoursPerWeek: Math.max(10, workHoursPerWeek - 5) })}
-              icon={<Minus size={16} />}
-              label="Decrease hours"
-            />
-            <div className="flex-1 text-center">
-              <input
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                aria-label="Hours per week"
-                value={workHoursPerWeek}
-                onChange={(e) => {
-                  const val = e.target.value.replace(/\D/g, "");
-                  if (val === "") return;
-                  setContext({ workHoursPerWeek: Math.max(10, Math.min(100, Number(val))) });
-                }}
-                className="w-24 text-center text-2xl font-semibold rounded-lg border-2 px-2 py-1 focus:outline-none focus:ring-2 font-figures cursor-text"
-                style={{ borderColor: "var(--color-gold)", color: "var(--color-ink)", backgroundColor: "rgba(237, 178, 21, 0.06)" }}
-              />
-              <span className="ml-2 text-sm" style={{ color: "var(--color-ink-soft)" }}>hrs/week</span>
-            </div>
-            <StepperButton
-              onClick={() => setContext({ workHoursPerWeek: Math.min(100, workHoursPerWeek + 5) })}
-              icon={<Plus size={16} />}
-              label="Increase hours"
-            />
-          </div>
+          <HoursInput
+            value={workHoursPerWeek}
+            onChange={(val) => setContext({ workHoursPerWeek: val })}
+            onStep={(dir) => setContext({ workHoursPerWeek: dir === "up" ? Math.min(100, workHoursPerWeek + 5) : Math.max(1, workHoursPerWeek - 5) })}
+          />
         </div>
 
         {/* Days per week */}
@@ -224,6 +200,45 @@ export default function ContextStep({ onNext, onBack }: ContextStepProps) {
           Continue →
         </ShimmerButton>
       </div>
+    </div>
+  );
+}
+
+function HoursInput({ value, onChange, onStep }: { value: number; onChange: (v: number) => void; onStep: (dir: "up" | "down") => void }) {
+  const [draft, setDraft] = useState(String(value));
+
+  // Sync draft when value changes externally (stepper buttons)
+  useEffect(() => {
+    setDraft(String(value));
+  }, [value]);
+
+  return (
+    <div className="flex items-center gap-4">
+      <StepperButton onClick={() => onStep("down")} icon={<Minus size={16} />} label="Decrease hours" />
+      <div className="flex-1 text-center">
+        <input
+          type="text"
+          inputMode="numeric"
+          aria-label="Hours per week"
+          value={draft}
+          onChange={(e) => {
+            const raw = e.target.value.replace(/[^0-9]/g, "");
+            setDraft(raw);
+            if (raw !== "") {
+              onChange(Math.max(1, Math.min(100, Number(raw))));
+            }
+          }}
+          onBlur={() => {
+            if (draft === "" || Number(draft) < 1) {
+              setDraft(String(value));
+            }
+          }}
+          className="w-24 text-center text-2xl font-semibold rounded-lg border-2 px-2 py-1 focus:outline-none focus:ring-2 font-figures cursor-text"
+          style={{ borderColor: "var(--color-gold)", color: "var(--color-ink)", backgroundColor: "rgba(237, 178, 21, 0.06)" }}
+        />
+        <span className="ml-2 text-sm" style={{ color: "var(--color-ink-soft)" }}>hrs/week</span>
+      </div>
+      <StepperButton onClick={() => onStep("up")} icon={<Plus size={16} />} label="Increase hours" />
     </div>
   );
 }
