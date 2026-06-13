@@ -47,20 +47,20 @@ export const QUADRANT_META: Record<
   },
   "major-project": {
     name: "Oysters",
-    verb: "Plan these carefully",
+    verb: "Plan these only after your Pearls are done, and only if you have spare capacity",
     emoji: "💪",
-    description: "Tough to crack open, but there\u2019s a pearl inside.",
+    description: "High effort, high reward.",
   },
   "fill-in": {
     name: "Low-Hanging Fruit",
-    verb: "Do when you have a spare moment",
+    verb: "Pick one or two to knock out quickly \u2014 these take minutes, not days",
     emoji: "🫠",
-    description: "Easy to pick off, but won\u2019t change your week.",
+    description: "Quick to knock out, small payoff.",
   },
   thankless: {
     name: "White Elephants",
     verb: "Avoid these",
-    emoji: "💀",
+    emoji: "🐘",
     description: "Hard work, almost no payoff.",
   },
 };

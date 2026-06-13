@@ -75,19 +75,33 @@ const QUADRANT_LABEL_COLOR: Record<QuadrantLabel, string> = {
   thankless: "#e03e12",
 };
 
+const QUADRANT_DOT_COLORS: Record<QuadrantLabel, string> = {
+  "quick-win": "#c4186a",
+  "major-project": "#edb215",
+  "fill-in": "#9a8c7a",
+  thankless: "#e03e12",
+};
+
 function CustomDot(props: {
   cx?: number;
   cy?: number;
   payload?: DotData;
+  onDotClick?: (id: string) => void;
 }) {
-  const { cx, cy, payload } = props;
+  const { cx, cy, payload, onDotClick } = props;
   if (cx == null || cy == null || !payload) return null;
 
   const radius = Math.max(14, Math.min(28, 10 + payload.z * 3));
-  const color = ZONE_COLORS[payload.zone] ?? ZONE_COLORS.C;
+  const color = QUADRANT_DOT_COLORS[payload.quadrantLabel] ?? ZONE_COLORS.C;
 
   return (
-    <g>
+    <g
+      onClick={(e) => {
+        e.stopPropagation();
+        onDotClick?.(payload.id);
+      }}
+      style={{ cursor: "pointer" }}
+    >
       <circle
         cx={cx}
         cy={cy}
@@ -96,7 +110,7 @@ function CustomDot(props: {
         fillOpacity={0.85}
         stroke="white"
         strokeWidth={2}
-        style={{ cursor: "pointer", filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.15))" }}
+        style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.15))" }}
       />
       <text
         x={cx}
@@ -209,7 +223,7 @@ function QuadrantSummary({ dotData }: { dotData: DotData[] }) {
               <li key={d.id} className="flex items-center gap-2 text-xs">
                 <span
                   className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
-                  style={{ backgroundColor: ZONE_COLORS[d.zone] }}
+                  style={{ backgroundColor: QUADRANT_DOT_COLORS[d.quadrantLabel] }}
                 >
                   {d.idx}
                 </span>
@@ -219,6 +233,126 @@ function QuadrantSummary({ dotData }: { dotData: DotData[] }) {
               </li>
             ))}
           </ul>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+const QUADRANT_PRIORITY_ORDER: QuadrantLabel[] = ["quick-win", "major-project", "fill-in", "thankless"];
+const QUADRANT_SECTION_LABELS: Record<QuadrantLabel, string> = {
+  "quick-win": "Pearls \u2014 do these first",
+  "major-project": "Oysters \u2014 plan these next",
+  "fill-in": "Quick tasks \u2014 knock these out when you can",
+  thankless: "White Elephants \u2014 skip if you can",
+};
+
+function PriorityTable({ dotData }: { dotData: DotData[] }) {
+  const ownerOverrides = useAuditStore((s) => s.ownerOverrides);
+  const chosenSolutions = useAuditStore((s) => s.chosenSolutions);
+  const dueDates = useAuditStore((s) => s.dueDates);
+  const setDueDate = useAuditStore((s) => s.setDueDate);
+
+  const OWNERS_MAP: Record<string, { emoji: string; label: string }> = {
+    self: { emoji: "\uD83D\uDE4B", label: "Me" },
+    manager: { emoji: "\uD83D\uDC54", label: "My manager" },
+    team: { emoji: "\uD83D\uDC65", label: "My team" },
+  };
+
+  const prioritized = useMemo(() => {
+    const sorted = [...dotData].sort((a, b) => {
+      const qa = QUADRANT_PRIORITY_ORDER.indexOf(a.quadrantLabel);
+      const qb = QUADRANT_PRIORITY_ORDER.indexOf(b.quadrantLabel);
+      if (qa !== qb) return qa - qb;
+      return b.y - a.y; // impact descending within quadrant
+    });
+    return sorted.map((d, i) => ({ ...d, priority: i + 1 }));
+  }, [dotData]);
+
+  if (prioritized.length === 0) return null;
+
+  // Group by quadrant
+  const groups = QUADRANT_PRIORITY_ORDER
+    .map((q) => ({
+      quadrant: q,
+      items: prioritized.filter((d) => d.quadrantLabel === q),
+    }))
+    .filter((g) => g.items.length > 0);
+
+  return (
+    <div
+      className="mt-6 surface-card p-6"
+      style={{ borderTop: "4px solid", borderImage: "linear-gradient(to right, #c4186a, #edb215) 1" }}
+    >
+      <h3
+        className="text-2xl font-bold mb-1"
+        style={{ fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif" }}
+      >
+        Your Action Sequence
+      </h3>
+      <p className="text-sm mb-6" style={{ color: "var(--color-ink-soft)" }}>
+        Pearls first. Then the rest, in order.
+      </p>
+
+      {groups.map((g) => (
+        <div key={g.quadrant} className="mb-6 last:mb-0">
+          <div
+            className="text-xs font-medium uppercase tracking-wider mb-3 flex items-center gap-2"
+            style={{ color: QUADRANT_LABEL_COLOR[g.quadrant] }}
+          >
+            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: QUADRANT_DOT_COLORS[g.quadrant] }} />
+            {QUADRANT_SECTION_LABELS[g.quadrant]}
+          </div>
+          <div className="space-y-2">
+            {g.items.map((d) => {
+              const sol = chosenSolutions.find((s) => s.id === d.id);
+              const owner = sol ? (ownerOverrides[sol.id] ?? sol.owner) : "self";
+              const ownerInfo = OWNERS_MAP[owner] ?? OWNERS_MAP.self;
+              const meta = QUADRANT_META[d.quadrantLabel];
+
+              return (
+                <div
+                  key={d.id}
+                  className="flex items-center gap-3 py-3 px-4 rounded-lg border"
+                  style={{ borderColor: "var(--color-line)", backgroundColor: "var(--color-card)" }}
+                >
+                  <span
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                    style={{ backgroundColor: QUADRANT_DOT_COLORS[d.quadrantLabel] }}
+                  >
+                    {d.priority}
+                  </span>
+                  <span className="flex-1 text-sm font-semibold min-w-0 truncate" style={{ color: "var(--color-ink)" }}>
+                    {d.title}
+                  </span>
+                  <span
+                    className="text-[10px] font-medium px-1.5 py-0.5 rounded-full flex-shrink-0 hidden sm:inline"
+                    style={{
+                      color: QUADRANT_LABEL_COLOR[d.quadrantLabel],
+                      backgroundColor: QUADRANT_BG[d.quadrantLabel],
+                    }}
+                  >
+                    {meta.emoji} {meta.name}
+                  </span>
+                  <span className="text-xs flex-shrink-0" style={{ color: "var(--color-ink-soft)" }}>
+                    {ownerInfo.emoji} {ownerInfo.label}
+                  </span>
+                  <input
+                    type="date"
+                    value={dueDates[d.id] ?? ""}
+                    onChange={(e) => setDueDate(d.id, e.target.value)}
+                    className="text-xs px-2 py-1 rounded border w-[120px] flex-shrink-0"
+                    style={{
+                      borderColor: "var(--color-line)",
+                      backgroundColor: "var(--color-paper)",
+                      color: dueDates[d.id] ? "var(--color-ink)" : "var(--color-ink-soft)",
+                    }}
+                    aria-label={`Due date for ${d.title}`}
+                  />
+                </div>
+              );
+            })}
+          </div>
         </div>
       ))}
     </div>
@@ -329,10 +463,10 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
         aria-hidden="true"
         style={{ borderTop: "4px solid", borderImage: "linear-gradient(to right, #e03e12, #edb215) 1" }}
       >
-        {/* Quadrant labels — visible on all screen sizes */}
-        <div className="absolute top-6 left-10 z-10 pointer-events-none" aria-hidden="true">
+        {/* Quadrant labels — visible on all screen sizes, inset from edges */}
+        <div className="absolute top-10 left-16 z-10 pointer-events-none" aria-hidden="true">
           <span
-            className="text-xs sm:text-sm font-semibold px-2 py-1 rounded-full"
+            className="text-[10px] sm:text-xs font-semibold px-2 py-1 rounded-full"
             style={{
               color: QUADRANT_LABEL_COLOR["quick-win"],
               backgroundColor: QUADRANT_BG["quick-win"],
@@ -341,9 +475,9 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
             {QUADRANT_META["quick-win"].emoji} {QUADRANT_META["quick-win"].name}
           </span>
         </div>
-        <div className="absolute top-6 right-6 z-10 pointer-events-none" aria-hidden="true">
+        <div className="absolute top-10 right-10 z-10 pointer-events-none" aria-hidden="true">
           <span
-            className="text-xs sm:text-sm font-semibold px-2 py-1 rounded-full"
+            className="text-[10px] sm:text-xs font-semibold px-2 py-1 rounded-full"
             style={{
               color: QUADRANT_LABEL_COLOR["major-project"],
               backgroundColor: QUADRANT_BG["major-project"],
@@ -352,9 +486,9 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
             {QUADRANT_META["major-project"].emoji} {QUADRANT_META["major-project"].name}
           </span>
         </div>
-        <div className="absolute bottom-14 left-10 z-10 pointer-events-none" aria-hidden="true">
+        <div className="absolute bottom-16 left-16 z-10 pointer-events-none" aria-hidden="true">
           <span
-            className="text-xs sm:text-sm font-semibold px-2 py-1 rounded-full"
+            className="text-[10px] sm:text-xs font-semibold px-2 py-1 rounded-full"
             style={{
               color: QUADRANT_LABEL_COLOR["fill-in"],
               backgroundColor: QUADRANT_BG["fill-in"],
@@ -363,9 +497,9 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
             {QUADRANT_META["fill-in"].emoji} {QUADRANT_META["fill-in"].name}
           </span>
         </div>
-        <div className="absolute bottom-14 right-6 z-10 pointer-events-none" aria-hidden="true">
+        <div className="absolute bottom-16 right-10 z-10 pointer-events-none" aria-hidden="true">
           <span
-            className="text-xs sm:text-sm font-semibold px-2 py-1 rounded-full"
+            className="text-[10px] sm:text-xs font-semibold px-2 py-1 rounded-full"
             style={{
               color: QUADRANT_LABEL_COLOR["thankless"],
               backgroundColor: QUADRANT_BG["thankless"],
@@ -378,16 +512,7 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
         <ResponsiveContainer width="100%" height={400}>
           <ScatterChart
             margin={{ top: 30, right: 30, bottom: 20, left: 10 }}
-            onClick={(e) => {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const ev = e as any;
-              if (ev?.activePayload && ev.activePayload.length > 0) {
-                const clicked = ev.activePayload[0].payload as DotData;
-                setEditingId(
-                  editingId === clicked.id ? null : clicked.id,
-                );
-              }
-            }}
+            onClick={() => { /* dot clicks handled by CustomDot directly */ }}
           >
             {/* All 4 quadrant backgrounds */}
             <ReferenceArea x1={0.5} x2={2.5} y1={3.5} y2={5.5} fill={QUADRANT_BG["quick-win"]} strokeOpacity={0} />
@@ -448,13 +573,13 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
             />
             <Scatter
               data={dotData}
-              shape={<CustomDot />}
+              shape={<CustomDot onDotClick={(id: string) => setEditingId(editingId === id ? null : id)} />}
               isAnimationActive={true}
             >
               {dotData.map((entry) => (
                 <Cell
                   key={entry.id}
-                  fill={ZONE_COLORS[entry.zone] ?? ZONE_COLORS.C}
+                  fill={QUADRANT_DOT_COLORS[entry.quadrantLabel] ?? ZONE_COLORS.C}
                 />
               ))}
             </Scatter>
@@ -462,23 +587,18 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
         </ResponsiveContainer>
 
         {/* Legend */}
-        <div className="flex items-center justify-center gap-6 mt-2 pb-2 flex-wrap">
-          {(["A", "B"] as const).map((z) => (
-            <div key={z} className="flex items-center gap-1.5 text-xs">
+        <div className="flex items-center justify-center gap-4 mt-2 pb-2 flex-wrap">
+          {(["quick-win", "major-project", "fill-in", "thankless"] as QuadrantLabel[]).map((q) => (
+            <div key={q} className="flex items-center gap-1.5 text-xs">
               <span
                 className="w-3 h-3 rounded-full inline-block"
-                style={{ backgroundColor: ZONE_COLORS[z] }}
+                style={{ backgroundColor: QUADRANT_DOT_COLORS[q] }}
               />
               <span style={{ color: "var(--color-ink-soft)" }}>
-                Zone {z}
+                {QUADRANT_META[q].name}
               </span>
             </div>
           ))}
-          <div className="flex items-center gap-1.5 text-xs">
-            <span style={{ color: "var(--color-ink-soft)" }}>
-              Bigger dot = more time you reclaim
-            </span>
-          </div>
         </div>
       </div>
 
@@ -610,45 +730,8 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
       {/* Quadrant summary — grouped by quadrant with action verbs */}
       <QuadrantSummary dotData={dotData} />
 
-      {/* Solution key */}
-      <div className="mt-4 surface-card p-4">
-        <h4
-          className="text-xs font-medium uppercase tracking-wider mb-2"
-          style={{ color: "var(--color-ink-soft)" }}
-        >
-          Your Fixes
-        </h4>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
-          {dotData.map((d) => {
-            const meta = QUADRANT_META[d.quadrantLabel];
-            return (
-              <button
-                key={d.id}
-                onClick={() => setEditingId(editingId === d.id ? null : d.id)}
-                className="flex items-center gap-2 text-xs text-left py-1.5 px-2 rounded transition-colors cursor-pointer"
-                style={{
-                  color: "var(--color-ink)",
-                  backgroundColor: editingId === d.id ? "rgba(196, 24, 106, 0.06)" : "transparent",
-                }}
-              >
-                <span
-                  className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
-                  style={{ backgroundColor: ZONE_COLORS[d.zone] }}
-                >
-                  {d.idx}
-                </span>
-                <span className="truncate flex-1">{d.title}</span>
-                <span
-                  className="text-[10px] flex-shrink-0"
-                  style={{ color: QUADRANT_LABEL_COLOR[d.quadrantLabel] }}
-                >
-                  {meta.emoji}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      {/* Prioritized Action Sequence */}
+      <PriorityTable dotData={dotData} />
     </div>
   );
 }

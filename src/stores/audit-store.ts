@@ -50,6 +50,7 @@ interface AuditState {
   chosenSolutions: Solution[];
   solutionScores: Record<string, SolutionScore>;
   ownerOverrides: Record<string, string>;
+  dueDates: Record<string, string>;
 
   // --- UI (transient, NOT persisted) ---
   step: number;
@@ -72,6 +73,7 @@ interface AuditState {
   removeSolution: (id: string) => void;
   setSolutionScore: (id: string, score: Partial<SolutionScore>) => void;
   setOwnerOverride: (solId: string, owner: string) => void;
+  setDueDate: (solId: string, date: string) => void;
   setWeighCadence: (cadence: "daily" | "weekly") => void;
   setStep: (step: number) => void;
   reset: () => void;
@@ -96,6 +98,7 @@ const DEFAULT_STATE = {
   chosenSolutions: [] as Solution[],
   solutionScores: {} as Record<string, SolutionScore>,
   ownerOverrides: {} as Record<string, string>,
+  dueDates: {} as Record<string, string>,
   step: 0,
 };
 
@@ -210,6 +213,14 @@ export const useAuditStore = create<AuditState>()(
           ownerOverrides: {
             ...state.ownerOverrides,
             [solId]: owner,
+          },
+        })),
+
+      setDueDate: (solId, date) =>
+        set((state) => ({
+          dueDates: {
+            ...state.dueDates,
+            [solId]: date,
           },
         })),
 

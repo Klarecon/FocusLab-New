@@ -295,8 +295,7 @@ describe("Payoff", () => {
     expect(fallbackMatches.length).toBeGreaterThan(0);
   });
 
-  it('"Start with quick win" calls onGoToAssign', () => {
-    const spy = vi.fn();
+  it("shows closing statement instead of backwards CTA", () => {
     const meetingSolutions = solutionsForWaste("meet-status");
     useAuditStore.getState().addSolution(meetingSolutions[0]);
 
@@ -304,18 +303,9 @@ describe("Payoff", () => {
       <Payoff
         vitalFew={mockVitalFew}
         usefulMany={mockUsefulMany}
-        onGoToAssign={spy}
       />,
     );
 
-    // The CTA text is inside a <span> within the <button>
-    const ctaSpan = screen.getByText((content, element) => {
-      return element?.tagName === "SPAN" && /Start with your/.test(content);
-    });
-    const ctaButton = ctaSpan.closest("button");
-    expect(ctaButton).not.toBeNull();
-    fireEvent.click(ctaButton!);
-
-    expect(spy).toHaveBeenCalled();
+    expect(screen.getByText(/go reclaim your week/)).toBeInTheDocument();
   });
 });

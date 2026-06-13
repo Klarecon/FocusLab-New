@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, memo } from "react";
+import { useState, useMemo, useCallback, memo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuditStore } from "@/stores/audit-store";
 import { solutionsForWaste, isQuickWin } from "@/lib/data/solutions";
@@ -112,7 +112,7 @@ const SolutionCard = memo(function SolutionCard({
                     color: "var(--color-reclaim)",
                   }}
                 >
-                  Quick Win
+                  Pearl
                 </span>
               </span>
             )}
@@ -243,6 +243,45 @@ function DrainSection({
           We don&apos;t have pre-built fixes for this one yet. Add your own below — you probably know what would help.
         </p>
       )}
+
+      {/* Custom fixes added by the user for this drain */}
+      {chosenSolutions
+        .filter((s) => s.id.startsWith("custom-") && s.wasteSlugs.includes(drain.slug))
+        .map((sol) => (
+          <motion.div
+            key={sol.id}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="mt-2 p-4 rounded-xl border"
+            style={{
+              backgroundColor: "rgba(196, 24, 106, 0.06)",
+              borderColor: "var(--color-reclaim)",
+            }}
+          >
+            <div className="flex items-start gap-3">
+              <AnimatedEmoji emoji="🥲" animation="pop" size="sm" />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="font-medium text-sm" style={{ color: "var(--color-ink)" }}>{sol.title}</span>
+                  <span
+                    className="text-[10px] font-medium px-1.5 py-0.5 rounded-full"
+                    style={{ backgroundColor: "rgba(237, 178, 21, 0.12)", color: "var(--color-gold)" }}
+                  >
+                    Your fix
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={() => removeSolution(sol.id)}
+                className="text-xs cursor-pointer transition-opacity hover:opacity-70"
+                style={{ color: "var(--color-waste)" }}
+                aria-label="Remove fix"
+              >
+                &times;
+              </button>
+            </div>
+          </motion.div>
+        ))}
     </motion.div>
   );
 }
@@ -252,9 +291,11 @@ export default function SolutionPicker({
   usefulMany,
   onGoToPlan,
 }: SolutionPickerProps) {
-  const [zoneBOpen, setZoneBOpen] = useState(false);
+  const [zoneBOpen, setZoneBOpen] = useState(true);
   const [customFix, setCustomFix] = useState("");
   const [customTarget, setCustomTarget] = useState("");
+  const [justAdded, setJustAdded] = useState(false);
+  const customInputRef = useRef<HTMLInputElement>(null);
   const chosenSolutions = useAuditStore((s) => s.chosenSolutions);
   const addSolution = useAuditStore((s) => s.addSolution);
 
@@ -271,12 +312,15 @@ export default function SolutionPicker({
       description: "Custom fix added by you",
       effort: "medium",
       impact: "medium",
-      reclaimHint: "depends on implementation",
+      reclaimHint: `targets ${(() => { const d = allDrains.find(dr => dr.slug === targetSlug); return d ? d.hoursPerWeek.toFixed(1) + " hrs/wk of waste" : "your waste"; })()}`,
       owner: "self",
       source: { name: "You", url: "" },
     };
     addSolution(customSolution);
     setCustomFix("");
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 1500);
+    setTimeout(() => customInputRef.current?.focus(), 50);
   };
 
   return (
@@ -392,6 +436,7 @@ export default function SolutionPicker({
             ))}
           </select>
           <input
+            ref={customInputRef}
             type="text"
             value={customFix}
             onChange={(e) => setCustomFix(e.target.value)}
@@ -411,7 +456,7 @@ export default function SolutionPicker({
             className="px-4 py-2 rounded-lg text-sm font-medium text-white transition-opacity disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed"
             style={{ backgroundColor: "var(--color-reclaim)" }}
           >
-            Add
+            {justAdded ? "Added!" : "Add"}
           </button>
         </div>
       </div>

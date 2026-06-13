@@ -10,7 +10,6 @@ import type {
   Score,
 } from "@/lib/engine/types";
 import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
-import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { Highlighter } from "@/components/ui/highlighter";
 import { useDrainLookup, type DrainInfo } from "./shared/useDrainLookup";
 
@@ -121,17 +120,6 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
 
     return computePayoff(buckets, chosen, effectiveRate, 48);
   }, [chosenSolutions, solutionScores, drainBySlug, effectiveRate]);
-
-  const ifThenItems = useMemo(() => {
-    return chosenSolutions.map((sol) => {
-      const credited = payoff.creditByRow[sol.id] ?? 0;
-      return {
-        title: sol.title,
-        reclaim: credited,
-        reclaimHint: sol.reclaimHint,
-      };
-    }).filter((item) => item.reclaim > 0);
-  }, [chosenSolutions, payoff]);
 
   const totalWasteHoursWeekly = payoff.totalWasteHours;
   const reclaimableWeekly = payoff.fullPotentialHours;
@@ -297,51 +285,11 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
         )}
       </div>
 
-      {/* If-Then Statements */}
-      {ifThenItems.length > 0 && (
-        <div className="surface-card p-6 mb-6">
-          <h3
-            className="text-lg font-semibold mb-4"
-            style={{
-              fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
-            }}
-          >
-            Here&apos;s what each fix saves you:
-          </h3>
-          <ul className="space-y-2">
-            {ifThenItems.map((item, i) => (
-              <motion.li
-                key={i}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.06 }}
-                className="flex items-start gap-2 text-sm"
-              >
-                <span className="flex-shrink-0 mt-0.5" aria-hidden="true">🥲</span>
-                <span>
-                  <strong>{item.title}</strong>
-                  <span style={{ color: "var(--color-ink-soft)" }}>
-                    {" "}
-                    &rarr;{" "}
-                    <span
-                      className="font-figures font-semibold"
-                      style={{ color: "var(--color-reclaim)" }}
-                    >
-                      {item.reclaim.toFixed(1)} hrs/week
-                    </span>
-                    {" "}back
-                  </span>
-                </span>
-              </motion.li>
-            ))}
-          </ul>
-        </div>
-      )}
 
       {/* Before / After Emotional Contrast */}
       {hasReclaimable && hasAnyWaste && (
-        <div className="surface-card p-6 mb-6">
-          <div className="flex items-center justify-center gap-4 flex-wrap">
+        <div className="surface-card p-6 mb-6 max-w-2xl mx-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             {/* Before */}
             <motion.div
               className="text-center p-4 rounded-xl flex-1 min-w-[180px]"
@@ -493,26 +441,25 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
             )}
           </div>
 
-          {/* CTA */}
+          {/* Closing statement */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
-            className="text-center"
+            className="text-center mt-6"
           >
-            <ShimmerButton
-              borderRadius="12px"
-              className="px-10 py-4 text-base font-bold animate-cta-pulse"
-              onClick={() => {
-                window.scrollTo({ top: 0, behavior: "smooth" });
-                onGoToAssign?.();
+            <h3
+              className="text-2xl font-bold mb-2"
+              style={{
+                fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
+                color: "var(--color-ink)",
               }}
             >
-              <span className="flex items-center gap-2">
-                <AnimatedEmoji emoji="🔥" animation="bounce" size="sm" />
-                Start with {quickWinCount > 0 ? "your easiest win" : "what matters most"}
-              </span>
-            </ShimmerButton>
+              You&apos;ve got a plan. Now go reclaim your week.
+            </h3>
+            <p className="text-xs" style={{ color: "var(--color-ink-soft)" }}>
+              Come back anytime to update your plan.
+            </p>
           </motion.div>
         </div>
       )}
