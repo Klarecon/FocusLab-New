@@ -199,8 +199,8 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
         </motion.div>
       </div>
 
-      {/* Live running total — sticky right panel */}
-      {weighCadence && (
+      {/* Live running total — sticky panel, visible as user scrolls through sources */}
+      {weighCadence && activeSources.length > 0 && (
         <div className="sticky top-4 z-10 mb-6">
           <motion.div
             animate={{ scale: [1.03, 1] }}
@@ -208,25 +208,25 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
             className="surface-card p-4 flex items-center justify-between"
             style={{
               borderLeft: `4px solid ${
-                totalWaste / workHoursPerWeek > 0.95
+                totalWaste / workHoursPerWeek > 0.9
                   ? "var(--color-waste)"
-                  : totalWaste / workHoursPerWeek > 0.8
+                  : totalWaste / workHoursPerWeek > 0.75
                     ? "var(--color-gold)"
                     : "var(--color-reclaim)"
               }`,
               backgroundColor:
-                totalWaste / workHoursPerWeek > 0.95
+                totalWaste / workHoursPerWeek > 0.9
                   ? "rgba(224, 62, 18, 0.06)"
-                  : totalWaste / workHoursPerWeek > 0.8
+                  : totalWaste / workHoursPerWeek > 0.75
                     ? "rgba(237, 178, 21, 0.06)"
                     : "var(--color-card)",
             }}
           >
             <div className="flex items-center gap-3">
               <span className="text-xl" aria-hidden="true">
-                {totalWaste / workHoursPerWeek > 0.95
+                {totalWaste / workHoursPerWeek > 0.9
                   ? "💀"
-                  : totalWaste / workHoursPerWeek > 0.8
+                  : totalWaste / workHoursPerWeek > 0.75
                     ? "😬"
                     : totalWaste > 0
                       ? "🤯"
@@ -238,7 +238,7 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
                     className="font-figures font-bold text-xl"
                     style={{
                       color:
-                        totalWaste / workHoursPerWeek > 0.8
+                        totalWaste / workHoursPerWeek > 0.75
                           ? "var(--color-waste)"
                           : "var(--color-ink)",
                     }}
@@ -249,14 +249,14 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
                     of {workHoursPerWeek} hr week = {Math.min(100, Math.round((totalWaste / workHoursPerWeek) * 100))}%
                   </span>
                 </div>
-                {totalWaste / workHoursPerWeek > 0.95 && (
+                {totalWaste / workHoursPerWeek > 0.9 && (
                   <p className="text-xs font-semibold mt-0.5" style={{ color: "var(--color-waste)" }}>
                     That's almost your entire week. Double-check the estimates.
                   </p>
                 )}
-                {totalWaste / workHoursPerWeek > 0.8 && totalWaste / workHoursPerWeek <= 0.95 && (
+                {totalWaste / workHoursPerWeek > 0.75 && totalWaste / workHoursPerWeek <= 0.9 && (
                   <p className="text-xs font-medium mt-0.5" style={{ color: "var(--color-gold)" }}>
-                    Over 80% waste is unusual. Are the numbers right?
+                    Over 75% waste is unusual. Are the numbers right?
                   </p>
                 )}
               </div>
@@ -271,9 +271,9 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
                 style={{
                   width: `${Math.min(100, (totalWaste / workHoursPerWeek) * 100)}%`,
                   backgroundColor:
-                    totalWaste / workHoursPerWeek > 0.95
+                    totalWaste / workHoursPerWeek > 0.9
                       ? "var(--color-waste)"
-                      : totalWaste / workHoursPerWeek > 0.8
+                      : totalWaste / workHoursPerWeek > 0.75
                         ? "var(--color-gold)"
                         : "var(--color-reclaim)",
                 }}

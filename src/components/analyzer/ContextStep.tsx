@@ -68,7 +68,7 @@ export default function ContextStep({ onNext, onBack }: ContextStepProps) {
           Your work context
         </h2>
         <p style={{ color: "var(--color-ink-soft)" }}>
-          We need a few numbers to turn hours into dollars.
+          Tell us about your week.
         </p>
       </div>
 
@@ -96,8 +96,8 @@ export default function ContextStep({ onNext, onBack }: ContextStepProps) {
                   if (val === "") return;
                   setContext({ workHoursPerWeek: Math.max(10, Math.min(100, Number(val))) });
                 }}
-                className="w-20 text-center text-2xl font-semibold bg-transparent border-b-2 focus:outline-none font-figures"
-                style={{ borderColor: "var(--color-waste)", color: "var(--color-ink)" }}
+                className="w-24 text-center text-2xl font-semibold rounded-lg border-2 px-2 py-1 focus:outline-none focus:ring-2 font-figures cursor-text"
+                style={{ borderColor: "var(--color-gold)", color: "var(--color-ink)", backgroundColor: "rgba(237, 178, 21, 0.06)" }}
               />
               <span className="ml-2 text-sm" style={{ color: "var(--color-ink-soft)" }}>hrs/week</span>
             </div>

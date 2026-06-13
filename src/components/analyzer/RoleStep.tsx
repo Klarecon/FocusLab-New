@@ -47,8 +47,13 @@ export default function RoleStep({ onNext }: RoleStepProps) {
 
   const handleSelectRole = (slug: RoleSlug) => {
     setRole(slug);
-    // Default to IC, clear secondaries
-    setSecondaryRoles([]);
+    if (slug === "ceo-founder") {
+      // CEO/Founder is already at the executive level — auto-set to Director+
+      setSecondaryRoles(secondaryRolesForLevel("executive", slug));
+    } else {
+      // Default to IC, clear secondaries
+      setSecondaryRoles([]);
+    }
   };
 
   const handleSelectLevel = (level: LevelId) => {
@@ -88,8 +93,8 @@ export default function RoleStep({ onNext }: RoleStepProps) {
         ))}
       </div>
 
-      {/* Level selector — visible immediately after role pick */}
-      {roleSlug && (
+      {/* Level selector — visible after role pick, hidden for CEO/Founder (already executive) */}
+      {roleSlug && roleSlug !== "ceo-founder" && (
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}

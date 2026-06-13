@@ -49,6 +49,7 @@ interface IntakeStepProps {
 
 export default function IntakeStep({ onNext, onBack }: IntakeStepProps) {
   const roleSlug = useAuditStore((s) => s.roleSlug);
+  const secondaryRoles = useAuditStore((s) => s.secondaryRoles);
   const activeSources = useAuditStore((s) => s.activeSources);
   const addSource = useAuditStore((s) => s.addSource);
   const removeSource = useAuditStore((s) => s.removeSource);
@@ -59,11 +60,24 @@ export default function IntakeStep({ onNext, onBack }: IntakeStepProps) {
 
   const painCardRefs = useRef<Map<number, HTMLDivElement | null>>(new Map());
 
-  // Get all available sources for this role
-  const allSources = useMemo(
-    () => (roleSlug ? wasteSourcesForRole(roleSlug as RoleSlug) : []),
-    [roleSlug],
-  );
+  // Get all available sources for this role + secondary roles, deduplicated
+  const allSources = useMemo(() => {
+    if (!roleSlug) return [];
+    const primary = wasteSourcesForRole(roleSlug as RoleSlug);
+    if (secondaryRoles.length === 0) return primary;
+    // Merge in secondary role sources, deduplicating by slug
+    const seen = new Set(primary.map((s) => s.slug));
+    const merged = [...primary];
+    for (const sr of secondaryRoles) {
+      for (const src of wasteSourcesForRole(sr)) {
+        if (!seen.has(src.slug)) {
+          seen.add(src.slug);
+          merged.push(src);
+        }
+      }
+    }
+    return merged;
+  }, [roleSlug, secondaryRoles]);
   const grouped = useMemo(() => groupWasteSources(allSources), [allSources]);
 
   // Build pain prompts (universal + role-specific)

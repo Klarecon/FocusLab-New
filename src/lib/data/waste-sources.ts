@@ -273,12 +273,21 @@ export function benchmarkCategoryFor(slug: string): string | undefined {
   return BENCHMARK_CATEGORY_BY_SOURCE[slug];
 }
 
-/** Universal sources + the role's own — the pool the user picks from. */
+/** Universal sources + the role's own — the pool the user picks from, deduplicated by slug. */
 export function wasteSourcesForRole(role: RoleSlug): WasteSource[] {
   const roleOwned = ROLE_WASTE.filter(
     (s) => s.scope !== "universal" && (s.scope as RoleSlug[]).includes(role),
   );
-  return [...UNIVERSAL_WASTE, ...roleOwned];
+  // Deduplicate by slug (safety net for any universal + role overlap)
+  const seen = new Set<string>();
+  const result: WasteSource[] = [];
+  for (const s of [...UNIVERSAL_WASTE, ...roleOwned]) {
+    if (!seen.has(s.slug)) {
+      seen.add(s.slug);
+      result.push(s);
+    }
+  }
+  return result;
 }
 
 /** A group of sources sharing one activity-area header, for the grouped intake. */
