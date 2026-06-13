@@ -37,12 +37,32 @@ export const IMPACT_NAMES: Record<Score, string> = {
 
 export const QUADRANT_META: Record<
   QuadrantLabel,
-  { name: string; verb: string }
+  { name: string; verb: string; emoji: string; description: string }
 > = {
-  "quick-win": { name: "Quick Wins", verb: "Do now" },
-  "major-project": { name: "Major Projects", verb: "Plan" },
-  "fill-in": { name: "Fill-ins", verb: "Batch / maybe" },
-  thankless: { name: "Thankless", verb: "Avoid" },
+  "quick-win": {
+    name: "Pearls",
+    verb: "Do these first",
+    emoji: "🤩",
+    description: "Easy to grab, wildly valuable.",
+  },
+  "major-project": {
+    name: "Oysters",
+    verb: "Plan these carefully",
+    emoji: "💪",
+    description: "Tough to crack open, but there\u2019s a pearl inside.",
+  },
+  "fill-in": {
+    name: "Low-Hanging Fruit",
+    verb: "Do when you have a spare moment",
+    emoji: "🫠",
+    description: "Easy to pick off, but won\u2019t change your week.",
+  },
+  thankless: {
+    name: "White Elephants",
+    verb: "Avoid these",
+    emoji: "💀",
+    description: "Hard work, almost no payoff.",
+  },
 };
 
 /**

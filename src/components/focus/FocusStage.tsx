@@ -19,6 +19,7 @@ type TabId = (typeof TABS)[number]["id"];
 export default function FocusStage() {
   const [activeTab, setActiveTab] = useState<TabId>("assign");
   const paretoResult = useAuditStore((s) => s.paretoResult);
+  const chosenSolutions = useAuditStore((s) => s.chosenSolutions);
 
   // Scroll to top on every tab switch
   useEffect(() => {
@@ -64,7 +65,7 @@ export default function FocusStage() {
           className="text-base mb-6"
           style={{ color: "var(--color-ink-soft)" }}
         >
-          Find your time drains first, then come back here to fix them.
+          Run the audit first so we know what&apos;s eating your week. Then come back here to fix it.
         </p>
         <a
           href="/analyzer"
@@ -90,7 +91,7 @@ export default function FocusStage() {
           Fix What&apos;s Draining You
         </h1>
         <p style={{ color: "var(--color-ink-soft)" }}>
-          Choose fixes for your biggest time drains, score how hard they are vs. how much they help, and see what you get back.
+          Pick the fixes that fit your life, see what&apos;s easy vs. hard, and find out how much time you actually get back.
         </p>
       </div>
 
@@ -125,6 +126,18 @@ export default function FocusStage() {
           >
             <span aria-hidden="true">{tab.emoji}</span>
             <span>{tab.label}</span>
+            {/* Fix count badge on Action Plan and Impact Matrix tabs */}
+            {tab.id !== "assign" && chosenSolutions.length > 0 && activeTab !== tab.id && (
+              <span
+                className="ml-1 w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center"
+                style={{
+                  backgroundColor: "rgba(196, 24, 106, 0.15)",
+                  color: "var(--color-reclaim)",
+                }}
+              >
+                {chosenSolutions.length}
+              </span>
+            )}
           </button>
         ))}
       </div>
@@ -148,10 +161,21 @@ export default function FocusStage() {
               onGoToPlan={() => setActiveTab("plan")}
             />
           )}
-          {activeTab === "plan" && <FocusTable vitalFew={vitalFew} usefulMany={usefulMany} />}
+          {activeTab === "plan" && (
+            <FocusTable
+              vitalFew={vitalFew}
+              usefulMany={usefulMany}
+              onGoToMatrix={() => setActiveTab("matrix")}
+            />
+          )}
           {activeTab === "matrix" && (
             <div className="space-y-12">
               <EviMatrix vitalFew={vitalFew} usefulMany={usefulMany} />
+              {/* Gradient divider */}
+              <div
+                className="h-1 rounded-full mx-auto max-w-xs"
+                style={{ background: "linear-gradient(to right, #e03e12, #c4186a, #edb215)" }}
+              />
               <Payoff vitalFew={vitalFew} usefulMany={usefulMany} onGoToAssign={() => setActiveTab("assign")} />
             </div>
           )}

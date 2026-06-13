@@ -12,13 +12,7 @@ import type {
 import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { Highlighter } from "@/components/ui/highlighter";
-
-interface DrainInfo {
-  slug: string;
-  label: string;
-  hoursPerWeek: number;
-  zone: "A" | "B" | "C";
-}
+import { useDrainLookup, type DrainInfo } from "./shared/useDrainLookup";
 
 interface PayoffProps {
   vitalFew: DrainInfo[];
@@ -71,29 +65,16 @@ const CountUp = memo(function CountUp({
   );
 });
 
-function formatDollars(n: number): string {
-  return "$" + Math.round(n).toLocaleString();
-}
-
 export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffProps) {
   const chosenSolutions = useAuditStore((s) => s.chosenSolutions);
   const solutionScores = useAuditStore((s) => s.solutionScores);
-  const paretoResult = useAuditStore((s) => s.paretoResult);
   const salary = useAuditStore((s) => s.salary);
   const hourlyRate = useAuditStore((s) => s.hourlyRate);
   const payMode = useAuditStore((s) => s.payMode);
   const workHoursPerWeek = useAuditStore((s) => s.workHoursPerWeek);
 
-  const drainBySlug = useMemo(() => {
-    const map = new Map<string, DrainInfo>();
-    for (const d of [...vitalFew, ...usefulMany]) {
-      map.set(d.slug, d);
-    }
-    return map;
-  }, [vitalFew, usefulMany]);
+  const { drainBySlug } = useDrainLookup(vitalFew, usefulMany);
 
-  // Compute effective hourly rate — use 0 when no pay info provided,
-  // matching the Analyzer engine (no invented $50 fallback)
   const effectiveRate = useMemo(() => {
     if (payMode === "hourly" && hourlyRate > 0) return hourlyRate;
     if (salary > 0 && workHoursPerWeek > 0) {
@@ -104,19 +85,15 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
 
   const hasPayInfo = effectiveRate > 0;
 
-  // Build the inputs for computePayoff
   const payoff = useMemo(() => {
-    // Build waste buckets from the drains we have
     const bucketMap = new Map<string, WasteBucket>();
     for (const [slug, drain] of drainBySlug) {
       bucketMap.set(slug, { slug, wasteHours: drain.hoursPerWeek });
     }
     const buckets = Array.from(bucketMap.values());
 
-    // Build ChosenSolution array for the engine
     const chosen: ChosenSolution[] = chosenSolutions.map((sol) => {
       const scores = solutionScores[sol.id] ?? { effort: 2, impact: 2 };
-      // Find primary waste slug from our known drains
       let primarySlug = sol.wasteSlugs[0] ?? "";
       for (const slug of sol.wasteSlugs) {
         if (drainBySlug.has(slug)) {
@@ -145,7 +122,6 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
     return computePayoff(buckets, chosen, effectiveRate, 48);
   }, [chosenSolutions, solutionScores, drainBySlug, effectiveRate]);
 
-  // Build "if-then" statements
   const ifThenItems = useMemo(() => {
     return chosenSolutions.map((sol) => {
       const credited = payoff.creditByRow[sol.id] ?? 0;
@@ -159,9 +135,11 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
 
   const totalWasteHoursWeekly = payoff.totalWasteHours;
   const reclaimableWeekly = payoff.fullPotentialHours;
+  const quickWinWeekly = payoff.quickWinHours;
   const afterWasteWeekly = Math.max(0, totalWasteHoursWeekly - reclaimableWeekly);
   const reclaimableYearly = reclaimableWeekly * 48;
   const reclaimableDollarsYearly = payoff.fullPotentialDollarsPerYear;
+  const quickWinDollarsYearly = payoff.quickWinDollarsPerYear;
   const doNothingHoursYear = totalWasteHoursWeekly * 48;
   const doNothingWeeks = doNothingHoursYear / 40;
   const doNothingDollars = totalWasteHoursWeekly * 48 * effectiveRate;
@@ -174,6 +152,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
 
   const hasReclaimable = reclaimableWeekly > 0;
   const hasAnyWaste = totalWasteHoursWeekly > 0;
+  const hasQuickWins = quickWinCount > 0 && quickWinWeekly > 0;
 
   return (
     <div>
@@ -181,6 +160,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
       <div className="surface-card p-8 mb-6" style={{ borderTop: "4px solid var(--color-reclaim)" }}>
         {hasReclaimable ? (
           <>
+            {/* Full potential */}
             <div className="text-center mb-8">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <AnimatedEmoji emoji="🎯" animation="pulse" size="lg" />
@@ -189,7 +169,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
                     className="text-sm uppercase tracking-wider font-medium"
                     style={{ color: "var(--color-reclaim)" }}
                   >
-                    Reclaimable per week
+                    You could reclaim
                   </span>
                 </Highlighter>
               </div>
@@ -200,12 +180,54 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
                 <CountUp
                   to={reclaimableWeekly}
                   decimals={1}
-                  suffix=" hrs"
+                  suffix=" hrs/week"
                   className="text-5xl font-bold"
                   style={{ color: "var(--color-reclaim)" }}
                 />
               </div>
             </div>
+
+            {/* Quick-win split — only show when there are actual quick wins */}
+            {hasQuickWins && reclaimableWeekly !== quickWinWeekly && (
+              <div className="flex items-stretch justify-center gap-4 mb-8 flex-wrap">
+                <div
+                  className="text-center p-4 rounded-xl flex-1 min-w-[160px] max-w-[220px]"
+                  style={{ backgroundColor: "rgba(196, 24, 106, 0.06)" }}
+                >
+                  <div className="text-xs uppercase tracking-wider mb-1 font-medium" style={{ color: "var(--color-reclaim)" }}>
+                    🤩 Pearls only
+                  </div>
+                  <CountUp
+                    to={quickWinWeekly}
+                    decimals={1}
+                    suffix=" hrs/week"
+                    className="text-xl font-bold"
+                    style={{ color: "var(--color-reclaim)" }}
+                  />
+                  <div className="text-[10px] mt-1" style={{ color: "var(--color-ink-soft)" }}>
+                    what you&apos;ll save soon
+                  </div>
+                </div>
+                <div
+                  className="text-center p-4 rounded-xl flex-1 min-w-[160px] max-w-[220px]"
+                  style={{ backgroundColor: "rgba(237, 178, 21, 0.06)" }}
+                >
+                  <div className="text-xs uppercase tracking-wider mb-1 font-medium" style={{ color: "var(--color-gold)" }}>
+                    All fixes
+                  </div>
+                  <CountUp
+                    to={reclaimableWeekly}
+                    decimals={1}
+                    suffix=" hrs/week"
+                    className="text-xl font-bold"
+                    style={{ color: "var(--color-gold)" }}
+                  />
+                  <div className="text-[10px] mt-1" style={{ color: "var(--color-ink-soft)" }}>
+                    full potential
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="text-center">
               <div className="flex items-center justify-center gap-2 mb-2">
@@ -214,14 +236,14 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
                   className="text-sm uppercase tracking-wider font-medium"
                   style={{ color: "var(--color-reclaim)" }}
                 >
-                  That&apos;s this much per year
+                  That adds up to
                 </span>
               </div>
               <div className="flex items-center justify-center gap-3 flex-wrap">
                 <CountUp
                   to={reclaimableYearly}
                   decimals={0}
-                  suffix=" hours"
+                  suffix=" hours/year"
                   className="text-3xl font-bold"
                   style={{ color: "var(--color-reclaim)" }}
                 />
@@ -242,6 +264,14 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
                   </span>
                 )}
               </div>
+              {hasPayInfo && hasQuickWins && quickWinDollarsYearly > 0 && (
+                <div className="text-xs mt-2" style={{ color: "var(--color-ink-soft)" }}>
+                  Pearls alone save{" "}
+                  <span className="font-semibold" style={{ color: "var(--color-reclaim)" }}>
+                    ${Math.round(quickWinDollarsYearly).toLocaleString()}/year
+                  </span>
+                </div>
+              )}
             </div>
           </>
         ) : (
@@ -252,7 +282,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
               style={{ color: "var(--color-ink-soft)" }}
             >
               {hasAnyWaste
-                ? "The selected fixes don't map to any of your current waste sources, so there's nothing to reclaim yet. Try picking fixes that target your actual drains."
+                ? "The fixes you picked don\u2019t target any of your drains, so there\u2019s nothing to reclaim yet. Go back to Assign Fixes and choose ones that match your waste sources."
                 : "No waste hours to reclaim. Run the Pareto Analyzer first to identify where your time goes."}
             </p>
           </div>
@@ -262,7 +292,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
             className="text-xs text-center mt-4 italic"
             style={{ color: "var(--color-ink-soft)" }}
           >
-            No salary or hourly rate provided — add your pay info in the analyzer for dollar estimates.
+            Want to see this in dollars? Add your pay info in the Waste Finder to unlock dollar estimates.
           </p>
         )}
       </div>
@@ -276,7 +306,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
               fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
             }}
           >
-            If you {chosenSolutions.length === 1 ? "do this fix" : `do these ${chosenSolutions.length} fixes`}:
+            Here&apos;s what each fix saves you:
           </h3>
           <ul className="space-y-2">
             {ifThenItems.map((item, i) => (
@@ -292,13 +322,14 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
                   <strong>{item.title}</strong>
                   <span style={{ color: "var(--color-ink-soft)" }}>
                     {" "}
-                    &rarr; save{" "}
+                    &rarr;{" "}
                     <span
                       className="font-figures font-semibold"
                       style={{ color: "var(--color-reclaim)" }}
                     >
                       {item.reclaim.toFixed(1)} hrs/week
                     </span>
+                    {" "}back
                   </span>
                 </span>
               </motion.li>
@@ -337,7 +368,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
                 className="text-xs mt-1"
                 style={{ color: "var(--color-ink-soft)" }}
               >
-                of waste
+                wasted every week
               </div>
             </motion.div>
 
@@ -365,7 +396,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
                 className="text-xs uppercase tracking-wider mb-1"
                 style={{ color: "var(--color-ink-soft)" }}
               >
-                Your week after
+                Your week after these fixes
               </div>
               <CountUp
                 to={afterWasteWeekly}
@@ -378,14 +409,14 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
                 className="text-xs mt-1"
                 style={{ color: "var(--color-ink-soft)" }}
               >
-                of waste
+                of waste left
               </div>
             </motion.div>
           </div>
         </div>
       )}
 
-      {/* Cost of Doing Nothing — only meaningful when there's actual waste */}
+      {/* Cost of Doing Nothing */}
       {hasAnyWaste && (
         <div
           className="rounded-xl p-8 mb-6"
@@ -404,12 +435,12 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
                   color: "var(--color-waste)",
                 }}
               >
-                The cost of doing nothing
+                What happens if you don&apos;t fix this
               </h3>
             </Highlighter>
           </div>
           <p className="text-sm mb-4" style={{ color: "var(--color-ink-soft)" }}>
-            If you change nothing in the next 12 months:
+            In the next 12 months, without any changes:
           </p>
 
           <div className="space-y-3 mb-6">
@@ -421,21 +452,21 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
             >
               <span className="flex-shrink-0" aria-hidden="true">💸</span>
               <span>
-                You&rsquo;ll waste{" "}
+                You&rsquo;ll lose{" "}
                 <CountUp
                   to={doNothingHoursYear}
                   decimals={0}
                   className="font-bold"
                   style={{ color: "var(--color-waste)" }}
                 />{" "}
-                hours &mdash; that&rsquo;s{" "}
+                hours to the same drains &mdash; that&rsquo;s{" "}
                 <CountUp
                   to={doNothingWeeks}
                   decimals={1}
                   className="font-bold"
                   style={{ color: "var(--color-waste)" }}
                 />{" "}
-                full work weeks
+                full work weeks gone
               </span>
             </motion.div>
 
@@ -448,14 +479,15 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
               >
                 <span className="flex-shrink-0" aria-hidden="true">💸</span>
                 <span>
-                  That costs{" "}
+                  That&rsquo;s{" "}
                   <CountUp
                     to={doNothingDollars}
                     decimals={0}
                     prefix="$"
                     className="font-bold"
                     style={{ color: "var(--color-waste)" }}
-                  />
+                  />{" "}
+                  of your time burned
                 </span>
               </motion.div>
             )}
@@ -470,7 +502,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
           >
             <ShimmerButton
               borderRadius="12px"
-              className="px-10 py-4 text-base font-bold"
+              className="px-10 py-4 text-base font-bold animate-cta-pulse"
               onClick={() => {
                 window.scrollTo({ top: 0, behavior: "smooth" });
                 onGoToAssign?.();
@@ -478,8 +510,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
             >
               <span className="flex items-center gap-2">
                 <AnimatedEmoji emoji="🔥" animation="bounce" size="sm" />
-                Start with your{" "}
-                {quickWinCount > 0 ? "first quick win" : "biggest win"}
+                Start with {quickWinCount > 0 ? "your easiest win" : "what matters most"}
               </span>
             </ShimmerButton>
           </motion.div>

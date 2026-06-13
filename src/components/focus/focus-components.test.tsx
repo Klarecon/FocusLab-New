@@ -58,6 +58,7 @@ vi.mock("recharts", () => ({
   Tooltip: () => null,
   Cell: () => null,
   ReferenceArea: () => null,
+  ReferenceLine: () => null,
 }));
 
 vi.mock("@/components/ui/AnimatedEmoji", () => ({
@@ -176,7 +177,7 @@ describe("SolutionPicker", () => {
       />,
     );
 
-    expect(screen.getByText(/No pre-built fixes/)).toBeInTheDocument();
+    expect(screen.getByText(/don't have pre-built fixes/)).toBeInTheDocument();
   });
 
   it("adding a solution updates store", () => {
@@ -231,7 +232,7 @@ describe("FocusTable", () => {
 
     // The owner button shows the default owner label (Team for this solution).
     // Both desktop table and mobile card render it, so use getAllByText.
-    const ownerButtons = screen.getAllByText("Team");
+    const ownerButtons = screen.getAllByText("My team");
     expect(ownerButtons.length).toBeGreaterThan(0);
     const ownerButton = ownerButtons[0].closest("button");
     expect(ownerButton).toBeTruthy();
@@ -250,7 +251,7 @@ describe("FocusTable", () => {
     // FocusTable renders both a desktop table and mobile cards, so the empty
     // message may appear once (single early-return).
     // Use getAllByText since there could be duplicates in the mock DOM.
-    const matches = screen.getAllByText(/No fixes selected yet/);
+    const matches = screen.getAllByText(/No fixes here yet/);
     expect(matches.length).toBeGreaterThan(0);
   });
 });
@@ -263,7 +264,7 @@ describe("EviMatrix", () => {
       <EviMatrix vitalFew={mockVitalFew} usefulMany={mockUsefulMany} />,
     );
 
-    const matches = screen.getAllByText(/No fixes to plot yet/);
+    const matches = screen.getAllByText(/Nothing to map yet/);
     expect(matches.length).toBeGreaterThan(0);
   });
 });
@@ -279,7 +280,7 @@ describe("Payoff", () => {
       <Payoff vitalFew={mockVitalFew} usefulMany={mockUsefulMany} />,
     );
 
-    expect(screen.getByText(/Reclaimable per week/)).toBeInTheDocument();
+    expect(screen.getByText(/You could reclaim/)).toBeInTheDocument();
   });
 
   it("shows no-pay-info note when no salary set", () => {

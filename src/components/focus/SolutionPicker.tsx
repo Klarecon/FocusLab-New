@@ -222,7 +222,7 @@ function DrainSection({
             className="text-sm font-medium mb-3"
             style={{ color: "var(--color-ink-soft)" }}
           >
-            Fixes that actually work:
+            Proven fixes for this:
           </p>
           <div className="space-y-2">
             {solutions.map((sol) => (
@@ -240,7 +240,7 @@ function DrainSection({
           className="text-sm italic py-3"
           style={{ color: "var(--color-ink-soft)" }}
         >
-          No pre-built fixes for this one yet — add your own below.
+          We don&apos;t have pre-built fixes for this one yet. Add your own below — you probably know what would help.
         </p>
       )}
     </motion.div>
@@ -296,8 +296,8 @@ export default function SolutionPicker({
             </h2>
             <p className="text-sm mb-6" style={{ color: "var(--color-ink-soft)" }}>
               {vitalFew.length === 1
-                ? "This one thing eats the most time. Start here."
-                : "These few things eat most of your wasted time. Start here."}
+                ? "This one thing is doing the most damage. Fix it first."
+                : "These are the ones doing the most damage. Fix these first and you\u2019ll feel the difference."}
             </p>
           </div>
 
@@ -338,7 +338,7 @@ export default function SolutionPicker({
             >
               &#9654;
             </motion.span>
-            Also worth fixing (Zone B) &mdash; {usefulMany.length} more{" "}
+            Also eating your time &mdash; {usefulMany.length} more{" "}
             {usefulMany.length === 1 ? "drain" : "drains"}
           </button>
 
@@ -371,7 +371,7 @@ export default function SolutionPicker({
           className="block text-sm font-medium mb-2"
           style={{ color: "var(--color-ink)" }}
         >
-          Add your own fix
+          Got a fix in mind?
         </label>
         <div className="flex flex-col gap-2 sm:flex-row">
           <select
@@ -397,7 +397,7 @@ export default function SolutionPicker({
             onChange={(e) => setCustomFix(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleAddCustom()}
             aria-label="Custom fix description"
-            placeholder="e.g., Move standups to Slack..."
+            placeholder="e.g., Cancel the Monday status call..."
             className="flex-1 px-3 py-2 rounded-lg text-sm border focus:outline-none"
             style={{
               backgroundColor: "var(--color-paper)",
