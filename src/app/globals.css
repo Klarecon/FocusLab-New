@@ -9,7 +9,7 @@
   /* Core palette — Bold Warm (inspired by reference) */
   --color-paper: #f4edde;
   --color-ink: #2c2418;
-  --color-ink-soft: #7a6f5f;
+  --color-ink-soft: #655b4d;
   --color-waste: #e03e12;
   --color-reclaim: #c4186a;
   --color-gold: #edb215;
@@ -215,4 +215,22 @@ h4 { font-size: 1.25rem; }
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-ink-soft);
+}
+
+/* ---- Reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animate-shimmer-slide,
+  .animate-spin-around,
+  .animate-orbit {
+    animation: none !important;
+  }
 }

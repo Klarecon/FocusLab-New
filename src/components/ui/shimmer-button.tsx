@@ -51,6 +51,7 @@ export const ShimmerButton = React.forwardRef<
       >
         {/* Shimmer layer */}
         <div
+          aria-hidden="true"
           className={cn(
             "-z-30 blur-[2px]",
             "absolute inset-0 overflow-visible [container-type:size]"
@@ -65,6 +66,7 @@ export const ShimmerButton = React.forwardRef<
 
         {/* Inner shadow overlay */}
         <div
+          aria-hidden="true"
           className={cn(
             "absolute inset-0 size-full",
             "rounded-2xl px-4 py-1.5 text-sm font-medium shadow-[inset_0_-8px_10px_#ffffff1f]",
@@ -76,6 +78,7 @@ export const ShimmerButton = React.forwardRef<
 
         {/* Background fill */}
         <div
+          aria-hidden="true"
           className="absolute -z-20 [background:var(--bg)] [border-radius:var(--radius)]"
           style={{
             inset: "var(--cut)",

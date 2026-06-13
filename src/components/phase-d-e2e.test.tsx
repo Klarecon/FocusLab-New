@@ -43,6 +43,7 @@ vi.mock("framer-motion", () => {
     AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
     useMotionValue: () => ({ get: () => 0, set: () => {} }),
     useInView: () => true,
+    useReducedMotion: () => false,
     animate: () => ({ stop: () => {} }),
   };
 });
@@ -386,7 +387,7 @@ describe("Full flow — store state propagation", () => {
     render(<FocusStage />);
 
     // FocusStage should render the header
-    expect(screen.getByText("Focus Table & EVI Matrix")).toBeTruthy();
+    expect(screen.getByText("Fix What's Draining You")).toBeTruthy();
 
     // The Assign Fixes tab should be active by default
     // SolutionPicker should show vital-few drains from the store

@@ -48,6 +48,35 @@ export default function FocusStage() {
     };
   }, [paretoResult]);
 
+  if (!paretoResult || paretoResult.categories.length === 0) {
+    return (
+      <div className="text-center py-20">
+        <div className="text-5xl mb-4" aria-hidden="true">🤔</div>
+        <h1
+          className="text-3xl sm:text-4xl font-bold mb-3"
+          style={{
+            fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
+          }}
+        >
+          Nothing to fix yet
+        </h1>
+        <p
+          className="text-base mb-6"
+          style={{ color: "var(--color-ink-soft)" }}
+        >
+          Find your time drains first, then come back here to fix them.
+        </p>
+        <a
+          href="/analyzer"
+          className="inline-block px-8 py-3 rounded-xl text-white font-bold text-base no-underline"
+          style={{ backgroundColor: "var(--color-reclaim)" }}
+        >
+          Find your drains first
+        </a>
+      </div>
+    );
+  }
+
   return (
     <div>
       {/* Page header */}
@@ -58,22 +87,27 @@ export default function FocusStage() {
             fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
           }}
         >
-          Focus Table & EVI Matrix
+          Fix What&apos;s Draining You
         </h1>
         <p style={{ color: "var(--color-ink-soft)" }}>
-          Pick research-backed fixes for your biggest drains, score them, and see
-          your payoff.
+          Choose fixes for your biggest time drains, score how hard they are vs. how much they help, and see what you get back.
         </p>
       </div>
 
       {/* Tabs */}
       <div
+        role="tablist"
+        aria-label="Focus tool views"
         className="flex gap-1 p-1 rounded-xl mb-8"
         style={{ backgroundColor: "var(--color-line)" }}
       >
         {TABS.map((tab) => (
           <button
             key={tab.id}
+            role="tab"
+            aria-selected={activeTab === tab.id}
+            aria-controls={`tabpanel-${tab.id}`}
+            id={`tab-${tab.id}`}
             onClick={() => setActiveTab(tab.id)}
             className="relative flex-1 flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors duration-200 cursor-pointer"
             style={{
@@ -99,6 +133,9 @@ export default function FocusStage() {
       <AnimatePresence mode="wait">
         <motion.div
           key={activeTab}
+          role="tabpanel"
+          id={`tabpanel-${activeTab}`}
+          aria-labelledby={`tab-${activeTab}`}
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}

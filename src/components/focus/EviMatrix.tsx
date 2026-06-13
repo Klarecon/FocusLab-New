@@ -236,28 +236,53 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
             fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
           }}
         >
-          Effort x Impact Matrix
+          Effort vs. Impact
         </h2>
         <p className="text-sm" style={{ color: "var(--color-ink-soft)" }}>
-          Click a dot to adjust its effort and impact scores.
+          Each dot is a fix you picked. Click one to adjust how hard it is and how much it helps.
         </p>
+      </div>
+
+      {/* Screen reader accessible data table for chart */}
+      <div className="sr-only" role="table" aria-label="Effort vs Impact scores for selected fixes">
+        <div role="rowgroup">
+          <div role="row">
+            <span role="columnheader">Fix</span>
+            <span role="columnheader">Source</span>
+            <span role="columnheader">Effort</span>
+            <span role="columnheader">Impact</span>
+            <span role="columnheader">Zone</span>
+          </div>
+        </div>
+        <div role="rowgroup">
+          {dotData.map((d) => (
+            <div role="row" key={d.id}>
+              <span role="cell">{d.title}</span>
+              <span role="cell">{d.sourceName}</span>
+              <span role="cell">{EFFORT_LABELS[d.x] ?? d.x}</span>
+              <span role="cell">{IMPACT_LABELS[d.y] ?? d.y}</span>
+              <span role="cell">Zone {d.zone}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div
         className="surface-card p-4 relative"
+        aria-hidden="true"
         style={{ borderTop: "4px solid", borderImage: "linear-gradient(to right, #e03e12, #edb215) 1" }}
       >
         {/* Quadrant labels */}
-        <div className="hidden sm:block absolute top-6 left-10 z-10 text-xs font-medium opacity-60 pointer-events-none">
+        <div className="hidden sm:block absolute top-6 left-10 z-10 text-xs font-medium opacity-60 pointer-events-none" aria-hidden="true">
           🤩 Quick Wins
         </div>
-        <div className="hidden sm:block absolute top-6 right-10 z-10 text-xs font-medium opacity-60 pointer-events-none">
+        <div className="hidden sm:block absolute top-6 right-10 z-10 text-xs font-medium opacity-60 pointer-events-none" aria-hidden="true">
           💪 Major Projects
         </div>
-        <div className="hidden sm:block absolute bottom-14 left-10 z-10 text-xs font-medium opacity-60 pointer-events-none">
+        <div className="hidden sm:block absolute bottom-14 left-10 z-10 text-xs font-medium opacity-60 pointer-events-none" aria-hidden="true">
           🤷 Fill-ins
         </div>
-        <div className="hidden sm:block absolute bottom-14 right-10 z-10 text-xs font-medium opacity-60 pointer-events-none">
+        <div className="hidden sm:block absolute bottom-14 right-10 z-10 text-xs font-medium opacity-60 pointer-events-none" aria-hidden="true">
           😬 Thankless
         </div>
 
@@ -362,7 +387,7 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
           ))}
           <div className="flex items-center gap-1.5 text-xs">
             <span style={{ color: "var(--color-ink-soft)" }}>
-              Dot size = reclaim potential
+              Bigger dot = more time you get back
             </span>
           </div>
         </div>

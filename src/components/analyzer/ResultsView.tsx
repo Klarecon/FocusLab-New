@@ -41,6 +41,18 @@ function truncate(s: string): string {
 /* --- Severity tiers --- */
 
 function severityReaction(hoursPerWeek: number) {
+  if (hoursPerWeek <= 0) {
+    return {
+      emoji: "🤔",
+      text: "Your inputs didn't surface any avoidable waste",
+    };
+  }
+  if (hoursPerWeek < 1) {
+    return {
+      emoji: "😌",
+      text: `Only ${fmtHours(hoursPerWeek)} hours/week — you're in pretty good shape`,
+    };
+  }
   if (hoursPerWeek < 5) {
     return {
       emoji: "😌",
@@ -127,16 +139,20 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
 
   const totalCost = paretoResult.totalAnnualWasteCost;
   const totalHours = paretoResult.totalWeeklyWasteHours;
+  const hasWaste = totalHours > 0;
+  const hasCost = totalCost > 0;
   const severity = severityReaction(totalHours);
   const vitalFew = paretoResult.categories.filter((c) => c.isVitalFew);
+  const safeWorkHours = workHoursPerWeek > 0 ? workHoursPerWeek : 1; // guard division by zero
 
   // Chart data from the engine result
   const chartData = useMemo(() => {
+    const zoneBySlug = new Map(paretoResult.categories.map((c) => [c.categorySlug, c.zone]));
     return paretoResult.chart.map((pt) => ({
       name: truncate(pt.label ?? pt.categorySlug),
       hours: pt.hours,
       cumulative: pt.cumulativePercent,
-      zone: paretoResult.categories.find((c) => c.categorySlug === pt.categorySlug)?.zone ?? "C",
+      zone: zoneBySlug.get(pt.categorySlug) ?? "C",
       slug: pt.categorySlug,
     }));
   }, [paretoResult]);
@@ -147,6 +163,8 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
       <AnimatePresence>
         {phase !== "full" && (
           <motion.div
+            aria-live="assertive"
+            aria-atomic="true"
             initial={{ opacity: 1 }}
             animate={{ opacity: phase === "dark" ? 1 : 1 }}
             exit={{ opacity: 0 }}
@@ -164,30 +182,87 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
                   transition={{ duration: 0.6, ease: "easeOut" }}
                   className="text-center"
                 >
-                  <div className="flex items-center justify-center gap-3 mb-6">
-                    <AnimatedEmoji emoji={"💸"} animation="explode" size="xl" />
-                  </div>
-                  <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="text-5xl sm:text-6xl md:text-7xl font-bold font-figures leading-none"
-                    style={{
-                      color: "var(--color-waste)",
-                      textShadow: "0 0 60px rgba(224, 62, 18, 0.3)",
-                    }}
-                  >
-                    {fmtDollars(totalCost)}/year
-                  </motion.p>
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.8 }}
-                    className="mt-6 text-xl"
-                    style={{ color: "rgba(243, 237, 225, 0.7)" }}
-                  >
-                    That&apos;s what your waste costs.
-                  </motion.p>
+                  {hasWaste && hasCost ? (
+                    <>
+                      <div className="flex items-center justify-center gap-3 mb-6">
+                        <AnimatedEmoji emoji={"💸"} animation="explode" size="xl" />
+                      </div>
+                      <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                        className="text-5xl sm:text-6xl md:text-7xl font-bold font-figures leading-none"
+                        style={{
+                          color: "var(--color-waste)",
+                          textShadow: "0 0 60px rgba(224, 62, 18, 0.3)",
+                        }}
+                      >
+                        {fmtDollars(totalCost)}/year
+                      </motion.p>
+                      <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.8 }}
+                        className="mt-6 text-xl"
+                        style={{ color: "rgba(243, 237, 225, 0.7)" }}
+                      >
+                        That&apos;s what your waste costs.
+                      </motion.p>
+                    </>
+                  ) : hasWaste ? (
+                    <>
+                      <div className="flex items-center justify-center gap-3 mb-6">
+                        <AnimatedEmoji emoji={"😬"} animation="shake" size="xl" />
+                      </div>
+                      <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                        className="text-5xl sm:text-6xl md:text-7xl font-bold font-figures leading-none"
+                        style={{
+                          color: "var(--color-waste)",
+                          textShadow: "0 0 60px rgba(224, 62, 18, 0.3)",
+                        }}
+                      >
+                        {fmtHours(totalHours)} hrs/week
+                      </motion.p>
+                      <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.8 }}
+                        className="mt-6 text-xl"
+                        style={{ color: "rgba(243, 237, 225, 0.7)" }}
+                      >
+                        of avoidable waste every week.
+                      </motion.p>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex items-center justify-center gap-3 mb-6">
+                        <AnimatedEmoji emoji={"🤔"} animation="shake" size="xl" />
+                      </div>
+                      <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                        className="text-3xl sm:text-4xl font-bold leading-tight"
+                        style={{
+                          color: "rgba(243, 237, 225, 0.9)",
+                        }}
+                      >
+                        No avoidable waste found
+                      </motion.p>
+                      <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.8 }}
+                        className="mt-6 text-xl"
+                        style={{ color: "rgba(243, 237, 225, 0.7)" }}
+                      >
+                        Either you&apos;re incredibly efficient, or the estimates were too conservative.
+                      </motion.p>
+                    </>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -206,35 +281,80 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
           <div className="flex items-center justify-center gap-2 mb-4">
             <AnimatedEmoji emoji={severity.emoji} animation="shake" size="xl" />
           </div>
-          <h2
-            className="font-figures font-bold mb-3 text-4xl sm:text-5xl"
-            style={{ color: "var(--color-waste)" }}
-          >
-            <Highlighter action="circle" color="var(--color-waste)" strokeWidth={2} isView>
-              {fmtDollars(totalCost)}/year
-            </Highlighter>
-          </h2>
-          <p className="text-xl font-medium" style={{ color: "var(--color-ink-soft)" }}>
-            {severity.text}
-          </p>
-          <p className="text-base mt-2 font-medium" style={{ color: "var(--color-ink-soft)" }}>
-            {fmtHours(totalHours)} hrs/week of avoidable waste &middot;{" "}
-            <span style={{ color: "var(--color-waste)", fontWeight: 700 }}>
-              {Math.min(100, Math.round((totalHours / workHoursPerWeek) * 100))}%
-            </span>{" "}
-            of your work week
-          </p>
+          {hasWaste ? (
+            <>
+              <h2
+                className="font-figures font-bold mb-3 text-4xl sm:text-5xl"
+                style={{ color: "var(--color-waste)" }}
+              >
+                {hasCost ? (
+                  <Highlighter action="circle" color="var(--color-waste)" strokeWidth={2} isView>
+                    {fmtDollars(totalCost)}/year
+                  </Highlighter>
+                ) : (
+                  <Highlighter action="circle" color="var(--color-waste)" strokeWidth={2} isView>
+                    {fmtHours(totalHours)} hrs/week
+                  </Highlighter>
+                )}
+              </h2>
+              <p className="text-xl font-medium" style={{ color: "var(--color-ink-soft)" }}>
+                {severity.text}
+              </p>
+              <p className="text-base mt-2 font-medium" style={{ color: "var(--color-ink-soft)" }}>
+                {fmtHours(totalHours)} hrs/week of avoidable waste &middot;{" "}
+                <span style={{ color: "var(--color-waste)", fontWeight: 700 }}>
+                  {Math.min(100, Math.round((totalHours / safeWorkHours) * 100))}%
+                </span>{" "}
+                of your work week
+              </p>
+            </>
+          ) : (
+            <>
+              <h2
+                className="font-bold mb-3 text-3xl sm:text-4xl"
+                style={{
+                  fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
+                  color: "var(--color-ink)",
+                }}
+              >
+                No avoidable waste detected
+              </h2>
+              <p className="text-base font-medium" style={{ color: "var(--color-ink-soft)" }}>
+                All your time entries came out at zero avoidable hours. That&apos;s either great news
+                or a sign the estimates were too conservative. Try adjusting the avoidable
+                percentages and re-running.
+              </p>
+            </>
+          )}
         </div>
 
         {/* -- PARETO CHART -- */}
+        {hasWaste && (
         <div className="surface-card p-4 sm:p-6 mb-10">
           <h3 className="text-lg font-semibold mb-1" style={{ color: "var(--color-ink)" }}>
-            Your Pareto Chart
+            Where your time goes
           </h3>
           <p className="text-xs mb-4" style={{ color: "var(--color-ink-soft)" }}>
-            Bars = hours/week waste. Line = cumulative %. Red bars are your vital few (Zone A).
+            Bars = hours/week wasted on each drain. Line = running total. The red bars are your biggest offenders.
           </p>
-          <div style={{ width: "100%", height: 420 }}>
+          {/* Screen reader accessible data */}
+          <table className="sr-only">
+            <caption>Waste hours per week by source</caption>
+            <thead>
+              <tr><th>Source</th><th>Hours/week</th><th>Cumulative %</th><th>Zone</th></tr>
+            </thead>
+            <tbody>
+              {chartData.map((pt) => (
+                <tr key={pt.slug}>
+                  <td>{pt.name}</td>
+                  <td>{pt.hours.toFixed(1)}</td>
+                  <td>{pt.cumulative.toFixed(0)}%</td>
+                  <td>Zone {pt.zone}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div style={{ width: "100%", height: 420 }} aria-hidden="true">
             <ResponsiveContainer>
               <ComposedChart
                 data={chartData}
@@ -319,12 +439,14 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
             </ResponsiveContainer>
           </div>
         </div>
+        )}
 
         {/* -- SCORECARD: VITAL FEW -- */}
+        {vitalFew.length > 0 && (
         <div className="mb-10">
           <h3 className="text-xl font-bold mb-5" style={{ color: "var(--color-ink)" }}>
             <Highlighter action="underline" color="var(--color-waste)" isView>
-              Your Vital Few (Zone A)
+              {vitalFew.length === 1 ? "Your #1 Drain" : "Your Biggest Drains"}
             </Highlighter>
           </h3>
           <div className="space-y-4">
@@ -347,7 +469,7 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
                   }}
                 >
                   <div className="flex items-start gap-3">
-                    <span className="text-3xl flex-shrink-0">{source?.emoji ?? "🔥"}</span>
+                    <span className="text-3xl flex-shrink-0" aria-hidden="true">{source?.emoji ?? "🔥"}</span>
                     <div className="flex-1">
                       <h4 className="font-bold text-lg mb-1" style={{ color: "var(--color-ink)" }}>
                         {item.label ?? item.categorySlug}
@@ -358,9 +480,15 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
                           {fmtHours(item.hoursPerWeek)} hrs/week
                         </strong>{" "}
                         on this — that&apos;s{" "}
-                        <strong>{Math.round(annualHrs)} hours/year</strong> (
-                        <strong style={{ color: "var(--color-waste)" }}>{fmtDollars(annualCost)}</strong>
-                        ).
+                        <strong>{Math.round(annualHrs)} hours/year</strong>
+                        {annualCost > 0 && (
+                          <>
+                            {" "}(
+                            <strong style={{ color: "var(--color-waste)" }}>{fmtDollars(annualCost)}</strong>
+                            )
+                          </>
+                        )}
+                        .
                       </p>
                       {benchmark && benchmark.direction !== "at" && (
                         <p
@@ -384,13 +512,14 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
             })}
           </div>
         </div>
+        )}
 
         {/* -- Useful many (Zone B) summary -- */}
         {paretoResult.categories.filter((c) => c.zone === "B").length > 0 && (
           <div className="surface-card p-6 mb-10" style={{ borderLeft: "4px solid var(--color-gold)" }}>
             <h3 className="text-lg font-bold mb-3" style={{ color: "var(--color-ink)" }}>
               <Highlighter action="underline" color="var(--color-gold)" isView>
-                The Useful Many (Zone B)
+                Also eating your time
               </Highlighter>
             </h3>
             <div className="space-y-2">
@@ -437,19 +566,27 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
         )}
 
         {/* -- Fix it CTA -- */}
-        <div className="text-center py-10">
-          <p className="text-base mb-4 font-medium" style={{ color: "var(--color-ink-soft)" }}>
-            Want to prioritize what to fix first?
-          </p>
-          <Link href="/focus" className="no-underline">
-            <ShimmerButton
-              borderRadius="12px"
-              className="px-10 py-4 text-base font-bold"
-            >
-              Fix it with Focus Table →
-            </ShimmerButton>
-          </Link>
-        </div>
+        {hasWaste ? (
+          <div className="text-center py-10">
+            <p className="text-base mb-4 font-medium" style={{ color: "var(--color-ink-soft)" }}>
+              Ready to do something about it?
+            </p>
+            <Link href="/focus" className="no-underline">
+              <ShimmerButton
+                borderRadius="12px"
+                className="px-10 py-4 text-base font-bold"
+              >
+                Pick your fixes &rarr;
+              </ShimmerButton>
+            </Link>
+          </div>
+        ) : (
+          <div className="text-center py-10">
+            <p className="text-base mb-2 font-medium" style={{ color: "var(--color-ink-soft)" }}>
+              Try re-running the audit with adjusted estimates to surface waste worth fixing.
+            </p>
+          </div>
+        )}
 
         {/* -- Restart -- */}
         <div className="text-center pb-10">

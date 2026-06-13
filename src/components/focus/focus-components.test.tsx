@@ -33,6 +33,7 @@ vi.mock("framer-motion", () => ({
   AnimatePresence: ({ children }: any) => children,
   useMotionValue: () => ({ get: () => 0, set: () => {} }),
   useInView: () => true,
+  useReducedMotion: () => false,
   animate: () => ({ stop: () => {} }),
 }));
 
@@ -281,7 +282,7 @@ describe("Payoff", () => {
     expect(screen.getByText(/Reclaimable per week/)).toBeInTheDocument();
   });
 
-  it("shows $50/hr fallback note when no salary set", () => {
+  it("shows no-pay-info note when no salary set", () => {
     const meetingSolutions = solutionsForWaste("meet-status");
     useAuditStore.getState().addSolution(meetingSolutions[0]);
 
@@ -289,7 +290,7 @@ describe("Payoff", () => {
       <Payoff vitalFew={mockVitalFew} usefulMany={mockUsefulMany} />,
     );
 
-    const fallbackMatches = screen.getAllByText(/\$50\/hr default/);
+    const fallbackMatches = screen.getAllByText(/add your pay info/i);
     expect(fallbackMatches.length).toBeGreaterThan(0);
   });
 

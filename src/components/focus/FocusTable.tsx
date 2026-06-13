@@ -58,14 +58,16 @@ function DotRating({
   max = 5,
   activeColor,
   onChange,
+  label,
 }: {
   value: number;
   max?: number;
   activeColor: string;
   onChange: (val: number) => void;
+  label?: string;
 }) {
   return (
-    <div className="flex gap-0.5">
+    <div className="flex gap-0.5" role="group" aria-label={label ?? "Rating"}>
       {Array.from({ length: max }, (_, i) => {
         const n = i + 1;
         const filled = n <= value;
@@ -145,6 +147,7 @@ function TableRow({
       <td className="py-3 px-2">
         <button
           onClick={onCycleOwner}
+          aria-label={`Owner: ${ow.label}. Click to change.`}
           className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium cursor-pointer transition-colors hover:opacity-80 border"
           style={{
             borderColor: "var(--color-line)",
@@ -152,7 +155,7 @@ function TableRow({
             color: "var(--color-ink)",
           }}
         >
-          <span>{ow.emoji}</span>
+          <span aria-hidden="true">{ow.emoji}</span>
           <span>{ow.label}</span>
         </button>
       </td>
@@ -161,6 +164,7 @@ function TableRow({
           value={effort}
           activeColor="var(--color-waste)"
           onChange={onSetEffort}
+          label={`Effort rating for ${solution.title}`}
         />
       </td>
       <td className="py-3 px-2">
@@ -168,6 +172,7 @@ function TableRow({
           value={impact}
           activeColor="var(--color-reclaim)"
           onChange={onSetImpact}
+          label={`Impact rating for ${solution.title}`}
         />
       </td>
       <td
@@ -266,6 +271,7 @@ function MobileCard({
           </span>
           <button
             onClick={onCycleOwner}
+            aria-label={`Owner: ${ow.label}. Click to change.`}
             className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium cursor-pointer border"
             style={{
               borderColor: "var(--color-line)",
@@ -273,7 +279,7 @@ function MobileCard({
               color: "var(--color-ink)",
             }}
           >
-            <span>{ow.emoji}</span>
+            <span aria-hidden="true">{ow.emoji}</span>
             <span>{ow.label}</span>
           </button>
         </div>
@@ -302,6 +308,7 @@ function MobileCard({
             value={effort}
             activeColor="var(--color-waste)"
             onChange={onSetEffort}
+            label={`Effort rating for ${solution.title}`}
           />
         </div>
         <div>
@@ -315,6 +322,7 @@ function MobileCard({
             value={impact}
             activeColor="var(--color-reclaim)"
             onChange={onSetImpact}
+            label={`Impact rating for ${solution.title}`}
           />
         </div>
       </div>
@@ -407,8 +415,8 @@ export default function FocusTable({ vitalFew, usefulMany }: FocusTableProps) {
         </h2>
         <p className="text-sm" style={{ color: "var(--color-ink-soft)" }}>
           {sortedSolutions.length}{" "}
-          {sortedSolutions.length === 1 ? "fix" : "fixes"} selected. Adjust
-          effort, impact, and ownership. Sorted by zone then impact.
+          {sortedSolutions.length === 1 ? "fix" : "fixes"} selected. Tweak
+          the effort, impact, and who owns each one.
         </p>
       </div>
 

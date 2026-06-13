@@ -155,9 +155,10 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
           Estimate hours and how much is avoidable. Don't overthink it.
         </p>
         <motion.div
-          key={Math.round(totalWaste * 10)}
-          initial={{ scale: 1.15 }}
-          animate={{ scale: 1 }}
+          animate={{ scale: [1.08, 1] }}
+          transition={{ duration: 0.15 }}
+          aria-live="polite"
+          aria-atomic="true"
           className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-full"
           style={{
             backgroundColor: "rgba(224, 62, 18, 0.08)",
@@ -194,7 +195,7 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
             >
               {/* Source header */}
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-xl">{src.emoji}</span>
+                <span className="text-xl" aria-hidden="true">{src.emoji}</span>
                 <h4 className="font-semibold text-sm flex-1" style={{ color: "var(--color-ink)" }}>
                   {src.label}
                 </h4>
@@ -220,6 +221,7 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
                       key={c}
                       type="button"
                       onClick={() => setEntry(src.slug, { cadence: c })}
+                      aria-pressed={entry.cadence === c}
                       className="px-3 py-1 text-xs font-semibold capitalize transition-all duration-100"
                       style={{
                         backgroundColor: entry.cadence === c ? "var(--color-ink)" : "transparent",
@@ -253,6 +255,10 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
                         max={maxVal}
                         step={0.25}
                         value={entry.hoursPerDay}
+                        aria-label={`Hours per ${entry.cadence === "daily" ? "day" : "week"} for ${src.label}`}
+                        aria-valuemin={0}
+                        aria-valuemax={maxVal}
+                        aria-valuenow={entry.hoursPerDay}
                         onChange={(e) => setEntry(src.slug, { hoursPerDay: Number(e.target.value) })}
                         className="w-full h-2 rounded-full appearance-none cursor-pointer"
                         style={{
@@ -283,6 +289,8 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
                       key={opt.pct}
                       type="button"
                       onClick={() => setEntry(src.slug, { avoidablePct: opt.pct })}
+                      aria-pressed={entry.avoidablePct === opt.pct}
+                      aria-label={`${opt.label} (${opt.pct}% avoidable)`}
                       className="flex flex-col items-center gap-1 py-3 px-2 rounded-lg text-sm font-semibold transition-all duration-100"
                       style={{
                         border: entry.avoidablePct === opt.pct
@@ -296,7 +304,7 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
                           : "var(--color-ink-soft)",
                       }}
                     >
-                      <span className="text-lg">{opt.emoji}</span>
+                      <span className="text-lg" aria-hidden="true">{opt.emoji}</span>
                       <span>{opt.label}</span>
                     </button>
                   ))}
@@ -310,7 +318,7 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
                   animate={{ opacity: 1 }}
                   className="mt-2 flex items-center gap-2"
                 >
-                  <span className="text-sm">{"😬"}</span>
+                  <span className="text-sm" aria-hidden="true">{"😬"}</span>
                   <span className="text-xs" style={{ color: "var(--color-ink-soft)" }}>
                     Really zero?
                   </span>
@@ -334,6 +342,7 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
       {/* Over-allocation warning */}
       {isOverAllocated && (
         <motion.div
+          role="alert"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           className="surface-card p-5 mb-8 flex items-start gap-3"
@@ -342,7 +351,7 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
             backgroundColor: "rgba(224, 62, 18, 0.06)",
           }}
         >
-          <span className="text-xl flex-shrink-0">😬</span>
+          <span className="text-xl flex-shrink-0" aria-hidden="true">😬</span>
           <div>
             <p className="font-semibold text-sm" style={{ color: "var(--color-waste)" }}>
               Your waste hours ({totalWaste.toFixed(1)} hrs) exceed your work week ({workHoursPerWeek} hrs).

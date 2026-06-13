@@ -21,18 +21,18 @@ const PAIN_PROMPTS: { prompt: string; emoji: string; groups: string[] }[] = [
   { prompt: "Doing the same work twice?", emoji: "🤦", groups: ["Rework", "Creative"] },
   { prompt: "Waiting on other people?", emoji: "😤", groups: ["Waiting & blocked"] },
   { prompt: "Buried in admin busywork?", emoji: "💀", groups: ["Admin", "Reporting"] },
-  { prompt: "Can't focus for more than 20 minutes?", emoji: "🤹", groups: ["Focus", "Doing more than needed"] },
+  { prompt: "Can't focus for more than 20 minutes?", emoji: "🤯", groups: ["Focus", "Doing more than needed"] },
   { prompt: "Too much coordination, not enough real work?", emoji: "🧟", groups: ["Coordination", "Leading vs doing"] },
 ];
 
 /* Role-specific pain prompts */
 const ROLE_PAIN_PROMPTS: Partial<Record<RoleSlug, { prompt: string; emoji: string; groups: string[] }[]>> = {
   marketing: [{ prompt: "Reporting and data-wrangling eating your day?", emoji: "😬", groups: ["Reporting", "Creative"] }],
-  sales: [{ prompt: "CRM admin stealing your selling time?", emoji: "📞", groups: ["CRM & data", "Prospecting", "Quotes & proposals"] }],
-  engineering: [{ prompt: "Tech debt and slow builds grinding you down?", emoji: "💻", groups: ["Code", "Builds & reviews"] }],
-  design: [{ prompt: "File wrangling and revision rounds?", emoji: "🎨", groups: ["Files & assets", "Creative"] }],
+  sales: [{ prompt: "CRM admin stealing your selling time?", emoji: "😤", groups: ["CRM & data", "Prospecting", "Quotes & proposals"] }],
+  engineering: [{ prompt: "Tech debt and slow builds grinding you down?", emoji: "🤦", groups: ["Code", "Builds & reviews"] }],
+  design: [{ prompt: "File wrangling and revision rounds?", emoji: "🫠", groups: ["Files & assets", "Creative"] }],
   manager: [{ prompt: "Back-to-back meetings draining you?", emoji: "😬", groups: ["Meetings", "Admin"] }],
-  executive: [{ prompt: "Calendar gravity pulling you everywhere?", emoji: "👑", groups: ["Leading vs doing"] }],
+  executive: [{ prompt: "Calendar gravity pulling you everywhere?", emoji: "🤯", groups: ["Leading vs doing"] }],
   product: [{ prompt: "Status packaging and firefighting?", emoji: "🫠", groups: ["Reporting", "Coordination"] }],
 };
 
@@ -158,6 +158,8 @@ export default function IntakeStep({ onNext, onBack }: IntakeStepProps) {
           key={count}
           initial={{ scale: 1.3 }}
           animate={{ scale: 1 }}
+          aria-live="polite"
+          aria-atomic="true"
           className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full"
           style={{
             backgroundColor: canContinue ? "rgba(196, 24, 106, 0.1)" : "rgba(224, 62, 18, 0.08)",
@@ -193,6 +195,7 @@ export default function IntakeStep({ onNext, onBack }: IntakeStepProps) {
               <button
                 type="button"
                 onClick={() => handlePainToggle(pain, isExpanded, pi)}
+                aria-expanded={isExpanded}
                 className="w-full surface-card p-4 flex items-center gap-3 text-left transition-all duration-200 hover:shadow-md"
                 style={{
                   borderColor: selectedInGroup > 0 ? "var(--color-waste)" : undefined,
@@ -250,7 +253,7 @@ export default function IntakeStep({ onNext, onBack }: IntakeStepProps) {
                               onChange={() => toggleSource(source)}
                               className="mt-0.5 w-4.5 h-4.5 rounded accent-[var(--color-waste)] flex-shrink-0"
                             />
-                            <span className="flex-shrink-0 text-base">{source.emoji}</span>
+                            <span className="flex-shrink-0 text-base" aria-hidden="true">{source.emoji}</span>
                             <div className="flex-1 min-w-0">
                               <span
                                 className="text-sm font-medium leading-tight block"
@@ -276,6 +279,7 @@ export default function IntakeStep({ onNext, onBack }: IntakeStepProps) {
                           value={customLabels[pi] ?? ""}
                           onChange={(e) => setCustomLabels((prev) => ({ ...prev, [pi]: e.target.value }))}
                           onKeyDown={(e) => e.key === "Enter" && addCustomForSection(pi, pain.groups)}
+                          aria-label="Custom waste source name"
                           placeholder="Add your own..."
                           className="flex-1 px-3 py-2 text-sm rounded-lg bg-transparent focus:outline-none"
                           style={{
@@ -287,6 +291,7 @@ export default function IntakeStep({ onNext, onBack }: IntakeStepProps) {
                           type="button"
                           onClick={() => addCustomForSection(pi, pain.groups)}
                           disabled={!(customLabels[pi] ?? "").trim()}
+                          aria-label="Add custom waste source"
                           className="px-3 py-2 rounded-lg text-white text-sm font-semibold transition-all duration-150 disabled:opacity-40"
                           style={{ backgroundColor: "var(--color-waste)" }}
                         >

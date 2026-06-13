@@ -44,6 +44,7 @@ export default function Stepper({ currentStep, onStepClick }: StepperProps) {
                   type="button"
                   disabled={isFuture}
                   onClick={() => isCompleted && onStepClick(i)}
+                  aria-label={`Step ${i + 1}: ${s.label}${isCompleted ? " (completed)" : isCurrent ? " (current)" : ""}`}
                   className={`
                     relative flex items-center justify-center w-11 h-11 rounded-full
                     text-base font-bold transition-all duration-300
@@ -96,7 +97,7 @@ export default function Stepper({ currentStep, onStepClick }: StepperProps) {
                       : "var(--color-ink-soft)",
                 }}
               >
-                {s.emoji} {s.label}
+                <span aria-hidden="true">{s.emoji}</span> {s.label}
               </span>
             </li>
           );

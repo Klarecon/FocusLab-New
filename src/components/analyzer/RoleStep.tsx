@@ -107,6 +107,7 @@ export default function RoleStep({ onNext }: RoleStepProps) {
                   key={level.id}
                   type="button"
                   onClick={() => handleSelectLevel(level.id)}
+                  aria-pressed={isActive}
                   className="p-4 rounded-xl text-left transition-all duration-200"
                   style={{
                     border: isActive
@@ -189,6 +190,7 @@ function RoleCard({
     <motion.button
       type="button"
       onClick={onSelect}
+      aria-pressed={isSelected}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.3 }}

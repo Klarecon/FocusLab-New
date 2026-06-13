@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuditStore } from "@/stores/audit-store";
 import { solutionsForWaste, isQuickWin } from "@/lib/data/solutions";
@@ -63,7 +63,7 @@ function Badge({
   );
 }
 
-function SolutionCard({
+const SolutionCard = memo(function SolutionCard({
   solution,
   isChosen,
   onToggle,
@@ -77,6 +77,7 @@ function SolutionCard({
   return (
     <motion.button
       onClick={onToggle}
+      aria-pressed={isChosen}
       className="w-full text-left p-4 rounded-xl transition-all duration-200 cursor-pointer border"
       style={{
         backgroundColor: isChosen ? "rgba(196, 24, 106, 0.06)" : "var(--color-card)",
@@ -84,7 +85,6 @@ function SolutionCard({
       }}
       whileHover={{ scale: 1.01 }}
       whileTap={{ scale: 0.99 }}
-      layout
     >
       <div className="flex items-start gap-3">
         <div className="flex-shrink-0 mt-0.5">
@@ -149,7 +149,7 @@ function SolutionCard({
       </div>
     </motion.button>
   );
-}
+});
 
 function DrainSection({
   drain,
@@ -169,13 +169,13 @@ function DrainSection({
     [chosenSolutions],
   );
 
-  const handleToggle = (solution: Solution) => {
+  const handleToggle = useCallback((solution: Solution) => {
     if (chosenIds.has(solution.id)) {
       removeSolution(solution.id);
     } else {
       addSolution(solution);
     }
-  };
+  }, [chosenIds, addSolution, removeSolution]);
 
   return (
     <motion.div
@@ -186,7 +186,7 @@ function DrainSection({
     >
       {/* Drain header */}
       <div className="flex items-center gap-3 mb-4">
-        <span className="text-2xl">{wasteSource?.emoji ?? "🔴"}</span>
+        <span className="text-2xl" aria-hidden="true">{wasteSource?.emoji ?? "🔴"}</span>
         <div className="flex-1">
           <h3
             className="text-lg font-semibold"
@@ -222,7 +222,7 @@ function DrainSection({
             className="text-sm font-medium mb-3"
             style={{ color: "var(--color-ink-soft)" }}
           >
-            Research-backed fixes:
+            Fixes that actually work:
           </p>
           <div className="space-y-2">
             {solutions.map((sol) => (
@@ -240,7 +240,7 @@ function DrainSection({
           className="text-sm italic py-3"
           style={{ color: "var(--color-ink-soft)" }}
         >
-          No pre-built fixes for this drain — add a custom one below.
+          No pre-built fixes for this one yet — add your own below.
         </p>
       )}
     </motion.div>
@@ -282,30 +282,51 @@ export default function SolutionPicker({
   return (
     <div>
       {/* Zone A — Vital Few */}
-      <div className="mb-2">
-        <h2
-          className="text-3xl sm:text-4xl font-bold mb-1 flex items-center gap-2"
-          style={{
-            fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
-          }}
-        >
-          <AnimatedEmoji emoji="🎯" animation="pulse" size="sm" />
-          Your Vital Few (Zone A)
-        </h2>
-        <p className="text-sm mb-6" style={{ color: "var(--color-ink-soft)" }}>
-          These drains eat most of your wasted time. Fix these first.
-        </p>
-      </div>
+      {vitalFew.length > 0 ? (
+        <>
+          <div className="mb-2">
+            <h2
+              className="text-3xl sm:text-4xl font-bold mb-1 flex items-center gap-2"
+              style={{
+                fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
+              }}
+            >
+              <AnimatedEmoji emoji="🎯" animation="pulse" size="sm" />
+              {vitalFew.length === 1 ? "Your #1 Drain" : "Your Biggest Drains"}
+            </h2>
+            <p className="text-sm mb-6" style={{ color: "var(--color-ink-soft)" }}>
+              {vitalFew.length === 1
+                ? "This one thing eats the most time. Start here."
+                : "These few things eat most of your wasted time. Start here."}
+            </p>
+          </div>
 
-      {vitalFew.map((drain, i) => (
-        <DrainSection key={drain.slug} drain={drain} index={i} />
-      ))}
+          {vitalFew.map((drain, i) => (
+            <DrainSection key={drain.slug} drain={drain} index={i} />
+          ))}
+        </>
+      ) : (
+        <div className="surface-card p-8 text-center mb-6">
+          <AnimatedEmoji emoji="🤔" animation="float" size="xl" />
+          <p
+            className="text-base font-medium mt-4"
+            style={{ color: "var(--color-ink-soft)" }}
+          >
+            Nothing to fix yet. Find your drains with the{" "}
+            <a href="/analyzer" style={{ color: "var(--color-reclaim)", fontWeight: 600 }}>
+              Analyzer
+            </a>{" "}
+            first, then come back here.
+          </p>
+        </div>
+      )}
 
       {/* Zone B — Useful Many (collapsible) */}
       {usefulMany.length > 0 && (
         <div className="mt-8">
           <button
             onClick={() => setZoneBOpen(!zoneBOpen)}
+            aria-expanded={zoneBOpen}
             className="flex items-center gap-2 text-sm font-medium cursor-pointer transition-colors hover:opacity-80 mb-4"
             style={{ color: "var(--color-gold)" }}
           >
@@ -313,6 +334,7 @@ export default function SolutionPicker({
               animate={{ rotate: zoneBOpen ? 90 : 0 }}
               transition={{ duration: 0.15 }}
               className="inline-block"
+              aria-hidden="true"
             >
               &#9654;
             </motion.span>
@@ -342,7 +364,8 @@ export default function SolutionPicker({
         </div>
       )}
 
-      {/* Custom fix input */}
+      {/* Custom fix input — only when there are drains to target */}
+      {allDrains.length > 0 && (
       <div className="surface-card p-5 mt-6" style={{ borderLeft: "4px solid var(--color-gold)" }}>
         <label
           className="block text-sm font-medium mb-2"
@@ -354,6 +377,7 @@ export default function SolutionPicker({
           <select
             value={customTarget}
             onChange={(e) => setCustomTarget(e.target.value)}
+            aria-label="Target drain for custom fix"
             className="px-3 py-2 rounded-lg text-sm border focus:outline-none sm:w-48"
             style={{
               backgroundColor: "var(--color-paper)",
@@ -372,6 +396,7 @@ export default function SolutionPicker({
             value={customFix}
             onChange={(e) => setCustomFix(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleAddCustom()}
+            aria-label="Custom fix description"
             placeholder="e.g., Move standups to Slack..."
             className="flex-1 px-3 py-2 rounded-lg text-sm border focus:outline-none"
             style={{
@@ -390,6 +415,7 @@ export default function SolutionPicker({
           </button>
         </div>
       </div>
+      )}
 
       {/* Bottom bar */}
       <div

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, type Variants } from "framer-motion";
+import { useReducedMotion, motion, type Variants } from "framer-motion";
 
 interface AnimatedEmojiProps {
   emoji: string;
@@ -134,6 +134,7 @@ export default function AnimatedEmoji({
   className = "",
 }: AnimatedEmojiProps) {
   const variants = animationVariants[animation];
+  const prefersReducedMotion = useReducedMotion();
 
   return (
     <motion.span
@@ -141,10 +142,10 @@ export default function AnimatedEmoji({
       aria-hidden="true"
       className={`inline-flex items-center justify-center select-none ${className}`}
       style={{ fontSize: sizeMap[size], lineHeight: 1 }}
-      variants={variants}
-      initial="initial"
-      animate="animate"
-      transition={{ delay }}
+      variants={prefersReducedMotion ? undefined : variants}
+      initial={prefersReducedMotion ? undefined : "initial"}
+      animate={prefersReducedMotion ? undefined : "animate"}
+      transition={prefersReducedMotion ? undefined : { delay }}
     >
       {emoji}
     </motion.span>

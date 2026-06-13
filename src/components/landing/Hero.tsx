@@ -154,7 +154,7 @@ export default function Hero() {
           className="text-sm font-medium tracking-widest uppercase mb-8"
           style={{ color: "var(--color-ink-soft)" }}
         >
-          Pareto analysis for knowledge workers
+          A free tool for knowledge workers
         </motion.p>
 
         {/* Main headline */}
@@ -206,12 +206,12 @@ export default function Hero() {
             >
               <span className="flex items-center gap-2">
                 <AnimatedEmoji emoji="🔍" animation="pulse" size="sm" />
-                Start Your Free Audit
+                Find Your Hidden Waste
               </span>
             </ShimmerButton>
           </Link>
           <span className="text-sm" style={{ color: "var(--color-ink-soft)" }}>
-            Takes 3 minutes. No signup required.
+            3 minutes. No signup. No judgment.
           </span>
         </motion.div>
       </motion.div>
@@ -231,7 +231,7 @@ export default function Hero() {
           <span className="text-xs font-medium" style={{ color: "var(--color-ink-soft)" }}>
             Scroll
           </span>
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
             <path
               d="M5 8L10 13L15 8"
               stroke="var(--color-ink-soft)"

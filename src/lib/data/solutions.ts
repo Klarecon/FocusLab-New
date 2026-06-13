@@ -22,11 +22,10 @@ export interface Solution {
   source: { name: string; url: string };
 }
 
-export const LEVEL_SCORE: Record<Level, number> = { low: 1, medium: 2, high: 3 };
-
-/** A Quick Win: low effort + real impact -- the matrix's top-left "do now". */
+/** A Quick Win: low effort + high impact — matches the engine's quadrant rule
+ *  (effort ≤ 2 AND impact ≥ 4, where low→2, high→4 via SCORE_FROM_LEVEL). */
 export function isQuickWin(s: Pick<Solution, "effort" | "impact">): boolean {
-  return s.effort === "low" && s.impact !== "low";
+  return s.effort === "low" && s.impact === "high";
 }
 
 // Slug groups keyed to the waste taxonomy (see waste-sources.ts).

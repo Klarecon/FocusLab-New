@@ -7,7 +7,7 @@ export type { MudaType, WasteSource, WasteGroup } from "./waste-sources";
 export { UNIVERSAL_WASTE, ROLE_WASTE, GROUP_ORDER, wasteSourceBySlug, benchmarkCategoryFor, wasteSourcesForRole, groupWasteSources } from "./waste-sources";
 
 export type { Solution, Level } from "./solutions";
-export { SOLUTIONS, LEVEL_SCORE, isQuickWin, solutionsForWaste, solutionById } from "./solutions";
+export { SOLUTIONS, isQuickWin, solutionsForWaste, solutionById } from "./solutions";
 
 export type { RoleLens } from "./roles";
 export { ROLE_LENSES, roleLensBySlug } from "./roles";

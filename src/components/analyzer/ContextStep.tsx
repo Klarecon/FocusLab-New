@@ -61,12 +61,14 @@ export default function ContextStep({ onNext, onBack }: ContextStepProps) {
             <StepperButton
               onClick={() => setContext({ workHoursPerWeek: Math.max(10, workHoursPerWeek - 5) })}
               icon={<Minus size={16} />}
+              label="Decrease hours"
             />
             <div className="flex-1 text-center">
               <input
                 type="text"
                 inputMode="numeric"
                 pattern="[0-9]*"
+                aria-label="Hours per week"
                 value={workHoursPerWeek}
                 onChange={(e) => {
                   const val = e.target.value.replace(/\D/g, "");
@@ -81,6 +83,7 @@ export default function ContextStep({ onNext, onBack }: ContextStepProps) {
             <StepperButton
               onClick={() => setContext({ workHoursPerWeek: Math.min(100, workHoursPerWeek + 5) })}
               icon={<Plus size={16} />}
+              label="Increase hours"
             />
           </div>
         </div>
@@ -96,6 +99,8 @@ export default function ContextStep({ onNext, onBack }: ContextStepProps) {
                 key={d}
                 type="button"
                 onClick={() => setContext({ workDaysPerWeek: d })}
+                aria-pressed={workDaysPerWeek === d}
+                aria-label={`${d} days per week`}
                 className="flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all duration-150"
                 style={{
                   backgroundColor: workDaysPerWeek === d ? "var(--color-waste)" : "transparent",
@@ -122,6 +127,7 @@ export default function ContextStep({ onNext, onBack }: ContextStepProps) {
                 key={mode}
                 type="button"
                 onClick={() => setContext({ payMode: mode })}
+                aria-pressed={payMode === mode}
                 className="flex-1 py-2 text-sm font-semibold transition-all duration-150"
                 style={{
                   backgroundColor: payMode === mode ? "var(--color-waste)" : "transparent",
@@ -148,6 +154,7 @@ export default function ContextStep({ onNext, onBack }: ContextStepProps) {
                   setContext({ hourlyRate: val });
                 }
               }}
+              aria-label={payMode === "salary" ? "Annual salary" : "Hourly rate"}
               placeholder={payMode === "salary" ? "Annual salary" : "Hourly rate"}
               className="flex-1 px-3 py-2 rounded-lg text-lg font-figures bg-transparent focus:outline-none"
               style={{
@@ -200,11 +207,12 @@ export default function ContextStep({ onNext, onBack }: ContextStepProps) {
   );
 }
 
-function StepperButton({ onClick, icon }: { onClick: () => void; icon: React.ReactNode }) {
+function StepperButton({ onClick, icon, label }: { onClick: () => void; icon: React.ReactNode; label?: string }) {
   return (
     <button
       type="button"
       onClick={onClick}
+      aria-label={label}
       className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-150"
       style={{
         border: "1.5px solid var(--color-line)",
