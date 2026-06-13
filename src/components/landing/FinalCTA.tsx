@@ -32,26 +32,26 @@ export default function FinalCTA() {
           className="text-lg sm:text-xl mb-8 leading-relaxed"
           style={{ color: "var(--color-ink-soft)" }}
         >
-          The average knowledge worker loses 10+ hours a week to stuff that
-          doesn&apos;t move the needle. That&apos;s{" "}
+          The average knowledge worker loses 10+ hours a week to work that
+          feels productive but isn&apos;t. That&apos;s{" "}
           <Highlighter action="underline" color="var(--color-waste)" isView><strong style={{ color: "var(--color-ink)" }}>6 full work weeks per year</strong></Highlighter>.{" "}
           <AnimatedEmoji emoji="🤯" animation="pop" size="md" />
         </p>
 
-        <Link href="/analyzer" className="no-underline">
+        <Link href="/analyzer" className="no-underline inline-flex justify-center">
           <ShimmerButton
             borderRadius="12px"
-            className="px-12 py-6 text-xl font-bold"
+            className="px-12 py-6 text-xl font-bold mx-auto"
           >
             <span className="flex items-center gap-3">
               <AnimatedEmoji emoji="🔥" animation="bounce" size="md" />
-              See Where Your Time Really Goes
+              Find Your Hidden Waste
             </span>
           </ShimmerButton>
         </Link>
 
         <p className="mt-6 text-sm" style={{ color: "var(--color-ink-soft)" }}>
-          3 minutes. No signup. Completely free.
+          3 minutes. No signup needed.
         </p>
       </motion.div>
     </section>

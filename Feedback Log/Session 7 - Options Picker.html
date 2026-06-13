@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FocusLab Session 7 — Pick Your Options</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: #f8f4ee;
+    color: #2c2520;
+    padding: 40px 20px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 2.2rem;
+    margin-bottom: 8px;
+    color: #2c2520;
+  }
+
+  .subtitle {
+    color: #655b4d;
+    font-size: 1rem;
+    margin-bottom: 40px;
+    line-height: 1.6;
+  }
+
+  .section-header {
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem;
+    margin: 48px 0 8px;
+    padding-bottom: 8px;
+    border-bottom: 3px solid #c4186a;
+    display: inline-block;
+  }
+
+  .section-sub {
+    color: #655b4d;
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+  }
+
+  .item {
+    background: #fff;
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border-left: 4px solid #edb215;
+  }
+
+  .item.proactive {
+    border-left-color: #c4186a;
+  }
+
+  .item-number {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #c4186a;
+    margin-bottom: 4px;
+  }
+
+  .item-location {
+    font-size: 0.8rem;
+    color: #655b4d;
+    margin-bottom: 4px;
+  }
+
+  .item-current {
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+  }
+
+  .item-current code {
+    background: #fef3f0;
+    color: #e03e12;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+  }
+
+  .item-problem {
+    font-size: 0.85rem;
+    color: #655b4d;
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 2px solid #e8e0d4;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .option:hover {
+    border-color: #edb215;
+    background: #fffdf7;
+  }
+
+  .option.selected {
+    border-color: #c4186a;
+    background: #fdf0f5;
+  }
+
+  .option input[type="radio"] {
+    display: none;
+  }
+
+  .option .radio-circle {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    border-radius: 50%;
+    border: 2px solid #d0c8bc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+    transition: all 0.2s;
+  }
+
+  .option.selected .radio-circle {
+    border-color: #c4186a;
+    background: #c4186a;
+  }
+
+  .option.selected .radio-circle::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+  }
+
+  .option-letter {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #c4186a;
+    min-width: 16px;
+  }
+
+  .option-text {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .option-text strong {
+    color: #2c2520;
+  }
+
+  .option-note {
+    font-size: 0.8rem;
+    color: #655b4d;
+    margin-top: 4px;
+    font-style: italic;
+  }
+
+  .visual-description {
+    font-size: 0.85rem;
+    color: #655b4d;
+    line-height: 1.6;
+    margin-top: 6px;
+  }
+
+  .emoji-pair {
+    font-size: 1.8rem;
+    margin-right: 8px;
+  }
+
+  .summary-box {
+    background: #fff;
+    border-radius: 16px;
+    padding: 32px;
+    margin-top: 48px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border: 2px solid #c4186a;
+  }
+
+  .summary-box h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    margin-bottom: 16px;
+  }
+
+  #summary-list {
+    font-size: 0.9rem;
+    line-height: 2;
+  }
+
+  #summary-list .pending {
+    color: #b0a89d;
+  }
+
+  #summary-list .chosen {
+    color: #2c2520;
+    font-weight: 600;
+  }
+
+  .copy-btn {
+    margin-top: 20px;
+    padding: 14px 32px;
+    background: #c4186a;
+    color: white;
+    border: none;
+    border-radius: 100px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .copy-btn:hover {
+    background: #a31458;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(196, 24, 106, 0.3);
+  }
+
+  .copy-btn:active {
+    transform: translateY(0);
+  }
+
+  .copied-msg {
+    display: inline-block;
+    margin-left: 12px;
+    color: #c4186a;
+    font-weight: 600;
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .copied-msg.show {
+    opacity: 1;
+  }
+
+  .divider {
+    height: 1px;
+    background: #e8e0d4;
+    margin: 48px 0;
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 3px 10px;
+    border-radius: 100px;
+    margin-bottom: 12px;
+  }
+
+  .tag.copy { background: #e8f5e8; color: #1a6b3a; }
+  .tag.visual { background: #fff3e0; color: #b36b00; }
+  .tag.proactive { background: #fce4ec; color: #c4186a; }
+
+  .counter {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #2c2520;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    z-index: 100;
+  }
+</style>
+</head>
+<body>
+
+<h1>Session 7 Options Picker</h1>
+<p class="subtitle">Click your preferred option for each item. Your selections update live at the bottom. When done, hit "Copy my picks" and paste them back into Claude Code.</p>
+
+<div class="counter" id="counter">0 / 18 picked</div>
+
+<!-- ============ COPY SECTION ============ -->
+<h2 class="section-header">Copy Options</h2>
+<p class="section-sub">From the DR Copywriter Agent. Pick the line that hits hardest.</p>
+
+<!-- ITEM 2 -->
+<div class="item" data-item="item2">
+  <span class="tag copy">Copy</span>
+  <div class="item-number">Item 2 — Hero Headline</div>
+  <div class="item-current">Current: <code>Most of your week isn't real work.</code></div>
+  <div class="item-problem">Not clear enough. Needs to hit harder and be more specific.</div>
+  <div class="options">
+    <label class="option" onclick="pick(this, 'item2', 'A')">
+      <input type="radio" name="item2" value="A">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">A</span></div>
+      <div class="option-text"><strong>"Your week is buried in busywork."</strong>
+        <div class="option-note">Short and punchy. Works great with the Highlighter effect on "buried in busywork."</div>
+      </div>
+    </label>
+    <label class="option" onclick="pick(this, 'item2', 'B')">
+      <input type="radio" name="item2" value="B">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">B</span></div>
+      <div class="option-text"><strong>"Meetings, email, and admin are eating your week alive."</strong>
+        <div class="option-note">Names the specific culprits. Mirrors the subhead and calendar visual.</div>
+      </div>
+    </label>
+    <label class="option" onclick="pick(this, 'item2', 'C')">
+      <input type="radio" name="item2" value="C">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">C</span></div>
+      <div class="option-text"><strong>"Half your week vanishes before the real work starts."</strong>
+        <div class="option-note">Keeps the provocative tone, adds specificity with "half" and "vanishes."</div>
+      </div>
+    </label>
+  </div>
+</div>
+
+<!-- ITEM 10 -->
+<div class="item" data-item="item10">
+  <span class="tag copy">Copy</span>
+  <div class="item-number">Item 10 — Tool Cards Section Subhead</div>
+  <div class="item-current">Current: <code>Two ways to reclaim your week.</code></div>
+  <div class="item-problem">Feels weak, not poppy enough. Needs more energy.</div>
+  <div class="options">
+    <label class="option" onclick="pick(this, 'item10', 'A')">
+      <input type="radio" name="item10" value="A">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">A</span></div>
+      <div class="option-text"><strong>"Find the waste. Then kill it."</strong>
+        <div class="option-note">Most aggressive/provocative. Strong verbs.</div>
+      </div>
+    </label>
+    <label class="option" onclick="pick(this, 'item10', 'B')">
+      <input type="radio" name="item10" value="B">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">B</span></div>
+      <div class="option-text"><strong>"One finds the problem. The other fixes it."</strong>
+        <div class="option-note">Clearest for a first-time visitor. Explains the two-tool structure.</div>
+      </div>
+    </label>
+    <label class="option" onclick="pick(this, 'item10', 'C')">
+      <input type="radio" name="item10" value="C">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">C</span></div>
+      <div class="option-text"><strong>"Diagnose it. Then fix it."</strong>
+        <div class="option-note">Most concise. Medical metaphor — find the disease, apply the cure.</div>
+      </div>
+    </label>
+  </div>
+</div>
+
+<!-- ITEM 13 -->
+<div class="item" data-item="item13">
+  <span class="tag copy">Copy</span>
+  <div class="item-number">Item 13 — Focus Table Card CTA</div>
+  <div class="item-current">Current: <code>Fix your week &rarr;</code></div>
+  <div class="item-problem">Doesn't read well. You don't "fix a week" — you fix the problems in it.</div>
+  <div class="options">
+    <label class="option" onclick="pick(this, 'item13', 'A')">
+      <input type="radio" name="item13" value="A">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">A</span></div>
+      <div class="option-text"><strong>"Start fixing it &rarr;"</strong></div>
+    </label>
+    <label class="option" onclick="pick(this, 'item13', 'B')">
+      <input type="radio" name="item13" value="B">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">B</span></div>
+      <div class="option-text"><strong>"Choose your fixes &rarr;"</strong></div>
+    </label>
+    <label class="option" onclick="pick(this, 'item13', 'C')">
+      <input type="radio" name="item13" value="C">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">C</span></div>
+      <div class="option-text"><strong>"Fix what's draining you &rarr;"</strong>
+        <div class="option-note">Matches the FocusStage header "Fix What's Draining You" for consistency.</div>
+      </div>
+    </label>
+  </div>
+</div>
+
+<!-- ITEM 28 -->
+<div class="item" data-item="item28">
+  <span class="tag copy">Copy</span>
+  <div class="item-number">Item 28 — Results Page CTA</div>
+  <div class="item-current">Current: <code>Pick your fixes &rarr;</code></div>
+  <div class="item-problem">Unclear. After the dramatic waste reveal, users need a CTA that promises action.</div>
+  <div class="options">
+    <label class="option" onclick="pick(this, 'item28', 'A')">
+      <input type="radio" name="item28" value="A">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">A</span></div>
+      <div class="option-text"><strong>"Now let's fix it &rarr;"</strong>
+        <div class="option-note">Most emotionally connected. Follows the reveal naturally.</div>
+      </div>
+    </label>
+    <label class="option" onclick="pick(this, 'item28', 'B')">
+      <input type="radio" name="item28" value="B">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">B</span></div>
+      <div class="option-text"><strong>"See how to fix this &rarr;"</strong>
+        <div class="option-note">Most descriptive for a confused first-timer.</div>
+      </div>
+    </label>
+    <label class="option" onclick="pick(this, 'item28', 'C')">
+      <input type="radio" name="item28" value="C">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">C</span></div>
+      <div class="option-text"><strong>"Get your fix plan &rarr;"</strong>
+        <div class="option-note">Frames the Focus Table as a concrete deliverable.</div>
+      </div>
+    </label>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============ PROACTIVE COPY SWEEP ============ -->
+<h2 class="section-header">Proactive Copy Sweep</h2>
+<p class="section-sub">The Copywriter also flagged these weak spots across the app. Optional but recommended.</p>
+
+<!-- P1 -->
+<div class="item proactive" data-item="p1">
+  <span class="tag proactive">Proactive</span>
+  <div class="item-number">P1 — Results Pre-CTA Line</div>
+  <div class="item-current">Current: <code>Ready to do something about it?</code></div>
+  <div class="item-problem">Bland motivational filler above the CTA button.</div>
+  <div class="options">
+    <label class="option" onclick="pick(this, 'p1', 'A')">
+      <input type="radio" name="p1" value="A">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">A</span></div>
+      <div class="option-text"><strong>"You don't have to live with this."</strong></div>
+    </label>
+    <label class="option" onclick="pick(this, 'p1', 'B')">
+      <input type="radio" name="p1" value="B">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">B</span></div>
+      <div class="option-text"><strong>"This is fixable."</strong></div>
+    </label>
+    <label class="option" onclick="pick(this, 'p1', 'C')">
+      <input type="radio" name="p1" value="C">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">C</span></div>
+      <div class="option-text"><strong>"Want to know what to do about it?"</strong></div>
+    </label>
+  </div>
+</div>
+
+<!-- P2 -->
+<div class="item proactive" data-item="p2">
+  <span class="tag proactive">Proactive</span>
+  <div class="item-number">P2 — Final CTA Stat Line</div>
+  <div class="item-current">Current: <code>...loses 10+ hours a week to stuff that doesn't move the needle.</code></div>
+  <div class="item-problem">"Stuff that doesn't move the needle" is cliche productivity-blog copy.</div>
+  <div class="options">
+    <label class="option" onclick="pick(this, 'p2', 'A')">
+      <input type="radio" name="p2" value="A">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">A</span></div>
+      <div class="option-text"><strong>"...meetings, email, and coordination that could've been avoided."</strong></div>
+    </label>
+    <label class="option" onclick="pick(this, 'p2', 'B')">
+      <input type="radio" name="p2" value="B">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">B</span></div>
+      <div class="option-text"><strong>"...work that feels productive but isn't."</strong></div>
+    </label>
+    <label class="option" onclick="pick(this, 'p2', 'C')">
+      <input type="radio" name="p2" value="C">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">C</span></div>
+      <div class="option-text"><strong>"...busywork they never signed up for."</strong></div>
+    </label>
+  </div>
+</div>
+
+<!-- P3 -->
+<div class="item proactive" data-item="p3">
+  <span class="tag proactive">Proactive</span>
+  <div class="item-number">P3 — Final CTA Button Text</div>
+  <div class="item-current">Current: <code>See Where Your Time Really Goes</code></div>
+  <div class="item-problem">Only describes the Analyzer. Doesn't hint at fixing. Also quite long for a button.</div>
+  <div class="options">
+    <label class="option" onclick="pick(this, 'p3', 'A')">
+      <input type="radio" name="p3" value="A">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">A</span></div>
+      <div class="option-text"><strong>"Find Your Hidden Waste"</strong>
+        <div class="option-note">Matches the hero CTA for consistency across the page.</div>
+      </div>
+    </label>
+    <label class="option" onclick="pick(this, 'p3', 'B')">
+      <input type="radio" name="p3" value="B">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">B</span></div>
+      <div class="option-text"><strong>"See What's Eating Your Week"</strong></div>
+    </label>
+    <label class="option" onclick="pick(this, 'p3', 'C')">
+      <input type="radio" name="p3" value="C">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">C</span></div>
+      <div class="option-text"><strong>"Take the 3-Minute Audit"</strong></div>
+    </label>
+  </div>
+</div>
+
+<!-- P4 -->
+<div class="item proactive" data-item="p4">
+  <span class="tag proactive">Proactive</span>
+  <div class="item-number">P4 — Solution Picker Bottom CTA</div>
+  <div class="item-current">Current: <code>See your action plan &rarr;</code></div>
+  <div class="item-problem">Functional but flat. Could promise more.</div>
+  <div class="options">
+    <label class="option" onclick="pick(this, 'p4', 'A')">
+      <input type="radio" name="p4" value="A">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">A</span></div>
+      <div class="option-text"><strong>"See what you get back &rarr;"</strong></div>
+    </label>
+    <label class="option" onclick="pick(this, 'p4', 'B')">
+      <input type="radio" name="p4" value="B">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">B</span></div>
+      <div class="option-text"><strong>"Build your action plan &rarr;"</strong></div>
+    </label>
+    <label class="option" onclick="pick(this, 'p4', 'C')">
+      <input type="radio" name="p4" value="C">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">C</span></div>
+      <div class="option-text"><strong>"Lock in your fixes &rarr;"</strong></div>
+    </label>
+  </div>
+</div>
+
+<!-- P5 -->
+<div class="item proactive" data-item="p5">
+  <span class="tag proactive">Proactive</span>
+  <div class="item-number">P5 — Payoff Non-Quick-Win CTA</div>
+  <div class="item-current">Current: <code>Start with your top fix</code></div>
+  <div class="item-problem">Weak compared to the quick-win variant which is fine as-is.</div>
+  <div class="options">
+    <label class="option" onclick="pick(this, 'p5', 'A')">
+      <input type="radio" name="p5" value="A">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">A</span></div>
+      <div class="option-text"><strong>"Go pick your first fix"</strong></div>
+    </label>
+    <label class="option" onclick="pick(this, 'p5', 'B')">
+      <input type="radio" name="p5" value="B">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">B</span></div>
+      <div class="option-text"><strong>"Start with the biggest win"</strong></div>
+    </label>
+    <label class="option" onclick="pick(this, 'p5', 'C')">
+      <input type="radio" name="p5" value="C">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">C</span></div>
+      <div class="option-text"><strong>"Tackle your top drain"</strong></div>
+    </label>
+  </div>
+</div>
+
+<!-- P6 -->
+<div class="item proactive" data-item="p6">
+  <span class="tag proactive">Proactive</span>
+  <div class="item-number">P6 — Pareto Analyzer Card Title</div>
+  <div class="item-current">Current: <code>Pareto Analyzer</code></div>
+  <div class="item-problem">"Pareto" is jargon. Session 6 removed it elsewhere but left the card title.</div>
+  <div class="options">
+    <label class="option" onclick="pick(this, 'p6', 'A')">
+      <input type="radio" name="p6" value="A">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">A</span></div>
+      <div class="option-text"><strong>"Waste Finder"</strong></div>
+    </label>
+    <label class="option" onclick="pick(this, 'p6', 'B')">
+      <input type="radio" name="p6" value="B">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">B</span></div>
+      <div class="option-text"><strong>"Time Audit"</strong></div>
+    </label>
+    <label class="option" onclick="pick(this, 'p6', 'C')">
+      <input type="radio" name="p6" value="C">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">C</span></div>
+      <div class="option-text"><strong>Keep "Pareto Analyzer"</strong>
+        <div class="option-note">It's the brand name. The description below explains it.</div>
+      </div>
+    </label>
+  </div>
+</div>
+
+<!-- P7 -->
+<div class="item proactive" data-item="p7">
+  <span class="tag proactive">Proactive</span>
+  <div class="item-number">P7 — Focus Table Card Title</div>
+  <div class="item-current">Current: <code>Focus Table &amp; EVI Matrix</code></div>
+  <div class="item-problem">"EVI Matrix" was renamed to "Effort vs. Impact" inside the tool but not on the landing page.</div>
+  <div class="options">
+    <label class="option" onclick="pick(this, 'p7', 'A')">
+      <input type="radio" name="p7" value="A">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">A</span></div>
+      <div class="option-text"><strong>"Fix Planner"</strong></div>
+    </label>
+    <label class="option" onclick="pick(this, 'p7', 'B')">
+      <input type="radio" name="p7" value="B">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">B</span></div>
+      <div class="option-text"><strong>"Focus Table &amp; Impact Matrix"</strong>
+        <div class="option-note">Keeps recognizable name, just drops the "EVI" jargon.</div>
+      </div>
+    </label>
+    <label class="option" onclick="pick(this, 'p7', 'C')">
+      <input type="radio" name="p7" value="C">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">C</span></div>
+      <div class="option-text"><strong>"Waste Fixer"</strong></div>
+    </label>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============ VISUAL SECTION ============ -->
+<h2 class="section-header">Visual Options</h2>
+<p class="section-sub">From the UI/UX Designer Agent. Pick the treatment that feels right.</p>
+
+<!-- ITEM 4 -->
+<div class="item" data-item="item4">
+  <span class="tag visual">Visual</span>
+  <div class="item-number">Item 4 — Calendar Visual Redesign</div>
+  <div class="item-current">Current: Subtle 5-day grid with low-opacity blocks. Legend blends together.</div>
+  <div class="item-problem">Not catchy enough. Doesn't grab attention immediately.</div>
+  <div class="options">
+    <label class="option" onclick="pick(this, 'item4', 'A')">
+      <input type="radio" name="item4" value="A">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">A</span></div>
+      <div class="option-text"><strong>"Heat Map Week"</strong>
+        <div class="visual-description">Fully saturated orange waste blocks with white text. Pink work blocks. Bold "58% waste" stamp badge in corner. Legend replaced with single Fraunces italic line: "The orange is your week disappearing."</div>
+      </div>
+    </label>
+    <label class="option" onclick="pick(this, 'item4', 'B')">
+      <input type="radio" name="item4" value="B">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">B</span></div>
+      <div class="option-text"><strong>"Stacked Bar Totals"</strong>
+        <div class="visual-description">Each day = one tall stacked bar (waste orange, work pink). Bold waste hours at top of each column. Large animated counter below: "23.5 hours wasted" counting up on scroll. Legend becomes "That's 3 full workdays."</div>
+      </div>
+    </label>
+    <label class="option" onclick="pick(this, 'item4', 'C')">
+      <input type="radio" name="item4" value="C">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">C</span></div>
+      <div class="option-text"><strong>"Redacted Timesheet"</strong>
+        <div class="visual-description">Lined paper aesthetic with slight tilt. Waste = thick redaction bars in orange. Hand-drawn annotations ("this again?", "why."). Footnote: "Every orange bar is time you didn't choose to spend." Leans into the confrontational brand.</div>
+      </div>
+    </label>
+  </div>
+</div>
+
+<!-- ITEM 5 -->
+<div class="item" data-item="item5">
+  <span class="tag visual">Visual</span>
+  <div class="item-number">Item 5 — CTA Button Shimmer Effect</div>
+  <div class="item-current">Current: Barely visible shimmer with 0.05em gap and white color.</div>
+  <div class="item-problem">Not eye-catching enough. Users might not notice it.</div>
+  <div class="options">
+    <label class="option" onclick="pick(this, 'item5', 'A')">
+      <input type="radio" name="item5" value="A">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">A</span></div>
+      <div class="option-text"><strong>"Wide Glow Ring"</strong>
+        <div class="visual-description">Wider shimmer gap (0.15em). Gold (#edb215) sweep on pink button. Persistent warm outer glow halo even between sweeps. Premium, luminous feel.</div>
+      </div>
+    </label>
+    <label class="option" onclick="pick(this, 'item5', 'B')">
+      <input type="radio" name="item5" value="B">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">B</span></div>
+      <div class="option-text"><strong>"Double Sweep with Pulse"</strong>
+        <div class="visual-description">White shimmer + sonar-ring pulse radiating outward in pink. Wider light band (120deg). Faster cycle (2s). Impossible to miss.</div>
+      </div>
+    </label>
+    <label class="option" onclick="pick(this, 'item5', 'C')">
+      <input type="radio" name="item5" value="C">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">C</span></div>
+      <div class="option-text"><strong>"Gradient Border Shimmer"</strong>
+        <div class="visual-description">Gold-white-gold triple streak sweeping around the border. Soft blur. Additional glow on hover. Multi-color sweep reads as premium.</div>
+      </div>
+    </label>
+  </div>
+</div>
+
+<!-- ITEM 8 -->
+<div class="item" data-item="item8">
+  <span class="tag visual">Visual</span>
+  <div class="item-number">Item 8 — Highlighter Fade Fix</div>
+  <div class="item-current">Current: rough-notation highlight on "isn't real work." fades toward the end.</div>
+  <div class="item-problem">Good effect overall but the trailing edge gets too light.</div>
+  <div class="options">
+    <label class="option" onclick="pick(this, 'item8', 'A')">
+      <input type="radio" name="item8" value="A">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">A</span></div>
+      <div class="option-text"><strong>"Higher iterations + darker color"</strong>
+        <div class="visual-description">Increase from 2 to 4 iterations, opacity from 0.2 to 0.35. Layers the fill to cover thin spots. Simplest fix &mdash; two prop changes.</div>
+      </div>
+    </label>
+    <label class="option" onclick="pick(this, 'item8', 'B')">
+      <input type="radio" name="item8" value="B">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">B</span></div>
+      <div class="option-text"><strong>"CSS gradient replacement"</strong>
+        <div class="visual-description">Remove rough-notation for this instance. Pure CSS linear-gradient background. Guaranteed uniform color edge to edge. No fade possible.</div>
+      </div>
+    </label>
+    <label class="option" onclick="pick(this, 'item8', 'C')">
+      <input type="radio" name="item8" value="C">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">C</span></div>
+      <div class="option-text"><strong>"Box + highlight double layer"</strong>
+        <div class="visual-description">Outer box border (doesn't fade) + inner highlight fill. "Marker + frame" effect. More deliberately "marked up" feel. Box ensures trailing edge coverage.</div>
+      </div>
+    </label>
+  </div>
+</div>
+
+<!-- ITEM 12 -->
+<div class="item" data-item="item12">
+  <span class="tag visual">Visual</span>
+  <div class="item-number">Item 12 — Tool Card Emoji Pairs</div>
+  <div class="item-current">Current: Pareto = <span style="font-size:1.5rem">🔥</span> &nbsp; Focus = <span style="font-size:1.5rem">🎯</span></div>
+  <div class="item-problem">Want fresh emoji that better represent each tool's purpose.</div>
+  <div class="options">
+    <label class="option" onclick="pick(this, 'item12', 'A')">
+      <input type="radio" name="item12" value="A">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">A</span></div>
+      <div class="option-text">
+        <span class="emoji-pair">🔍</span> + <span class="emoji-pair">🛠️</span>
+        <div class="option-note">Find it, then fix it. Clear and straightforward metaphor.</div>
+      </div>
+    </label>
+    <label class="option" onclick="pick(this, 'item12', 'B')">
+      <input type="radio" name="item12" value="B">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">B</span></div>
+      <div class="option-text">
+        <span class="emoji-pair">🧨</span> + <span class="emoji-pair">⚡</span>
+        <div class="option-note">Explosive discovery + electrifying action. Bold and provocative.</div>
+      </div>
+    </label>
+    <label class="option" onclick="pick(this, 'item12', 'C')">
+      <input type="radio" name="item12" value="C">
+      <div class="radio-circle"></div>
+      <div><span class="option-letter">C</span></div>
+      <div class="option-text">
+        <span class="emoji-pair">😤</span> + <span class="emoji-pair">💪</span>
+        <div class="option-note">Frustration to empowerment. Emotional/human. 😤 is on the approved emoji list.</div>
+      </div>
+    </label>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============ SUMMARY ============ -->
+<div class="summary-box">
+  <h2>Your Selections</h2>
+  <div id="summary-list"></div>
+  <br>
+  <button class="copy-btn" onclick="copySummary()">Copy my picks</button>
+  <span class="copied-msg" id="copied-msg">Copied! Paste into Claude Code.</span>
+</div>
+
+<br><br><br>
+
+<script>
+const items = {
+  item2:  { label: 'Item 2 — Hero Headline', choice: null },
+  item10: { label: 'Item 10 — ToolCards Subhead', choice: null },
+  item13: { label: 'Item 13 — Focus Card CTA', choice: null },
+  item28: { label: 'Item 28 — Results CTA', choice: null },
+  p1:     { label: 'P1 — Results Pre-CTA', choice: null },
+  p2:     { label: 'P2 — FinalCTA Stat', choice: null },
+  p3:     { label: 'P3 — FinalCTA Button', choice: null },
+  p4:     { label: 'P4 — SolutionPicker CTA', choice: null },
+  p5:     { label: 'P5 — Payoff CTA', choice: null },
+  p6:     { label: 'P6 — Analyzer Title', choice: null },
+  p7:     { label: 'P7 — Focus Title', choice: null },
+  item4:  { label: 'Item 4 — Calendar Visual', choice: null },
+  item5:  { label: 'Item 5 — Shimmer Effect', choice: null },
+  item8:  { label: 'Item 8 — Highlighter Fade', choice: null },
+  item12: { label: 'Item 12 — Card Emoji', choice: null },
+};
+
+// Also store the selected text for the summary
+const optionTexts = {};
+
+function pick(el, itemId, letter) {
+  // Clear siblings
+  const parent = el.closest('.options');
+  parent.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  el.querySelector('input').checked = true;
+
+  items[itemId].choice = letter;
+
+  // Get the text
+  const strong = el.querySelector('.option-text strong');
+  optionTexts[itemId] = strong ? strong.textContent : letter;
+
+  updateSummary();
+}
+
+function updateSummary() {
+  const el = document.getElementById('summary-list');
+  let html = '';
+  let count = 0;
+  const total = Object.keys(items).length;
+
+  for (const [id, item] of Object.entries(items)) {
+    if (item.choice) {
+      html += `<div class="chosen">${item.label}: <strong>${item.choice}</strong> — ${optionTexts[id] || ''}</div>`;
+      count++;
+    } else {
+      html += `<div class="pending">${item.label}: not yet picked</div>`;
+    }
+  }
+  el.innerHTML = html;
+  document.getElementById('counter').textContent = `${count} / ${total} picked`;
+}
+
+function copySummary() {
+  let text = 'Here are my picks:\n\n';
+  for (const [id, item] of Object.entries(items)) {
+    if (item.choice) {
+      text += `${item.label}: ${item.choice}\n`;
+    } else {
+      text += `${item.label}: SKIP\n`;
+    }
+  }
+  navigator.clipboard.writeText(text).then(() => {
+    const msg = document.getElementById('copied-msg');
+    msg.classList.add('show');
+    setTimeout(() => msg.classList.remove('show'), 2500);
+  });
+}
+
+// Initialize
+updateSummary();
+</script>
+
+</body>
+</html>

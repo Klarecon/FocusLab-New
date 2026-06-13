@@ -34,6 +34,10 @@ const ROLE_PAIN_PROMPTS: Partial<Record<RoleSlug, { prompt: string; emoji: strin
   manager: [{ prompt: "Back-to-back meetings draining you?", emoji: "😬", groups: ["Meetings", "Admin"] }],
   executive: [{ prompt: "Calendar gravity pulling you everywhere?", emoji: "🤯", groups: ["Leading vs doing"] }],
   product: [{ prompt: "Status packaging and firefighting?", emoji: "🫠", groups: ["Reporting", "Coordination"] }],
+  "software-dev": [{ prompt: "Deploys, debugging, and review queues?", emoji: "🤦", groups: ["Code", "Builds & reviews"] }],
+  operations: [{ prompt: "Manual processes and vendor follow-ups?", emoji: "😤", groups: ["Admin", "Coordination", "Reporting"] }],
+  finance: [{ prompt: "Reconciliation and close-cycle scrambles?", emoji: "😬", groups: ["Admin", "Reporting", "Coordination"] }],
+  "ceo-founder": [{ prompt: "Everything lands on your desk?", emoji: "🫠", groups: ["Leading vs doing", "Reporting", "Coordination"] }],
 };
 
 const MIN_SOURCES = 5;

@@ -47,6 +47,17 @@ export default function AuditWizard() {
   const step = useAuditStore((s) => s.step);
   const setStep = useAuditStore((s) => s.setStep);
   const reset = useAuditStore((s) => s.reset);
+  const paretoResult = useAuditStore((s) => s.paretoResult);
+
+  // Fresh start: if user navigates to /analyzer after completing a session,
+  // reset wizard state so previous WeighStep selections don't persist.
+  useEffect(() => {
+    if (paretoResult && step === 0) {
+      // Only reset when we're at step 0 (fresh navigation) but have old results
+      reset();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Run once on mount only
 
   // Scroll to top on every step transition
   useEffect(() => {

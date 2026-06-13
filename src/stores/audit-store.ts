@@ -40,6 +40,8 @@ interface AuditState {
   // --- Source selection & entries ---
   activeSources: WasteSource[];
   entries: Record<string, WasteEntry>;
+  /** Global cadence for WeighStep: all sources use this unit */
+  weighCadence: "daily" | "weekly" | null;
 
   // --- Results (full engine ParetoResult, persisted) ---
   paretoResult: ParetoResult | null;
@@ -70,6 +72,7 @@ interface AuditState {
   removeSolution: (id: string) => void;
   setSolutionScore: (id: string, score: Partial<SolutionScore>) => void;
   setOwnerOverride: (solId: string, owner: string) => void;
+  setWeighCadence: (cadence: "daily" | "weekly") => void;
   setStep: (step: number) => void;
   reset: () => void;
 }
@@ -88,6 +91,7 @@ const DEFAULT_STATE = {
   hourlyRate: 0,
   activeSources: [] as WasteSource[],
   entries: {} as Record<string, WasteEntry>,
+  weighCadence: null as "daily" | "weekly" | null,
   paretoResult: null as ParetoResult | null,
   chosenSolutions: [] as Solution[],
   solutionScores: {} as Record<string, SolutionScore>,
@@ -208,6 +212,16 @@ export const useAuditStore = create<AuditState>()(
             [solId]: owner,
           },
         })),
+
+      setWeighCadence: (cadence) =>
+        set((state) => {
+          // Update all existing entries to use the new cadence
+          const updatedEntries: Record<string, WasteEntry> = {};
+          for (const [slug, entry] of Object.entries(state.entries)) {
+            updatedEntries[slug] = { ...entry, cadence };
+          }
+          return { weighCadence: cadence, entries: updatedEntries };
+        }),
 
       setStep: (step) =>
         set({ step }),

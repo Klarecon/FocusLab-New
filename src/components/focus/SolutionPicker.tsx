@@ -441,7 +441,7 @@ export default function SolutionPicker({
           className="px-10 py-4 text-base font-bold disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <span className="flex items-center gap-2">
-            See your action plan
+            Build your action plan
             <span aria-hidden="true">&rarr;</span>
           </span>
         </ShimmerButton>

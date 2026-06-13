@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FocusLab — Visual Options (Items 4, 5, 8)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,700;9..144,1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+  :root {
+    --waste: #e03e12;
+    --reclaim: #c4186a;
+    --gold: #edb215;
+    --paper: #f8f4ee;
+    --card: #faf7f2;
+    --ink: #2c2520;
+    --ink-soft: #655b4d;
+    --line: #e8e0d4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    padding: 40px 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 2rem;
+    margin-bottom: 8px;
+  }
+
+  .subtitle { color: var(--ink-soft); margin-bottom: 48px; }
+
+  .section {
+    margin-bottom: 64px;
+  }
+
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title .tag {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 3px 10px;
+    border-radius: 100px;
+    background: #fff3e0;
+    color: #b36b00;
+  }
+
+  .section-desc {
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+  }
+
+  .option-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .option-card {
+    background: var(--card);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 2px solid var(--line);
+    transition: border-color 0.2s;
+    cursor: pointer;
+  }
+
+  .option-card:hover {
+    border-color: var(--gold);
+  }
+
+  .option-card.selected {
+    border-color: var(--reclaim);
+    box-shadow: 0 0 0 2px rgba(196, 24, 106, 0.15);
+  }
+
+  .option-header {
+    padding: 16px 20px;
+    background: rgba(0,0,0,0.02);
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .option-letter {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--reclaim);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+
+  .option-name {
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  .option-body {
+    padding: 20px;
+  }
+
+  .demo-area {
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ============ ITEM 4: CALENDAR MOCKUPS ============ */
+
+  /* Option A: Heat Map */
+  .heatmap-week {
+    width: 100%;
+    max-width: 500px;
+    position: relative;
+  }
+
+  .heatmap-week .stamp {
+    position: absolute;
+    top: -8px;
+    right: 8px;
+    background: var(--waste);
+    color: white;
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 6px 14px;
+    border-radius: 6px;
+    transform: rotate(3deg);
+    box-shadow: 0 2px 8px rgba(224, 62, 18, 0.3);
+  }
+
+  .heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+  }
+
+  .heatmap-day-label {
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 4px;
+  }
+
+  .heatmap-block {
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    font-weight: 600;
+    overflow: hidden;
+  }
+
+  .heatmap-block.waste {
+    background: rgba(224, 62, 18, 0.85);
+    color: white;
+  }
+
+  .heatmap-block.work {
+    background: rgba(196, 24, 106, 0.12);
+    color: var(--reclaim);
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 3px,
+      rgba(196, 24, 106, 0.06) 3px,
+      rgba(196, 24, 106, 0.06) 6px
+    );
+  }
+
+  .heatmap-footer {
+    text-align: center;
+    margin-top: 12px;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+  }
+
+  /* Option B: Stacked Bars */
+  .stacked-week {
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .stacked-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    align-items: end;
+  }
+
+  .stacked-col {
+    text-align: center;
+  }
+
+  .stacked-day-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+
+  .stacked-bar {
+    border-radius: 8px;
+    overflow: hidden;
+    height: 160px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stacked-waste {
+    background: var(--waste);
+    flex-grow: var(--waste-pct, 0.58);
+  }
+
+  .stacked-real {
+    background: var(--reclaim);
+    opacity: 0.25;
+    flex-grow: var(--work-pct, 0.42);
+  }
+
+  .stacked-hrs {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--waste);
+    margin-top: 6px;
+  }
+
+  .stacked-total {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .stacked-total .big-num {
+    font-family: 'Fraunces', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--waste);
+  }
+
+  .stacked-total .sub {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    margin-top: 4px;
+  }
+
+  /* Option C: Redacted Timesheet */
+  .redacted-sheet {
+    width: 100%;
+    max-width: 500px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 20px;
+    transform: rotate(-1deg);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    position: relative;
+  }
+
+  .redacted-sheet::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      transparent,
+      transparent 28px,
+      var(--line) 28px,
+      var(--line) 29px
+    );
+    pointer-events: none;
+    border-radius: 8px;
+  }
+
+  .redacted-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 29px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .redacted-time {
+    font-size: 0.65rem;
+    color: var(--ink-soft);
+    width: 40px;
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .redacted-bar {
+    height: 18px;
+    border-radius: 2px;
+    position: relative;
+  }
+
+  .redacted-bar.waste {
+    background: var(--waste);
+    box-shadow: 0 1px 3px rgba(224, 62, 18, 0.3);
+  }
+
+  .redacted-bar.work {
+    background: transparent;
+    border: 1px dashed var(--line);
+  }
+
+  .redacted-annotation {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.6rem;
+    color: var(--waste);
+    margin-left: 6px;
+    white-space: nowrap;
+  }
+
+  .redacted-footnote {
+    margin-top: 16px;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.75rem;
+    color: var(--ink-soft);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ============ ITEM 5: SHIMMER BUTTONS ============ */
+
+  .shimmer-demo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .shimmer-btn {
+    position: relative;
+    padding: 16px 40px;
+    background: var(--reclaim);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    overflow: hidden;
+    z-index: 0;
+  }
+
+  /* Option A: Wide Glow Ring */
+  .shimmer-btn.glow-ring {
+    box-shadow: 0 0 20px rgba(237, 178, 21, 0.3),
+                0 0 40px rgba(237, 178, 21, 0.15);
+  }
+
+  .shimmer-btn.glow-ring::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      var(--gold) 60deg,
+      transparent 120deg
+    );
+    border-radius: 14px;
+    z-index: -2;
+    animation: spin-shimmer 3s linear infinite;
+    filter: blur(4px);
+  }
+
+  .shimmer-btn.glow-ring::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    background: var(--reclaim);
+    border-radius: 10px;
+    z-index: -1;
+  }
+
+  /* Option B: Double Sweep with Pulse */
+  .shimmer-btn.pulse-sweep {
+    animation: cta-pulse 2s ease-in-out infinite;
+  }
+
+  .shimmer-btn.pulse-sweep::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      white 40deg,
+      transparent 80deg
+    );
+    border-radius: 14px;
+    z-index: -2;
+    animation: spin-shimmer 2s linear infinite;
+    filter: blur(2px);
+    opacity: 0.8;
+  }
+
+  .shimmer-btn.pulse-sweep::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: var(--reclaim);
+    border-radius: 10px;
+    z-index: -1;
+  }
+
+  @keyframes cta-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(196, 24, 106, 0.4); }
+    70% { box-shadow: 0 0 0 14px rgba(196, 24, 106, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(196, 24, 106, 0); }
+  }
+
+  /* Option C: Gradient Border Shimmer */
+  .shimmer-btn.gradient-border {
+    transition: box-shadow 0.3s;
+  }
+
+  .shimmer-btn.gradient-border:hover {
+    box-shadow: 0 0 30px rgba(196, 24, 106, 0.35);
+  }
+
+  .shimmer-btn.gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      var(--gold) 30deg,
+      white 60deg,
+      var(--gold) 90deg,
+      transparent 120deg
+    );
+    border-radius: 14px;
+    z-index: -2;
+    animation: spin-shimmer 3s linear infinite;
+    filter: blur(3px);
+    opacity: 0.8;
+  }
+
+  .shimmer-btn.gradient-border::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: var(--reclaim);
+    border-radius: 10px;
+    z-index: -1;
+  }
+
+  @keyframes spin-shimmer {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .shimmer-label {
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    text-align: center;
+  }
+
+  /* ============ ITEM 8: HIGHLIGHTER MOCKUPS ============ */
+
+  .highlight-demo {
+    font-family: 'Fraunces', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .highlight-demo .normal {
+    color: var(--ink);
+  }
+
+  /* Option A: High iterations + darker */
+  .hl-option-a {
+    background: linear-gradient(135deg, var(--waste), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+    display: inline;
+  }
+
+  .hl-option-a::before {
+    content: '';
+    position: absolute;
+    inset: -2px -4px;
+    background: rgba(224, 62, 18, 0.35);
+    border-radius: 4px;
+    z-index: -1;
+    /* Simulating rough-notation with 4 iterations — thicker, more opaque */
+  }
+
+  /* Option B: CSS gradient — perfectly uniform */
+  .hl-option-b {
+    background: linear-gradient(135deg, var(--waste), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+    display: inline;
+  }
+
+  .hl-option-b::before {
+    content: '';
+    position: absolute;
+    inset: -2px -4px;
+    background: rgba(224, 62, 18, 0.25);
+    border-radius: 4px;
+    z-index: -1;
+    /* Pure CSS — guaranteed uniform edge to edge */
+  }
+
+  /* Option C: Box + highlight double layer */
+  .hl-option-c {
+    background: linear-gradient(135deg, var(--waste), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+    display: inline;
+  }
+
+  .hl-option-c::before {
+    content: '';
+    position: absolute;
+    inset: -2px -4px;
+    background: rgba(224, 62, 18, 0.12);
+    border-radius: 4px;
+    z-index: -1;
+  }
+
+  .hl-option-c::after {
+    content: '';
+    position: absolute;
+    inset: -4px -6px;
+    border: 3px solid rgba(224, 62, 18, 0.3);
+    border-radius: 6px;
+    z-index: -1;
+    /* Simulating rough-notation "box" — crisp border even at edges */
+  }
+
+  /* ============ SUMMARY ============ */
+
+  .summary-box {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    margin-top: 48px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border: 2px solid var(--reclaim);
+  }
+
+  .summary-box h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    margin-bottom: 16px;
+  }
+
+  #summary-list {
+    font-size: 0.9rem;
+    line-height: 2;
+  }
+
+  #summary-list .pending { color: #b0a89d; }
+  #summary-list .chosen { color: var(--ink); font-weight: 600; }
+
+  .copy-btn {
+    margin-top: 20px;
+    padding: 14px 32px;
+    background: var(--reclaim);
+    color: white;
+    border: none;
+    border-radius: 100px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .copy-btn:hover {
+    background: #a31458;
+    transform: translateY(-1px);
+  }
+
+  .copied-msg {
+    display: inline-block;
+    margin-left: 12px;
+    color: var(--reclaim);
+    font-weight: 600;
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .copied-msg.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<h1>Visual Options — See Them Live</h1>
+<p class="subtitle">Click the option you like for each item. Your picks are tracked at the bottom.</p>
+
+<!-- ============ ITEM 4: CALENDAR ============ -->
+<div class="section">
+  <div class="section-title">
+    <span class="tag">Visual</span>
+    Item 4 — Calendar Visual Redesign
+  </div>
+  <p class="section-desc">Current calendar is too subtle. These are three dramatically different takes.</p>
+
+  <div class="option-grid">
+
+    <!-- Option A: Heat Map -->
+    <div class="option-card" onclick="pick(this, 'item4', 'A')">
+      <div class="option-header">
+        <div class="option-letter">A</div>
+        <div class="option-name">"Heat Map Week"</div>
+      </div>
+      <div class="option-body">
+        <div class="demo-area">
+          <div class="heatmap-week">
+            <div class="stamp">58% waste</div>
+            <div class="heatmap-grid">
+              <div>
+                <div class="heatmap-day-label">Mon</div>
+                <div class="heatmap-block waste" style="height:40px">Meetings</div>
+                <div class="heatmap-block work" style="height:20px; margin-top:3px"></div>
+                <div class="heatmap-block waste" style="height:30px; margin-top:3px">Email</div>
+                <div class="heatmap-block work" style="height:30px; margin-top:3px"></div>
+                <div class="heatmap-block waste" style="height:40px; margin-top:3px">Sync</div>
+              </div>
+              <div>
+                <div class="heatmap-day-label">Tue</div>
+                <div class="heatmap-block work" style="height:20px"></div>
+                <div class="heatmap-block waste" style="height:40px; margin-top:3px">Rework</div>
+                <div class="heatmap-block waste" style="height:20px; margin-top:3px">Admin</div>
+                <div class="heatmap-block work" style="height:40px; margin-top:3px"></div>
+                <div class="heatmap-block waste" style="height:40px; margin-top:3px">Slack</div>
+              </div>
+              <div>
+                <div class="heatmap-day-label">Wed</div>
+                <div class="heatmap-block waste" style="height:60px">Meetings</div>
+                <div class="heatmap-block work" style="height:20px; margin-top:3px"></div>
+                <div class="heatmap-block waste" style="height:30px; margin-top:3px">Waiting</div>
+                <div class="heatmap-block work" style="height:20px; margin-top:3px"></div>
+                <div class="heatmap-block waste" style="height:30px; margin-top:3px">Email</div>
+              </div>
+              <div>
+                <div class="heatmap-day-label">Thu</div>
+                <div class="heatmap-block work" style="height:40px"></div>
+                <div class="heatmap-block waste" style="height:40px; margin-top:3px">Coord.</div>
+                <div class="heatmap-block waste" style="height:30px; margin-top:3px">Meetings</div>
+                <div class="heatmap-block work" style="height:20px; margin-top:3px"></div>
+                <div class="heatmap-block waste" style="height:30px; margin-top:3px">Reports</div>
+              </div>
+              <div>
+                <div class="heatmap-day-label">Fri</div>
+                <div class="heatmap-block waste" style="height:20px">Email</div>
+                <div class="heatmap-block waste" style="height:40px; margin-top:3px">Meetings</div>
+                <div class="heatmap-block work" style="height:40px; margin-top:3px"></div>
+                <div class="heatmap-block waste" style="height:20px; margin-top:3px">Admin</div>
+                <div class="heatmap-block work" style="height:40px; margin-top:3px"></div>
+              </div>
+            </div>
+            <div class="heatmap-footer">The orange is your week disappearing.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Option B: Stacked Bars -->
+    <div class="option-card" onclick="pick(this, 'item4', 'B')">
+      <div class="option-header">
+        <div class="option-letter">B</div>
+        <div class="option-name">"Stacked Bar Totals"</div>
+      </div>
+      <div class="option-body">
+        <div class="demo-area">
+          <div class="stacked-week">
+            <div class="stacked-grid">
+              <div class="stacked-col">
+                <div class="stacked-day-label">Mon</div>
+                <div class="stacked-bar">
+                  <div class="stacked-waste" style="--waste-pct: 0.69"></div>
+                  <div class="stacked-real" style="--work-pct: 0.31"></div>
+                </div>
+                <div class="stacked-hrs">5.5h</div>
+              </div>
+              <div class="stacked-col">
+                <div class="stacked-day-label">Tue</div>
+                <div class="stacked-bar">
+                  <div class="stacked-waste" style="--waste-pct: 0.63"></div>
+                  <div class="stacked-real" style="--work-pct: 0.37"></div>
+                </div>
+                <div class="stacked-hrs">5.0h</div>
+              </div>
+              <div class="stacked-col">
+                <div class="stacked-day-label">Wed</div>
+                <div class="stacked-bar">
+                  <div class="stacked-waste" style="--waste-pct: 0.75"></div>
+                  <div class="stacked-real" style="--work-pct: 0.25"></div>
+                </div>
+                <div class="stacked-hrs">6.0h</div>
+              </div>
+              <div class="stacked-col">
+                <div class="stacked-day-label">Thu</div>
+                <div class="stacked-bar">
+                  <div class="stacked-waste" style="--waste-pct: 0.50"></div>
+                  <div class="stacked-real" style="--work-pct: 0.50"></div>
+                </div>
+                <div class="stacked-hrs">4.0h</div>
+              </div>
+              <div class="stacked-col">
+                <div class="stacked-day-label">Fri</div>
+                <div class="stacked-bar">
+                  <div class="stacked-waste" style="--waste-pct: 0.38"></div>
+                  <div class="stacked-real" style="--work-pct: 0.62"></div>
+                </div>
+                <div class="stacked-hrs">3.0h</div>
+              </div>
+            </div>
+            <div class="stacked-total">
+              <div class="big-num">23.5 hours wasted</div>
+              <div class="sub">That's 3 full workdays.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Option C: Redacted Timesheet -->
+    <div class="option-card" onclick="pick(this, 'item4', 'C')">
+      <div class="option-header">
+        <div class="option-letter">C</div>
+        <div class="option-name">"Redacted Timesheet"</div>
+      </div>
+      <div class="option-body">
+        <div class="demo-area">
+          <div class="redacted-sheet">
+            <div class="redacted-row">
+              <span class="redacted-time">9:00</span>
+              <div class="redacted-bar waste" style="width: 60%"></div>
+              <span class="redacted-annotation">meetings again</span>
+            </div>
+            <div class="redacted-row">
+              <span class="redacted-time">10:00</span>
+              <div class="redacted-bar waste" style="width: 45%"></div>
+            </div>
+            <div class="redacted-row">
+              <span class="redacted-time">11:00</span>
+              <div class="redacted-bar work" style="width: 70%"></div>
+            </div>
+            <div class="redacted-row">
+              <span class="redacted-time">12:00</span>
+              <div class="redacted-bar waste" style="width: 30%"></div>
+              <span class="redacted-annotation">this again?</span>
+            </div>
+            <div class="redacted-row">
+              <span class="redacted-time">1:00</span>
+              <div class="redacted-bar waste" style="width: 80%"></div>
+              <span class="redacted-annotation">why.</span>
+            </div>
+            <div class="redacted-row">
+              <span class="redacted-time">2:00</span>
+              <div class="redacted-bar work" style="width: 50%"></div>
+            </div>
+            <div class="redacted-row">
+              <span class="redacted-time">3:00</span>
+              <div class="redacted-bar waste" style="width: 55%"></div>
+            </div>
+            <div class="redacted-row">
+              <span class="redacted-time">4:00</span>
+              <div class="redacted-bar waste" style="width: 40%"></div>
+            </div>
+            <div class="redacted-row">
+              <span class="redacted-time">5:00</span>
+              <div class="redacted-bar work" style="width: 60%"></div>
+            </div>
+            <div class="redacted-footnote">Every orange bar is time you didn't choose to spend.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ITEM 5: SHIMMER ============ -->
+<div class="section">
+  <div class="section-title">
+    <span class="tag">Visual</span>
+    Item 5 — CTA Button Shimmer Effect
+  </div>
+  <p class="section-desc">Current shimmer is barely visible. These are three increasingly bold treatments.</p>
+
+  <div class="option-grid">
+
+    <!-- Option A: Wide Glow Ring -->
+    <div class="option-card" onclick="pick(this, 'item5', 'A')">
+      <div class="option-header">
+        <div class="option-letter">A</div>
+        <div class="option-name">"Wide Glow Ring" — Gold sweep + warm halo</div>
+      </div>
+      <div class="option-body">
+        <div class="demo-area">
+          <div class="shimmer-demo">
+            <button class="shimmer-btn glow-ring">Find Your Hidden Waste</button>
+            <div class="shimmer-label">Gold shimmer on pink. Persistent warm glow halo.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Option B: Double Sweep with Pulse -->
+    <div class="option-card" onclick="pick(this, 'item5', 'B')">
+      <div class="option-header">
+        <div class="option-letter">B</div>
+        <div class="option-name">"Double Sweep + Pulse" — Sonar ring radiates outward</div>
+      </div>
+      <div class="option-body">
+        <div class="demo-area">
+          <div class="shimmer-demo">
+            <button class="shimmer-btn pulse-sweep">Find Your Hidden Waste</button>
+            <div class="shimmer-label">White shimmer + pulsing pink sonar ring. Impossible to miss.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Option C: Gradient Border Shimmer -->
+    <div class="option-card" onclick="pick(this, 'item5', 'C')">
+      <div class="option-header">
+        <div class="option-letter">C</div>
+        <div class="option-name">"Gradient Border" — Gold-white-gold triple streak</div>
+      </div>
+      <div class="option-body">
+        <div class="demo-area">
+          <div class="shimmer-demo">
+            <button class="shimmer-btn gradient-border">Find Your Hidden Waste</button>
+            <div class="shimmer-label">Gold-white-gold triple streak. Extra glow on hover. Try it!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ITEM 8: HIGHLIGHTER ============ -->
+<div class="section">
+  <div class="section-title">
+    <span class="tag">Visual</span>
+    Item 8 — Highlighter Fade Fix
+  </div>
+  <p class="section-desc">The highlight on "buried in busywork." fades toward the end. Three ways to fix it.</p>
+
+  <div class="option-grid">
+
+    <!-- Option A: Higher iterations + darker -->
+    <div class="option-card" onclick="pick(this, 'item8', 'A')">
+      <div class="option-header">
+        <div class="option-letter">A</div>
+        <div class="option-name">"Higher iterations + darker" — Simplest fix</div>
+      </div>
+      <div class="option-body">
+        <div class="demo-area">
+          <div class="highlight-demo">
+            <span class="normal">Most of your week is </span><span class="hl-option-a">buried in busywork.</span>
+          </div>
+        </div>
+        <p style="text-align:center; font-size:0.8rem; color:var(--ink-soft); margin-top:12px">
+          4 iterations at 35% opacity. Layers fill to cover thin spots. Two prop changes.
+        </p>
+      </div>
+    </div>
+
+    <!-- Option B: CSS gradient replacement -->
+    <div class="option-card" onclick="pick(this, 'item8', 'B')">
+      <div class="option-header">
+        <div class="option-letter">B</div>
+        <div class="option-name">"CSS Gradient" — Guaranteed uniform, no rough-notation</div>
+      </div>
+      <div class="option-body">
+        <div class="demo-area">
+          <div class="highlight-demo">
+            <span class="normal">Most of your week is </span><span class="hl-option-b">buried in busywork.</span>
+          </div>
+        </div>
+        <p style="text-align:center; font-size:0.8rem; color:var(--ink-soft); margin-top:12px">
+          Pure CSS background. Perfectly uniform edge to edge. No fade possible.
+        </p>
+      </div>
+    </div>
+
+    <!-- Option C: Box + highlight double layer -->
+    <div class="option-card" onclick="pick(this, 'item8', 'C')">
+      <div class="option-header">
+        <div class="option-letter">C</div>
+        <div class="option-name">"Box + Highlight" — Marker + frame double layer</div>
+      </div>
+      <div class="option-body">
+        <div class="demo-area">
+          <div class="highlight-demo">
+            <span class="normal">Most of your week is </span><span class="hl-option-c">buried in busywork.</span>
+          </div>
+        </div>
+        <p style="text-align:center; font-size:0.8rem; color:var(--ink-soft); margin-top:12px">
+          Outer box border (never fades) + inner highlight fill. "Marked up" feel.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SUMMARY ============ -->
+<div class="summary-box">
+  <h2>Your Visual Picks</h2>
+  <div id="summary-list"></div>
+  <br>
+  <button class="copy-btn" onclick="copySummary()">Copy my picks</button>
+  <span class="copied-msg" id="copied-msg">Copied! Paste into Claude Code.</span>
+</div>
+
+<br><br><br>
+
+<script>
+const items = {
+  item4: { label: 'Item 4 — Calendar Visual', choice: null },
+  item5: { label: 'Item 5 — Shimmer Effect', choice: null },
+  item8: { label: 'Item 8 — Highlighter Fade', choice: null },
+};
+
+const optionNames = {};
+
+function pick(el, itemId, letter) {
+  // Deselect siblings in same section
+  const section = el.closest('.option-grid');
+  section.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  items[itemId].choice = letter;
+  const name = el.querySelector('.option-name');
+  optionNames[itemId] = name ? name.textContent : letter;
+  updateSummary();
+}
+
+function updateSummary() {
+  const el = document.getElementById('summary-list');
+  let html = '';
+  for (const [id, item] of Object.entries(items)) {
+    if (item.choice) {
+      html += `<div class="chosen">${item.label}: <strong>${item.choice}</strong> — ${optionNames[id]}</div>`;
+    } else {
+      html += `<div class="pending">${item.label}: not yet picked</div>`;
+    }
+  }
+  el.innerHTML = html;
+}
+
+function copySummary() {
+  let text = 'Here are my visual picks:\n\n';
+  for (const [id, item] of Object.entries(items)) {
+    if (item.choice) {
+      text += `${item.label}: ${item.choice}\n`;
+    } else {
+      text += `${item.label}: SKIP\n`;
+    }
+  }
+  navigator.clipboard.writeText(text).then(() => {
+    const msg = document.getElementById('copied-msg');
+    msg.classList.add('show');
+    setTimeout(() => msg.classList.remove('show'), 2500);
+  });
+}
+
+updateSummary();
+</script>
+
+</body>
+</html>

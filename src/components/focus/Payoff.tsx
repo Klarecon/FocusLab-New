@@ -479,7 +479,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
               <span className="flex items-center gap-2">
                 <AnimatedEmoji emoji="🔥" animation="bounce" size="sm" />
                 Start with your{" "}
-                {quickWinCount > 0 ? "first quick win" : "top fix"}
+                {quickWinCount > 0 ? "first quick win" : "biggest win"}
               </span>
             </ShimmerButton>
           </motion.div>

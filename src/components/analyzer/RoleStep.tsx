@@ -166,11 +166,15 @@ export default function RoleStep({ onNext }: RoleStepProps) {
 
 /** Better, more expressive emoji per role */
 const ROLE_EMOJI: Partial<Record<string, string>> = {
-  marketing: "🎯",
+  marketing: "📣",
   sales: "🤝",
   engineering: "🛠️",
-  product: "🧭",
+  product: "📦",
   design: "🎨",
+  "software-dev": "🧑‍💻",
+  operations: "🔧",
+  finance: "🧮",
+  "ceo-founder": "🫠",
 };
 
 function RoleCard({

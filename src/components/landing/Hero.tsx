@@ -7,11 +7,9 @@ import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { Highlighter } from "@/components/ui/highlighter";
 import { OrbitingCircles } from "@/components/ui/orbiting-circles";
 
-/** An illustrative calendar week showing how much time goes to waste. */
+/** Heat Map calendar — high-contrast waste blocks with stamp badge. */
 function WeekCalendar() {
   const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
-  // Each day: array of blocks. "waste" = wasted time, "work" = real work.
-  // Shows ~58% waste visually.
   const schedule = [
     [
       { type: "waste", label: "Meetings", h: 2 },
@@ -51,7 +49,23 @@ function WeekCalendar() {
   ];
 
   return (
-    <div className="w-full max-w-lg mx-auto">
+    <div className="w-full max-w-lg mx-auto relative">
+      {/* Stamp badge */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.5, rotate: -8 }}
+        animate={{ opacity: 1, scale: 1, rotate: 3 }}
+        transition={{ delay: 1.6, duration: 0.4, type: "spring", stiffness: 300 }}
+        className="absolute -top-3 -right-2 sm:right-2 z-10 px-3 py-1.5 rounded-md font-bold text-sm text-white shadow-lg"
+        style={{
+          fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
+          backgroundColor: "var(--color-reclaim)",
+          boxShadow: "0 3px 12px rgba(196, 24, 106, 0.35), inset 0 1px 0 rgba(255,255,255,0.15)",
+          border: "2px solid rgba(255,255,255,0.2)",
+        }}
+      >
+        50–70% waste
+      </motion.div>
+
       <div className="grid grid-cols-5 gap-1.5">
         {days.map((day, di) => (
           <div key={day} className="text-center">
@@ -73,11 +87,11 @@ function WeekCalendar() {
                     height: `${block.h * 20}px`,
                     backgroundColor:
                       block.type === "waste"
-                        ? "rgba(224, 62, 18, 0.15)"
+                        ? "rgba(224, 62, 18, 0.85)"
                         : "rgba(196, 24, 106, 0.08)",
                     borderLeft:
                       block.type === "waste"
-                        ? "2px solid var(--color-waste)"
+                        ? "none"
                         : "2px solid var(--color-reclaim)",
                     transformOrigin: "top",
                   }}
@@ -86,10 +100,7 @@ function WeekCalendar() {
                     <span
                       className="text-[9px] sm:text-[10px] font-medium truncate px-0.5"
                       style={{
-                        color:
-                          block.type === "waste"
-                            ? "var(--color-waste)"
-                            : "var(--color-reclaim)",
+                        color: block.type === "waste" ? "white" : "var(--color-reclaim)",
                       }}
                     >
                       {block.label}
@@ -101,29 +112,23 @@ function WeekCalendar() {
           </div>
         ))}
       </div>
-      <div className="flex items-center justify-center gap-6 mt-3">
-        <div className="flex items-center gap-1.5">
-          <div
-            className="w-3 h-3 rounded-sm"
-            style={{ backgroundColor: "rgba(224, 62, 18, 0.15)", borderLeft: "2px solid var(--color-waste)" }}
-          />
-          <span className="text-xs" style={{ color: "var(--color-ink-soft)" }}>Waste</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <div
-            className="w-3 h-3 rounded-sm"
-            style={{ backgroundColor: "rgba(196, 24, 106, 0.08)", borderLeft: "2px solid var(--color-reclaim)" }}
-          />
-          <span className="text-xs" style={{ color: "var(--color-ink-soft)" }}>Real work</span>
-        </div>
-      </div>
+      <p
+        className="text-center mt-3 text-sm"
+        style={{
+          fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
+          fontStyle: "italic",
+          color: "var(--color-ink-soft)",
+        }}
+      >
+        The orange is your week disappearing.
+      </p>
     </div>
   );
 }
 
 export default function Hero() {
   return (
-    <section className="relative min-h-[100vh] flex flex-col items-center justify-center text-center px-6 py-20 overflow-hidden">
+    <section className="relative min-h-[90vh] flex flex-col items-center justify-center text-center px-6 py-20 overflow-hidden">
       {/* Background orbiting emoji */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.07] select-none flex items-center justify-center">
         <OrbitingCircles radius={140} iconSize={40} speed={0.7} path={false}>
@@ -154,7 +159,7 @@ export default function Hero() {
           className="text-sm font-medium tracking-widest uppercase mb-8"
           style={{ color: "var(--color-ink-soft)" }}
         >
-          A free tool for knowledge workers
+          A waste reduction tool for knowledge workers
         </motion.p>
 
         {/* Main headline */}
@@ -162,9 +167,9 @@ export default function Hero() {
           className="text-5xl sm:text-6xl md:text-7xl font-bold leading-[1.05] mb-6"
           style={{ fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif" }}
         >
-          Most of your week{" "}
+          Most of your week is{" "}
           <Highlighter action="highlight" color="rgba(224, 62, 18, 0.2)" strokeWidth={2} isView>
-            <span className="gradient-text">isn&apos;t real work.</span>
+            <span className="gradient-text">buried in busywork.</span>
           </Highlighter>
         </h1>
 
@@ -177,9 +182,9 @@ export default function Hero() {
           style={{ color: "var(--color-ink-soft)" }}
         >
           Meetings, email, coordination, admin — the average knowledge worker
-          spends <Highlighter action="underline" color="var(--color-waste)" isView><strong style={{ color: "var(--color-waste)" }}>58% of their week</strong></Highlighter> on
-          tasks that don&apos;t move the needle. FocusLab shows you exactly where
-          your time goes, and what to do about it.
+          spends <Highlighter action="underline" color="var(--color-waste)" isView><strong style={{ color: "var(--color-waste)" }}>50–70% of their week</strong></Highlighter>{" "}
+          (sometimes even more) on tasks that don&apos;t move the needle.
+          FocusLab shows you exactly where your time goes, and what to do about it.
         </motion.p>
 
         {/* Calendar visual */}
@@ -197,7 +202,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2 }}
-          className="flex flex-col sm:flex-row items-center gap-5"
+          className="flex flex-col items-center gap-5"
         >
           <Link href="/analyzer" className="no-underline">
             <ShimmerButton
@@ -211,37 +216,11 @@ export default function Hero() {
             </ShimmerButton>
           </Link>
           <span className="text-sm" style={{ color: "var(--color-ink-soft)" }}>
-            3 minutes. No signup. No judgment.
+            3 minutes. No signup needed.
           </span>
         </motion.div>
       </motion.div>
 
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-      >
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          className="flex flex-col items-center gap-1"
-        >
-          <span className="text-xs font-medium" style={{ color: "var(--color-ink-soft)" }}>
-            Scroll
-          </span>
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <path
-              d="M5 8L10 13L15 8"
-              stroke="var(--color-ink-soft)"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </motion.div>
-      </motion.div>
     </section>
   );
 }

@@ -15,7 +15,7 @@ const tools = [
     cta: "Find your waste",
     color: "var(--color-waste)",
     borderColor: "#e03e12",
-    features: ["5-minute audit", "Personalized by role", "Dollar cost per drain"],
+    features: ["3-minute audit", "Personalized by role", "Dollar cost per drain"],
   },
   {
     title: "Focus Table & EVI Matrix",
@@ -24,7 +24,7 @@ const tools = [
     description:
       "Pick from 134 research-backed fixes, scored by effort and impact. Know exactly what to fix first.",
     href: "/focus",
-    cta: "Fix your week",
+    cta: "Fix what's draining you",
     color: "var(--color-reclaim)",
     borderColor: "#c4186a",
     features: ["134 research-backed fixes", "Effort × Impact scoring", "Concrete payoff in hours & $"],
@@ -51,7 +51,7 @@ export default function ToolCards() {
         className="text-center text-lg mb-14"
         style={{ color: "var(--color-ink-soft)" }}
       >
-        Two ways to reclaim your week.
+        One finds the problem. The other fixes it.
       </motion.p>
 
       <div className="grid md:grid-cols-2 gap-8">

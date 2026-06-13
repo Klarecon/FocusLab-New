@@ -12,7 +12,11 @@ export type RoleSlug =
   | "product"
   | "design"
   | "manager"
-  | "executive";
+  | "executive"
+  | "software-dev"
+  | "operations"
+  | "finance"
+  | "ceo-founder";
 
 /** Unit of a benchmark value. Drives formatting + how the engine consumes it. */
 export type BenchmarkUnit =

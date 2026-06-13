@@ -49,6 +49,30 @@ export const ROLE_LENSES: readonly RoleLens[] = [
     emoji: "\u{1F3A8}", // 🎨
   },
   {
+    slug: "software-dev",
+    label: "Software Dev",
+    leak: "Deploys, debugging, and context-switching between repos.",
+    emoji: "🧑‍💻",
+  },
+  {
+    slug: "operations",
+    label: "Operations",
+    leak: "Process gaps, vendor follow-ups, and manual workflows.",
+    emoji: "🔧",
+  },
+  {
+    slug: "finance",
+    label: "Finance",
+    leak: "Reconciliation, close cycles, and chasing receipts.",
+    emoji: "🧮",
+  },
+  {
+    slug: "ceo-founder",
+    label: "CEO / Founder",
+    leak: "Everything lands on your desk — context-switching is the job.",
+    emoji: "🫠",
+  },
+  {
     slug: "manager",
     label: "Manager",
     leak: "Back-to-back meetings and unblocking others.",

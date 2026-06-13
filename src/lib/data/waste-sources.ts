@@ -156,6 +156,34 @@ export const ROLE_WASTE: WasteSource[] = [
   { slug: "design-file-admin", group: "Files & assets", label: "Organizing, renaming & versioning files", muda: "underused-skill", whatCounts: "File wrangling instead of designing.", scope: ["design"], emoji: emojiFor("Files & assets") },
   { slug: "design-export", group: "Files & assets", label: "Resizing & exporting assets by hand", muda: "underused-skill", whatCounts: "Manual exports, per-size variants, deck-building.", scope: ["design"], emoji: emojiFor("Files & assets") },
 
+  // SOFTWARE DEV
+  { slug: "sdev-context-switch", group: "Focus", label: "Switching between repos, tickets, and Slack", muda: "switching-searching", whatCounts: "Jumping between codebases, tickets, and chat all day.", scope: ["software-dev"], emoji: emojiFor("Focus") },
+  { slug: "sdev-deploy-wait", group: "Builds & reviews", label: "Waiting on deploys and CI pipelines", muda: "waiting", whatCounts: "Watching CI run, retrying flaky tests, waiting for green.", scope: ["software-dev"], emoji: emojiFor("Builds & reviews") },
+  { slug: "sdev-debug-others", group: "Code", label: "Debugging code you didn\u2019t write", muda: "rework", whatCounts: "Spelunking unfamiliar code to fix someone else\u2019s bug.", scope: ["software-dev"], emoji: emojiFor("Code") },
+  { slug: "sdev-pr-review", group: "Builds & reviews", label: "Code reviews piling up in your queue", muda: "pile-ups", whatCounts: "PRs waiting on you or your PRs waiting on others.", scope: ["software-dev"], emoji: emojiFor("Builds & reviews") },
+  { slug: "sdev-env-setup", group: "Builds & reviews", label: "Fixing local dev environment issues", muda: "rework", whatCounts: "Broken Docker, missing env vars, version mismatches.", scope: ["software-dev"], emoji: emojiFor("Builds & reviews") },
+
+  // OPERATIONS
+  { slug: "ops-manual-process", group: "Admin", label: "Running processes that should be automated", muda: "underused-skill", whatCounts: "Manual steps in workflows that repeat every cycle.", scope: ["operations"], emoji: emojiFor("Admin") },
+  { slug: "ops-vendor-chase", group: "Coordination", label: "Chasing vendors and suppliers for updates", muda: "handoffs", whatCounts: "Following up on orders, deliveries, and contracts.", scope: ["operations"], emoji: emojiFor("Coordination") },
+  { slug: "ops-exception-handling", group: "Rework", label: "Handling exceptions and edge cases by hand", muda: "rework", whatCounts: "Manual fixes for things the system doesn\u2019t handle.", scope: ["operations"], emoji: emojiFor("Rework") },
+  { slug: "ops-report-compile", group: "Reporting", label: "Compiling operational reports from multiple sources", muda: "handoffs", whatCounts: "Pulling data from different systems into one view.", scope: ["operations"], emoji: emojiFor("Reporting") },
+  { slug: "ops-firefighting", group: "Focus", label: "Dropping planned work for urgent fires", muda: "switching-searching", whatCounts: "Reactive firefighting instead of planned improvements.", scope: ["operations"], emoji: emojiFor("Focus") },
+
+  // FINANCE
+  { slug: "fin-reconcile", group: "Admin", label: "Manual reconciliation across systems", muda: "underused-skill", whatCounts: "Matching entries across spreadsheets and accounting tools.", scope: ["finance"], emoji: emojiFor("Admin") },
+  { slug: "fin-receipt-chase", group: "Coordination", label: "Chasing people for receipts and approvals", muda: "handoffs", whatCounts: "Following up on missing docs for expense reports.", scope: ["finance"], emoji: emojiFor("Coordination") },
+  { slug: "fin-close-crunch", group: "Rework", label: "Month-end close scramble", muda: "over-processing", whatCounts: "Last-minute corrections and late entries every close cycle.", scope: ["finance"], emoji: emojiFor("Rework") },
+  { slug: "fin-report-reformat", group: "Reporting", label: "Reformatting the same report for different audiences", muda: "overproduction", whatCounts: "Board version, team version, investor version of the same data.", scope: ["finance"], emoji: emojiFor("Reporting") },
+  { slug: "fin-data-entry", group: "Admin", label: "Keying data between accounting tools", muda: "underused-skill", whatCounts: "Copy-pasting between your GL, payroll, and bank.", scope: ["finance"], emoji: emojiFor("Admin") },
+
+  // CEO / FOUNDER
+  { slug: "ceo-context-switch", group: "Focus", label: "Context-switching between every function", muda: "switching-searching", whatCounts: "Product, sales, ops, finance \u2014 all in one morning.", scope: ["ceo-founder"], emoji: emojiFor("Focus") },
+  { slug: "ceo-inbox-overload", group: "Email & chat", label: "Inbox overload from every direction", muda: "handoffs", whatCounts: "Everyone CCs you, everyone needs a reply.", scope: ["ceo-founder"], emoji: emojiFor("Email & chat") },
+  { slug: "ceo-delegation-redo", group: "Leading vs doing", label: "Redoing work you delegated", muda: "underused-skill", whatCounts: "Fixing output instead of coaching the person.", scope: ["ceo-founder"], emoji: emojiFor("Leading vs doing") },
+  { slug: "ceo-investor-prep", group: "Reporting", label: "Prep and follow-up for investor updates", muda: "over-processing", whatCounts: "Decks, metrics, narratives \u2014 recurring and manual.", scope: ["ceo-founder"], emoji: emojiFor("Reporting") },
+  { slug: "ceo-decision-bottleneck", group: "Coordination", label: "Being the bottleneck for every decision", muda: "over-processing", whatCounts: "Nothing moves without your sign-off.", scope: ["ceo-founder"], emoji: emojiFor("Coordination") },
+
   // MANAGER
   { slug: "mgr-1on1-autopilot", group: "Meetings", label: "1:1s & reviews running on autopilot", muda: "over-processing", whatCounts: "Recurring slots kept out of habit, not need.", scope: ["manager"], emoji: emojiFor("Meetings") },
   { slug: "mgr-ic-work", group: "Leading vs doing", label: "Doing IC work instead of managing", muda: "underused-skill", whatCounts: "Handling tasks yourself instead of empowering the team.", scope: ["manager"], emoji: emojiFor("Leading vs doing") },
@@ -207,6 +235,24 @@ const BENCHMARK_CATEGORY_BY_SOURCE: Record<string, string> = {
   "sales-asset-hunt": "info-search",
   // engineering
   "eng-tech-debt": "tech-debt",
+  // software-dev
+  "sdev-context-switch": "context-switching",
+  "sdev-deploy-wait": "tech-debt",
+  "sdev-env-setup": "tech-debt",
+  // operations
+  "ops-manual-process": "admin-low-value",
+  "ops-report-compile": "reporting-data-pulls",
+  "ops-firefighting": "firefighting",
+  "ops-vendor-chase": "work-about-work",
+  // finance
+  "fin-reconcile": "admin-low-value",
+  "fin-data-entry": "admin-low-value",
+  "fin-report-reformat": "reporting-data-pulls",
+  "fin-receipt-chase": "work-about-work",
+  // ceo/founder
+  "ceo-context-switch": "context-switching",
+  "ceo-inbox-overload": "email-messaging",
+  "ceo-decision-bottleneck": "work-about-work",
   // product
   "prod-firefighting": "firefighting",
   "prod-realign": "work-about-work",

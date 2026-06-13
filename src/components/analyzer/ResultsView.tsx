@@ -122,7 +122,7 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
 
   useEffect(() => {
     const t1 = setTimeout(() => setPhase("reveal"), 500);
-    const t2 = setTimeout(() => setPhase("full"), 2500);
+    const t2 = setTimeout(() => setPhase("full"), 3500);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
@@ -193,8 +193,8 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
                         transition={{ delay: 0.3 }}
                         className="text-5xl sm:text-6xl md:text-7xl font-bold font-figures leading-none"
                         style={{
-                          color: "var(--color-waste)",
-                          textShadow: "0 0 60px rgba(224, 62, 18, 0.3)",
+                          color: "#c4186a",
+                          textShadow: "0 0 60px rgba(196, 24, 106, 0.3)",
                         }}
                       >
                         {fmtDollars(totalCost)}/year
@@ -220,8 +220,8 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
                         transition={{ delay: 0.3 }}
                         className="text-5xl sm:text-6xl md:text-7xl font-bold font-figures leading-none"
                         style={{
-                          color: "var(--color-waste)",
-                          textShadow: "0 0 60px rgba(224, 62, 18, 0.3)",
+                          color: "#c4186a",
+                          textShadow: "0 0 60px rgba(196, 24, 106, 0.3)",
                         }}
                       >
                         {fmtHours(totalHours)} hrs/week
@@ -288,11 +288,11 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
                 style={{ color: "var(--color-waste)" }}
               >
                 {hasCost ? (
-                  <Highlighter action="circle" color="var(--color-waste)" strokeWidth={2} isView>
+                  <Highlighter action="circle" color="var(--color-waste)" strokeWidth={2} padding={12} isView>
                     {fmtDollars(totalCost)}/year
                   </Highlighter>
                 ) : (
-                  <Highlighter action="circle" color="var(--color-waste)" strokeWidth={2} isView>
+                  <Highlighter action="circle" color="var(--color-waste)" strokeWidth={2} padding={12} isView>
                     {fmtHours(totalHours)} hrs/week
                   </Highlighter>
                 )}
@@ -569,14 +569,14 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
         {hasWaste ? (
           <div className="text-center py-10">
             <p className="text-base mb-4 font-medium" style={{ color: "var(--color-ink-soft)" }}>
-              Ready to do something about it?
+              This is fixable.
             </p>
-            <Link href="/focus" className="no-underline">
+            <Link href="/focus" className="no-underline inline-flex justify-center">
               <ShimmerButton
                 borderRadius="12px"
-                className="px-10 py-4 text-base font-bold"
+                className="px-10 py-4 text-base font-bold mx-auto"
               >
-                Pick your fixes &rarr;
+                Now let&apos;s fix it &rarr;
               </ShimmerButton>
             </Link>
           </div>

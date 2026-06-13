@@ -6,6 +6,7 @@ import { Minus, Plus } from "lucide-react";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { useAuditStore } from "@/stores/audit-store";
 import { SALARY_DEFAULTS, salaryCitation } from "@/lib/data/salary";
+import { ROLE_LENSES } from "@/lib/data/roles";
 import type { RoleSlug } from "@/lib/data/benchmarks";
 
 interface ContextStepProps {
@@ -15,6 +16,7 @@ interface ContextStepProps {
 
 export default function ContextStep({ onNext, onBack }: ContextStepProps) {
   const roleSlug = useAuditStore((s) => s.roleSlug);
+  const secondaryRoles = useAuditStore((s) => s.secondaryRoles);
   const workHoursPerWeek = useAuditStore((s) => s.workHoursPerWeek);
   const workDaysPerWeek = useAuditStore((s) => s.workDaysPerWeek);
   const payMode = useAuditStore((s) => s.payMode);
@@ -33,7 +35,26 @@ export default function ContextStep({ onNext, onBack }: ContextStepProps) {
   }, [roleSlug, salary, setContext]);
 
   const salaryDefault = roleSlug ? SALARY_DEFAULTS[roleSlug as RoleSlug] : null;
-  const citation = salaryDefault ? salaryCitation(salaryDefault) : null;
+
+  // Build dynamic citation that reflects role + level
+  const currentLevel = secondaryRoles.includes("executive" as RoleSlug)
+    ? "Director+"
+    : secondaryRoles.includes("manager" as RoleSlug)
+      ? "Manager"
+      : "Individual Contributor";
+  const roleLabel = roleSlug
+    ? ROLE_LENSES.find((r) => r.slug === roleSlug)?.label ?? roleSlug
+    : null;
+  const leveledTitle = roleLabel
+    ? currentLevel === "Director+"
+      ? `${roleLabel} Directors`
+      : currentLevel === "Manager"
+        ? `${roleLabel} Managers`
+        : salaryDefault?.occupationTitle ?? roleLabel
+    : null;
+  const citation = salaryDefault
+    ? `US median for ${leveledTitle} \u2014 BLS OEWS, ${salaryDefault.year}`
+    : null;
 
   const DAYS_OPTIONS = [4, 5, 6, 7];
 
