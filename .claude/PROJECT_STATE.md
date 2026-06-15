@@ -1,173 +1,162 @@
 # FocusLab Project State
 
-**Last updated:** 2026-06-13 by Claude via /handover
+**Last updated:** 2026-06-15 by Claude via /handover
 
 ## Quick orient
-- **Project:** FocusLab — productivity tool suite helping knowledge workers find time waste (Pareto Analyzer) and fix it (Focus Table & EVI Matrix)
+- **Project:** FocusLab — productivity tool suite helping knowledge workers find time waste (Pareto Analyzer) and fix it (Focus Table & EvI Matrix)
 - **Repo:** https://github.com/mona2611-alt/FocusLab-New (PRIVATE)
 - **Production URL:** https://focuslab-omega.vercel.app
 - **Active branch:** main
-- **Active work:** Session 8 complete — Focus Table & EVI Matrix full rebuild + 18 feedback items. Deployed to Vercel. User has opened the deployed app but hasn't given follow-up feedback yet on the 18-item fixes.
-- **Owner:** Mona Mehta (mona@klarecon.com) — non-technical product owner. Wants FAST autonomous execution — absolutely NO permission prompts. Values visual quality highly. Expects TDD discipline. Reviews the deployed Vercel app, not localhost. Core methodology is off-limits for changes. Prefers options via interactive HTML pickers.
+- **Active work:** Session 9 complete — Oren's feedback (14 items), double Pareto wizard, tighter QA system, specialist agent audits. Deployed but user reports visual/behavioral misses not caught by code-level QA. Next session must start with deployed app review.
+- **Owner:** Mona Mehta (mona@klarecon.com) — non-technical product owner. Wants FAST autonomous execution — absolutely NO permission prompts. Values visual quality highly. Expects TDD discipline. Reviews the deployed Vercel app, not localhost. Prefers options via interactive HTML pickers. Does NOT want endless review rounds — demands specialist agents (math, copy, sense-check) run BEFORE presenting work. Frustrated when working features break during refactors.
 
 ## Branch state
 - All commits pushed to origin/main and deployed to Vercel
-- Latest: `caa3b20 Session 8: Focus Table feedback — 18 items across 3 phases`
-- Session 8 commits (2 total):
-  - `8a3ab0e` Focus Table & EVI Matrix rebuild: quadrant system, card layout, copy overhaul
-  - `caa3b20` Session 8: Focus Table feedback — 18 items across 3 phases
+- Latest: `e02148f Session 9 fixes: specialist agent audit — copy, math, flow, edge cases`
+- Session 9 commits (2 total):
+  - `f9be8f8` Session 9: Oren feedback — 14 items, double Pareto, tighter QA system
+  - `e02148f` Session 9 fixes: specialist agent audit — copy, math, flow, edge cases
 
-## What's done in this session (2026-06-13, Session 8)
+## What's done in this session (2026-06-15, Session 9)
 
-### 1. Handover Ritual Fix
-- Created custom `/handover` command (`~/.claude/commands/handover.md`) requiring 3 artifacts: Session Log + Feedback Log + PROJECT_STATE.md
-- Fixed permissions in `settings.local.json` — broad wildcards replaced 37 specific entries
-- Saved to memory (`feedback_handover_ritual.md`)
+### 1. Tighter QA System (3 layers)
+- Created `src/__tests__/feedback-regression.test.ts` — 71 cumulative regression tests (was 0)
+- Total tests: 253 (was 182)
+- Updated CLAUDE.md Section 12: three-layer QA (automated hooks + regression tests + evidence-based agent)
+- New feedback intake format: every item typed as CODE or VISUAL before coding
+- QA agent must show file:line evidence for PASS, flag VISUAL items as VISUAL-CHECK
+- Updated `mona-feedback-agent.md` with evidence-based verification protocol
 
-### 2. Multi-Agent Research & Planning
-Launched 7 specialist agents in parallel (PM, UI/UX, Engineer, Copywriter, QA, Research, Feedback Synthesis) to plan the Focus Table rebuild. Key outputs:
-- PM: full user journey, acceptance criteria, edge cases for all 3 tabs
-- Engineer: component architecture, data flow, file-by-file change list
-- UI/UX: visual design plan for EviMatrix, ActionPlan, Payoff
-- Copywriter: complete copy plan with actual words for every element
-- Research: EVI matrix best practices from Matheson framework, consulting methodologies
-- QA: current state audit with severity-ranked issues
-- Feedback: comprehensive synthesis of all user preferences
+### 2. Oren's Feedback — 14 Items Implemented
+Oren Yonash (original Pareto methodology creator) reviewed the deployed app. His feedback was captured from 10 screenshots with comments.
 
-### 3. Complete Focus Table Rebuild (commit 8a3ab0e)
-- **QUADRANT_META:** Quick Wins → Pearls, Major Projects → Oysters, Fill-ins → Low-Hanging Fruit, Thankless → White Elephants
-- **Shared hook:** `useDrainLookup` extracted from 3x duplicated code
-- **EviMatrix:** 4 quadrant backgrounds, midline dividers, full-opacity labels, QuadrantSummary, improved inline editor
-- **FocusTable:** HTML table → ActionCard layout, zone headers, summary pills, "See your impact" CTA
-- **Payoff:** quick-win vs full-potential split, gradient divider, sonar-ring CTA
-- **FocusStage:** tab badges, updated copy
-- **SolutionPicker:** 6 copy improvements
-- QA Gate: 40/40 items passed
+**Methodology changes (approved by Mona):**
+- O1: Removed avoidable % ("how much could you cut?") from WeighStep — Pareto now runs on raw hours
+- O3: Double Pareto two-pass wizard — IntakeStep became category-level estimation, new DrilldownStep for vital few drilldown
 
-### 4. User Feedback: 18 Items
-User reviewed deployed app with screenshots. All 18 items captured as numbered list before implementation.
+**UX/UI improvements:**
+- O2: Removed "Really zero?" prompt (redundant friction)
+- O4: Bar chart label truncation (was no-op, now truncates at 25 chars)
+- O5: Solution descriptions collapse by default + max 3 visible per drain
+- O6a: Renamed tab to "EvI Matrix"
+- O6b: Simplified dot tooltip (name + quadrant + scores only)
+- O6c: Added above-fold quadrant summary counts
+- O7: Skip/remove button on priority table rows
+- O8: Date picker min=today
+- O10: Deduplicated waste sources across pain prompt categories
 
-### 5. Feedback Implementation (commit caa3b20)
+**Visual fixes (from Mona's Session 8 review):**
+- #6: Centered "See your impact" CTA
+- #7: Fixed quadrant label overlap (bottom-[76px])
+- #10: Added column headers to priority table
 
-**Phase 1:**
-- 40 new solutions for 20 uncovered waste slugs (sdev, ops, finance, CEO)
-- Zone B visible by default
-- "depends on implementation" → dynamic waste hours
-- Quadrant label padding increased
-- White Elephants: 💀 → 🐘
-- "Bigger dot" legend removed
-- Quadrant descriptions updated with methodology advice
-- Before/After centered
+### 3. Opportunity Framing (O9)
+- Created `src/lib/data/opportunity-frames.ts` — research-backed copy across 4 time tiers (1-3h, 3-6h, 6-10h, 10+h) with role-specific frames for 10 roles
+- Sources: Cal Newport, Gloria Mark, Microsoft WTI 2025, McKinsey, DORA, HBR, HubSpot, ATD
+- Added to Payoff.tsx: "What could you do with that time?" section
 
-**Phase 2:**
-- Dot colors by quadrant (pink/gold/neutral/orange)
-- Dot clicking fixed (handler on CustomDot `<g>`, not ScatterChart)
-- Custom fixes visible in drain section after adding
-- Multi-entry with "Added!" flash + auto-focus
-- "Quick Win" → "Pearl" in SolutionPicker badge
+### 4. Specialist Agent Audits
+Ran 3 specialist agents after user flagged quality issues:
+- **Math Agent:** All calculations sound end-to-end. No contradictions. Found: DrilldownStep missing over-allocation warning, benchmarkMap silently broken (both fixed)
+- **DR Copywriter:** 19 copy issues found and fixed. Key: "Drilldown"→"Details", "Quick tasks"→"Low-Hanging Fruit" consistency, removed jargon
+- **Sense Checker:** 2 flow bugs fixed (empty state fallbacks), role change now clears stale category estimates, benchmarkMap restored
 
-**Phase 3:**
-- PriorityTable: sequenced by quadrant (Pearls → Oysters → LHF → WE) with due dates
-- `dueDates` added to Zustand store
-- "Here's what each fix saves you" removed (merged into action table)
-- Backwards CTA replaced with closing statement
-
-QA Gate: 21/21 items passed
-
-### Tests
-- 182/182 passing throughout all changes
+### 5. Custom Sources Restored
+DrilldownStep now has "Add your own drain..." input per category with multi-entry support, "Your custom drain" label, and auto-focus.
 
 ## What's next (for the NEXT Claude Code session to pick up)
 
-1. **User verification of Session 8 feedback fixes** — user opened the deployed app but hasn't given follow-up feedback yet. Expect more notes.
-2. **Highlighter fade issue** (from Session 7) — "buried in busywork." highlighter fades. CSS mockups didn't work. Needs real rough-notation demo.
-3. **Zone B nudge when Zone A is sparse** — Zone B is now open by default, but there's no explicit nudge card telling users to look at Zone B. Could be added if user requests.
-4. **Reclaim column in PriorityTable** — the action table has priority, task, quadrant, owner, due date. Could add reclaim hrs/wk per fix if user wants.
-5. **Possible remaining bugs to verify:**
-   - Hours input on ContextStep — can user type freely now?
-   - CEO/Founder — does level picker actually hide?
-   - Session reset — does it work without errors?
-6. **"Wow" features not yet built:**
-   - Shareable Waste Scorecard card (1200x630 OG image)
-   - Lottie animations for key reveal moments
-7. **Oren's feedback** — user shared Vercel link with Oren Yonash (original Pareto app creator). Feedback may arrive.
-8. **Clean up roles.ts corporate emoji** — base data still has corporate emoji (overridden by ROLE_EMOJI map, not user-facing)
+1. **CRITICAL: User says deployed app still has misses.** Session 9 code passes all 67 QA checks and 253 tests, but user reports "half the things are still the same" on the deployed app. Next session MUST start by having user identify specific issues (screenshots or descriptions). Could be: browser cache, runtime behavior not caught by code checks, or genuine misses.
+
+2. **Oren's feedback item O3 (Double Pareto) needs live testing.** The wizard flow changed significantly — old: Role→Context→Intake→Weigh→Results, new: Role→Context→YourTime→Details→Results. The old WeighStep is now dead code. User hasn't confirmed the new flow feels right.
+
+3. **Dead code cleanup:** WeighStep.tsx is no longer imported but still exists. Tests reference it. `weighCadence` field in store is dead. Should be cleaned up but carefully (localStorage backward compat).
+
+4. **Run specialist agents BEFORE presenting work.** User explicitly demanded: Math Agent, DR Copywriter, Sense Checker, and Mona Feedback Agent must ALL pass before declaring done. This is now a hard requirement — save to memory.
+
+5. **Pending features (not started):**
+   - Calendar week visualization
+   - Lottie animations
+   - Shareable scorecard card
+   - Highlighter fade issue (from Session 7)
 
 ## Decisions made (non-obvious choices)
 
 ### Carried from previous sessions
-- **Two separate tools, not one flow:** /analyzer finds problems, /focus solves them. Different routes, different mental modes.
-- **Static data, no database:** All waste sources, solutions, benchmarks are TypeScript constants.
-- **Hot pink reclaim (#c4186a):** All CTA, success, selected states. Green is BANNED.
-- **Plus Jakarta Sans body font:** NOT Hanken Grotesk.
-- **SCORE_FROM_LEVEL (low=2, med=3, high=4):** Critical for quick-win detection.
-- **No $50/hr fallback:** Dollar amounts hidden when no pay info provided.
-- **Vercel deploys via git push only.**
-- **Agents must not make major methodology changes autonomously.**
+- Two separate tools, not one flow: /analyzer finds problems, /focus solves them
+- Static data, no database
+- Hot pink reclaim (#c4186a) for all CTA, success, selected states. Green is BANNED.
+- Plus Jakarta Sans body font. Hanken Grotesk BANNED.
+- SCORE_FROM_LEVEL (low=2, med=3, high=4)
+- No $50/hr fallback
+- Agents must not make major methodology changes without asking
 
-### New in Session 8
-- **"Low-Hanging Fruit" = Easy + Low Impact** — standard usage is Easy+High (Pearls), but user explicitly chose their definition. This deviates from the Matheson framework.
-- **Dot colors by quadrant, not zone** — Pearls=#c4186a, Oysters=#edb215, Low-Hanging Fruit=#9a8c7a, White Elephants=#e03e12.
-- **White Elephants emoji is 🐘** — user-requested override of the project's usual emoji palette.
-- **Priority table replaces "Your Fixes"** — sequenced by quadrant order with due dates, not a flat list.
-- **No backwards CTA at end of Payoff** — closing statement instead ("You've got a plan. Now go reclaim your week.")
-- **Custom fixes visible inline** — after adding a custom fix, it appears as a selected card in the drain section with a "Your fix" badge.
-- **40 new solutions added** — every waste source now has at least 2 pre-built solutions. Sourced from DORA, Microsoft WTI, HBR, Forrester, Atlassian, etc.
-- **Handover ritual mandates 3 artifacts** — Session Log + Feedback Log + PROJECT_STATE.md. Custom command created at `~/.claude/commands/handover.md`.
+### New in Session 9
+- **Double Pareto (Oren's methodology):** IntakeStep is now category-level estimation (rough hrs/week per pain category). Engine runs mini-Pareto to find vital few categories (80% threshold). DrilldownStep shows only vital categories for detailed source-level estimation.
+- **Avoidable % removed:** Pareto runs on raw hours. `avoidablePct` forced to 100 in store for backward compat.
+- **Three-layer QA system:** (1) pre-commit hooks, (2) cumulative feedback regression tests, (3) evidence-based QA agent with CODE/VISUAL split.
+- **Specialist agents mandatory before "done":** Math, Copywriter, Sense Checker, and Mona Feedback Agent must all pass.
+- **Opportunity framing is research-backed:** Real stats from Cal Newport, Gloria Mark, McKinsey, etc. — not placeholder copy.
+- **Role change clears category estimates:** Prevents stale data from wrong role carrying over.
+- **Custom sources live in DrilldownStep:** Not IntakeStep (which is now category-level only).
+- **Stepper labels:** "Your Time" (step 2) and "Details" (step 3) — not "Estimate"/"Drilldown" (jargon).
+- **"Low-Hanging Fruit" is always singular** — the expression is collective, never "Fruits".
+- **White Elephants action verb:** "drop or delegate these" — not "skip if you can" (too passive).
 
 ## Open questions waiting on user
 
-- **Verify Session 8 feedback fixes** — user opened deployed app but hasn't given detailed follow-up yet
-- **Highlighter fade** — needs a fix approach user can actually see/compare
-- **Oren's feedback** — may arrive between sessions
+- **What specifically is still wrong on the deployed app?** Code passes all checks but user sees issues. Need screenshots or descriptions.
+- **Does the new double Pareto wizard flow feel right?** (Category estimate → Drilldown vital few → Results)
+- **Oren's follow-up:** May have more feedback after seeing the changes.
 
 ## Critical file paths
 
 ```
-src/stores/audit-store.ts                    — Zustand store (dueDates added this session)
-src/lib/engine/pareto.ts                     — Core Pareto engine
-src/lib/engine/solutions-logic.ts            — QUADRANT_META, payoff calculator, SCORE_FROM_LEVEL
-src/lib/engine/types.ts                      — ParetoResult, CategoryResult, ChosenSolution
-src/lib/data/solutions.ts                    — ~130 solutions catalog (40 new this session)
-src/lib/data/waste-sources.ts                — 67+ waste sources
-src/lib/data/roles.ts                        — 9 role lenses
-src/components/focus/FocusStage.tsx           — Focus tool orchestrator (tab badges added)
-src/components/focus/SolutionPicker.tsx       — Tab 1: Assign Fixes (custom fix visibility added)
-src/components/focus/FocusTable.tsx           — Tab 2: Action Plan (card layout)
-src/components/focus/EviMatrix.tsx            — Tab 3: EVI Matrix + PriorityTable + QuadrantSummary
-src/components/focus/Payoff.tsx               — Payoff projections (closing statement replaces CTA)
-src/components/focus/shared/useDrainLookup.ts — Shared drain lookup hook
-src/components/focus/focus-components.test.tsx — 10 focus component tests
-src/app/globals.css                           — Palette + animations
-.claude/agents/mona-feedback-agent.md         — QA verification agent (37-item checklist from Session 7)
-~/.claude/commands/handover.md                — Custom handover command (3 mandatory artifacts)
-Feedback Log/                                 — User feedback logs (Session 3, 6, 7, 8)
-Session Log/                                  — Session history (Sessions 1, 2, 4, 5, 6, 8)
+src/components/analyzer/IntakeStep.tsx           — NOW: category-level estimation (Pass 1)
+src/components/analyzer/DrilldownStep.tsx         — NEW: vital few drilldown (Pass 2)
+src/components/analyzer/AuditWizard.tsx           — Wizard orchestrator (5 steps, DrilldownStep at step 3)
+src/components/analyzer/WeighStep.tsx             — DEAD CODE: no longer imported
+src/components/analyzer/Stepper.tsx               — Step labels: Role/Context/Your Time/Details/Results
+src/components/analyzer/ResultsView.tsx           — Bar chart with truncated labels
+src/components/focus/EviMatrix.tsx                — EvI Matrix + PriorityTable (skip button, date min, column headers, above-fold summary)
+src/components/focus/SolutionPicker.tsx           — Collapsible descriptions, 3-max visible, custom fixes
+src/components/focus/FocusTable.tsx               — Action Plan (centered CTA)
+src/components/focus/FocusStage.tsx               — Tab: "EvI Matrix" (renamed)
+src/components/focus/Payoff.tsx                   — Opportunity framing + "Analyzer" naming
+src/lib/data/opportunity-frames.ts                — NEW: research-backed role-specific opportunity copy
+src/lib/engine/solutions-logic.ts                 — QUADRANT_META, payoff calculator
+src/stores/audit-store.ts                         — categoryEstimates, vitalCategories, avoidablePct=100
+src/__tests__/feedback-regression.test.ts         — 71 cumulative regression tests
+.claude/agents/mona-feedback-agent.md             — Evidence-based QA agent
+.claude/hooks/verify-done.sh                      — Pre-commit verification (8 checks)
+Feedback Log/Session 9 - Oren Feedback Review.html — Interactive feedback picker
+Feedback Log/Session 9 - Mona Responses.txt       — Mona's decisions on all items
+docs/superpowers/plans/2026-06-15-oren-feedback-implementation.md — Full implementation plan
 ```
 
 ## Known gotchas
 
-- **visx React 19 peer deps:** `.npmrc` has `legacy-peer-deps=true`. Required for Vercel deploys.
-- **Framer Motion keyframes:** Spring transitions only support 2 keyframes.
+- **visx React 19 peer deps:** `.npmrc` has `legacy-peer-deps=true`
+- **Framer Motion keyframes:** Spring transitions only support 2 keyframes
 - **Unicode escapes:** `\uXXXX` in JSX text renders as raw backslash. Always use actual characters.
-- **Vercel deploy author:** Git commits MUST use `mona@klarecon.com` as author email.
-- **Vercel Git integration:** Must stay connected to `mona2611-alt/FocusLab-New`.
-- **Tailwind CSS 4 animations:** Do NOT put animation definitions in `@theme inline`.
-- **Old repo still exists:** `/Users/monamehta/Documents/FocusLab/focuslab` is the original. Work in `FocusLab New/`.
-- **Recharts dot clicking:** ScatterChart.onClick doesn't fire reliably. Click handlers go on CustomDot's `<g>` SVG element directly.
-- **QUADRANT_DOT_COLORS vs ZONE_COLORS:** Both exist in EviMatrix.tsx. Dots use quadrant colors. ZONE_COLORS is only a fallback.
-- **dueDates in Zustand store:** New field added this session. Will auto-persist via localStorage. No migration needed — defaults to empty `{}`.
-- **Sessions 3 and 7 have no session log files** — they were created before the handover ritual was enforced.
+- **Vercel deploy author:** Git commits MUST use `mona@klarecon.com` as author email
+- **Recharts dot clicking:** Click handlers go on CustomDot's `<g>` SVG element directly
+- **WeighStep.tsx is dead code:** Not imported anywhere but tests reference it. Don't delete without updating tests.
+- **`hoursPerDay` field is misnamed:** In DrilldownStep it stores weekly hours. Renaming is risky (localStorage).
+- **`weighCadence` is dead:** Only used by dead WeighStep. Persisted but never read by live code.
+- **Browser cache:** User may see stale deploys. Always suggest Cmd+Shift+R or incognito.
+- **User frustrated with QA quality:** Session 9 QA agents passed everything but user found issues. Code-level checks are necessary but not sufficient — need runtime/visual verification.
 
 ## How to resume work
 1. Read this file top to bottom
 2. Run `git status` and `git log --oneline -10` to confirm state
-3. Read memory files at `~/.claude/projects/-Users-monamehta-Documents-FocusLab-New/memory/` for user preferences
-4. **First priority:** Check if Mona has feedback on the deployed Session 8 fixes
-5. User wants autonomous execution — NEVER ask permissions, just do the work
-6. Present copy/visual options via interactive HTML pickers, not markdown
-7. Run the Mona Feedback Agent (`.claude/agents/mona-feedback-agent.md`) before every deploy
-8. Deploy by pushing to GitHub — NOT via `npx vercel --prod`
-9. TDD discipline: 182 tests must never regress
-10. Never say "done" until tests pass, build succeeds, and QA agent passes
-11. **Important boundary:** Do NOT make major methodology changes without asking
+3. Read memory files at `~/.claude/projects/-Users-monamehta-Documents-FocusLab-New/memory/`
+4. **First priority:** Ask user what specifically is wrong on the deployed app — get screenshots
+5. Run the full wizard flow yourself to understand the double Pareto experience
+6. Run ALL specialist agents (Math, Copywriter, Sense Checker, Mona Feedback) BEFORE declaring done
+7. User wants autonomous execution — NEVER ask permissions, just do the work
+8. Present copy/visual options via interactive HTML pickers, not markdown
+9. Deploy by pushing to GitHub — NOT via `npx vercel --prod`
+10. TDD discipline: 253 tests must never regress
+11. Never say "done" until all specialist agents pass
+12. **Important boundary:** Do NOT make major methodology changes without asking
