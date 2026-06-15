@@ -1,0 +1,53 @@
+=== MONA'S RESPONSES — Session 9 Review ===
+Date: 15/6/2026, 2:53:15 PM
+
+--- #6 VISUAL: "See your impact" CTA — is it centered? ---
+Decision: Needs fix
+
+--- #7 VISUAL: Quadrant labels — do they overlap the chart edges? ---
+Decision: Needs fix
+Screenshot: attached
+
+--- #10 VISUAL: Action sequence list — is it properly aligned? ---
+Decision: Needs fix
+Notes: repeated tags, unclear which column is what. For example, task owner, due date. It should look like an organized table
+Screenshot: attached
+
+--- #17 VISUAL: Before/After section — is it centered? ---
+Decision: Looks good
+
+--- O1: Remove "how much could you cut?" from WeighStep ---
+Decision: Yes, do it
+
+--- O3: Double Pareto — two-pass wizard ---
+Decision: Yes, do it
+
+--- O2: Remove "Really zero?" prompt ---
+Decision: Agree
+
+--- O4: Bar chart labels unreadable ---
+Decision: (no decision)
+Notes: Remove the labels from the bottom axis and let them be on the bars when the user hovers over them. Or, use a shortened text without changing the original meaning. What's more impactful?
+
+--- O5: Solution Picker is a wall of text ---
+Decision: Option C (both)
+
+--- O6: EVI Matrix — naming, axis, above-fold engagement ---
+Decision: Do all 3
+Notes: when i hover over each ball, it gives too many details. Just keep its name, category, and effort impact score. Remove the rest
+
+--- O7: No skip button for White Elephants ---
+Decision: Agree
+
+--- O8: Date picker allows past dates ---
+Decision: Agree
+
+--- O10: Duplicate waste sources across pain prompt categories ---
+Decision: Agree
+
+--- O9: Reframe reclaimed time — tell users what they CAN do ---
+Decision: Love it, do it
+Notes: Make it role-specific and generic. Say someone reclaims 5 hours per week, suggest something like - work on the initiative you know could get you a bonus this quarter. 
+I'd suggest doing a web-research to find out what could be the potential opportunities for people in different roles to make use of the freed-up time. Build a strong database around it.
+
+=== END OF RESPONSES ===

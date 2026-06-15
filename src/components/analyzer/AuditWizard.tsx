@@ -7,7 +7,7 @@ import Stepper from "./Stepper";
 import RoleStep from "./RoleStep";
 import ContextStep from "./ContextStep";
 import IntakeStep from "./IntakeStep";
-import WeighStep from "./WeighStep";
+import DrilldownStep from "./DrilldownStep";
 import ResultsView from "./ResultsView";
 
 const stepVariants = {
@@ -35,7 +35,7 @@ function StepContent({
     case 2:
       return <IntakeStep onNext={goNext} onBack={goBack} />;
     case 3:
-      return <WeighStep onNext={goNext} onBack={goBack} />;
+      return <DrilldownStep onNext={goNext} onBack={goBack} />;
     case 4:
       return <ResultsView onRestart={onRestart} />;
     default:

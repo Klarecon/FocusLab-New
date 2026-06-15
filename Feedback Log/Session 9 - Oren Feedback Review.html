@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session 9 — Oren's Feedback + Session 8 QA Review</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: #f4edde;
+    color: #2c2418;
+    padding: 40px 20px;
+    line-height: 1.6;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 2.4rem;
+    color: #2c2418;
+    margin-bottom: 8px;
+  }
+
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem;
+    margin: 40px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #ddd4c0;
+  }
+
+  h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.2rem;
+    margin: 24px 0 12px;
+  }
+
+  .subtitle {
+    color: #655b4d;
+    font-size: 0.95rem;
+    margin-bottom: 32px;
+  }
+
+  /* ---------- VERDICT BANNER ---------- */
+  .verdict-banner {
+    background: #faf6ec;
+    border: 2px solid #ddd4c0;
+    border-radius: 12px;
+    padding: 24px;
+    margin: 24px 0;
+  }
+  .verdict-banner.pass { border-left: 6px solid #c4186a; }
+  .verdict-banner.needs-decision { border-left: 6px solid #edb215; }
+
+  .verdict-label {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+
+  /* ---------- FEEDBACK CARDS ---------- */
+  .feedback-card {
+    background: #faf6ec;
+    border: 1px solid #ddd4c0;
+    border-radius: 12px;
+    padding: 24px;
+    margin: 20px 0;
+    position: relative;
+  }
+
+  .feedback-card.trivial { border-left: 5px solid #c4186a; }
+  .feedback-card.moderate { border-left: 5px solid #edb215; }
+  .feedback-card.significant { border-left: 5px solid #e03e12; }
+  .feedback-card.methodology { border-left: 5px solid #e03e12; background: #fef8f0; }
+  .feedback-card.visual-check { border-left: 5px solid #655b4d; }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .card-id {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: white;
+    padding: 3px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .card-id.trivial { background: #c4186a; }
+  .card-id.moderate { background: #edb215; color: #2c2418; }
+  .card-id.significant { background: #e03e12; }
+  .card-id.methodology { background: #e03e12; }
+  .card-id.visual { background: #655b4d; }
+  .card-id.pass { background: #c4186a; }
+
+  .card-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.15rem;
+    flex: 1;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .badge.effort-trivial { background: #e8f5e8; color: #2d6a2d; }
+  .badge.effort-moderate { background: #fff3d0; color: #8a6d00; }
+  .badge.effort-significant { background: #fde8e2; color: #9a2200; }
+  .badge.type-ux { background: #e8e2f5; color: #5a3d8a; }
+  .badge.type-copy { background: #e2f0f5; color: #1a5f7a; }
+  .badge.type-data { background: #f5e8e2; color: #7a3d1a; }
+  .badge.type-method { background: #fde8e2; color: #9a2200; }
+  .badge.type-idea { background: #f0f0e8; color: #555; }
+
+  .quote {
+    background: #f0ead8;
+    border-left: 3px solid #c4186a;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-style: italic;
+    border-radius: 0 8px 8px 0;
+    color: #3d3428;
+  }
+
+  .current-state, .oren-wants, .recommendation {
+    margin: 10px 0;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+  }
+  .current-state { background: #f0ead8; }
+  .oren-wants { background: #fef0e8; }
+  .recommendation { background: #f0e8f5; }
+
+  .label {
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+    display: block;
+  }
+  .label.now { color: #c4186a; }
+  .label.wants { color: #e03e12; }
+  .label.rec { color: #6a3d8a; }
+
+  /* ---------- MONA'S INPUT AREAS ---------- */
+  .mona-input {
+    margin-top: 16px;
+    padding: 16px;
+    background: white;
+    border: 2px dashed #c4186a;
+    border-radius: 10px;
+  }
+
+  .mona-input .label {
+    color: #c4186a;
+    margin-bottom: 8px;
+  }
+
+  .mona-input textarea {
+    width: 100%;
+    min-height: 80px;
+    border: 1px solid #ddd4c0;
+    border-radius: 8px;
+    padding: 10px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.9rem;
+    background: #faf6ec;
+    resize: vertical;
+  }
+
+  .mona-input textarea:focus {
+    outline: 2px solid #c4186a;
+    border-color: transparent;
+  }
+
+  .screenshot-drop {
+    margin-top: 12px;
+    border: 2px dashed #ddd4c0;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    color: #655b4d;
+    font-size: 0.85rem;
+    background: #faf6ec;
+    cursor: pointer;
+    position: relative;
+    min-height: 60px;
+  }
+
+  .screenshot-drop:hover {
+    border-color: #c4186a;
+    color: #c4186a;
+  }
+
+  .screenshot-drop img {
+    max-width: 100%;
+    border-radius: 6px;
+    margin-top: 8px;
+  }
+
+  .screenshot-drop input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  /* ---------- DECISION BUTTONS ---------- */
+  .decision-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+
+  .decision-btn {
+    padding: 8px 20px;
+    border-radius: 8px;
+    border: 2px solid #ddd4c0;
+    background: white;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .decision-btn:hover { border-color: #c4186a; }
+  .decision-btn.selected-yes {
+    background: #c4186a;
+    color: white;
+    border-color: #c4186a;
+  }
+  .decision-btn.selected-no {
+    background: #e03e12;
+    color: white;
+    border-color: #e03e12;
+  }
+  .decision-btn.selected-later {
+    background: #edb215;
+    color: #2c2418;
+    border-color: #edb215;
+  }
+
+  /* ---------- STATUS TABLE ---------- */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.9rem;
+  }
+  th {
+    background: #2c2418;
+    color: #f4edde;
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 600;
+  }
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #ddd4c0;
+  }
+  tr:nth-child(even) td { background: #faf6ec; }
+
+  .status-pass { color: #c4186a; font-weight: 700; }
+  .status-visual { color: #655b4d; font-weight: 700; }
+  .status-fail { color: #e03e12; font-weight: 700; }
+
+  /* ---------- SECTION DIVIDER ---------- */
+  .divider {
+    height: 3px;
+    background: linear-gradient(90deg, #e03e12, #edb215, #c4186a);
+    border: none;
+    margin: 48px 0;
+    border-radius: 2px;
+  }
+
+  /* ---------- SUMMARY BOX ---------- */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+  }
+  .summary-stat {
+    background: #faf6ec;
+    border: 1px solid #ddd4c0;
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+  .summary-stat .number {
+    font-family: 'Fraunces', serif;
+    font-size: 2rem;
+    font-weight: 700;
+  }
+  .summary-stat .number.pink { color: #c4186a; }
+  .summary-stat .number.gold { color: #edb215; }
+  .summary-stat .number.orange { color: #e03e12; }
+  .summary-stat .desc {
+    font-size: 0.8rem;
+    color: #655b4d;
+    margin-top: 4px;
+  }
+
+  .print-note {
+    font-size: 0.8rem;
+    color: #655b4d;
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd4c0;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1>Session 9 Review</h1>
+  <p class="subtitle">Session 8 QA Verification + Oren's Feedback &mdash; 15 June 2026</p>
+
+  <!-- ============================================================ -->
+  <!-- PART 1: SESSION 8 QA VERIFICATION                            -->
+  <!-- ============================================================ -->
+
+  <h2>Part 1: Session 8 Feedback &mdash; QA Verification</h2>
+
+  <div class="verdict-banner pass">
+    <div class="verdict-label">GATE PASSED WITH 4 VISUAL-CHECKS</div>
+    <p>14 code-verifiable items passed with grep evidence. 4 visual items need your eyes on the deployed app. Feedback regression tests: 55/55 passed.</p>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Feedback Item</th>
+        <th>Status</th>
+        <th>Evidence</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>CEO/Founder solutions added (40 new)</td>
+        <td class="status-pass">PASS</td>
+        <td>ceo-investor-prep, ceo-context-switch, ceo-inbox-overload all found in solutions.ts</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Multi-entry custom fixes (useRef + auto-focus)</td>
+        <td class="status-pass">PASS</td>
+        <td>SolutionPicker.tsx:4 imports useRef, :298 declares customInputRef, :323 calls .focus()</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>"Your fix" badge visible after adding</td>
+        <td class="status-pass">PASS</td>
+        <td>SolutionPicker.tsx:270 &mdash; "Your fix" badge for custom solutions</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>Zone B defaults open (not collapsed)</td>
+        <td class="status-pass">PASS</td>
+        <td>SolutionPicker.tsx:294 &mdash; useState(true)</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>No "depends on implementation"</td>
+        <td class="status-pass">PASS</td>
+        <td>Zero matches in FocusTable.tsx</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>"See your impact" CTA centered</td>
+        <td class="status-visual">VISUAL-CHECK</td>
+        <td>FocusTable.tsx:417 has text-center wrapper. Needs eye check.</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td>Quadrant labels &mdash; sufficient padding</td>
+        <td class="status-visual">VISUAL-CHECK</td>
+        <td>EviMatrix.tsx:467-510 uses top-10, left-16, bottom-16, right-10. Needs eye check.</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td>White Elephants = 🐘 not 💀</td>
+        <td class="status-pass">PASS</td>
+        <td>solutions-logic.ts:63 &mdash; emoji: "🐘"</td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td>Per-quadrant dot colors</td>
+        <td class="status-pass">PASS</td>
+        <td>EviMatrix.tsx:78-83 &mdash; #c4186a / #edb215 / #9a8c7a / #e03e12</td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td>Action sequence list alignment</td>
+        <td class="status-visual">VISUAL-CHECK</td>
+        <td>PriorityTable uses single-column space-y-2. Needs eye check.</td>
+      </tr>
+      <tr>
+        <td>11</td>
+        <td>"Bigger dot" legend removed</td>
+        <td class="status-pass">PASS</td>
+        <td>Zero matches in EviMatrix.tsx</td>
+      </tr>
+      <tr>
+        <td>12</td>
+        <td>Dot clicking fixed (handler on CustomDot)</td>
+        <td class="status-pass">PASS</td>
+        <td>EviMatrix.tsx:100 &mdash; e.stopPropagation() on &lt;g&gt; element</td>
+      </tr>
+      <tr>
+        <td>13</td>
+        <td>Methodology advice in quadrant verbs</td>
+        <td class="status-pass">PASS</td>
+        <td>solutions-logic.ts:50 &mdash; "Plan these only after your Pearls are done"</td>
+      </tr>
+      <tr>
+        <td>14</td>
+        <td>🐘 in QuadrantSummary cards</td>
+        <td class="status-pass">PASS</td>
+        <td>Flows from QUADRANT_META import, rendered at EviMatrix.tsx:207</td>
+      </tr>
+      <tr>
+        <td>15</td>
+        <td>PriorityTable + dueDates in store</td>
+        <td class="status-pass">PASS</td>
+        <td>EviMatrix.tsx:250 defines PriorityTable, audit-store.ts:53 has dueDates field</td>
+      </tr>
+      <tr>
+        <td>16</td>
+        <td>"Here's what each fix saves" removed</td>
+        <td class="status-pass">PASS</td>
+        <td>Zero matches in Payoff.tsx</td>
+      </tr>
+      <tr>
+        <td>17</td>
+        <td>Before/After section centered</td>
+        <td class="status-visual">VISUAL-CHECK</td>
+        <td>Payoff.tsx:291 &mdash; max-w-2xl mx-auto. Needs eye check.</td>
+      </tr>
+      <tr>
+        <td>18</td>
+        <td>No backwards CTA, closing statement instead</td>
+        <td class="status-pass">PASS</td>
+        <td>Zero matches for "Start with what matters most". Payoff.tsx:458 has closing statement.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Your Visual Checks (4 items &mdash; check on deployed app)</h3>
+
+  <!-- Visual Check 6 -->
+  <div class="feedback-card visual-check">
+    <div class="card-header">
+      <span class="card-id visual">#6 VISUAL</span>
+      <span class="card-title">"See your impact" CTA &mdash; is it centered?</span>
+    </div>
+    <p style="font-size:0.9rem; color:#655b4d;">Open Focus Table &rarr; Action Plan tab. Scroll to bottom. Is the pink CTA button centered?</p>
+    <div class="mona-input">
+      <span class="label" style="color:#c4186a;">Your verdict</span>
+      <div class="decision-row">
+        <button class="decision-btn" onclick="selectDecision(this, 'yes')">Looks good</button>
+        <button class="decision-btn" onclick="selectDecision(this, 'no')">Needs fix</button>
+      </div>
+      <textarea placeholder="Notes (optional)..."></textarea>
+      <div class="screenshot-drop">
+        Drop screenshot here or click to upload
+        <input type="file" accept="image/*" onchange="previewImage(this)">
+      </div>
+    </div>
+  </div>
+
+  <!-- Visual Check 7 -->
+  <div class="feedback-card visual-check">
+    <div class="card-header">
+      <span class="card-id visual">#7 VISUAL</span>
+      <span class="card-title">Quadrant labels &mdash; do they overlap the chart edges?</span>
+    </div>
+    <p style="font-size:0.9rem; color:#655b4d;">Open Focus Table &rarr; Impact Matrix tab. Check all 4 corner labels (Pearls, Oysters, Low-Hanging Fruit, White Elephants). Any clipping or overlap?</p>
+    <div class="mona-input">
+      <span class="label" style="color:#c4186a;">Your verdict</span>
+      <div class="decision-row">
+        <button class="decision-btn" onclick="selectDecision(this, 'yes')">Looks good</button>
+        <button class="decision-btn" onclick="selectDecision(this, 'no')">Needs fix</button>
+      </div>
+      <textarea placeholder="Notes (optional)..."></textarea>
+      <div class="screenshot-drop">
+        Drop screenshot here or click to upload
+        <input type="file" accept="image/*" onchange="previewImage(this)">
+      </div>
+    </div>
+  </div>
+
+  <!-- Visual Check 10 -->
+  <div class="feedback-card visual-check">
+    <div class="card-header">
+      <span class="card-id visual">#10 VISUAL</span>
+      <span class="card-title">Action sequence list &mdash; is it properly aligned?</span>
+    </div>
+    <p style="font-size:0.9rem; color:#655b4d;">Below the scatter chart, check "Your Action Sequence". Are the numbered rows, quadrant badges, owner labels, and date pickers aligned neatly?</p>
+    <div class="mona-input">
+      <span class="label" style="color:#c4186a;">Your verdict</span>
+      <div class="decision-row">
+        <button class="decision-btn" onclick="selectDecision(this, 'yes')">Looks good</button>
+        <button class="decision-btn" onclick="selectDecision(this, 'no')">Needs fix</button>
+      </div>
+      <textarea placeholder="Notes (optional)..."></textarea>
+      <div class="screenshot-drop">
+        Drop screenshot here or click to upload
+        <input type="file" accept="image/*" onchange="previewImage(this)">
+      </div>
+    </div>
+  </div>
+
+  <!-- Visual Check 17 -->
+  <div class="feedback-card visual-check">
+    <div class="card-header">
+      <span class="card-id visual">#17 VISUAL</span>
+      <span class="card-title">Before/After section &mdash; is it centered?</span>
+    </div>
+    <p style="font-size:0.9rem; color:#655b4d;">On the Payoff screen (after Impact Matrix), scroll to Before/After comparison. Are the two cards centered on the page?</p>
+    <div class="mona-input">
+      <span class="label" style="color:#c4186a;">Your verdict</span>
+      <div class="decision-row">
+        <button class="decision-btn" onclick="selectDecision(this, 'yes')">Looks good</button>
+        <button class="decision-btn" onclick="selectDecision(this, 'no')">Needs fix</button>
+      </div>
+      <textarea placeholder="Notes (optional)..."></textarea>
+      <div class="screenshot-drop">
+        Drop screenshot here or click to upload
+        <input type="file" accept="image/*" onchange="previewImage(this)">
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ============================================================ -->
+  <!-- PART 2: OREN'S FEEDBACK                                      -->
+  <!-- ============================================================ -->
+
+  <h2>Part 2: Oren's Feedback (10 Items)</h2>
+
+  <div class="summary-grid">
+    <div class="summary-stat">
+      <div class="number pink">6</div>
+      <div class="desc">Can implement now</div>
+    </div>
+    <div class="summary-stat">
+      <div class="number gold">2</div>
+      <div class="desc">Ideas / copy backlog</div>
+    </div>
+    <div class="summary-stat">
+      <div class="number orange">2</div>
+      <div class="desc">Methodology &mdash; need your call</div>
+    </div>
+  </div>
+
+  <!-- ========== METHODOLOGY ITEMS (NEED DECISION) ========== -->
+
+  <h3 style="color: #e03e12;">🔴 Methodology Changes &mdash; Need Your Decision</h3>
+
+  <!-- O1 -->
+  <div class="feedback-card methodology">
+    <div class="card-header">
+      <span class="card-id methodology">O1</span>
+      <span class="card-title">Remove "how much could you cut?" from WeighStep</span>
+      <span class="badge type-method">METHODOLOGY</span>
+      <span class="badge effort-significant">Significant</span>
+    </div>
+
+    <div class="quote">
+      "The week hrs should be per task. Of this time, how much could you actually cut? &rarr; This is too early to ask, and may change the numbers DOWN"
+    </div>
+
+    <div class="current-state">
+      <span class="label now">What it does now</span>
+      WeighStep shows each drain with an hours slider + a 3-button "how much could you actually cut?" selector (All of it / About half / A little &rarr; 100% / 50% / 25%). The avoidable percentage is multiplied against hours <strong>before</strong> the Pareto engine runs, so the chart already shows discounted waste.
+    </div>
+
+    <div class="oren-wants">
+      <span class="label wants">What Oren wants</span>
+      Remove the avoidable % question entirely from WeighStep. His argument: users haven't seen their results or solutions yet, so asking "how much can you cut?" this early gets a low-confidence guess that <strong>systematically deflates the numbers</strong>. The Pareto should run on total time, not pre-discounted time. The "how much is avoidable?" question could move to the Focus Table, where users have more context to answer it.
+    </div>
+
+    <div class="recommendation">
+      <span class="label rec">Impact if approved</span>
+      This changes what the Pareto chart shows (raw waste hours vs. discounted waste). The avoidable % flows through the entire engine pipeline &mdash; entries, running total, over-allocation check, and all downstream calculations. If approved, it's a significant refactor across WeighStep, the Pareto engine, and Focus Table.
+    </div>
+
+    <div class="mona-input">
+      <span class="label" style="color:#c4186a;">Your decision</span>
+      <div class="decision-row">
+        <button class="decision-btn" onclick="selectDecision(this, 'yes')">Yes, do it</button>
+        <button class="decision-btn" onclick="selectDecision(this, 'no')">No, keep as is</button>
+        <button class="decision-btn" onclick="selectDecision(this, 'later')">Later / v2</button>
+      </div>
+      <textarea placeholder="Your reasoning, conditions, or how you'd modify the idea..."></textarea>
+      <div class="screenshot-drop">
+        Drop screenshot here or click to upload
+        <input type="file" accept="image/*" onchange="previewImage(this)">
+      </div>
+    </div>
+  </div>
+
+  <!-- O3 -->
+  <div class="feedback-card methodology">
+    <div class="card-header">
+      <span class="card-id methodology">O3</span>
+      <span class="card-title">Double Pareto &mdash; two-pass wizard</span>
+      <span class="badge type-method">METHODOLOGY</span>
+      <span class="badge effort-significant">Significant</span>
+    </div>
+
+    <div class="quote">
+      "I strongly suggest this is upgraded to double Pareto, i.e., meeting that don't contribute. The 2nd round goes to elaboration, that cuts a really time consuming 1st try step"
+    </div>
+
+    <div class="current-state">
+      <span class="label now">What it does now</span>
+      Single-pass 5-step wizard: RoleStep &rarr; ContextStep &rarr; IntakeStep (select waste sources) &rarr; WeighStep (estimate hours for every source) &rarr; ResultsView. With 10-20+ sources selected, WeighStep is overwhelming.
+    </div>
+
+    <div class="oren-wants">
+      <span class="label wants">What Oren wants</span>
+      Two-pass Pareto (a known "Pareto of Paretos" technique):<br>
+      <strong>Pass 1:</strong> User picks broad waste categories + gives rough time estimates. Engine identifies the vital few categories.<br>
+      <strong>Pass 2:</strong> User drills into ONLY those vital few categories, giving detailed estimates for specific sources within them.<br>
+      This cuts down the overwhelming first-try step and produces more accurate results.
+    </div>
+
+    <div class="recommendation">
+      <span class="label rec">Impact if approved</span>
+      Major redesign &mdash; multi-session project. Requires: new category-level grouping step, intermediate results view, second-pass detail step, two-stage engine invocation, new state management. The idea has strong methodology merit (Oren literally invented this flow) but it's the single biggest change possible.
+    </div>
+
+    <div class="mona-input">
+      <span class="label" style="color:#c4186a;">Your decision</span>
+      <div class="decision-row">
+        <button class="decision-btn" onclick="selectDecision(this, 'yes')">Yes, do it</button>
+        <button class="decision-btn" onclick="selectDecision(this, 'no')">No, keep as is</button>
+        <button class="decision-btn" onclick="selectDecision(this, 'later')">Later / v2</button>
+      </div>
+      <textarea placeholder="Your reasoning, conditions, or how you'd modify the idea..."></textarea>
+      <div class="screenshot-drop">
+        Drop screenshot here or click to upload
+        <input type="file" accept="image/*" onchange="previewImage(this)">
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== IMPLEMENT NOW ========== -->
+
+  <h3 style="color: #c4186a;">Can Implement Now</h3>
+
+  <!-- O2 -->
+  <div class="feedback-card trivial">
+    <div class="card-header">
+      <span class="card-id trivial">O2</span>
+      <span class="card-title">Remove "Really zero?" prompt</span>
+      <span class="badge type-ux">UX</span>
+      <span class="badge effort-trivial">Trivial</span>
+    </div>
+
+    <div class="quote">"Seems redundant"</div>
+
+    <div class="current-state">
+      <span class="label now">What it does now</span>
+      When user sets hours to 0 for any drain, a prompt appears: "Really zero? Yes, skip it". User must click to dismiss.
+    </div>
+
+    <div class="oren-wants">
+      <span class="label wants">What Oren wants</span>
+      Remove it. If user set 0, they meant 0. Unnecessary friction.
+    </div>
+
+    <div class="recommendation">
+      <span class="label rec">Plan</span>
+      Remove confirmedZeros state, hasUnconfirmedZeros check, and the zero-confirmation JSX block from WeighStep. Sources with 0 hours already contribute nothing to analysis.
+    </div>
+
+    <div class="mona-input">
+      <span class="label" style="color:#c4186a;">Your notes</span>
+      <div class="decision-row">
+        <button class="decision-btn" onclick="selectDecision(this, 'yes')">Agree</button>
+        <button class="decision-btn" onclick="selectDecision(this, 'no')">Keep it</button>
+      </div>
+      <textarea placeholder="Notes..."></textarea>
+    </div>
+  </div>
+
+  <!-- O4 -->
+  <div class="feedback-card moderate">
+    <div class="card-header">
+      <span class="card-id moderate">O4</span>
+      <span class="card-title">Bar chart labels unreadable</span>
+      <span class="badge type-ux">UX</span>
+      <span class="badge effort-moderate">Moderate</span>
+    </div>
+
+    <div class="quote">"old recurring issue"</div>
+
+    <div class="current-state">
+      <span class="label now">What it does now</span>
+      ResultsView bar chart rotates labels 45&deg; at font-size 10. The truncate() function is a no-op &mdash; it returns strings unchanged. Long labels like "Switching between repos, tickets, and Slack" render at full length.
+    </div>
+
+    <div class="oren-wants">
+      <span class="label wants">What Oren wants</span>
+      Readable labels. This is something he's flagged before.
+    </div>
+
+    <div class="recommendation">
+      <span class="label rec">Options</span>
+      A) Truncate labels to ~25 chars with ellipsis + tooltip on hover<br>
+      B) Switch to horizontal bar chart (labels on Y axis = naturally readable)<br>
+      C) Both &mdash; horizontal bars with truncation as fallback
+    </div>
+
+    <div class="mona-input">
+      <span class="label" style="color:#c4186a;">Your preference</span>
+      <div class="decision-row">
+        <button class="decision-btn" onclick="selectDecision(this, 'yes')">Option A (truncate)</button>
+        <button class="decision-btn" onclick="selectDecision(this, 'no')">Option B (horizontal)</button>
+        <button class="decision-btn" onclick="selectDecision(this, 'later')">Option C (both)</button>
+      </div>
+      <textarea placeholder="Notes or different idea..."></textarea>
+      <div class="screenshot-drop">
+        Drop screenshot here or click to upload
+        <input type="file" accept="image/*" onchange="previewImage(this)">
+      </div>
+    </div>
+  </div>
+
+  <!-- O5 -->
+  <div class="feedback-card moderate">
+    <div class="card-header">
+      <span class="card-id moderate">O5</span>
+      <span class="card-title">Solution Picker is a wall of text</span>
+      <span class="badge type-ux">UX</span>
+      <span class="badge effort-moderate">Moderate</span>
+    </div>
+
+    <div class="quote">"A page with tons of text"</div>
+
+    <div class="current-state">
+      <span class="label now">What it does now</span>
+      Each solution card shows: title, full paragraph description, effort badge, impact badge, reclaim hint. With 10-15 solutions across all drains, it's overwhelming.
+    </div>
+
+    <div class="oren-wants">
+      <span class="label wants">What Oren wants</span>
+      Less text density. The page shouldn't feel like reading a report.
+    </div>
+
+    <div class="recommendation">
+      <span class="label rec">Options</span>
+      A) Collapse descriptions by default &mdash; show only title + badges. Click to expand.<br>
+      B) Show top 2-3 solutions per drain with "show more" toggle.<br>
+      C) Both A + B for maximum density reduction.
+    </div>
+
+    <div class="mona-input">
+      <span class="label" style="color:#c4186a;">Your preference</span>
+      <div class="decision-row">
+        <button class="decision-btn" onclick="selectDecision(this, 'yes')">Option A (collapse desc)</button>
+        <button class="decision-btn" onclick="selectDecision(this, 'no')">Option B (show fewer)</button>
+        <button class="decision-btn" onclick="selectDecision(this, 'later')">Option C (both)</button>
+      </div>
+      <textarea placeholder="Notes or different idea..."></textarea>
+      <div class="screenshot-drop">
+        Drop screenshot here or click to upload
+        <input type="file" accept="image/*" onchange="previewImage(this)">
+      </div>
+    </div>
+  </div>
+
+  <!-- O6 -->
+  <div class="feedback-card moderate">
+    <div class="card-header">
+      <span class="card-id moderate">O6</span>
+      <span class="card-title">EVI Matrix &mdash; naming, axis, above-fold engagement</span>
+      <span class="badge type-ux">UX</span>
+      <span class="badge type-copy">COPY</span>
+      <span class="badge effort-moderate">Moderate</span>
+    </div>
+
+    <div class="quote">"Should be the EvI variant. Easy should be first, Hard should be last visually. User engagement is not existent above the fold in EvI and solution table"</div>
+
+    <div class="current-state">
+      <span class="label now">Three sub-issues</span>
+      <strong>(a) Naming:</strong> Tab says "Impact Matrix". Internally called EviMatrix. Oren wants "EvI" branding.<br>
+      <strong>(b) Axis:</strong> Current X-axis goes Easy &rarr; Hard (left to right). This already matches standard convention. Oren may want stronger visual emphasis on the "good" quadrant (top-left).<br>
+      <strong>(c) Above the fold:</strong> When you land on the tab, there's no compelling hook or summary. Just the chart. No numbers pulling you in.
+    </div>
+
+    <div class="recommendation">
+      <span class="label rec">Plan</span>
+      (a) Rename tab to "EvI Matrix" &mdash; trivial<br>
+      (b) Confirm axis direction is what Oren intended &mdash; needs clarification<br>
+      (c) Add summary hero above chart: "You have X Pearls, Y Oysters, Z fixes total &mdash; here's where they land" &mdash; moderate
+    </div>
+
+    <div class="mona-input">
+      <span class="label" style="color:#c4186a;">Your notes</span>
+      <div class="decision-row">
+        <button class="decision-btn" onclick="selectDecision(this, 'yes')">Do all 3</button>
+        <button class="decision-btn" onclick="selectDecision(this, 'later')">Pick which ones</button>
+      </div>
+      <textarea placeholder="Which sub-items to do? Any preferences on the summary hook?"></textarea>
+      <div class="screenshot-drop">
+        Drop screenshot here or click to upload
+        <input type="file" accept="image/*" onchange="previewImage(this)">
+      </div>
+    </div>
+  </div>
+
+  <!-- O7 -->
+  <div class="feedback-card trivial">
+    <div class="card-header">
+      <span class="card-id trivial">O7</span>
+      <span class="card-title">No skip button for White Elephants</span>
+      <span class="badge type-ux">UX</span>
+      <span class="badge effort-trivial">Trivial</span>
+    </div>
+
+    <div class="quote">"No option to explicitly skip"</div>
+
+    <div class="current-state">
+      <span class="label now">What it does now</span>
+      PriorityTable section header says "White Elephants &mdash; skip if you can" but there's no actual button. Items just sit there.
+    </div>
+
+    <div class="oren-wants">
+      <span class="label wants">What Oren wants</span>
+      An explicit Skip/Remove button so users can actively exclude low-value items from their plan. The <code>removeSolution</code> action already exists in the store.
+    </div>
+
+    <div class="mona-input">
+      <span class="label" style="color:#c4186a;">Your notes</span>
+      <div class="decision-row">
+        <button class="decision-btn" onclick="selectDecision(this, 'yes')">Agree</button>
+        <button class="decision-btn" onclick="selectDecision(this, 'no')">Keep as is</button>
+      </div>
+      <textarea placeholder="Should skip buttons appear on ALL quadrant items, or just White Elephants?"></textarea>
+    </div>
+  </div>
+
+  <!-- O8 -->
+  <div class="feedback-card trivial">
+    <div class="card-header">
+      <span class="card-id trivial">O8</span>
+      <span class="card-title">Date picker allows past dates</span>
+      <span class="badge type-ux">UX</span>
+      <span class="badge effort-trivial">Trivial</span>
+    </div>
+
+    <div class="quote">"Allows me to put older date"</div>
+
+    <div class="current-state">
+      <span class="label now">What it does now</span>
+      Plain &lt;input type="date"&gt; with no min attribute. Accepts any date including past.
+    </div>
+
+    <div class="oren-wants">
+      <span class="label wants">What Oren wants</span>
+      Enforce minimum date = today.
+    </div>
+
+    <div class="mona-input">
+      <span class="label" style="color:#c4186a;">Your notes</span>
+      <div class="decision-row">
+        <button class="decision-btn" onclick="selectDecision(this, 'yes')">Agree</button>
+        <button class="decision-btn" onclick="selectDecision(this, 'no')">Allow past dates</button>
+      </div>
+      <textarea placeholder="Notes..."></textarea>
+    </div>
+  </div>
+
+  <!-- O10 -->
+  <div class="feedback-card moderate">
+    <div class="card-header">
+      <span class="card-id moderate">O10</span>
+      <span class="card-title">Duplicate waste sources across pain prompt categories</span>
+      <span class="badge type-data">DATA</span>
+      <span class="badge effort-moderate">Moderate</span>
+    </div>
+
+    <div class="current-state">
+      <span class="label now">What's happening</span>
+      In IntakeStep, "Chasing people for status updates" appears under <strong>both</strong> "Too much coordination, not enough real work?" AND "Status packaging and firefighting?" because both pain prompts map to the "Coordination" group. Checking one checks both visually, but seeing duplicates is confusing.
+    </div>
+
+    <div class="oren-wants">
+      <span class="label wants">What Oren wants</span>
+      Each waste source should appear once, under one category only.
+    </div>
+
+    <div class="recommendation">
+      <span class="label rec">Plan</span>
+      Deduplicate at render time &mdash; if a source slug was already shown by a previous pain prompt, skip it in subsequent ones. The underlying data stays clean.
+    </div>
+
+    <div class="mona-input">
+      <span class="label" style="color:#c4186a;">Your notes</span>
+      <div class="decision-row">
+        <button class="decision-btn" onclick="selectDecision(this, 'yes')">Agree</button>
+        <button class="decision-btn" onclick="selectDecision(this, 'no')">Keep duplicates</button>
+      </div>
+      <textarea placeholder="Notes..."></textarea>
+    </div>
+  </div>
+
+  <!-- ========== IDEAS / COPY BACKLOG ========== -->
+
+  <h3 style="color: #edb215;">Ideas / Copy Backlog</h3>
+
+  <!-- O9 -->
+  <div class="feedback-card moderate">
+    <div class="card-header">
+      <span class="card-id moderate">O9</span>
+      <span class="card-title">Reframe reclaimed time &mdash; tell users what they CAN do</span>
+      <span class="badge type-copy">COPY</span>
+      <span class="badge type-idea">IDEA</span>
+      <span class="badge effort-moderate">Moderate</span>
+    </div>
+
+    <div class="quote">"Idea &mdash; here, not only reclaim, we should tell them what they CAN do"</div>
+
+    <div class="current-state">
+      <span class="label now">What it does now</span>
+      Payoff shows "You could reclaim 7.6 hrs/week" with yearly totals and dollar amounts. Framing is about <em>absence of waste</em>.
+    </div>
+
+    <div class="oren-wants">
+      <span class="label wants">What Oren wants</span>
+      Reframe as <em>opportunity</em>. Not just "you save X hours" but "that's enough time to [deep work / take a course / leave early on Fridays]". Make reclaimed time feel tangible and exciting.
+    </div>
+
+    <div class="recommendation">
+      <span class="label rec">Possible copy tiers</span>
+      2-3 hrs/wk &rarr; "One focused afternoon of deep work"<br>
+      5 hrs/wk &rarr; "A half-day back every week"<br>
+      10+ hrs/wk &rarr; "A full day a week &mdash; that's a 4-day work week"<br>
+      Could also personalize by role (engineers: "X more PRs shipped/month").
+    </div>
+
+    <div class="mona-input">
+      <span class="label" style="color:#c4186a;">Your notes</span>
+      <div class="decision-row">
+        <button class="decision-btn" onclick="selectDecision(this, 'yes')">Love it, do it</button>
+        <button class="decision-btn" onclick="selectDecision(this, 'later')">Later</button>
+        <button class="decision-btn" onclick="selectDecision(this, 'no')">Skip</button>
+      </div>
+      <textarea placeholder="Any specific framing you like? Role-specific or generic?"></textarea>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ============================================================ -->
+  <!-- PART 3: YOUR OVERALL NOTES                                   -->
+  <!-- ============================================================ -->
+
+  <h2>Part 3: Your Overall Notes</h2>
+
+  <div class="mona-input" style="border-color: #edb215;">
+    <span class="label" style="color: #edb215;">Anything else on your mind?</span>
+    <textarea style="min-height: 120px;" placeholder="General thoughts, priorities, things you noticed on the deployed app, ideas for next session..."></textarea>
+    <div class="screenshot-drop">
+      Drop screenshots here or click to upload
+      <input type="file" accept="image/*" onchange="previewImage(this)">
+    </div>
+  </div>
+
+  <!-- SAVE BUTTON -->
+  <div style="text-align:center; margin: 40px 0 16px;">
+    <button id="saveBtn" onclick="saveResponses()" style="
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      padding: 14px 48px;
+      background: #c4186a;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+      box-shadow: 0 4px 12px rgba(196,24,106,0.3);
+    " onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+      Save My Responses
+    </button>
+    <div id="saveStatus" style="margin-top:10px; font-size:0.9rem; color:#655b4d;"></div>
+  </div>
+
+  <p class="print-note">Click "Save My Responses" when done. It downloads a text file with all your decisions and notes. Share that file back with me and I'll execute.</p>
+
+</div>
+
+<script>
+  function selectDecision(btn, type) {
+    // Clear siblings
+    const row = btn.parentElement;
+    row.querySelectorAll('.decision-btn').forEach(b => {
+      b.classList.remove('selected-yes', 'selected-no', 'selected-later');
+    });
+    // Set this one
+    if (type === 'yes') btn.classList.add('selected-yes');
+    else if (type === 'no') btn.classList.add('selected-no');
+    else if (type === 'later') btn.classList.add('selected-later');
+  }
+
+  function previewImage(input) {
+    const drop = input.parentElement;
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const old = drop.querySelector('img');
+        if (old) old.remove();
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        drop.appendChild(img);
+        drop.childNodes[0].textContent = 'Screenshot attached \u2014 click to replace ';
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  function saveResponses() {
+    const lines = [];
+    lines.push('=== MONA\'S RESPONSES — Session 9 Review ===');
+    lines.push('Date: ' + new Date().toLocaleString());
+    lines.push('');
+
+    // Collect all feedback cards
+    const cards = document.querySelectorAll('.feedback-card');
+    cards.forEach((card) => {
+      // Get ID and title
+      const idEl = card.querySelector('.card-id');
+      const titleEl = card.querySelector('.card-title');
+      const id = idEl ? idEl.textContent.trim() : '??';
+      const title = titleEl ? titleEl.textContent.trim() : '';
+
+      // Get selected decision
+      const selectedBtn = card.querySelector('.decision-btn.selected-yes, .decision-btn.selected-no, .decision-btn.selected-later');
+      const decision = selectedBtn ? selectedBtn.textContent.trim() : '(no decision)';
+
+      // Get textarea notes
+      const textarea = card.querySelector('textarea');
+      const notes = textarea ? textarea.value.trim() : '';
+
+      // Get screenshot info
+      const img = card.querySelector('.screenshot-drop img');
+      const hasScreenshot = img ? 'Yes (attached in HTML)' : 'No';
+
+      lines.push('--- ' + id + ': ' + title + ' ---');
+      lines.push('Decision: ' + decision);
+      if (notes) lines.push('Notes: ' + notes);
+      if (img) lines.push('Screenshot: attached');
+      lines.push('');
+    });
+
+    // Overall notes (Part 3)
+    const overallSection = document.querySelector('.mona-input[style*="edb215"]');
+    if (overallSection) {
+      const overallTextarea = overallSection.querySelector('textarea');
+      const overallNotes = overallTextarea ? overallTextarea.value.trim() : '';
+      if (overallNotes) {
+        lines.push('--- OVERALL NOTES ---');
+        lines.push(overallNotes);
+        lines.push('');
+      }
+    }
+
+    lines.push('=== END OF RESPONSES ===');
+
+    // Download as text file
+    const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Session 9 - Mona Responses.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    // Also save to localStorage as backup
+    localStorage.setItem('session9-responses', lines.join('\n'));
+
+    // Show confirmation
+    const status = document.getElementById('saveStatus');
+    status.textContent = 'Saved! File downloaded to your Downloads folder.';
+    status.style.color = '#c4186a';
+    status.style.fontWeight = '700';
+  }
+
+  // Auto-restore from localStorage on page load
+  window.addEventListener('load', function() {
+    // Restore textarea values and decisions from localStorage
+    const saved = localStorage.getItem('session9-draft');
+    if (saved) {
+      try {
+        const data = JSON.parse(saved);
+        const cards = document.querySelectorAll('.feedback-card');
+        cards.forEach((card, i) => {
+          if (data[i]) {
+            const textarea = card.querySelector('textarea');
+            if (textarea && data[i].notes) textarea.value = data[i].notes;
+            if (data[i].decision) {
+              const btns = card.querySelectorAll('.decision-btn');
+              btns.forEach(btn => {
+                if (btn.textContent.trim() === data[i].decision) {
+                  // Determine type from class that would be added
+                  if (btn.textContent.match(/Agree|Looks good|Yes|Love|Do all|Option A/)) {
+                    btn.classList.add('selected-yes');
+                  } else if (btn.textContent.match(/Keep|No|Allow|Skip$/)) {
+                    btn.classList.add('selected-no');
+                  } else {
+                    btn.classList.add('selected-later');
+                  }
+                }
+              });
+            }
+          }
+        });
+        document.getElementById('saveStatus').textContent = '(Draft restored from last visit)';
+        document.getElementById('saveStatus').style.color = '#655b4d';
+      } catch(e) {}
+    }
+  });
+
+  // Auto-save draft to localStorage every 5 seconds
+  setInterval(function() {
+    const data = [];
+    const cards = document.querySelectorAll('.feedback-card');
+    cards.forEach(card => {
+      const textarea = card.querySelector('textarea');
+      const selectedBtn = card.querySelector('.decision-btn.selected-yes, .decision-btn.selected-no, .decision-btn.selected-later');
+      data.push({
+        notes: textarea ? textarea.value : '',
+        decision: selectedBtn ? selectedBtn.textContent.trim() : ''
+      });
+    });
+    // Also save overall notes
+    const overallSection = document.querySelector('.mona-input[style*="edb215"]');
+    if (overallSection) {
+      const textarea = overallSection.querySelector('textarea');
+      data.push({ notes: textarea ? textarea.value : '', decision: '' });
+    }
+    localStorage.setItem('session9-draft', JSON.stringify(data));
+  }, 5000);
+</script>
+
+</body>
+</html>

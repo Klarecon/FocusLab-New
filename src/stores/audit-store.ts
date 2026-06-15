@@ -52,6 +52,10 @@ interface AuditState {
   ownerOverrides: Record<string, string>;
   dueDates: Record<string, string>;
 
+  // --- Double Pareto (Pass 1 → Pass 2) ---
+  categoryEstimates: Record<string, number>; // group name → rough hrs/week
+  vitalCategories: string[]; // group names that survived Pass 1
+
   // --- UI (transient, NOT persisted) ---
   step: number;
 
@@ -75,6 +79,8 @@ interface AuditState {
   setOwnerOverride: (solId: string, owner: string) => void;
   setDueDate: (solId: string, date: string) => void;
   setWeighCadence: (cadence: "daily" | "weekly") => void;
+  setCategoryEstimate: (group: string, hours: number) => void;
+  setVitalCategories: (groups: string[]) => void;
   setStep: (step: number) => void;
   reset: () => void;
 }
@@ -99,6 +105,8 @@ const DEFAULT_STATE = {
   solutionScores: {} as Record<string, SolutionScore>,
   ownerOverrides: {} as Record<string, string>,
   dueDates: {} as Record<string, string>,
+  categoryEstimates: {} as Record<string, number>,
+  vitalCategories: [] as string[],
   step: 0,
 };
 
@@ -137,7 +145,7 @@ export const useAuditStore = create<AuditState>()(
               ...state.entries,
               [source.slug]: state.entries[source.slug] ?? {
                 hoursPerDay: 0,
-                avoidablePct: 50,
+                avoidablePct: 100,
                 cadence: "daily",
               },
             },
@@ -160,10 +168,11 @@ export const useAuditStore = create<AuditState>()(
             [slug]: {
               ...(state.entries[slug] ?? {
                 hoursPerDay: 0,
-                avoidablePct: 50,
+                avoidablePct: 100,
                 cadence: "daily",
               }),
               ...entry,
+              avoidablePct: 100, // Always 100 — avoidable % removed from WeighStep (O1)
             },
           },
         })),
@@ -223,6 +232,14 @@ export const useAuditStore = create<AuditState>()(
             [solId]: date,
           },
         })),
+
+      setCategoryEstimate: (group, hours) =>
+        set((state) => ({
+          categoryEstimates: { ...state.categoryEstimates, [group]: hours },
+        })),
+
+      setVitalCategories: (groups) =>
+        set({ vitalCategories: groups }),
 
       setWeighCadence: (cadence) =>
         set((state) => {

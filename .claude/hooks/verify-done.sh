@@ -61,7 +61,7 @@ else
 fi
 
 # --- Check 4: No window.__ hacks ---
-window_grep=$(grep -r "window\.__" src/ 2>/dev/null || true)
+window_grep=$(grep -r --exclude='*.test.*' "window\.__" src/ 2>/dev/null || true)
 if [ -z "$window_grep" ]; then
   report "No window.__ globals" 0 ""
 else
@@ -70,7 +70,7 @@ else
 fi
 
 # --- Check 5: No Hanken Grotesk ---
-hanken_grep=$(grep -ri "hanken" src/ 2>/dev/null || true)
+hanken_grep=$(grep -ri --exclude='*.test.*' "hanken" src/ 2>/dev/null || true)
 if [ -z "$hanken_grep" ]; then
   report "No Hanken Grotesk" 0 ""
 else

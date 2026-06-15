@@ -414,7 +414,7 @@ export default function FocusTable({ vitalFew, usefulMany, onGoToMatrix }: Focus
 
       {/* Bottom CTA to Impact Matrix */}
       {onGoToMatrix && (
-        <div className="mt-8 text-center">
+        <div className="mt-8 flex justify-center">
           <ShimmerButton
             borderRadius="12px"
             className="px-10 py-4 text-base font-bold"

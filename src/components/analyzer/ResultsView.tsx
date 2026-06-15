@@ -34,8 +34,8 @@ function fmtHours(n: number, decimals = 1): string {
   return n.toFixed(decimals);
 }
 
-function truncate(s: string): string {
-  return s;
+function truncate(str: string, max = 25): string {
+  return str.length > max ? str.slice(0, max - 1) + "\u2026" : str;
 }
 
 /* --- Severity tiers --- */
@@ -364,6 +364,7 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
                 <XAxis
                   dataKey="name"
                   tick={{ fontSize: 10, fill: "var(--color-ink-soft)" }}
+                  tickFormatter={(name: string) => truncate(name, 25)}
                   angle={-45}
                   textAnchor="end"
                   interval={0}

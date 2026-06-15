@@ -72,6 +72,7 @@ const SolutionCard = memo(function SolutionCard({
   isChosen: boolean;
   onToggle: () => void;
 }) {
+  const [isExpanded, setIsExpanded] = useState(false);
   const quickWin = isQuickWin(solution);
 
   return (
@@ -117,12 +118,19 @@ const SolutionCard = memo(function SolutionCard({
               </span>
             )}
           </div>
-          <p
-            className="text-xs mb-2 leading-relaxed"
-            style={{ color: "var(--color-ink-soft)" }}
-          >
-            {solution.description}
-          </p>
+          {isExpanded ? (
+            <p className="text-xs mb-2 leading-relaxed" style={{ color: "var(--color-ink-soft)" }}>
+              {solution.description}
+            </p>
+          ) : (
+            <span
+              onClick={(e) => { e.stopPropagation(); setIsExpanded(true); }}
+              className="text-xs mb-2 underline cursor-pointer inline-block"
+              style={{ color: "var(--color-ink-soft)" }}
+            >
+              Show details
+            </span>
+          )}
           <div className="flex items-center gap-2 flex-wrap">
             <Badge
               label={EFFORT_LABEL[solution.effort]}
@@ -158,6 +166,8 @@ function DrainSection({
   drain: DrainInfo;
   index: number;
 }) {
+  const INITIAL_VISIBLE = 3;
+  const [showAll, setShowAll] = useState(false);
   const chosenSolutions = useAuditStore((s) => s.chosenSolutions);
   const addSolution = useAuditStore((s) => s.addSolution);
   const removeSolution = useAuditStore((s) => s.removeSolution);
@@ -225,7 +235,7 @@ function DrainSection({
             Proven fixes for this:
           </p>
           <div className="space-y-2">
-            {solutions.map((sol) => (
+            {(showAll ? solutions : solutions.slice(0, INITIAL_VISIBLE)).map((sol) => (
               <SolutionCard
                 key={sol.id}
                 solution={sol}
@@ -233,6 +243,15 @@ function DrainSection({
                 onToggle={() => handleToggle(sol)}
               />
             ))}
+            {solutions.length > INITIAL_VISIBLE && !showAll && (
+              <button
+                onClick={() => setShowAll(true)}
+                className="w-full text-center py-2 text-xs font-medium rounded-lg transition-colors hover:bg-[rgba(0,0,0,0.03)] cursor-pointer"
+                style={{ color: "var(--color-ink-soft)" }}
+              >
+                Show {solutions.length - INITIAL_VISIBLE} more fixes
+              </button>
+            )}
           </div>
         </>
       ) : (

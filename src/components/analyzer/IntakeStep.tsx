@@ -1,15 +1,12 @@
 "use client";
 
-import { useState, useMemo, useRef, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronUp, Plus } from "lucide-react";
+import { useMemo } from "react";
+import { motion } from "framer-motion";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { useAuditStore } from "@/stores/audit-store";
 import {
   wasteSourcesForRole,
   groupWasteSources,
-  type WasteSource,
-  type MudaType,
 } from "@/lib/data/waste-sources";
 import type { RoleSlug } from "@/lib/data/benchmarks";
 import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
@@ -17,11 +14,11 @@ import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
 /* Pain prompts that map to waste groups — the progressive-disclosure layer. */
 const PAIN_PROMPTS: { prompt: string; emoji: string; groups: string[] }[] = [
   { prompt: "Drowning in meetings?", emoji: "😴", groups: ["Meetings"] },
-  { prompt: "Can't escape Slack and email?", emoji: "🫠", groups: ["Email & chat"] },
+  { prompt: "Can\u2019t escape Slack and email?", emoji: "🫠", groups: ["Email & chat"] },
   { prompt: "Doing the same work twice?", emoji: "🤦", groups: ["Rework", "Creative"] },
   { prompt: "Waiting on other people?", emoji: "😤", groups: ["Waiting & blocked"] },
   { prompt: "Buried in admin busywork?", emoji: "💀", groups: ["Admin", "Reporting"] },
-  { prompt: "Can't focus for more than 20 minutes?", emoji: "🤯", groups: ["Focus", "Doing more than needed"] },
+  { prompt: "Can\u2019t focus for more than 20 minutes?", emoji: "🤯", groups: ["Focus", "Doing more than needed"] },
   { prompt: "Too much coordination, not enough real work?", emoji: "🧟", groups: ["Coordination", "Leading vs doing"] },
 ];
 
@@ -40,32 +37,57 @@ const ROLE_PAIN_PROMPTS: Partial<Record<RoleSlug, { prompt: string; emoji: strin
   "ceo-founder": [{ prompt: "Everything lands on your desk?", emoji: "🫠", groups: ["Leading vs doing", "Reporting", "Coordination"] }],
 };
 
-const MIN_SOURCES = 5;
+const MIN_CATEGORIES = 2;
 
 interface IntakeStepProps {
   onNext: () => void;
   onBack: () => void;
 }
 
+/**
+ * Find vital categories using Pareto rule: top categories covering ~80% of total waste.
+ */
+function findVitalCategories(
+  estimates: Record<string, number>,
+  threshold = 0.8,
+): string[] {
+  const sorted = Object.entries(estimates)
+    .filter(([, hrs]) => hrs > 0)
+    .sort((a, b) => b[1] - a[1]);
+  const total = sorted.reduce((s, [, h]) => s + h, 0);
+  if (total === 0) return sorted.map(([g]) => g);
+  let running = 0;
+  const vital: string[] = [];
+  for (const [group, hrs] of sorted) {
+    vital.push(group);
+    running += hrs;
+    if (running / total >= threshold) break;
+  }
+  // Always include at least 2 if available
+  if (vital.length < MIN_CATEGORIES && sorted.length >= MIN_CATEGORIES) {
+    for (const [group] of sorted) {
+      if (!vital.includes(group)) {
+        vital.push(group);
+        if (vital.length >= MIN_CATEGORIES) break;
+      }
+    }
+  }
+  return vital;
+}
+
 export default function IntakeStep({ onNext, onBack }: IntakeStepProps) {
   const roleSlug = useAuditStore((s) => s.roleSlug);
   const secondaryRoles = useAuditStore((s) => s.secondaryRoles);
-  const activeSources = useAuditStore((s) => s.activeSources);
-  const addSource = useAuditStore((s) => s.addSource);
-  const removeSource = useAuditStore((s) => s.removeSource);
+  const categoryEstimates = useAuditStore((s) => s.categoryEstimates);
+  const setCategoryEstimate = useAuditStore((s) => s.setCategoryEstimate);
+  const setVitalCategories = useAuditStore((s) => s.setVitalCategories);
+  const workHoursPerWeek = useAuditStore((s) => s.workHoursPerWeek);
 
-  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
-  const [customLabels, setCustomLabels] = useState<Record<number, string>>({});
-  const [customCounter, setCustomCounter] = useState(0);
-
-  const painCardRefs = useRef<Map<number, HTMLDivElement | null>>(new Map());
-
-  // Get all available sources for this role + secondary roles, deduplicated
+  // Get all available sources for this role + secondary roles
   const allSources = useMemo(() => {
     if (!roleSlug) return [];
     const primary = wasteSourcesForRole(roleSlug as RoleSlug);
     if (secondaryRoles.length === 0) return primary;
-    // Merge in secondary role sources, deduplicating by slug
     const seen = new Set(primary.map((s) => s.slug));
     const merged = [...primary];
     for (const sr of secondaryRoles) {
@@ -78,6 +100,7 @@ export default function IntakeStep({ onNext, onBack }: IntakeStepProps) {
     }
     return merged;
   }, [roleSlug, secondaryRoles]);
+
   const grouped = useMemo(() => groupWasteSources(allSources), [allSources]);
 
   // Build pain prompts (universal + role-specific)
@@ -86,244 +109,173 @@ export default function IntakeStep({ onNext, onBack }: IntakeStepProps) {
     return [...PAIN_PROMPTS, ...rolePains];
   }, [roleSlug]);
 
-  // Track which sources are selected by slug
-  const activeSet = useMemo(
-    () => new Set(activeSources.map((s) => s.slug)),
-    [activeSources],
-  );
-
-  const count = activeSources.length;
-  const remaining = Math.max(0, MIN_SOURCES - count);
-  const canContinue = count >= MIN_SOURCES;
-
-  const toggleGroup = (groupKey: string) => {
-    setExpandedGroups((prev) => {
-      const next = new Set(prev);
-      if (next.has(groupKey)) next.delete(groupKey);
-      else next.add(groupKey);
-      return next;
-    });
-  };
-
-  const toggleSource = (source: WasteSource) => {
-    if (activeSet.has(source.slug)) {
-      removeSource(source.slug);
-    } else {
-      addSource(source);
-    }
-  };
-
-  const addCustomForSection = (painIndex: number, groups: string[]) => {
-    const label = (customLabels[painIndex] ?? "").trim();
-    if (!label) return;
-    const slug = `custom-${customCounter}`;
-    setCustomCounter((c) => c + 1);
-    const primaryGroup = groups[0] ?? "Custom";
-    addSource({
-      slug,
-      group: primaryGroup,
-      label,
-      muda: "over-processing",
-      whatCounts: "Your own custom waste source",
-      scope: "universal",
-      emoji: "✏️",
-    });
-    setCustomLabels((prev) => ({ ...prev, [painIndex]: "" }));
-  };
-
-  // Find which groups a pain prompt maps to
-  const sourcesForPain = (groupNames: string[]): { group: string; sources: WasteSource[] }[] => {
-    return grouped.filter((g) => groupNames.includes(g.group));
-  };
-
-  const handlePainToggle = useCallback((pain: { groups: string[] }, isExpanded: boolean, index: number) => {
-    if (isExpanded) {
-      setExpandedGroups((prev) => {
-        const next = new Set(prev);
-        pain.groups.forEach((pg) => next.delete(pg));
-        return next;
-      });
-    } else {
-      setExpandedGroups((prev) => {
-        const next = new Set(prev);
-        pain.groups.forEach((pg) => next.add(pg));
-        return next;
-      });
-      // Scroll to the top of this pain card after expanding
-      requestAnimationFrame(() => {
-        const el = painCardRefs.current.get(index);
-        if (el) {
-          el.scrollIntoView({ behavior: "smooth", block: "start" });
+  // Deduplicate: each group appears under the FIRST pain prompt that includes it
+  const groupOwnership = useMemo(() => {
+    const ownership = new Map<string, number>(); // group name -> pain prompt index
+    painPrompts.forEach((pain, pi) => {
+      for (const g of pain.groups) {
+        if (!ownership.has(g)) {
+          ownership.set(g, pi);
         }
-      });
+      }
+    });
+    return ownership;
+  }, [painPrompts]);
+
+  // Running total of estimated waste
+  const totalEstimated = useMemo(() => {
+    return Object.values(categoryEstimates).reduce((s, h) => s + h, 0);
+  }, [categoryEstimates]);
+
+  const categoriesWithHours = useMemo(() => {
+    return Object.entries(categoryEstimates).filter(([, h]) => h > 0).length;
+  }, [categoryEstimates]);
+
+  const canContinue = categoriesWithHours >= MIN_CATEGORIES;
+
+  // Get unique group keys owned by a specific pain prompt
+  const groupsForPain = (painIndex: number): string[] => {
+    const pain = painPrompts[painIndex];
+    return pain.groups.filter((g) => groupOwnership.get(g) === painIndex);
+  };
+
+  // Get or compute estimate for a pain prompt (sum of its owned groups)
+  const estimateForPain = (painIndex: number): number => {
+    const groups = groupsForPain(painIndex);
+    return groups.reduce((sum, g) => sum + (categoryEstimates[g] ?? 0), 0);
+  };
+
+  // Set estimate for a pain prompt (distribute to its primary group)
+  const setEstimateForPain = (painIndex: number, hours: number) => {
+    const groups = groupsForPain(painIndex);
+    if (groups.length === 0) return;
+    // Set the primary group to the new value, zero out others
+    setCategoryEstimate(groups[0], hours);
+    for (let i = 1; i < groups.length; i++) {
+      setCategoryEstimate(groups[i], 0);
     }
-  }, []);
+  };
+
+  const handleContinue = () => {
+    const vital = findVitalCategories(categoryEstimates);
+    setVitalCategories(vital);
+    onNext();
+  };
 
   return (
     <div>
-      {/* Header with running count */}
+      {/* Header */}
       <div className="text-center mb-8">
         <h2
           className="text-3xl sm:text-4xl font-bold mb-2"
           style={{ fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif" }}
         >
-          What drains your week?
+          Where does your time go?
         </h2>
         <p style={{ color: "var(--color-ink-soft)" }}>
-          Tap the pains that hit home. Then check the specific drains underneath.
+          Give a rough estimate for each category. Don&apos;t overthink it &mdash; we&apos;ll zoom into the big ones next.
         </p>
-        <motion.div
-          key={count}
-          initial={{ scale: 1.3 }}
-          animate={{ scale: 1 }}
-          aria-live="polite"
-          aria-atomic="true"
-          className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full"
-          style={{
-            backgroundColor: canContinue ? "rgba(196, 24, 106, 0.1)" : "rgba(224, 62, 18, 0.08)",
-            color: canContinue ? "var(--color-reclaim)" : "var(--color-waste)",
-          }}
-        >
-          <span className="font-figures font-bold text-lg">{count}</span>
-          <span className="text-sm font-medium">
-            source{count !== 1 ? "s" : ""} selected
-          </span>
-        </motion.div>
+
+        {totalEstimated > 0 && (
+          <motion.div
+            key={Math.round(totalEstimated * 10)}
+            initial={{ scale: 1.08 }}
+            animate={{ scale: 1 }}
+            aria-live="polite"
+            aria-atomic="true"
+            className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-full"
+            style={{
+              backgroundColor: totalEstimated > workHoursPerWeek
+                ? "rgba(224, 62, 18, 0.12)"
+                : "rgba(224, 62, 18, 0.08)",
+              color: "var(--color-waste)",
+            }}
+          >
+            <span className="font-figures font-bold text-2xl">{totalEstimated.toFixed(1)}</span>
+            <span className="text-sm font-semibold">hrs/week estimated</span>
+          </motion.div>
+        )}
       </div>
 
-      {/* Pain prompt cards */}
+      {/* Pain prompt cards with hour inputs */}
       <div className="space-y-3 mb-8">
         {painPrompts.map((pain, pi) => {
-          const matchedGroups = sourcesForPain(pain.groups);
-          const isExpanded = pain.groups.some((g) => expandedGroups.has(g));
-          const selectedInGroup = matchedGroups.reduce(
-            (acc, g) => acc + g.sources.filter((s) => activeSet.has(s.slug)).length,
-            0,
-          );
+          const ownedGroups = groupsForPain(pi);
+          if (ownedGroups.length === 0) return null; // All groups already owned by earlier prompts
+
+          const sourceCount = ownedGroups.reduce((sum, g) => {
+            const match = grouped.find((gg) => gg.group === g);
+            return sum + (match?.sources.length ?? 0);
+          }, 0);
+
+          if (sourceCount === 0) return null;
+
+          const estimate = estimateForPain(pi);
 
           return (
             <motion.div
               key={pain.prompt}
-              ref={(el) => { painCardRefs.current.set(pi, el); }}
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: pi * 0.06, duration: 0.3 }}
+              className="surface-card p-4 flex items-center gap-3"
+              style={{
+                borderColor: estimate > 0 ? "var(--color-waste)" : undefined,
+                borderWidth: estimate > 0 ? "1.5px" : undefined,
+              }}
             >
-              {/* Pain card header */}
-              <button
-                type="button"
-                onClick={() => handlePainToggle(pain, isExpanded, pi)}
-                aria-expanded={isExpanded}
-                className="w-full surface-card p-4 flex items-center gap-3 text-left transition-all duration-200 hover:shadow-md"
-                style={{
-                  borderColor: selectedInGroup > 0 ? "var(--color-waste)" : undefined,
-                  borderWidth: selectedInGroup > 0 ? "1.5px" : undefined,
-                }}
-              >
-                <AnimatedEmoji emoji={pain.emoji} animation="pulse" size="lg" />
-                <div className="flex-1">
-                  <span className="font-semibold text-base" style={{ color: "var(--color-ink)" }}>
-                    {pain.prompt}
-                  </span>
-                  {selectedInGroup > 0 && (
-                    <span
-                      className="ml-2 text-xs font-medium px-2 py-0.5 rounded-full"
-                      style={{
-                        backgroundColor: "rgba(224, 62, 18, 0.1)",
-                        color: "var(--color-waste)",
-                      }}
-                    >
-                      {selectedInGroup} selected
-                    </span>
-                  )}
-                </div>
-                {isExpanded ? (
-                  <ChevronUp size={18} style={{ color: "var(--color-ink-soft)" }} />
-                ) : (
-                  <ChevronDown size={18} style={{ color: "var(--color-ink-soft)" }} />
-                )}
-              </button>
-
-              {/* Expanded sources */}
-              <AnimatePresence>
-                {isExpanded && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.25, ease: "easeInOut" }}
-                    className="overflow-hidden"
-                  >
-                    <div className="pl-4 pr-2 py-3 space-y-1">
-                      {matchedGroups.map((g) =>
-                        g.sources.map((source, si) => (
-                          <motion.label
-                            key={source.slug}
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: si * 0.03 }}
-                            className="flex items-start gap-3 p-2.5 rounded-lg cursor-pointer transition-colors duration-150 hover:bg-[rgba(0,0,0,0.03)]"
-                            title={source.whatCounts}
-                          >
-                            <input
-                              type="checkbox"
-                              checked={activeSet.has(source.slug)}
-                              onChange={() => toggleSource(source)}
-                              className="mt-0.5 w-4.5 h-4.5 rounded accent-[var(--color-waste)] flex-shrink-0"
-                            />
-                            <span className="flex-shrink-0 text-base" aria-hidden="true">{source.emoji}</span>
-                            <div className="flex-1 min-w-0">
-                              <span
-                                className="text-sm font-medium leading-tight block"
-                                style={{ color: "var(--color-ink)" }}
-                              >
-                                {source.label}
-                              </span>
-                              <span
-                                className="text-xs leading-snug block mt-0.5"
-                                style={{ color: "var(--color-ink-soft)" }}
-                              >
-                                {source.whatCounts}
-                              </span>
-                            </div>
-                          </motion.label>
-                        )),
-                      )}
-
-                      {/* Add your own — per section */}
-                      <div className="flex items-center gap-2 pt-3 mt-2" style={{ borderTop: "1px solid var(--color-line)" }}>
-                        <input
-                          type="text"
-                          value={customLabels[pi] ?? ""}
-                          onChange={(e) => setCustomLabels((prev) => ({ ...prev, [pi]: e.target.value }))}
-                          onKeyDown={(e) => e.key === "Enter" && addCustomForSection(pi, pain.groups)}
-                          aria-label="Custom waste source name"
-                          placeholder="Add your own..."
-                          className="flex-1 px-3 py-2 text-sm rounded-lg bg-transparent focus:outline-none"
-                          style={{
-                            border: "1.5px solid var(--color-line)",
-                            color: "var(--color-ink)",
-                          }}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => addCustomForSection(pi, pain.groups)}
-                          disabled={!(customLabels[pi] ?? "").trim()}
-                          aria-label="Add custom waste source"
-                          className="px-3 py-2 rounded-lg text-white text-sm font-semibold transition-all duration-150 disabled:opacity-40"
-                          style={{ backgroundColor: "var(--color-waste)" }}
-                        >
-                          <Plus size={16} />
-                        </button>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <AnimatedEmoji emoji={pain.emoji} animation="pulse" size="lg" />
+              <div className="flex-1 min-w-0">
+                <span className="font-semibold text-base block" style={{ color: "var(--color-ink)" }}>
+                  {pain.prompt}
+                </span>
+                <span className="text-xs" style={{ color: "var(--color-ink-soft)" }}>
+                  {sourceCount} {sourceCount === 1 ? "drain" : "drains"} in this category
+                </span>
+              </div>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <input
+                  type="number"
+                  min={0}
+                  max={workHoursPerWeek}
+                  step={0.5}
+                  value={estimate || ""}
+                  placeholder="0"
+                  onChange={(e) => {
+                    const val = e.target.value === "" ? 0 : Number(e.target.value);
+                    setEstimateForPain(pi, Math.max(0, Math.min(workHoursPerWeek, val)));
+                  }}
+                  className="w-16 text-right text-sm font-bold font-figures bg-transparent border-b-2 focus:outline-none px-1 py-1"
+                  style={{ borderColor: estimate > 0 ? "var(--color-waste)" : "var(--color-line)", color: "var(--color-ink)" }}
+                  aria-label={`Hours per week for ${pain.prompt}`}
+                />
+                <span className="text-xs font-medium" style={{ color: "var(--color-ink-soft)" }}>
+                  hrs/wk
+                </span>
+              </div>
             </motion.div>
           );
         })}
       </div>
+
+      {/* Over-allocation warning */}
+      {totalEstimated > workHoursPerWeek && (
+        <motion.div
+          role="alert"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="surface-card p-4 mb-6 flex items-start gap-3"
+          style={{
+            borderLeft: "4px solid var(--color-waste)",
+            backgroundColor: "rgba(224, 62, 18, 0.06)",
+          }}
+        >
+          <span className="text-xl flex-shrink-0" aria-hidden="true">😬</span>
+          <p className="text-sm" style={{ color: "var(--color-waste)" }}>
+            Your total ({totalEstimated.toFixed(1)} hrs) exceeds your {workHoursPerWeek}-hour week. These are rough estimates &mdash; we&apos;ll refine in the next step.
+          </p>
+        </motion.div>
+      )}
 
       {/* Nav */}
       <div className="flex items-center justify-between">
@@ -333,22 +285,24 @@ export default function IntakeStep({ onNext, onBack }: IntakeStepProps) {
           className="px-6 py-3 rounded-lg text-sm font-semibold transition-colors duration-150"
           style={{ color: "var(--color-ink-soft)", border: "1.5px solid var(--color-line)" }}
         >
-          ← Back
+          &larr; Back
         </button>
         <div className="text-right">
-          {!canContinue && (
-            <p className="text-xs mb-1" style={{ color: "var(--color-waste)" }}>
-              Add {remaining} more source{remaining !== 1 ? "s" : ""}
+          {!canContinue && categoriesWithHours > 0 && (
+            <p className="text-xs mb-1" style={{ color: "var(--color-ink-soft)" }}>
+              Estimate at least {MIN_CATEGORIES} categories to continue
             </p>
           )}
           <ShimmerButton
             disabled={!canContinue}
-            onClick={onNext}
+            onClick={handleContinue}
             borderRadius="12px"
             background={canContinue ? "var(--color-reclaim)" : "var(--color-ink-soft)"}
             className="px-10 py-4 text-base font-bold disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            Continue →
+            <span className="flex items-center gap-2">
+              See what&apos;s eating your week &rarr;
+            </span>
           </ShimmerButton>
         </div>
       </div>

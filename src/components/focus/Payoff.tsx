@@ -12,6 +12,7 @@ import type {
 import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
 import { Highlighter } from "@/components/ui/highlighter";
 import { useDrainLookup, type DrainInfo } from "./shared/useDrainLookup";
+import { getOpportunityFrame } from "@/lib/data/opportunity-frames";
 
 interface PayoffProps {
   vitalFew: DrainInfo[];
@@ -71,6 +72,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
   const hourlyRate = useAuditStore((s) => s.hourlyRate);
   const payMode = useAuditStore((s) => s.payMode);
   const workHoursPerWeek = useAuditStore((s) => s.workHoursPerWeek);
+  const roleSlug = useAuditStore((s) => s.roleSlug);
 
   const { drainBySlug } = useDrainLookup(vitalFew, usefulMany);
 
@@ -261,6 +263,39 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
                 </div>
               )}
             </div>
+
+            {/* Opportunity reframe */}
+            {(() => {
+              const { generic, roleSpecific } = getOpportunityFrame(reclaimableWeekly, roleSlug);
+              if (!generic) return null;
+              return (
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 }}
+                  className="mt-8 text-center p-6 rounded-xl"
+                  style={{ backgroundColor: "rgba(196, 24, 106, 0.04)" }}
+                >
+                  <div className="text-sm font-medium mb-2" style={{ color: "var(--color-reclaim)" }}>
+                    What could you do with that time?
+                  </div>
+                  {roleSpecific && (
+                    <p
+                      className="text-base font-semibold mb-3"
+                      style={{
+                        fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
+                        color: "var(--color-ink)",
+                      }}
+                    >
+                      {roleSpecific}
+                    </p>
+                  )}
+                  <p className="text-sm" style={{ color: "var(--color-ink-soft)" }}>
+                    {generic}
+                  </p>
+                </motion.div>
+              );
+            })()}
           </>
         ) : (
           <div className="text-center py-4">

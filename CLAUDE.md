@@ -193,7 +193,7 @@ This project uses TDD. These rules are enforced:
 Never say a feature or fix is "done" without running the test suite.
 
 ### Rule 2: Never Regress
-The test count is a ratchet — it only goes up. 182 tests as of Session 2.
+The test count is a ratchet — it only goes up. 237 tests as of Session 9 (182 original + 55 feedback regression).
 ```bash
 npx vitest --run
 ```
@@ -260,9 +260,9 @@ Report the output of each check when declaring done.
 
 ---
 
-## 12. QA Gate (Separate Verifier Pattern)
+## 12. QA Gate (Three-Layer Verification)
 
-Work is verified in two layers. Neither can be skipped.
+Work is verified in three layers. None can be skipped.
 
 ### Layer 1: Automated Gate (Hook)
 
@@ -281,45 +281,90 @@ A pre-commit hook runs `.claude/hooks/verify-done.sh` before every `git commit`.
 
 **To add a new check:** Edit `.claude/hooks/verify-done.sh` and add a new block. Every repeated miss should become a permanent automated check.
 
-You can run it standalone anytime:
 ```bash
 bash .claude/hooks/verify-done.sh
 ```
 
-### Layer 2: QA Agent Gate (Judgment Checks)
+### Layer 2: Feedback Regression Tests (Cumulative)
 
-After completing work and before declaring "done", spawn a **separate QA agent** that verifies against the original requirements. The QA agent:
+**File:** `src/__tests__/feedback-regression.test.ts`
 
-- Gets the **original feedback/requirements as a numbered checklist**
-- Can ONLY answer **PASS or FAIL per item** with exact misses
-- Does NOT see the implementation conversation (fresh context = no self-grading bias)
-- Must verify by **reading actual files and running actual checks**, not trusting claims
+This is a cumulative test file where every concrete feedback item from every session becomes a permanent assertion. It catches regressions on things the user has already paid for — copy text, data completeness, state shape, color rules, quadrant metadata, functional behavior.
+
+**Rule: every code-verifiable feedback item gets a test here.** When the user gives feedback and you fix it, add a test in this format:
+
+```typescript
+it("[S9-#3] description of what must be true", () => {
+  // S9 = Session 9, #3 = feedback item 3
+  expect(fileContains("path/to/file.tsx", "exact string")).toBe(true);
+});
+```
+
+**What goes here vs. what doesn't:**
+- Copy text ("change CTA to X") → YES, assert exact string
+- Data coverage ("CEO role has no solutions") → YES, assert slug exists
+- State fields ("add dueDates to store") → YES, assert field name
+- CSS values ("dots should be pink for Pearls") → YES, assert hex value
+- Visual layout ("this looks misaligned") → NO, flag as VISUAL in Layer 3
+
+**The test count is a ratchet — it only goes up.** Current: 237 tests (182 original + 55 feedback regression).
+
+### Layer 3: QA Agent Gate (Evidence-Based)
+
+After completing work and before declaring "done", spawn a **separate QA agent**. The key change from the old system: **every checklist item must specify its verification method**.
+
+**Feedback Intake Format — use this BEFORE starting work:**
+
+When user gives feedback, convert each item into this format before writing any code:
+
+```
+## Feedback Intake: Session N
+
+| # | Feedback | Type | Assertion | File |
+|---|----------|------|-----------|------|
+| 1 | "Change CTA to X" | CODE | grep for "X" in File.tsx | File.tsx |
+| 2 | "This is misaligned" | VISUAL | VISUAL — human eye needed | File.tsx |
+| 3 | "Add field to store" | CODE | grep for fieldName in store | audit-store.ts |
+```
+
+- **CODE** items get verified by grep/read. QA agent must provide the grep output.
+- **VISUAL** items get flagged as "VISUAL — code change verified, needs human eye on deployed app." QA agent does NOT say PASS on visual items — it says VISUAL-CHECK.
 
 **Pattern — copy this when spawning the QA agent:**
 
 ```
 Agent({
   subagent_type: "Reality Checker",
-  prompt: "You are the QA gate for FocusLab. You must verify each item below by reading the actual source files — do not trust any claims, verify everything yourself.
+  prompt: "You are the QA gate for FocusLab. Verify each item below by reading actual source files.
 
-  CHECKLIST (from user feedback / requirements):
-  [ ] Item 1: ...
-  [ ] Item 2: ...
-  [ ] Item 3: ...
+  RULES:
+  1. For CODE items: run the grep/read specified. Show the matching line. PASS only if the exact assertion matches.
+  2. For VISUAL items: verify the code change was made, then mark as VISUAL-CHECK (not PASS). These need human eyes on the deployed app.
+  3. Never say PASS without showing the evidence (file:line + matching text).
+  4. After checking individual items, run: npx vitest --run src/__tests__/feedback-regression.test.ts
+     If any feedback regression test fails, the gate FAILS regardless of individual items.
 
-  For EACH item, report exactly:
-  - PASS or FAIL
-  - If FAIL: what exactly is wrong and where (file:line)
-  - No opinions, no suggestions, no 'looks good' — just pass/fail with evidence.
+  CHECKLIST:
+  | # | Feedback | Type | Assertion | File |
+  |---|----------|------|-----------|------|
+  | 1 | ... | CODE | grep for '...' | ... |
+  | 2 | ... | VISUAL | code change at file:line | ... |
 
-  At the end, give a single verdict: GATE PASSED or GATE FAILED (N items)."
+  Report format per item:
+  - PASS (with evidence: file:line + matching text)
+  - FAIL (what's wrong, where)
+  - VISUAL-CHECK (code verified at file:line, needs human eye)
+
+  Final verdict: GATE PASSED, GATE FAILED (N items), or GATE PASSED WITH N VISUAL-CHECKS."
 })
 ```
 
 **Rules:**
 1. The main session does the work. The QA agent only verifies — it never fixes.
 2. If the QA agent reports failures, the main session fixes them and spawns a **new** QA agent (don't reuse — fresh eyes every time).
-3. Never declare "done" until both Layer 1 (automated) and Layer 2 (QA agent) pass.
+3. Never declare "done" until all three layers pass.
+4. After QA passes, tell the user how many VISUAL-CHECK items need their eyes on the deployed app. List them.
+5. **After the user confirms visual items are good**, promote each confirmed code-verifiable fix into `feedback-regression.test.ts` so it can never regress.
 
 ---
 
@@ -353,7 +398,7 @@ At the end of every session, before stopping:
 Project:     FocusLab
 Stack:       Next.js 16 / React 19 / TypeScript / Tailwind 4 / Zustand / Recharts / Vitest
 Routes:      /analyzer (find waste)   /focus (fix waste)   — SEPARATE, NOT a flow
-Tests:       182 passing (never regress)
+Tests:       237 passing (never regress) — 182 original + 55 feedback regression
 Font:        Fraunces (headers) + Plus Jakarta Sans (body)   NO Hanken Grotesk
 Pink:        #c4186a — all CTA, success, selected states
 Orange:      #e03e12 — waste

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { useAuditStore } from "@/stores/audit-store";
 import type { WasteEntry } from "@/stores/audit-store";
@@ -66,8 +66,6 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
   const weighCadence = useAuditStore((s) => s.weighCadence);
   const setWeighCadence = useAuditStore((s) => s.setWeighCadence);
 
-  const [confirmedZeros, setConfirmedZeros] = useState<Set<string>>(new Set());
-
   // Running total of waste hours/week
   const totalWaste = useMemo(() => {
     return activeSources.reduce((sum, src) => {
@@ -78,7 +76,7 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
         effectiveCadence === "daily"
           ? e.hoursPerDay * workDaysPerWeek
           : e.hoursPerDay; // hoursPerDay is really "hours per cadence period"
-      return sum + weeklyHrs * (e.avoidablePct / 100);
+      return sum + weeklyHrs;
     }, 0);
   }, [activeSources, entries, workDaysPerWeek, weighCadence]);
 
@@ -93,7 +91,7 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
           effectiveCadence === "daily"
             ? e.hoursPerDay * workDaysPerWeek
             : e.hoursPerDay;
-        const wasteHrs = weeklyHrs * (e.avoidablePct / 100);
+        const wasteHrs = weeklyHrs;
         acc.push({
           slug: src.slug,
           label: src.label,
@@ -136,12 +134,6 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
     onNext();
   };
 
-  // Check if any sources have zero hours and aren't confirmed
-  const hasUnconfirmedZeros = activeSources.some((src) => {
-    const e = entries[src.slug];
-    return e && e.hoursPerDay === 0 && !confirmedZeros.has(src.slug);
-  });
-
   // Over-allocation: total waste exceeds work week
   const isOverAllocated = totalWaste > workHoursPerWeek;
 
@@ -156,7 +148,7 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
           How much time does each drain take?
         </h2>
         <p style={{ color: "var(--color-ink-soft)" }}>
-          First, pick your unit. Then estimate hours and how much is avoidable.
+          Pick your unit, then estimate how many hours each drain takes.
         </p>
 
         {/* Global cadence toggle */}
@@ -288,7 +280,7 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
         {activeSources.map((src, i) => {
           const entry = entries[src.slug] ?? {
             hoursPerDay: 0,
-            avoidablePct: 50,
+            avoidablePct: 100,
             cadence: (weighCadence ?? "daily") as "daily" | "weekly",
           };
           const effectiveCardCadence = weighCadence ?? entry.cadence;
@@ -296,7 +288,7 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
             effectiveCardCadence === "daily"
               ? entry.hoursPerDay * workDaysPerWeek
               : entry.hoursPerDay;
-          const wasteHrs = weeklyHrs * (entry.avoidablePct / 100);
+          const wasteHrs = weeklyHrs;
 
           return (
             <motion.div
@@ -377,66 +369,7 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
                 })()}
               </div>
 
-              {/* Avoidable buttons */}
-              <div className="mb-2">
-                <span className="text-xs font-medium block mb-2" style={{ color: "var(--color-ink-soft)" }}>
-                  Of this time, how much could you actually cut?
-                </span>
-                <div className="grid grid-cols-3 gap-2">
-                  {([
-                    { label: "All of it", emoji: "🟢", pct: 100 },
-                    { label: "About half", emoji: "🟡", pct: 50 },
-                    { label: "A little", emoji: "🔴", pct: 25 },
-                  ] as const).map((opt) => (
-                    <button
-                      key={opt.pct}
-                      type="button"
-                      onClick={() => setEntry(src.slug, { avoidablePct: opt.pct })}
-                      aria-pressed={entry.avoidablePct === opt.pct}
-                      aria-label={`${opt.label} (${opt.pct}% avoidable)`}
-                      className="flex flex-col items-center gap-1 py-3 px-2 rounded-lg text-sm font-semibold transition-all duration-100"
-                      style={{
-                        border: entry.avoidablePct === opt.pct
-                          ? "2px solid var(--color-waste)"
-                          : "2px solid var(--color-line)",
-                        backgroundColor: entry.avoidablePct === opt.pct
-                          ? "rgba(224, 62, 18, 0.06)"
-                          : "transparent",
-                        color: entry.avoidablePct === opt.pct
-                          ? "var(--color-ink)"
-                          : "var(--color-ink-soft)",
-                      }}
-                    >
-                      <span className="text-lg" aria-hidden="true">{opt.emoji}</span>
-                      <span>{opt.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
 
-              {/* Zero confirmation */}
-              {entry.hoursPerDay === 0 && !confirmedZeros.has(src.slug) && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="mt-2 flex items-center gap-2"
-                >
-                  <span className="text-sm" aria-hidden="true">{"😬"}</span>
-                  <span className="text-xs" style={{ color: "var(--color-ink-soft)" }}>
-                    Really zero?
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setConfirmedZeros((prev) => new Set([...prev, src.slug]))
-                    }
-                    className="text-xs font-semibold underline"
-                    style={{ color: "var(--color-waste)" }}
-                  >
-                    Yes, skip it
-                  </button>
-                </motion.div>
-              )}
             </motion.div>
           );
         })}

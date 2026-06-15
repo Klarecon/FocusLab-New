@@ -151,9 +151,6 @@ function CustomTooltipContent({
       <div className="font-semibold mb-1">
         #{data.idx} {data.title}
       </div>
-      <div className="text-xs mb-1" style={{ color: "var(--color-ink-soft)" }}>
-        Source: {data.sourceName}
-      </div>
       <div
         className="text-xs font-medium px-2 py-0.5 rounded-full inline-block mb-1"
         style={{
@@ -162,9 +159,6 @@ function CustomTooltipContent({
         }}
       >
         {meta.emoji} {meta.name}
-      </div>
-      <div className="text-xs italic" style={{ color: "var(--color-ink-soft)" }}>
-        {data.reclaimHint}
       </div>
       <div className="flex gap-3 mt-2 text-xs">
         <span>
@@ -252,6 +246,7 @@ function PriorityTable({ dotData }: { dotData: DotData[] }) {
   const chosenSolutions = useAuditStore((s) => s.chosenSolutions);
   const dueDates = useAuditStore((s) => s.dueDates);
   const setDueDate = useAuditStore((s) => s.setDueDate);
+  const removeSolution = useAuditStore((s) => s.removeSolution);
 
   const OWNERS_MAP: Record<string, { emoji: string; label: string }> = {
     self: { emoji: "\uD83D\uDE4B", label: "Me" },
@@ -293,6 +288,19 @@ function PriorityTable({ dotData }: { dotData: DotData[] }) {
       <p className="text-sm mb-6" style={{ color: "var(--color-ink-soft)" }}>
         Pearls first. Then the rest, in order.
       </p>
+
+      {/* Column headers */}
+      <div
+        className="flex items-center gap-3 px-4 pb-2 mb-4 text-[10px] font-medium uppercase tracking-wider"
+        style={{ color: "var(--color-ink-soft)", borderBottom: "1px solid var(--color-line)" }}
+      >
+        <span className="w-7 flex-shrink-0">#</span>
+        <span className="flex-1 min-w-0">Task</span>
+        <span className="w-24 flex-shrink-0 hidden sm:block text-center">Quadrant</span>
+        <span className="w-20 flex-shrink-0 text-center">Owner</span>
+        <span className="w-[120px] flex-shrink-0 text-center">Due</span>
+        <span className="w-6 flex-shrink-0"></span>
+      </div>
 
       {groups.map((g) => (
         <div key={g.quadrant} className="mb-6 last:mb-0">
@@ -340,6 +348,7 @@ function PriorityTable({ dotData }: { dotData: DotData[] }) {
                   <input
                     type="date"
                     value={dueDates[d.id] ?? ""}
+                    min={new Date().toISOString().split("T")[0]}
                     onChange={(e) => setDueDate(d.id, e.target.value)}
                     className="text-xs px-2 py-1 rounded border w-[120px] flex-shrink-0"
                     style={{
@@ -349,6 +358,15 @@ function PriorityTable({ dotData }: { dotData: DotData[] }) {
                     }}
                     aria-label={`Due date for ${d.title}`}
                   />
+                  <button
+                    onClick={() => removeSolution(d.id)}
+                    className="text-xs cursor-pointer transition-opacity hover:opacity-70 flex-shrink-0 px-2 py-1 rounded"
+                    style={{ color: "var(--color-ink-soft)" }}
+                    aria-label={`Remove ${d.title} from plan`}
+                    title="Remove from plan"
+                  >
+                    &times;
+                  </button>
                 </div>
               );
             })}
@@ -432,6 +450,47 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
         </p>
       </div>
 
+      {/* Above-fold summary */}
+      {(() => {
+        const counts = {
+          pearls: dotData.filter(d => d.quadrantLabel === "quick-win").length,
+          oysters: dotData.filter(d => d.quadrantLabel === "major-project").length,
+          lhf: dotData.filter(d => d.quadrantLabel === "fill-in").length,
+          elephants: dotData.filter(d => d.quadrantLabel === "thankless").length,
+        };
+        return (
+          <div className="flex items-center gap-3 flex-wrap mb-4">
+            {counts.pearls > 0 && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
+                style={{ backgroundColor: "rgba(196, 24, 106, 0.1)", color: "#c4186a" }}>
+                🤩 {counts.pearls} {counts.pearls === 1 ? "Pearl" : "Pearls"}
+              </span>
+            )}
+            {counts.oysters > 0 && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
+                style={{ backgroundColor: "rgba(237, 178, 21, 0.1)", color: "#edb215" }}>
+                💪 {counts.oysters} {counts.oysters === 1 ? "Oyster" : "Oysters"}
+              </span>
+            )}
+            {counts.lhf > 0 && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
+                style={{ backgroundColor: "rgba(0, 0, 0, 0.04)", color: "#655b4d" }}>
+                🫠 {counts.lhf} Low-Hanging {counts.lhf === 1 ? "Fruit" : "Fruits"}
+              </span>
+            )}
+            {counts.elephants > 0 && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
+                style={{ backgroundColor: "rgba(224, 62, 18, 0.06)", color: "#e03e12" }}>
+                🐘 {counts.elephants} White {counts.elephants === 1 ? "Elephant" : "Elephants"}
+              </span>
+            )}
+            <span className="text-xs" style={{ color: "var(--color-ink-soft)" }}>
+              {dotData.length} fixes mapped
+            </span>
+          </div>
+        );
+      })()}
+
       {/* Screen reader accessible data table for chart */}
       <div className="sr-only" role="table" aria-label="Effort vs Impact scores for selected fixes">
         <div role="rowgroup">
@@ -464,7 +523,7 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
         style={{ borderTop: "4px solid", borderImage: "linear-gradient(to right, #e03e12, #edb215) 1" }}
       >
         {/* Quadrant labels — visible on all screen sizes, inset from edges */}
-        <div className="absolute top-10 left-16 z-10 pointer-events-none" aria-hidden="true">
+        <div className="absolute top-8 left-12 z-10 pointer-events-none" aria-hidden="true">
           <span
             className="text-[10px] sm:text-xs font-semibold px-2 py-1 rounded-full"
             style={{
@@ -475,7 +534,7 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
             {QUADRANT_META["quick-win"].emoji} {QUADRANT_META["quick-win"].name}
           </span>
         </div>
-        <div className="absolute top-10 right-10 z-10 pointer-events-none" aria-hidden="true">
+        <div className="absolute top-8 right-8 z-10 pointer-events-none" aria-hidden="true">
           <span
             className="text-[10px] sm:text-xs font-semibold px-2 py-1 rounded-full"
             style={{
@@ -486,7 +545,7 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
             {QUADRANT_META["major-project"].emoji} {QUADRANT_META["major-project"].name}
           </span>
         </div>
-        <div className="absolute bottom-16 left-16 z-10 pointer-events-none" aria-hidden="true">
+        <div className="absolute bottom-[76px] left-12 z-10 pointer-events-none" aria-hidden="true">
           <span
             className="text-[10px] sm:text-xs font-semibold px-2 py-1 rounded-full"
             style={{
@@ -497,7 +556,7 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
             {QUADRANT_META["fill-in"].emoji} {QUADRANT_META["fill-in"].name}
           </span>
         </div>
-        <div className="absolute bottom-16 right-10 z-10 pointer-events-none" aria-hidden="true">
+        <div className="absolute bottom-[76px] right-8 z-10 pointer-events-none" aria-hidden="true">
           <span
             className="text-[10px] sm:text-xs font-semibold px-2 py-1 rounded-full"
             style={{
