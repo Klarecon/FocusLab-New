@@ -120,7 +120,7 @@ export const useAuditStore = create<AuditState>()(
       ...DEFAULT_STATE,
 
       setRole: (slug) =>
-        set({ roleSlug: slug }),
+        set({ roleSlug: slug, categoryEstimates: {}, vitalCategories: [] }),
 
       setSecondaryRoles: (roles) =>
         set({ secondaryRoles: roles }),

@@ -192,7 +192,7 @@ export default function IntakeStep({ onNext, onBack }: IntakeStepProps) {
             }}
           >
             <span className="font-figures font-bold text-2xl">{totalEstimated.toFixed(1)}</span>
-            <span className="text-sm font-semibold">hrs/week estimated</span>
+            <span className="text-sm font-semibold">hrs/week of waste flagged</span>
           </motion.div>
         )}
       </div>
@@ -230,7 +230,7 @@ export default function IntakeStep({ onNext, onBack }: IntakeStepProps) {
                   {pain.prompt}
                 </span>
                 <span className="text-xs" style={{ color: "var(--color-ink-soft)" }}>
-                  {sourceCount} {sourceCount === 1 ? "drain" : "drains"} in this category
+                  {sourceCount} time {sourceCount === 1 ? "drain" : "drains"} we&apos;ll dig into
                 </span>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
@@ -290,7 +290,7 @@ export default function IntakeStep({ onNext, onBack }: IntakeStepProps) {
         <div className="text-right">
           {!canContinue && categoriesWithHours > 0 && (
             <p className="text-xs mb-1" style={{ color: "var(--color-ink-soft)" }}>
-              Estimate at least {MIN_CATEGORIES} categories to continue
+              Give at least {MIN_CATEGORIES} a number to continue
             </p>
           )}
           <ShimmerButton

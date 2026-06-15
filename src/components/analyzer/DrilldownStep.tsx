@@ -1,17 +1,54 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useRef, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useAuditStore } from "@/stores/audit-store";
 import {
   wasteSourcesForRole,
   groupWasteSources,
+  benchmarkCategoryFor,
   type WasteSource,
 } from "@/lib/data/waste-sources";
-import type { RoleSlug } from "@/lib/data/benchmarks";
+import {
+  BENCHMARKS,
+  isSurfaceable,
+  type RoleSlug,
+} from "@/lib/data/benchmarks";
 import { runAudit, type ChainEntry } from "@/lib/engine/audit-logic";
 import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
+
+/**
+ * Build a benchmark map: category slug -> typical weekly hours.
+ * Copied from WeighStep to restore benchmark comparisons in ResultsView.
+ */
+function buildBenchmarkMap(
+  roleSlug: RoleSlug,
+  workHoursPerWeek: number,
+): Map<string, number> {
+  const map = new Map<string, number>();
+  const surfaceable = BENCHMARKS.filter(
+    (b) =>
+      isSurfaceable(b) &&
+      (b.roleSlug === null || b.roleSlug === roleSlug) &&
+      b.valuePoint != null,
+  );
+
+  for (const b of surfaceable) {
+    let hours: number | null = null;
+    if (b.valueBasis === "week_share" && b.unit === "pct_of_week") {
+      hours = (b.valuePoint! / 100) * workHoursPerWeek;
+    } else if (b.valueBasis === "duration" && b.unit === "hrs_per_week") {
+      hours = b.valuePoint!;
+    }
+    if (hours != null && hours > 0) {
+      if (!map.has(b.categorySlug) || hours > map.get(b.categorySlug)!) {
+        map.set(b.categorySlug, hours);
+      }
+    }
+  }
+  return map;
+}
 
 interface DrilldownStepProps {
   onNext: () => void;
@@ -57,6 +94,11 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
     return grouped.filter((g) => vitalCategories.includes(g.group));
   }, [allSources, vitalCategories]);
 
+  // Custom source input state per group
+  const [customInputs, setCustomInputs] = useState<Record<string, string>>({});
+  const [addedFlash, setAddedFlash] = useState<Record<string, boolean>>({});
+  const customInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+
   const activeSet = useMemo(
     () => new Set(activeSources.map((s) => s.slug)),
     [activeSources],
@@ -68,6 +110,32 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
     } else {
       addSource(source);
     }
+  };
+
+  const handleAddCustom = (groupName: string) => {
+    const label = (customInputs[groupName] ?? "").trim();
+    if (!label) return;
+    const slug = `custom-${Date.now()}-${label.toLowerCase().replace(/\s+/g, "-").slice(0, 30)}`;
+    const customSource: WasteSource = {
+      slug,
+      group: groupName,
+      label,
+      muda: "over-processing",
+      whatCounts: "Custom drain added by you",
+      scope: "universal",
+      emoji: "🔧",
+    };
+    addSource(customSource);
+    // Clear input and show flash
+    setCustomInputs((prev) => ({ ...prev, [groupName]: "" }));
+    setAddedFlash((prev) => ({ ...prev, [groupName]: true }));
+    setTimeout(() => {
+      setAddedFlash((prev) => ({ ...prev, [groupName]: false }));
+    }, 1500);
+    // Re-focus the input for multi-entry
+    setTimeout(() => {
+      customInputRefs.current[groupName]?.focus();
+    }, 50);
   };
 
   // Running total of detailed hours
@@ -96,6 +164,18 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
       [],
     );
 
+    const benchmarkMap = roleSlug
+      ? buildBenchmarkMap(roleSlug as RoleSlug, workHoursPerWeek)
+      : new Map<string, number>();
+
+    const sourceBenchmarkMap = new Map<string, number>();
+    for (const src of activeSources) {
+      const cat = benchmarkCategoryFor(src.slug);
+      if (cat && benchmarkMap.has(cat)) {
+        sourceBenchmarkMap.set(src.slug, benchmarkMap.get(cat)!);
+      }
+    }
+
     const result = runAudit({
       entries: chainEntries,
       workWeek: workHoursPerWeek,
@@ -103,7 +183,7 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
       payMode: payMode === "salary" ? "salary" : "hourly",
       salary,
       hourly: hourlyRate,
-      benchmarkMap: new Map(),
+      benchmarkMap: sourceBenchmarkMap,
     });
 
     setParetoResult(result);
@@ -115,6 +195,25 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
     return e && e.hoursPerDay > 0;
   });
 
+  if (vitalCategories.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
+        <span className="text-5xl" aria-hidden="true">🤔</span>
+        <p className="text-lg" style={{ color: "var(--color-ink-soft)" }}>
+          No categories to drill into. Go back and estimate your time first.
+        </p>
+        <button
+          type="button"
+          onClick={onBack}
+          className="px-6 py-3 rounded-lg text-sm font-semibold"
+          style={{ color: "var(--color-ink-soft)", border: "1.5px solid var(--color-line)" }}
+        >
+          &larr; Back to estimates
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="text-center mb-8">
@@ -125,7 +224,7 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
           Let&apos;s zoom into the big ones
         </h2>
         <p style={{ color: "var(--color-ink-soft)" }}>
-          These categories eat most of your week. Check the specific drains and estimate hours for each.
+          These are your biggest time sinks. Check the ones that hit hardest and estimate how much they cost you.
         </p>
 
         {totalDetailed > 0 && (
@@ -140,7 +239,7 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
             }}
           >
             <span className="font-figures font-bold text-2xl">{totalDetailed.toFixed(1)}</span>
-            <span className="text-sm font-semibold">hrs/week detailed</span>
+            <span className="text-sm font-semibold">hrs/week of waste spotted</span>
           </motion.div>
         )}
       </div>
@@ -244,10 +343,133 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
                   </div>
                 );
               })}
+
+              {/* Custom source: also render any custom sources already added for this group */}
+              {activeSources
+                .filter((s) => s.slug.startsWith("custom-") && s.group === group.group)
+                .map((source) => {
+                  const entry = entries[source.slug];
+                  return (
+                    <div key={source.slug}>
+                      <label className="flex items-start gap-3 p-2.5 rounded-lg cursor-pointer transition-colors hover:bg-[rgba(0,0,0,0.03)]">
+                        <input
+                          type="checkbox"
+                          checked={true}
+                          onChange={() => toggleSource(source)}
+                          className="mt-0.5 w-4.5 h-4.5 rounded accent-[var(--color-waste)] flex-shrink-0"
+                        />
+                        <span className="flex-shrink-0 text-base" aria-hidden="true">
+                          {source.emoji}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <span
+                            className="text-sm font-medium leading-tight block"
+                            style={{ color: "var(--color-ink)" }}
+                          >
+                            {source.label}
+                          </span>
+                          <span
+                            className="text-xs leading-snug block mt-0.5 italic"
+                            style={{ color: "var(--color-reclaim)" }}
+                          >
+                            Your custom drain
+                          </span>
+                        </div>
+                      </label>
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        className="ml-12 mt-1 mb-2 flex items-center gap-2"
+                      >
+                        <span className="text-xs" style={{ color: "var(--color-ink-soft)" }}>
+                          hrs/week:
+                        </span>
+                        <input
+                          type="number"
+                          min={0}
+                          max={workHoursPerWeek}
+                          step={0.25}
+                          value={entry?.hoursPerDay || ""}
+                          placeholder="0"
+                          onChange={(e) => {
+                            const val = e.target.value === "" ? 0 : Number(e.target.value);
+                            setEntry(source.slug, {
+                              hoursPerDay: Math.max(0, Math.min(workHoursPerWeek, val)),
+                              avoidablePct: 100,
+                              cadence: "weekly",
+                            });
+                          }}
+                          className="w-16 text-right text-sm font-bold font-figures bg-transparent border-b-2 focus:outline-none px-1 py-0.5"
+                          style={{
+                            borderColor: "var(--color-waste)",
+                            color: "var(--color-ink)",
+                          }}
+                          aria-label={`Hours per week for ${source.label}`}
+                        />
+                      </motion.div>
+                    </div>
+                  );
+                })}
+
+              {/* Add custom drain input */}
+              <div className="mt-3 pt-3 flex items-center gap-2" style={{ borderTop: "1px dashed var(--color-line)" }}>
+                <span className="text-base flex-shrink-0" aria-hidden="true">🔧</span>
+                <input
+                  ref={(el) => { customInputRefs.current[group.group] = el; }}
+                  type="text"
+                  value={customInputs[group.group] ?? ""}
+                  placeholder="Add your own drain..."
+                  onChange={(e) =>
+                    setCustomInputs((prev) => ({ ...prev, [group.group]: e.target.value }))
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleAddCustom(group.group);
+                    }
+                  }}
+                  className="flex-1 text-sm bg-transparent border-b-2 focus:outline-none px-1 py-1.5"
+                  style={{
+                    borderColor: "var(--color-line)",
+                    color: "var(--color-ink)",
+                  }}
+                  aria-label={`Add a custom drain to ${group.group}`}
+                />
+                <button
+                  type="button"
+                  onClick={() => handleAddCustom(group.group)}
+                  disabled={!(customInputs[group.group] ?? "").trim()}
+                  className="px-3 py-1.5 rounded-md text-xs font-bold transition-all disabled:opacity-30"
+                  style={{
+                    backgroundColor: "var(--color-reclaim)",
+                    color: "#fff",
+                  }}
+                >
+                  {addedFlash[group.group] ? "Added!" : "+ Add"}
+                </button>
+              </div>
             </div>
           </motion.div>
         ))}
       </div>
+
+      {totalDetailed > workHoursPerWeek && (
+        <motion.div
+          role="alert"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="surface-card p-4 mb-6 flex items-start gap-3"
+          style={{
+            borderLeft: "4px solid var(--color-waste)",
+            backgroundColor: "rgba(224, 62, 18, 0.06)",
+          }}
+        >
+          <span className="text-xl flex-shrink-0" aria-hidden="true">😬</span>
+          <p className="text-sm" style={{ color: "var(--color-waste)" }}>
+            Your detailed total ({totalDetailed.toFixed(1)} hrs) exceeds your {workHoursPerWeek}-hour week. Double-check the estimates above.
+          </p>
+        </motion.div>
+      )}
 
       <div className="flex items-center justify-between">
         <button
@@ -258,6 +480,11 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
         >
           &larr; Back
         </button>
+        {activeSources.length > 0 && !hasEntries && (
+          <p className="text-xs mb-1" style={{ color: "var(--color-ink-soft)" }}>
+            Enter hours for at least one drain to continue
+          </p>
+        )}
         <ShimmerButton
           disabled={!hasEntries}
           onClick={handleCompute}
@@ -267,7 +494,7 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
         >
           <span className="flex items-center gap-2">
             <AnimatedEmoji emoji="🤯" animation="pop" size="sm" />
-            See your results
+            Show me the damage
           </span>
         </ShimmerButton>
       </div>

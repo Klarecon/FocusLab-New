@@ -237,8 +237,8 @@ const QUADRANT_PRIORITY_ORDER: QuadrantLabel[] = ["quick-win", "major-project", 
 const QUADRANT_SECTION_LABELS: Record<QuadrantLabel, string> = {
   "quick-win": "Pearls \u2014 do these first",
   "major-project": "Oysters \u2014 plan these next",
-  "fill-in": "Quick tasks \u2014 knock these out when you can",
-  thankless: "White Elephants \u2014 skip if you can",
+  "fill-in": "Low-Hanging Fruit \u2014 knock these out when you can",
+  thankless: "White Elephants \u2014 drop or delegate these",
 };
 
 function PriorityTable({ dotData }: { dotData: DotData[] }) {
@@ -475,7 +475,7 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
             {counts.lhf > 0 && (
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
                 style={{ backgroundColor: "rgba(0, 0, 0, 0.04)", color: "#655b4d" }}>
-                🫠 {counts.lhf} Low-Hanging {counts.lhf === 1 ? "Fruit" : "Fruits"}
+                🫠 {counts.lhf} Low-Hanging Fruit
               </span>
             )}
             {counts.elephants > 0 && (

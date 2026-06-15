@@ -305,8 +305,8 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
               style={{ color: "var(--color-ink-soft)" }}
             >
               {hasAnyWaste
-                ? "The fixes you picked don\u2019t target any of your drains, so there\u2019s nothing to reclaim yet. Go back to Assign Fixes and choose ones that match your waste sources."
-                : "No waste hours to reclaim. Run the Pareto Analyzer first to identify where your time goes."}
+                ? "The fixes you picked don\u2019t match any of your drains, so there\u2019s nothing to reclaim yet. Go back to Assign Fixes and choose ones that target your biggest time wasters."
+                : "No waste hours to reclaim. Run the Analyzer first to identify where your time goes."}
             </p>
           </div>
         )}
@@ -315,7 +315,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
             className="text-xs text-center mt-4 italic"
             style={{ color: "var(--color-ink-soft)" }}
           >
-            Want to see this in dollars? Add your pay info in the Waste Finder to unlock dollar estimates.
+            Want to see this in dollars? Add your pay info in the Analyzer to unlock dollar estimates.
           </p>
         )}
       </div>
@@ -493,7 +493,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
               You&apos;ve got a plan. Now go reclaim your week.
             </h3>
             <p className="text-xs" style={{ color: "var(--color-ink-soft)" }}>
-              Come back anytime to update your plan.
+              Your plan lives here whenever you need it.
             </p>
           </motion.div>
         </div>
