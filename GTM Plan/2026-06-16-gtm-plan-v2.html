@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FocusLab Go-to-Market Plan v2</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+    :root {
+      --waste-orange: #e03e12;
+      --reclaim-pink: #c4186a;
+      --gold: #edb215;
+      --cream: #fdf6ee;
+      --dark: #1a1714;
+      --mid: #4a443d;
+      --light-border: #e8e0d4;
+      --section-bg: #ffffff;
+      --highlight-bg: #fef9f0;
+      --coach-bg: #f8f0ff;
+      --individual-bg: #f0f7ff;
+      --risk-low: #e8f5e8;
+      --risk-med: #fff8e1;
+      --risk-high: #ffebee;
+      --revision-bg: #fff3e0;
+      --revision-border: #ffb74d;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--cream);
+      color: var(--dark);
+      line-height: 1.7;
+      padding: 0;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, var(--dark) 0%, #2d261f 100%);
+      color: white;
+      padding: 80px 40px 60px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-family: 'Fraunces', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--gold);
+    }
+
+    .hero .subtitle {
+      font-size: 1.25rem;
+      color: rgba(255,255,255,0.8);
+      max-width: 750px;
+      margin: 0 auto 20px;
+    }
+
+    .hero .version-badge {
+      display: inline-block;
+      background: var(--reclaim-pink);
+      color: white;
+      padding: 5px 16px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .hero .meta {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .toc {
+      background: var(--section-bg);
+      border-bottom: 2px solid var(--light-border);
+      padding: 20px 40px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .toc-inner {
+      display: flex;
+      gap: 6px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .toc a {
+      display: inline-block;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--mid);
+      background: var(--highlight-bg);
+      border: 1px solid var(--light-border);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .toc a:hover { background: var(--reclaim-pink); color: white; border-color: var(--reclaim-pink); }
+    .toc a.new-tag { background: var(--revision-bg); border-color: var(--revision-border); color: var(--waste-orange); }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+
+    /* ── Revision callout ── */
+    .revision-callout {
+      background: var(--revision-bg);
+      border: 2px solid var(--revision-border);
+      border-radius: 12px;
+      padding: 18px 24px;
+      margin-bottom: 20px;
+      font-size: 0.88rem;
+      color: var(--mid);
+    }
+    .revision-callout strong { color: var(--waste-orange); }
+
+    /* ── Executive Summary ── */
+    .exec-summary {
+      background: var(--section-bg);
+      border-radius: 16px;
+      padding: 40px;
+      margin-bottom: 40px;
+      border: 2px solid var(--gold);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+
+    .exec-summary h2 { font-family: 'Fraunces', serif; font-size: 1.8rem; color: var(--dark); margin-bottom: 20px; }
+    .exec-summary p { margin-bottom: 14px; color: var(--mid); font-size: 1.05rem; }
+
+    .three-tracks {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .track-card { padding: 24px; border-radius: 12px; border: 2px solid; }
+    .track-card.individual { background: var(--individual-bg); border-color: #b8d4f0; }
+    .track-card.coach { background: var(--coach-bg); border-color: #d4b8f0; }
+    .track-card.free-channels { background: #f0fff4; border-color: #a5d6a7; }
+    .track-card h3 { font-family: 'Fraunces', serif; font-size: 1.05rem; margin-bottom: 8px; }
+    .track-card p { font-size: 0.88rem; color: var(--mid); }
+    .track-card .tag { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 700; margin-bottom: 10px; }
+    .track-card.individual .tag { background: #2a6cb8; color: white; }
+    .track-card.coach .tag { background: #8a2ac4; color: white; }
+    .track-card.free-channels .tag { background: #2e7d32; color: white; }
+
+    .target-box {
+      background: var(--dark);
+      color: var(--gold);
+      padding: 16px 24px;
+      border-radius: 10px;
+      text-align: center;
+      font-family: 'Fraunces', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-top: 20px;
+    }
+
+    /* ── Sections ── */
+    .section {
+      background: var(--section-bg);
+      border-radius: 16px;
+      padding: 40px;
+      margin-bottom: 32px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+
+    .section h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.8rem;
+      color: var(--dark);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .section h2 .part-num {
+      background: var(--reclaim-pink);
+      color: white;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .section h2 .new-badge {
+      background: var(--revision-bg);
+      color: var(--waste-orange);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      border: 1px solid var(--revision-border);
+    }
+
+    .section-subtitle { color: var(--mid); font-size: 1rem; margin-bottom: 28px; }
+    .section h3 { font-family: 'Fraunces', serif; font-size: 1.25rem; color: var(--dark); margin: 28px 0 12px; }
+    .section h4 { font-weight: 700; font-size: 1rem; margin: 20px 0 8px; color: var(--waste-orange); }
+
+    /* ── Segment cards ── */
+    .segment-card { background: var(--highlight-bg); border: 1px solid var(--light-border); border-radius: 12px; padding: 24px; margin-bottom: 16px; }
+    .segment-card .segment-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .segment-card .segment-name { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 600; }
+    .segment-card .segment-volume { background: var(--dark); color: var(--gold); font-size: 0.78rem; font-weight: 700; padding: 4px 12px; border-radius: 16px; }
+    .segment-card .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .segment-card .detail-item { font-size: 0.9rem; color: var(--mid); }
+    .segment-card .detail-item strong { display: block; color: var(--dark); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+
+    .negative-icp { background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 10px; padding: 20px; margin-top: 20px; }
+    .negative-icp h4 { color: var(--waste-orange); margin-top: 0; }
+    .negative-icp ul { list-style: none; padding: 0; }
+    .negative-icp li { padding: 4px 0; font-size: 0.9rem; color: var(--mid); }
+    .negative-icp li::before { content: "✕ "; color: var(--waste-orange); font-weight: 700; }
+
+    /* ── Pricing ── */
+    .pricing-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; margin: 24px 0; }
+    .pricing-card { border: 2px solid var(--light-border); border-radius: 14px; padding: 24px; text-align: center; position: relative; transition: transform 0.2s; }
+    .pricing-card:hover { transform: translateY(-4px); }
+    .pricing-card.recommended { border-color: var(--reclaim-pink); box-shadow: 0 4px 20px rgba(196, 24, 106, 0.15); }
+    .pricing-card .tier-name { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+    .pricing-card .price { font-family: 'Fraunces', serif; font-size: 2.2rem; font-weight: 700; color: var(--reclaim-pink); margin: 10px 0; }
+    .pricing-card .price span { font-size: 0.9rem; color: var(--mid); }
+    .pricing-card .price-sub { font-size: 0.82rem; color: var(--mid); margin-bottom: 14px; }
+    .pricing-card ul { list-style: none; padding: 0; text-align: left; }
+    .pricing-card li { padding: 5px 0; font-size: 0.82rem; color: var(--mid); border-bottom: 1px solid var(--light-border); }
+    .pricing-card li:last-child { border: none; }
+    .pricing-card .badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--reclaim-pink); color: white; font-size: 0.7rem; font-weight: 700; padding: 4px 12px; border-radius: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .pricing-card .coach-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #8a2ac4; color: white; font-size: 0.7rem; font-weight: 700; padding: 4px 12px; border-radius: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .pricing-rationale { background: var(--highlight-bg); border-radius: 12px; padding: 24px; margin: 24px 0; }
+    .pricing-rationale h4 { margin-top: 0; color: var(--dark); }
+    .pricing-rationale p { font-size: 0.92rem; color: var(--mid); margin-bottom: 10px; }
+
+    /* ── Validation gate ── */
+    .validation-gate { background: linear-gradient(135deg, var(--coach-bg), #f0e8ff); border: 2px solid #d4b8f0; border-radius: 14px; padding: 28px; margin: 24px 0; }
+    .validation-gate h4 { color: #6b21a8; margin-top: 0; font-size: 1.1rem; }
+    .validation-steps { list-style: none; padding: 0; counter-reset: vstep; }
+    .validation-steps li { counter-increment: vstep; padding: 10px 0 10px 40px; position: relative; font-size: 0.92rem; color: var(--mid); }
+    .validation-steps li::before { content: counter(vstep); position: absolute; left: 0; top: 10px; width: 28px; height: 28px; background: #6b21a8; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; }
+    .gate-decision { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+    .gate-decision .go { background: #e8f5e8; border: 1px solid #a5d6a7; border-radius: 10px; padding: 14px; text-align: center; font-size: 0.88rem; }
+    .gate-decision .nogo { background: #ffebee; border: 1px solid #ef9a9a; border-radius: 10px; padding: 14px; text-align: center; font-size: 0.88rem; }
+
+    /* ── Timeline ── */
+    .phase { border-left: 4px solid var(--reclaim-pink); padding: 0 0 30px 28px; margin-left: 20px; position: relative; }
+    .phase:last-child { border-left-color: var(--gold); }
+    .phase::before { content: ''; position: absolute; left: -14px; top: 0; width: 24px; height: 24px; background: var(--reclaim-pink); border-radius: 50%; border: 4px solid var(--section-bg); }
+    .phase:last-child::before { background: var(--gold); }
+    .phase-header { font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 6px; }
+    .phase-when { font-size: 0.85rem; color: var(--reclaim-pink); font-weight: 600; margin-bottom: 12px; }
+    .phase:last-child .phase-when { color: var(--gold); }
+
+    .task-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.85rem; }
+    .task-table th { text-align: left; padding: 8px 10px; background: var(--highlight-bg); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--mid); border-bottom: 2px solid var(--light-border); }
+    .task-table td { padding: 8px 10px; border-bottom: 1px solid var(--light-border); color: var(--mid); vertical-align: top; }
+    .task-table td:first-child { font-weight: 600; color: var(--dark); }
+    .task-table .revised-row { background: var(--revision-bg); }
+
+    .deliverables { background: var(--highlight-bg); border-radius: 10px; padding: 16px 20px; margin-top: 12px; }
+    .deliverables h5 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--reclaim-pink); margin-bottom: 8px; }
+    .deliverables ul { padding-left: 18px; }
+    .deliverables li { font-size: 0.88rem; color: var(--mid); padding: 3px 0; }
+
+    /* ── Content pillars ── */
+    .pillars { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 20px 0; }
+    .pillar { border: 1px solid var(--light-border); border-radius: 12px; padding: 20px; background: var(--highlight-bg); }
+    .pillar .pillar-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 8px; }
+    .pillar:nth-child(1) .pillar-label { color: var(--waste-orange); }
+    .pillar:nth-child(2) .pillar-label { color: var(--gold); }
+    .pillar:nth-child(3) .pillar-label { color: var(--reclaim-pink); }
+    .pillar h4 { font-size: 1rem; margin: 0 0 10px; color: var(--dark); }
+    .pillar ul { list-style: none; padding: 0; }
+    .pillar li { font-size: 0.85rem; color: var(--mid); padding: 5px 0; border-bottom: 1px solid var(--light-border); }
+    .pillar li:last-child { border: none; }
+
+    /* ── Competitor table ── */
+    .competitor-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.88rem; }
+    .competitor-table th { text-align: left; padding: 12px 16px; background: var(--dark); color: var(--gold); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .competitor-table th:first-child { border-radius: 10px 0 0 0; }
+    .competitor-table th:last-child { border-radius: 0 10px 0 0; }
+    .competitor-table td { padding: 12px 16px; border-bottom: 1px solid var(--light-border); color: var(--mid); vertical-align: top; }
+    .competitor-table td:first-child { font-weight: 600; color: var(--dark); }
+    .competitor-table td:last-child { color: var(--reclaim-pink); font-weight: 500; }
+
+    .positioning-box { background: linear-gradient(135deg, var(--dark), #2d261f); color: white; border-radius: 14px; padding: 32px; text-align: center; margin: 24px 0; }
+    .positioning-box .label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gold); margin-bottom: 12px; }
+    .positioning-box .statement { font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 600; line-height: 1.5; max-width: 700px; margin: 0 auto; }
+
+    .differentiators { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 20px 0; }
+    .diff-card { background: var(--highlight-bg); border-radius: 10px; padding: 18px; border-left: 4px solid var(--reclaim-pink); }
+    .diff-card strong { display: block; margin-bottom: 4px; color: var(--dark); font-size: 0.95rem; }
+    .diff-card p { font-size: 0.85rem; color: var(--mid); margin: 0; }
+
+    /* ── Risk table ── */
+    .risk-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.85rem; }
+    .risk-table th { text-align: left; padding: 10px 14px; background: var(--highlight-bg); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--mid); border-bottom: 2px solid var(--light-border); }
+    .risk-table td { padding: 10px 14px; border-bottom: 1px solid var(--light-border); color: var(--mid); vertical-align: top; }
+    .risk-table td:first-child { font-weight: 600; color: var(--dark); }
+    .risk-badge { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 0.75rem; font-weight: 700; }
+    .risk-badge.low { background: var(--risk-low); color: #2e7d32; }
+    .risk-badge.med { background: var(--risk-med); color: #f57f17; }
+    .risk-badge.high { background: var(--risk-high); color: var(--waste-orange); }
+
+    /* ── Learn section ── */
+    .concept-card { background: var(--highlight-bg); border: 1px solid var(--light-border); border-radius: 12px; padding: 24px; margin-bottom: 16px; }
+    .concept-card .concept-num { display: inline-block; background: var(--reclaim-pink); color: white; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-size: 0.85rem; font-weight: 700; margin-right: 10px; }
+    .concept-card h4 { display: inline; color: var(--dark); margin: 0; font-size: 1.05rem; }
+    .concept-card .what, .concept-card .why, .concept-card .defend { margin-top: 12px; font-size: 0.92rem; color: var(--mid); }
+    .concept-card .defend { background: white; border: 1px solid var(--light-border); border-radius: 8px; padding: 14px; margin-top: 12px; font-style: italic; }
+    .concept-card .defend strong { display: block; font-style: normal; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--reclaim-pink); margin-bottom: 6px; }
+
+    /* ── Funnel ── */
+    .funnel { display: flex; flex-direction: column; align-items: center; margin: 24px 0; gap: 0; }
+    .funnel-step { padding: 14px 24px; text-align: center; font-size: 0.88rem; color: white; font-weight: 600; }
+    .funnel-step:nth-child(1) { background: var(--dark); width: 100%; border-radius: 10px 10px 0 0; }
+    .funnel-step:nth-child(2) { background: #3d342b; width: 88%; }
+    .funnel-step:nth-child(3) { background: var(--waste-orange); width: 74%; }
+    .funnel-step:nth-child(4) { background: var(--gold); width: 58%; color: var(--dark); }
+    .funnel-step:nth-child(5) { background: var(--reclaim-pink); width: 40%; border-radius: 0 0 10px 10px; }
+    .funnel-step .rate { font-size: 0.72rem; font-weight: 400; opacity: 0.8; display: block; margin-top: 2px; }
+
+    /* ── Q&A ── */
+    .qa-item { border: 1px solid var(--light-border); border-radius: 12px; margin-bottom: 14px; overflow: hidden; }
+    .qa-item.revised { border-color: var(--revision-border); }
+    .qa-question { background: var(--highlight-bg); padding: 18px 24px; font-weight: 700; color: var(--dark); cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 0.92rem; }
+    .qa-item.revised .qa-question { background: var(--revision-bg); }
+    .qa-question::after { content: '+'; font-size: 1.4rem; color: var(--reclaim-pink); font-weight: 300; }
+    .qa-item.open .qa-question::after { content: '−'; }
+    .qa-answer { padding: 0 24px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; font-size: 0.9rem; color: var(--mid); line-height: 1.7; }
+    .qa-item.open .qa-answer { padding: 18px 24px; max-height: 600px; }
+
+    /* ── Success criteria ── */
+    .criteria-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 20px 0; }
+    .criteria-card { border-radius: 12px; padding: 24px; border: 2px solid; }
+    .criteria-card.working { background: #f0faf0; border-color: #a5d6a7; }
+    .criteria-card.adjust { background: #fffbf0; border-color: var(--gold); }
+    .criteria-card.abandon { background: #fff5f5; border-color: #ef9a9a; }
+    .criteria-card h4 { margin-top: 0; font-size: 1rem; }
+    .criteria-card.working h4 { color: #2e7d32; }
+    .criteria-card.adjust h4 { color: #f57f17; }
+    .criteria-card.abandon h4 { color: var(--waste-orange); }
+    .criteria-card ul { padding-left: 16px; }
+    .criteria-card li { font-size: 0.85rem; color: var(--mid); padding: 4px 0; }
+
+    /* ── Tables ── */
+    .metrics-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.85rem; }
+    .metrics-table th { text-align: left; padding: 10px 14px; background: var(--reclaim-pink); color: white; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .metrics-table th:first-child { border-radius: 10px 0 0 0; }
+    .metrics-table th:last-child { border-radius: 0 10px 0 0; }
+    .metrics-table td { padding: 10px 14px; border-bottom: 1px solid var(--light-border); color: var(--mid); }
+    .metrics-table td:first-child { font-weight: 600; color: var(--dark); }
+    .metrics-table td:last-child { font-weight: 700; color: var(--reclaim-pink); }
+
+    .budget-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.85rem; }
+    .budget-table th { text-align: left; padding: 10px 14px; background: var(--dark); color: var(--gold); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .budget-table th:first-child { border-radius: 10px 0 0 0; }
+    .budget-table th:last-child { border-radius: 0 10px 0 0; }
+    .budget-table td { padding: 10px 14px; border-bottom: 1px solid var(--light-border); color: var(--mid); }
+    .budget-table td:first-child { font-weight: 600; color: var(--dark); }
+
+    /* ── Free channels ── */
+    .free-channel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 20px 0; }
+    .free-channel-card { background: #f0fff4; border: 1px solid #a5d6a7; border-radius: 12px; padding: 18px; }
+    .free-channel-card h4 { color: #2e7d32; margin: 0 0 6px; font-size: 0.95rem; }
+    .free-channel-card p { font-size: 0.85rem; color: var(--mid); margin: 0; }
+    .free-channel-card .effort { font-size: 0.75rem; color: var(--mid); font-weight: 600; margin-top: 8px; }
+
+    /* ── Retention ── */
+    .retention-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin: 20px 0; }
+    .retention-card { background: var(--highlight-bg); border: 1px solid var(--light-border); border-radius: 12px; padding: 18px; }
+    .retention-card h4 { color: var(--dark); margin: 0 0 6px; font-size: 0.95rem; }
+    .retention-card p { font-size: 0.85rem; color: var(--mid); margin: 0; }
+
+    .sources { background: var(--highlight-bg); border-radius: 12px; padding: 24px; margin-top: 40px; }
+    .sources h3 { font-family: 'Fraunces', serif; font-size: 1.1rem; margin-bottom: 12px; }
+    .sources ul { list-style: none; padding: 0; }
+    .sources li { padding: 4px 0; font-size: 0.85rem; }
+    .sources a { color: var(--reclaim-pink); text-decoration: none; }
+    .sources a:hover { text-decoration: underline; }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2rem; }
+      .hero { padding: 50px 20px 40px; }
+      .container { padding: 20px 16px; }
+      .section { padding: 24px; }
+      .three-tracks, .pricing-grid, .pillars, .differentiators, .criteria-grid, .gate-decision, .free-channel-grid, .retention-grid { grid-template-columns: 1fr; }
+      .segment-card .detail-grid { grid-template-columns: 1fr; }
+      .toc { padding: 12px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════ HERO ══════════ -->
+<div class="hero">
+  <span class="version-badge">v2 &mdash; Revised after GTM review</span>
+  <h1>FocusLab Go-to-Market Plan</h1>
+  <p class="subtitle">Coach Multiplier + Content Flywheel + Free Channels: A three-track GTM strategy built on realistic unit economics</p>
+  <div class="meta">
+    <span>Author: Mona Mehta</span>
+    <span>Date: June 16, 2026</span>
+    <span>Status: v2 Draft</span>
+  </div>
+</div>
+
+<!-- ══════════ NAV ══════════ -->
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#summary">Summary</a>
+    <a href="#segments">Segments</a>
+    <a href="#revenue">Revenue</a>
+    <a href="#retention" class="new-tag">Retention</a>
+    <a href="#timeline">Timeline</a>
+    <a href="#landing" class="new-tag">Landing Page</a>
+    <a href="#content">Content</a>
+    <a href="#channels">Channels</a>
+    <a href="#free-channels" class="new-tag">Free Channels</a>
+    <a href="#competitors">Competitors</a>
+    <a href="#risks">Risks</a>
+    <a href="#legal" class="new-tag">Legal</a>
+    <a href="#learn">What to Learn</a>
+    <a href="#qa">Q&amp;A Defense</a>
+    <a href="#success">Success Criteria</a>
+  </div>
+</nav>
+
+<div class="container">
+
+<!-- ══════════ WHAT CHANGED ══════════ -->
+<div class="revision-callout">
+  <strong>What changed in v2:</strong> CPC corrected from $0.20 to $2-3 (real B2B benchmarks). Added 4 new sections: Retention Strategy, Landing Page, Free Channels, Legal. Raised coach validation bar (3 prepay, not 6 verbal). Added annual pricing option. Fixed referral incentive. Re-modeled all funnel math with realistic numbers. Added Product Hunt, YouTube, Reddit, and podcast channels.
+</div>
+
+<!-- ══════════ EXECUTIVE SUMMARY ══════════ -->
+<section class="exec-summary" id="summary">
+  <h2>Executive Summary</h2>
+  <p>FocusLab is a live productivity tool with <strong>zero monetization</strong> and <strong>zero awareness</strong>. This plan turns it into a revenue-generating product through three parallel tracks:</p>
+
+  <div class="three-tracks">
+    <div class="track-card free-channels">
+      <span class="tag">WEEK 1 &mdash; FREE</span>
+      <h3>Free Channels First</h3>
+      <p>Product Hunt launch, YouTube demo video, Reddit, podcast pitches. Exhaust free high-intent channels before spending on ads.</p>
+    </div>
+    <div class="track-card individual">
+      <span class="tag">BUILD IMMEDIATELY</span>
+      <h3>Individual Track</h3>
+      <p>Free Pareto Analyzer &rarr; paid Focus Table at <strong>$29/mo or $199/year</strong>. Landing page + paid ads drive traffic once free channels are running.</p>
+    </div>
+    <div class="track-card coach">
+      <span class="tag">VALIDATE FIRST</span>
+      <h3>Coach Track</h3>
+      <p>Oren validates with 10-15 coaches. Gate: <strong>3+ prepay or sign pilot agreements</strong> (not just verbal yes). Then build $149/mo tier.</p>
+    </div>
+  </div>
+
+  <p>Designed for <strong>~$300-500/mo budget</strong> with a "free channels first" philosophy. Most early traffic should cost $0.</p>
+
+  <div class="target-box">
+    Realistic target: Validation + 1-2 coach pilots + path to $1K MRR (may take 4-6 months, not 90 days, from zero awareness)
+  </div>
+</section>
+
+<!-- ══════════ PART 1: SEGMENTS ══════════ -->
+<section class="section" id="segments">
+  <h2><span class="part-num">Part 1</span> Who We're Selling To</h2>
+  <p class="section-subtitle">Four segments ranked by fit. We start with the top two and expand later.</p>
+
+  <div class="segment-card">
+    <div class="segment-header">
+      <span class="segment-name">Segment 1: Productivity Coaches &amp; Consultants</span>
+      <span class="segment-volume">7 coaches = $1K MRR</span>
+    </div>
+    <div class="detail-grid">
+      <div class="detail-item"><strong>Who</strong>Independent coaches, consulting firms, workshop facilitators</div>
+      <div class="detail-item"><strong>Why they'd pay</strong>They need a structured client diagnostic tool. FocusLab replaces manual spreadsheets and gut-feel conversations</div>
+      <div class="detail-item"><strong>How they find us</strong>Oren's direct outreach (network), then LinkedIn targeting</div>
+      <div class="detail-item"><strong>Price sensitivity</strong>Low. They charge $200-500/hr. $149/mo pays for itself with one client</div>
+    </div>
+  </div>
+
+  <div class="segment-card">
+    <div class="segment-header">
+      <span class="segment-name">Segment 2: New Managers (first 6 months in role)</span>
+      <span class="segment-volume">35 users = $1K MRR</span>
+    </div>
+    <div class="detail-grid">
+      <div class="detail-item"><strong>Who</strong>Recently promoted/hired managers at companies with 50-500 employees</div>
+      <div class="detail-item"><strong>Why they'd pay</strong>They're overwhelmed, Googling "where does my time go," and need quick wins to prove themselves</div>
+      <div class="detail-item"><strong>How they find us</strong>Free channels (Product Hunt, Reddit), content marketing, paid ads</div>
+      <div class="detail-item"><strong>Price sensitivity</strong>Medium. $29/mo is an easy personal expense or team budget line</div>
+    </div>
+  </div>
+
+  <div class="segment-card">
+    <div class="segment-header">
+      <span class="segment-name">Segment 3: Ops/Team Leads at Mid-Size Companies</span>
+      <span class="segment-volume">35 users = $1K MRR</span>
+    </div>
+    <div class="detail-grid">
+      <div class="detail-item"><strong>Who</strong>Operations managers, team leads, PMs at 50-500 person companies</div>
+      <div class="detail-item"><strong>Why they'd pay</strong>They feel team-level waste acutely but don't have enterprise tools</div>
+      <div class="detail-item"><strong>How they find us</strong>Content marketing, word-of-mouth from coaches and managers</div>
+      <div class="detail-item"><strong>Price sensitivity</strong>Medium-low. Often have a tools budget</div>
+    </div>
+  </div>
+
+  <div class="segment-card">
+    <div class="segment-header">
+      <span class="segment-name">Segment 4: L&amp;D / HR Teams</span>
+      <span class="segment-volume">Future &mdash; Month 4+</span>
+    </div>
+    <div class="detail-grid">
+      <div class="detail-item"><strong>Who</strong>L&amp;D managers running efficiency or productivity programs</div>
+      <div class="detail-item"><strong>Why they'd pay</strong>Buy tools for workshops and company-wide programs. High contract value</div>
+      <div class="detail-item"><strong>How they find us</strong>Coach referrals, case studies, LinkedIn</div>
+      <div class="detail-item"><strong>Why not now</strong>Enterprise sales cycles are 3-6 months. Wrong fit for "revenue in weeks" urgency</div>
+    </div>
+  </div>
+
+  <div class="negative-icp">
+    <h4>Who We're NOT Selling To</h4>
+    <ul>
+      <li>Solo founders / indie hackers &mdash; price sensitive, low LTV</li>
+      <li>Enterprise companies (5000+) &mdash; procurement cycles kill urgency</li>
+      <li>Students &mdash; no budget</li>
+      <li>Anyone looking for passive time tracking &mdash; that's not what FocusLab does</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══════════ PART 2: REVENUE MODEL ══════════ -->
+<section class="section" id="revenue">
+  <h2><span class="part-num">Part 2</span> The Revenue Model</h2>
+  <p class="section-subtitle">Two tracks running in parallel. Coach track earns its place with real commitments, not verbal interest.</p>
+
+  <div class="pricing-grid">
+    <div class="pricing-card">
+      <div class="tier-name">Free</div>
+      <div class="price">$0</div>
+      <div class="price-sub">This is marketing</div>
+      <ul>
+        <li>Full Pareto Analyzer</li>
+        <li>Top waste sources revealed</li>
+        <li>Total hours wasted</li>
+        <li>Email capture for nurture</li>
+      </ul>
+    </div>
+    <div class="pricing-card recommended">
+      <span class="badge">Foundation</span>
+      <div class="tier-name">Pro Monthly</div>
+      <div class="price">$29<span>/mo</span></div>
+      <div class="price-sub">For ongoing optimization</div>
+      <ul>
+        <li>Everything in Free</li>
+        <li>Focus Table (assign fixes)</li>
+        <li>Action Plan + deadlines</li>
+        <li>EvI Matrix prioritization</li>
+        <li>Payoff estimate</li>
+        <li>Monthly re-assessment</li>
+        <li>Progress tracking</li>
+      </ul>
+    </div>
+    <div class="pricing-card">
+      <span class="badge">Best Value</span>
+      <div class="tier-name">Pro Annual</div>
+      <div class="price">$199<span>/year</span></div>
+      <div class="price-sub">~$16.50/mo &mdash; save 43%</div>
+      <ul>
+        <li>Everything in Pro Monthly</li>
+        <li>Locked-in annual rate</li>
+        <li>Better for users who want the fix now</li>
+        <li>Reduces churn risk</li>
+      </ul>
+    </div>
+    <div class="pricing-card">
+      <span class="coach-badge">If validated</span>
+      <div class="tier-name">Coach</div>
+      <div class="price">$149<span>/mo</span></div>
+      <div class="price-sub">Only if demand confirmed</div>
+      <ul>
+        <li>Everything in Pro</li>
+        <li>Unlimited client sessions</li>
+        <li>Exportable PDF reports</li>
+        <li>Client management</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="revision-callout">
+    <strong>v2 change &mdash; Annual pricing added.</strong> A one-session tool charging monthly will churn hard. The $199/year option gives users a better deal and locks in revenue upfront. It also signals "this is worth committing to." The monthly option stays for people who want to try before committing.
+  </div>
+
+  <div class="pricing-rationale">
+    <h4>Why This Pricing</h4>
+    <p><strong>Free tier:</strong> The Pareto Analyzer delivers the "aha" moment: "You waste 14 hours a week, and 80% comes from just 3 sources." That emotional hit is the hook. Costs us nothing to serve &mdash; static site, no per-user costs.</p>
+    <p><strong>$29/mo or $199/year:</strong> Monthly is impulse range. Annual ($16.50/mo effective) is a better deal that reduces churn and brings revenue upfront. Competitors (Rize, Reclaim) charge $10-30/mo for passive tracking. We deliver more &mdash; diagnosis plus action plan plus ongoing tracking.</p>
+    <p><strong>$149/mo coaches:</strong> ROI is clear: $149/mo saves 5-10 hours of manual diagnostic work across clients. Only built after real demand signal &mdash; prepayment or signed pilot agreements.</p>
+  </div>
+
+  <div class="validation-gate">
+    <h4>The Validation Gate (Coach Track) &mdash; Raised Bar</h4>
+    <p style="font-size:0.9rem; color:#4a443d; margin-bottom:14px;">Before spending any time building the Coach tier:</p>
+    <ol class="validation-steps">
+      <li>Oren reaches out to 10-15 productivity coaches/consultants in his network</li>
+      <li>Research conversation (not a pitch): <em>"If you could hand your client a diagnostic tool that found their top time wasters in 15 minutes &mdash; would you use it? What do you currently use? What would you pay?"</em></li>
+      <li>Track responses: Name | Interested | Current method | Willingness to pay | Would prepay/pilot?</li>
+      <li>Decision gate after 2 weeks:</li>
+    </ol>
+    <div class="gate-decision">
+      <div class="go"><strong>3+ prepay or sign a pilot agreement with conversion date</strong><br>Build the Coach tier. Money and commitments are signal &mdash; enthusiasm alone is not.</div>
+      <div class="nogo"><strong>Fewer than 3 real commitments</strong><br>Skip it. Verbal "yes" in a friendly conversation is not demand. Double down on individuals.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ PART 3: RETENTION (NEW) ══════════ -->
+<section class="section" id="retention">
+  <h2><span class="part-num">Part 3</span> Retention Strategy <span class="new-badge">NEW IN V2</span></h2>
+  <p class="section-subtitle">The biggest risk: FocusLab is a one-session tool. Why would anyone pay month 2? This section answers that.</p>
+
+  <div class="revision-callout">
+    <strong>Why this matters:</strong> Without recurring value, churn will be 30-40%/month. Every customer you acquire leaks out in 2-3 months. LTV crashes, CAC never pays back. This section is the difference between a business and a demo.
+  </div>
+
+  <div class="retention-grid">
+    <div class="retention-card">
+      <h4>Monthly Re-Assessment</h4>
+      <p>Prompt users to re-run the Pareto analysis monthly. "It's been 30 days &mdash; has your waste changed?" Compare results over time. Show progress: "You recovered 4 hours this month."</p>
+    </div>
+    <div class="retention-card">
+      <h4>Action Plan Progress Tracking</h4>
+      <p>The Focus Table creates an action plan with deadlines. Track completion. Send weekly email nudges: "2 of your 5 fixes are due this week." Turn a one-shot plan into an ongoing accountability tool.</p>
+    </div>
+    <div class="retention-card">
+      <h4>Before/After Dashboard</h4>
+      <p>Show cumulative impact: "Since you started, you've identified 47 hours of waste and acted on 31." This visualization is the reason to stay subscribed &mdash; it proves FocusLab is working.</p>
+    </div>
+  </div>
+
+  <h3>Why This Solves the Churn Problem</h3>
+  <p style="font-size:0.92rem; color:var(--mid); margin-bottom:10px;">The core insight: <strong>waste patterns change.</strong> New projects start. Teams shift. Priorities change. A one-time audit becomes stale within weeks. Monthly re-assessment keeps FocusLab relevant and gives users a reason to come back.</p>
+  <p style="font-size:0.92rem; color:var(--mid);">The action plan tracking turns FocusLab from "diagnostic tool" into "accountability partner." That's the difference between a tool you use once and a tool you rely on.</p>
+
+  <div class="revision-callout">
+    <strong>Build priority:</strong> Monthly re-assessment and progress tracking are not v2 nice-to-haves &mdash; they are essential for the $29/mo pricing to work. Build these before or alongside the payment system in Phase 1.
+  </div>
+</section>
+
+<!-- ══════════ PART 4: TIMELINE ══════════ -->
+<section class="section" id="timeline">
+  <h2><span class="part-num">Part 4</span> The 12-Week Timeline</h2>
+  <p class="section-subtitle">Three phases. Free channels lead. Paid ads follow only after free channels are running.</p>
+
+  <div class="phase">
+    <div class="phase-header">Phase 1: Foundation + Free Launch</div>
+    <div class="phase-when">Week 1-3</div>
+    <p style="font-size:0.9rem; color:var(--mid); margin-bottom:14px;">Build the landing page, paywall, and retention hooks. Launch on free channels. Start coach validation.</p>
+    <table class="task-table">
+      <thead><tr><th>Task</th><th>Owner</th><th>Details</th></tr></thead>
+      <tbody>
+        <tr class="revised-row"><td>Build landing page</td><td>Mona</td><td>The page that converts a cold click into a free tool user. This is the highest-leverage conversion point. Build before Stripe.</td></tr>
+        <tr><td>Add payment system</td><td>Mona</td><td>Start with Stripe Payment Links ($29/mo + $199/year). Full integration can come later. Get payments working in days, not weeks.</td></tr>
+        <tr class="revised-row"><td>Build retention hooks</td><td>Mona</td><td>Monthly re-assessment prompt + action plan progress tracking. These are essential for the monthly pricing to work.</td></tr>
+        <tr><td>Set up analytics</td><td>Mona</td><td>Track: landing page conversion, tool starts, completions, email capture, paid conversion, drop-off points</td></tr>
+        <tr><td>Coach validation outreach</td><td>Oren</td><td>Contact 10-15 coaches. Research conversations. Track in spreadsheet. Ask for prepayment or pilot commitment, not just interest.</td></tr>
+        <tr><td>Set up email capture</td><td>Mona</td><td>After free Pareto results: "Want the full fix plan?" Captures leads even if they don't pay yet.</td></tr>
+        <tr class="revised-row"><td>Record YouTube demo</td><td>Mona</td><td>3-minute screen recording: "Watch me find 14 hours of waste in 5 minutes." Most compelling ad creative you can make.</td></tr>
+        <tr class="revised-row"><td>Prepare Product Hunt launch</td><td>Mona</td><td>Write listing, prepare screenshots, line up 10-15 friends to upvote on launch day. Schedule for a Tuesday.</td></tr>
+        <tr class="revised-row"><td>Privacy policy + Terms</td><td>Mona</td><td>Required before collecting emails or payments. Use a generator (Termly, Iubenda) &mdash; don't write from scratch.</td></tr>
+      </tbody>
+    </table>
+    <div class="deliverables">
+      <h5>End of Week 3 Deliverables</h5>
+      <ul>
+        <li>Landing page live and converting</li>
+        <li>Payment works ($29/mo + $199/year via Stripe Payment Links)</li>
+        <li>Retention hooks built (re-assessment + progress tracking)</li>
+        <li>YouTube demo published</li>
+        <li>Product Hunt launch complete</li>
+        <li>Oren has spoken to 8-15 coaches</li>
+        <li>Privacy policy and terms of service live</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-header">Phase 2: Content + Paid Ads</div>
+    <div class="phase-when">Week 4-8</div>
+    <p style="font-size:0.9rem; color:var(--mid); margin-bottom:14px;">Content goes live. Paid ads start (with realistic CPC expectations). Coach tier decision made.</p>
+    <table class="task-table">
+      <thead><tr><th>Task</th><th>Owner</th><th>Details</th></tr></thead>
+      <tbody>
+        <tr><td>Coach tier decision</td><td>Mona + Oren</td><td>Review validation. 3+ prepay/commit &rarr; build Coach tier. Fewer &rarr; skip.</td></tr>
+        <tr><td>Build Coach tier (if validated)</td><td>Mona</td><td>Client session management, exportable reports, $149/mo Stripe tier</td></tr>
+        <tr><td>Publish first 4 blog posts</td><td>Mona</td><td>Target high-intent searches (see Content Strategy)</td></tr>
+        <tr class="revised-row"><td>Launch paid ads (LinkedIn + Facebook split)</td><td>Mona</td><td>$300/mo split 50/50 between LinkedIn and Facebook. Realistic B2B CPC: $2-3.50. That's ~85-150 clicks/mo, not 1,000. Test 3-4 creatives. Use the YouTube demo as an ad.</td></tr>
+        <tr><td>Coach pilot offers</td><td>Oren</td><td>Interested coaches get a 30-day pilot with a clear conversion date at the end.</td></tr>
+        <tr><td>Email nurture sequence</td><td>Mona</td><td>5-email sequence for free users. Educate on fixing waste, not just finding it. Include progress stories.</td></tr>
+        <tr><td>LinkedIn organic</td><td>Mona</td><td>3x/week from personal account. Waste stats, insights, link to free tool.</td></tr>
+        <tr class="revised-row"><td>Reddit + community posting</td><td>Mona</td><td>Genuine participation in r/productivity, r/projectmanagement, r/managers. Share insights, link to tool where relevant. Not spammy promotion.</td></tr>
+        <tr class="revised-row"><td>Pitch 3-5 podcast hosts</td><td>Mona or Oren</td><td>Productivity podcasts. Pitch: "We found that managers waste an average of X hours/week on 3 things &mdash; here's the data." Oren's methodology is the hook.</td></tr>
+      </tbody>
+    </table>
+    <div class="deliverables">
+      <h5>End of Week 8 Deliverables</h5>
+      <ul>
+        <li>4 blog posts live</li>
+        <li>Paid ads running with real CPC data</li>
+        <li>Coach pilots underway (if validated)</li>
+        <li>Email nurture active</li>
+        <li>First Pro subscribers (target: 5-15 from combined free + paid channels)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-header">Phase 3: Optimize + Scale What Works</div>
+    <div class="phase-when">Week 9-12</div>
+    <p style="font-size:0.9rem; color:var(--mid); margin-bottom:14px;">Double down on what's converting. Kill what isn't. Build toward $1K MRR.</p>
+    <table class="task-table">
+      <thead><tr><th>Task</th><th>Owner</th><th>Details</th></tr></thead>
+      <tbody>
+        <tr><td>Analyze channel performance</td><td>Mona</td><td>Which channels drive the most completions? Which convert to paid? What's the real CAC per channel?</td></tr>
+        <tr><td>Create case studies</td><td>Mona</td><td>From coach pilots and/or early Pro users. Real numbers: "Sarah found 11 hours of waste and recovered 7."</td></tr>
+        <tr><td>Scale winning channels</td><td>Mona</td><td>Increase budget on channels that convert. Kill underperformers. Double down on the 1-2 channels that actually work.</td></tr>
+        <tr><td>Publish 4 more blog posts</td><td>Mona</td><td>Informed by keyword data and what's ranking</td></tr>
+        <tr><td>Convert coach pilots</td><td>Oren + Mona</td><td>Pilots end &rarr; "Ready to keep going? Here's the Coach tier"</td></tr>
+        <tr class="revised-row"><td>Referral program</td><td>Mona</td><td>"Refer a colleague &rarr; you both get 1 month free Pro." Both sides get real value, not something already free.</td></tr>
+        <tr><td>Collect testimonials</td><td>Mona</td><td>From coaches AND individual users. Use in ads, landing page, social proof.</td></tr>
+        <tr class="revised-row"><td>Onboarding optimization</td><td>Mona</td><td>Track what happens after someone pays. Do they complete the Focus Table? Do they set deadlines? Fix drop-offs in the paid experience.</td></tr>
+      </tbody>
+    </table>
+    <div class="deliverables">
+      <h5>End of Week 12 Targets</h5>
+      <ul>
+        <li>15-25 paying users (Pro + Coach combined)</li>
+        <li>Clear path to $1K MRR (may reach it or be on trajectory)</li>
+        <li>8+ blog posts, some driving organic traffic</li>
+        <li>1-2 channels with proven positive ROAS</li>
+        <li>1-2 case studies with real data</li>
+        <li>Retention data: are month-1 users still paying in month 2?</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ PART 5: LANDING PAGE (NEW) ══════════ -->
+<section class="section" id="landing">
+  <h2><span class="part-num">Part 5</span> Landing Page Strategy <span class="new-badge">NEW IN V2</span></h2>
+  <p class="section-subtitle">The page that converts a cold click into someone who starts the free tool. This is the highest-leverage conversion point in the entire funnel.</p>
+
+  <h3>Page Structure (top to bottom)</h3>
+  <div style="background:var(--highlight-bg); border-radius:12px; padding:24px; margin:16px 0;">
+    <p style="font-size:0.92rem; color:var(--mid); margin-bottom:10px;"><strong>1. Headline:</strong> One sentence that names the pain. <em>"Find out where your work week actually goes &mdash; in 5 minutes."</em></p>
+    <p style="font-size:0.92rem; color:var(--mid); margin-bottom:10px;"><strong>2. Sub-headline:</strong> What you get. <em>"FocusLab runs a Pareto analysis on your time and shows you exactly which activities to cut, delegate, or fix."</em></p>
+    <p style="font-size:0.92rem; color:var(--mid); margin-bottom:10px;"><strong>3. Primary CTA:</strong> Big, obvious button. <em>"Start Your Free Time Audit"</em> &mdash; goes straight to the Pareto Analyzer.</p>
+    <p style="font-size:0.92rem; color:var(--mid); margin-bottom:10px;"><strong>4. Social proof:</strong> Once available &mdash; testimonial quotes, number of audits completed, average waste found.</p>
+    <p style="font-size:0.92rem; color:var(--mid); margin-bottom:10px;"><strong>5. How it works:</strong> 3 steps with screenshots. (1) Answer a few questions about your week. (2) See your top waste sources ranked. (3) Get a prioritized plan to fix them.</p>
+    <p style="font-size:0.92rem; color:var(--mid); margin-bottom:10px;"><strong>6. YouTube demo embed:</strong> The 3-minute video showing the tool in action.</p>
+    <p style="font-size:0.92rem; color:var(--mid);"><strong>7. Secondary CTA:</strong> Repeat the "Start Your Free Time Audit" button.</p>
+  </div>
+
+  <h3>Key Principles</h3>
+  <p style="font-size:0.92rem; color:var(--mid); margin-bottom:8px;"><strong>No signup required to start.</strong> Let them experience the tool first. Capture email after they see their results &mdash; when motivation is highest.</p>
+  <p style="font-size:0.92rem; color:var(--mid); margin-bottom:8px;"><strong>Speed over beauty.</strong> A clear page with a compelling headline and obvious CTA outperforms a beautiful page that's confusing. Ship fast, improve with data.</p>
+  <p style="font-size:0.92rem; color:var(--mid);"><strong>One goal per page.</strong> The landing page has one job: get them to click "Start." No pricing info, no feature lists, no distractions. Save that for the paywall moment.</p>
+</section>
+
+<!-- ══════════ PART 6: CONTENT STRATEGY ══════════ -->
+<section class="section" id="content">
+  <h2><span class="part-num">Part 6</span> Content Strategy</h2>
+  <p class="section-subtitle">Your free Pareto Analyzer IS the content marketing. Every blog post ends with "try the free tool."</p>
+
+  <div class="pillars">
+    <div class="pillar">
+      <div class="pillar-label">Awareness</div>
+      <h4>"Where does my time go?"</h4>
+      <ul>
+        <li>The Time Audit: How to Find Where Your Work Week Actually Goes</li>
+        <li>Why You Feel Busy But Unproductive (And What Data Says)</li>
+        <li>The 3 Time Wasters Every New Manager Discovers Too Late</li>
+      </ul>
+    </div>
+    <div class="pillar">
+      <div class="pillar-label">Consideration</div>
+      <h4>"How to fix it"</h4>
+      <ul>
+        <li>The 80/20 Rule for Your Calendar: A Practical Guide</li>
+        <li>How to Cut 10 Hours of Waste From Your Week</li>
+        <li>What Productivity Coaches Know: The Pareto Method</li>
+      </ul>
+    </div>
+    <div class="pillar">
+      <div class="pillar-label">Decision</div>
+      <h4>"Proof it works"</h4>
+      <ul>
+        <li>Case studies from coach pilots and early users</li>
+        <li>We Analyzed 500 Time Audits: Here's What We Found</li>
+        <li>Guest posts by Oren on the methodology</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Production Schedule</h3>
+  <p style="font-size:0.92rem; color:var(--mid); margin-bottom:8px;"><strong>Week 4-8:</strong> 1 post/week (4 total). Focus on Pillar 1 &mdash; awareness content.</p>
+  <p style="font-size:0.92rem; color:var(--mid); margin-bottom:8px;"><strong>Week 9-12:</strong> 1 post/week (4+ total). Mix of Pillar 1 and 2, Pillar 3 as case studies become available.</p>
+  <p style="font-size:0.92rem; color:var(--mid);"><strong>Every post</strong> includes a CTA: "Want to find your own waste? Try the free Pareto Analyzer."</p>
+
+  <h3>Social Media</h3>
+  <p style="font-size:0.92rem; color:var(--mid); margin-bottom:8px;"><strong>LinkedIn:</strong> 3x/week from Mona's personal account (5-10x more reach than brand pages).</p>
+  <p style="font-size:0.92rem; color:var(--mid);"><strong>Facebook:</strong> Paid ads only. Organic reach is dead for brands.</p>
+</section>
+
+<!-- ══════════ PART 7: CHANNELS + BUDGET ══════════ -->
+<section class="section" id="channels">
+  <h2><span class="part-num">Part 7</span> Paid Channel Strategy + Budget</h2>
+  <p class="section-subtitle">Corrected with real 2026 B2B CPC benchmarks. $300-500/mo budget.</p>
+
+  <div class="revision-callout">
+    <strong>v2 correction:</strong> v1 assumed $0.20-0.30 CPC on Facebook. Real B2B benchmarks for 2026 are $1.50-3.50. All funnel math is re-modeled below. LinkedIn added to the paid mix &mdash; higher CPC but more targeted for B2B managers/coaches.
+  </div>
+
+  <table class="budget-table">
+    <thead><tr><th>Channel</th><th>Monthly Spend</th><th>Purpose</th><th>Realistic Return</th></tr></thead>
+    <tbody>
+      <tr><td>LinkedIn Ads</td><td>$150-200</td><td>Target managers, coaches, L&D professionals</td><td>40-80 clicks/mo at $2.50-5.00 CPC (higher intent)</td></tr>
+      <tr><td>Facebook Ads</td><td>$100-150</td><td>Broader reach, retargeting free tool users</td><td>40-100 clicks/mo at $1.50-3.50 CPC</td></tr>
+      <tr><td>LinkedIn (organic)</td><td>$0</td><td>Build authority, drive traffic</td><td>50-100 site visits/mo</td></tr>
+      <tr><td>Blog/SEO</td><td>$0 (Mona's time)</td><td>Long-term organic traffic</td><td>Compounds from month 4+</td></tr>
+      <tr><td>Email tools</td><td>$0-30</td><td>Nurture free users to paid</td><td>15-30% open rate, 2-5% conversion</td></tr>
+      <tr><td>Free channels</td><td>$0 (time)</td><td>Product Hunt, YouTube, Reddit, podcasts</td><td>Unpredictable but high-intent</td></tr>
+      <tr><td>Stripe fees</td><td>~$30</td><td>Payment processing</td><td>2.9% + 30c per transaction</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Revised Funnel Math (Realistic)</h3>
+  <div style="background:var(--highlight-bg); border-radius:12px; padding:24px; margin:16px 0;">
+    <p style="font-size:0.92rem; color:var(--mid); margin-bottom:8px;"><strong>Paid ads:</strong> $300/mo &divide; $2.50 avg CPC = ~120 clicks/month</p>
+    <p style="font-size:0.92rem; color:var(--mid); margin-bottom:8px;"><strong>Free channels:</strong> Product Hunt launch (200-500 visitors), YouTube (50-100/mo), Reddit/organic (50-100/mo)</p>
+    <p style="font-size:0.92rem; color:var(--mid); margin-bottom:8px;"><strong>Total monthly visitors (est):</strong> 300-500 from all channels combined</p>
+    <p style="font-size:0.92rem; color:var(--mid); margin-bottom:8px;"><strong>Tool start rate:</strong> 40% = 120-200 starts</p>
+    <p style="font-size:0.92rem; color:var(--mid); margin-bottom:8px;"><strong>Completion rate:</strong> 50% = 60-100 completions</p>
+    <p style="font-size:0.92rem; color:var(--mid); margin-bottom:8px;"><strong>Conversion (conservative 3%):</strong> 2-3 paying users/month</p>
+    <p style="font-size:0.92rem; color:var(--mid); margin-bottom:8px;"><strong>Conversion (optimistic 5%):</strong> 3-5 paying users/month</p>
+    <p style="font-size:0.92rem; color:var(--mid);"><strong>Reality check:</strong> At 3-5 new users/month and $29/mo pricing, reaching $1K MRR takes 4-6 months, not 90 days. Coach track can accelerate this (7 coaches = $1K MRR), but only if validation succeeds. Annual plans at $199 bring lump revenue faster.</p>
+  </div>
+
+  <h3>Key Metrics to Track Weekly</h3>
+  <table class="metrics-table">
+    <thead><tr><th>Metric</th><th>What It Tells You</th><th>Week 12 Target</th></tr></thead>
+    <tbody>
+      <tr><td>Free tool completions</td><td>Is the Pareto Analyzer compelling?</td><td>100+/mo</td></tr>
+      <tr><td>Email capture rate</td><td>Are people engaged enough to share email?</td><td>30%+</td></tr>
+      <tr><td>Free-to-paid conversion</td><td>Is the Focus Table worth paying for?</td><td>3-5%</td></tr>
+      <tr><td>Coach commitments</td><td>Do coaches want this enough to pay?</td><td>2-3</td></tr>
+      <tr><td>MRR</td><td>Revenue trajectory</td><td>$300-500 (on path to $1K)</td></tr>
+      <tr><td>CAC by channel</td><td>Which channel is most efficient?</td><td>Under $75</td></tr>
+      <tr><td>Month-2 retention</td><td>Are users staying?</td><td>60%+</td></tr>
+      <tr><td>Landing page conversion</td><td>Does the page work?</td><td>30%+ visitor-to-start</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ══════════ PART 8: FREE CHANNELS (NEW) ══════════ -->
+<section class="section" id="free-channels">
+  <h2><span class="part-num">Part 8</span> Free Channels <span class="new-badge">NEW IN V2</span></h2>
+  <p class="section-subtitle">Exhaust these before spending on ads. FocusLab produces a dramatic result in minutes &mdash; perfect for organic discovery.</p>
+
+  <div class="free-channel-grid">
+    <div class="free-channel-card">
+      <h4>Product Hunt Launch</h4>
+      <p>Schedule a Tuesday launch. Write a compelling tagline: "Find your biggest time wasters in 5 minutes." Prepare screenshots, a GIF demo, and line up 10-15 friends to upvote early. A top-10 daily finish can bring 200-500 visitors in one day.</p>
+      <div class="effort">Effort: 2-3 days prep | One-time spike + long tail</div>
+    </div>
+    <div class="free-channel-card">
+      <h4>YouTube Demo Video</h4>
+      <p>3-minute screen recording: "Watch me find 14 hours of waste." Walk through the full Pareto Analyzer, react to the results, show the fix plan. This video doubles as your best ad creative and landing page embed.</p>
+      <div class="effort">Effort: 1 day to record + edit | Evergreen asset</div>
+    </div>
+    <div class="free-channel-card">
+      <h4>Reddit + Communities</h4>
+      <p>Genuine participation in r/productivity, r/projectmanagement, r/newmanagers. Share time audit insights, answer questions, link to the free tool when genuinely helpful. Not spammy self-promotion &mdash; real value first.</p>
+      <div class="effort">Effort: 30 min/day | Ongoing slow burn</div>
+    </div>
+    <div class="free-channel-card">
+      <h4>Podcast Guest Appearances</h4>
+      <p>Pitch 3-5 productivity podcast hosts. Hook: "We found that managers waste an average of X hours/week on 3 specific things &mdash; here's the data." Oren's methodology expertise makes this pitch credible.</p>
+      <div class="effort">Effort: 2-3 hours per appearance | High-trust channel</div>
+    </div>
+  </div>
+
+  <h3>Why Free Channels First</h3>
+  <p style="font-size:0.92rem; color:var(--mid);">FocusLab has a visually interesting product that produces a dramatic result in minutes. That's perfect for organic distribution &mdash; people want to share "I found out I waste 14 hours a week." Exhaust these high-intent, zero-cost channels before paying $2-3 per click for cold traffic.</p>
+</section>
+
+<!-- ══════════ PART 9: COMPETITIVE POSITIONING ══════════ -->
+<section class="section" id="competitors">
+  <h2><span class="part-num">Part 9</span> Competitive Positioning</h2>
+  <p class="section-subtitle">Every competitor tracks time or manages tasks. Nobody diagnoses waste AND prescribes fixes in one session.</p>
+
+  <table class="competitor-table">
+    <thead><tr><th>Competitor</th><th>What They Do</th><th>What They DON'T Do (FocusLab Does)</th></tr></thead>
+    <tbody>
+      <tr><td>RescueTime</td><td>Passive background tracking</td><td>No diagnosis, no methodology, no fix plan</td></tr>
+      <tr><td>Toggl Track</td><td>Manual time logging + reports</td><td>User must interpret own data. No Pareto analysis</td></tr>
+      <tr><td>Rize</td><td>AI time tracking, focus scores</td><td>Tracks screen time, not work patterns. No action plan</td></tr>
+      <tr><td>Reclaim.ai</td><td>Calendar optimization</td><td>Optimizes scheduling, doesn't identify waste</td></tr>
+      <tr><td>Clockify/Harvest</td><td>Time billing for freelancers</td><td>Billing tool, not a diagnostic tool</td></tr>
+      <tr><td>Generic coaches</td><td>Manual client assessments</td><td>Slow (weeks), not standardized, not scalable</td></tr>
+    </tbody>
+  </table>
+
+  <div class="positioning-box">
+    <div class="label">Our One-Liner</div>
+    <div class="statement">"FocusLab finds your biggest time wasters in 5 minutes and gives you a prioritized plan to fix them &mdash; no tracking software, no week-long audits."</div>
+  </div>
+
+  <h3>Defensible Advantages</h3>
+  <div class="differentiators">
+    <div class="diff-card">
+      <strong>Instant insight, not passive tracking</strong>
+      <p>Competitors need days/weeks of data. FocusLab works in one session.</p>
+    </div>
+    <div class="diff-card">
+      <strong>Diagnosis AND prescription</strong>
+      <p>Every competitor stops at "here's where your time goes." FocusLab tells you what to do about it.</p>
+    </div>
+    <div class="diff-card">
+      <strong>Zero friction</strong>
+      <p>No browser extension, no calendar access, no privacy concerns. Just answer questions.</p>
+    </div>
+    <div class="diff-card">
+      <strong>Accumulated user data (future moat)</strong>
+      <p>As users re-assess monthly, FocusLab builds a dataset of waste patterns by role, industry, and company size. This becomes a competitive advantage no clone can replicate.</p>
+    </div>
+  </div>
+
+  <div class="revision-callout">
+    <strong>v2 change &mdash; Moat strengthened.</strong> "Oren's methodology" alone is not a moat &mdash; anyone can build a Pareto assessment. The real moats are: accumulated user data (waste patterns across roles/industries), network effects from coach distribution, and switching costs from saved action plans and progress history. These build over time as users stay subscribed.
+  </div>
+</section>
+
+<!-- ══════════ PART 10: RISKS ══════════ -->
+<section class="section" id="risks">
+  <h2><span class="part-num">Part 10</span> Risks and Mitigations</h2>
+  <p class="section-subtitle">Every risk has a detection point and a response.</p>
+
+  <table class="risk-table">
+    <thead><tr><th>Risk</th><th>Likelihood</th><th>Impact</th><th>Mitigation</th></tr></thead>
+    <tbody>
+      <tr><td>Coaches don't commit (verbal only)</td><td><span class="risk-badge med">Medium</span></td><td>Lose coach revenue track</td><td>Raised validation bar: 3+ prepay/commit, not 6 verbal. Individual track runs regardless.</td></tr>
+      <tr><td>Free-to-paid conversion under 2%</td><td><span class="risk-badge med">Medium</span></td><td>Revenue grows too slowly</td><td>Test gate placement, test $19 vs $29, test annual vs monthly. Email nurture recovers fence-sitters.</td></tr>
+      <tr><td>High churn (users leave after month 1)</td><td><span class="risk-badge high">High</span></td><td>LTV crashes, CAC never pays back</td><td>Retention hooks: monthly re-assessment, progress tracking, before/after dashboard. Push annual plans.</td></tr>
+      <tr><td>Paid ads CPC too high for ROI</td><td><span class="risk-badge med">Medium</span></td><td>Wasted $300/mo</td><td>Start at $5/day, test multiple creatives. If CAC exceeds $75 after 4 weeks, pause paid and double down on free channels.</td></tr>
+      <tr><td>Content doesn't rank</td><td><span class="risk-badge high">High (short-term)</span></td><td>No organic traffic for months</td><td>Expected. Content is a month-4+ play. Free channels and paid ads carry early months.</td></tr>
+      <tr><td>Product Hunt launch flops</td><td><span class="risk-badge med">Medium</span></td><td>Missed free traffic spike</td><td>Not catastrophic. It's one channel of many. Learn from the feedback and move on.</td></tr>
+      <tr><td>Someone copies the free tool</td><td><span class="risk-badge low">Low</span></td><td>Competition</td><td>Moat builds over time: user data, coach network, switching costs from saved plans. Clone can't replicate the dataset.</td></tr>
+      <tr><td>Landing page doesn't convert</td><td><span class="risk-badge med">Medium</span></td><td>All traffic wasted</td><td>A/B test headlines, CTAs, and page structure. Track visitor-to-start rate. Iterate weekly.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ══════════ PART 11: LEGAL (NEW) ══════════ -->
+<section class="section" id="legal">
+  <h2><span class="part-num">Part 11</span> Legal &amp; Privacy <span class="new-badge">NEW IN V2</span></h2>
+  <p class="section-subtitle">Required before collecting emails or processing payments. Do this in Week 1, not later.</p>
+
+  <div style="background:var(--highlight-bg); border-radius:12px; padding:24px; margin:16px 0;">
+    <p style="font-size:0.92rem; color:var(--mid); margin-bottom:12px;"><strong>Privacy Policy:</strong> Required for email capture and analytics. Disclose what data you collect, how you use it, and how users can opt out. Use a generator like Termly or Iubenda &mdash; costs $0-10/mo and produces a compliant policy.</p>
+    <p style="font-size:0.92rem; color:var(--mid); margin-bottom:12px;"><strong>Terms of Service:</strong> Required for a paid product. Covers liability, refund policy, acceptable use. Same generators can produce this.</p>
+    <p style="font-size:0.92rem; color:var(--mid); margin-bottom:12px;"><strong>GDPR (if any EU traffic):</strong> Cookie consent banner, right to data deletion, data processing documentation. If your ads reach EU users, this applies.</p>
+    <p style="font-size:0.92rem; color:var(--mid);"><strong>Stripe compliance:</strong> Stripe handles PCI compliance for card data. You need a clear refund policy and billing terms visible before checkout.</p>
+  </div>
+
+  <p style="font-size:0.92rem; color:var(--mid);"><strong>Effort:</strong> 2-3 hours using a generator. Not a blocker, but doing it after you've already collected emails creates legal risk. Do it in Week 1.</p>
+</section>
+
+<!-- ══════════ PART 12: WHAT TO LEARN ══════════ -->
+<section class="section" id="learn">
+  <h2><span class="part-num">Part 12</span> What You Need to Learn</h2>
+  <p class="section-subtitle">Seven concepts (up from five). Each is a 30-minute learning session. Understand well enough to explain to Oren.</p>
+
+  <div class="concept-card">
+    <span class="concept-num">1</span>
+    <h4>Freemium as Lead Generation</h4>
+    <div class="what"><strong>What it means:</strong> Giving away part of your product isn't losing money &mdash; it's marketing. The free tier creates an emotional moment ("I waste HOW much time?!") that makes people want to pay. Same model as Canva and Calendly.</div>
+    <div class="defend"><strong>Defend it like this:</strong> "The free tool costs us nothing to run &mdash; static site, no per-user costs &mdash; but it does the job of a sales team. It shows people their problem and makes them want the fix."</div>
+  </div>
+
+  <div class="concept-card">
+    <span class="concept-num">2</span>
+    <h4>Validation Before Building</h4>
+    <div class="what"><strong>What it means:</strong> Don't build features until confirmed demand. The bar isn't "people say they like it" &mdash; it's "people put money down or sign a commitment." Words are cheap; payments are signal.</div>
+    <div class="defend"><strong>Defend it like this:</strong> "We don't build until 3 coaches prepay or commit with a conversion date. If they won't put money behind their enthusiasm, it's not real demand."</div>
+  </div>
+
+  <div class="concept-card">
+    <span class="concept-num">3</span>
+    <h4>Customer Acquisition Cost (CAC)</h4>
+    <div class="what"><strong>What it means:</strong> Total spend to get one paying customer. At real B2B CPC of $2-3 and 3% conversion from visitor to paid, CAC is roughly $70-100 per user through paid ads. LTV must be 3x CAC minimum.</div>
+    <div class="defend"><strong>Defend it like this:</strong> "At $29/mo with 6-month retention, LTV is $174. Our paid CAC target is under $75, giving us a 2.3x ratio. Annual plans at $199 are immediately profitable at that CAC. Free channels bring CAC to near zero."</div>
+  </div>
+
+  <div class="concept-card">
+    <span class="concept-num">4</span>
+    <h4>The Funnel (Realistic Numbers)</h4>
+    <div class="what"><strong>What it means:</strong> The journey from stranger to paying customer, with honest conversion rates at each stage.</div>
+    <div class="funnel">
+      <div class="funnel-step">300-500 monthly visitors (all channels) <span class="rate">Mix of free + paid channels</span></div>
+      <div class="funnel-step">120-200 start the free Pareto Analyzer <span class="rate">Start rate: 40%</span></div>
+      <div class="funnel-step">60-100 complete it and see results <span class="rate">Completion: 50%</span></div>
+      <div class="funnel-step">20-30 give their email <span class="rate">Email capture: 30%+</span></div>
+      <div class="funnel-step">2-5 pay for Pro ($29/mo or $199/yr) <span class="rate">Conversion: 3-5%</span></div>
+    </div>
+    <div class="defend"><strong>Defend it like this:</strong> "These numbers are based on real B2B SaaS benchmarks, not optimistic projections. I'm modeling for 3% conversion, which is conservative for a tool that gives you an 'aha moment' before asking for money."</div>
+  </div>
+
+  <div class="concept-card">
+    <span class="concept-num">5</span>
+    <h4>Why Three Tracks, Not One</h4>
+    <div class="what"><strong>What it means:</strong> Free channels launch first (zero cost, high intent). Paid ads follow with proven messaging. Coach outreach runs in parallel for fast B2B revenue. Each track serves a different timeline and risk profile.</div>
+    <div class="defend"><strong>Defend it like this:</strong> "Free channels give us our first users at zero cost. Paid ads scale what works. Coaches give us high-value revenue fast. No single channel carries the plan &mdash; if one underperforms, the others compensate."</div>
+  </div>
+
+  <div class="concept-card">
+    <span class="concept-num">6</span>
+    <h4>Retention is the Business</h4>
+    <div class="what"><strong>What it means:</strong> Acquiring customers means nothing if they leave after month 1. A tool used once has zero LTV at monthly pricing. Monthly re-assessment and progress tracking turn a one-shot diagnostic into an ongoing accountability partner.</div>
+    <div class="defend"><strong>Defend it like this:</strong> "We're not just selling a one-time audit. The monthly re-assessment shows how waste patterns change. The progress tracker proves the fixes are working. That's why people stay subscribed &mdash; and why we also offer annual plans to lock in commitment upfront."</div>
+  </div>
+
+  <div class="concept-card">
+    <span class="concept-num">7</span>
+    <h4>Unit Economics Must Work</h4>
+    <div class="what"><strong>What it means:</strong> Every customer must generate more revenue over their lifetime than it cost to acquire them. If you spend $75 to get a user who pays $29 once and churns, you lost $46. The math only works if LTV &gt; 3x CAC.</div>
+    <div class="defend"><strong>Defend it like this:</strong> "I track CAC by channel every week. If a channel's CAC exceeds $75, I pause it. Free channels keep our blended CAC low. Annual plans bring $199 upfront, making even expensive paid channels profitable."</div>
+  </div>
+</section>
+
+<!-- ══════════ PART 13: Q&A DEFENSE ══════════ -->
+<section class="section" id="qa">
+  <h2><span class="part-num">Part 13</span> Q&amp;A Defense Guide</h2>
+  <p class="section-subtitle">Questions Oren (or anyone) will ask. Click to expand. Orange border = revised or new in v2.</p>
+
+  <div class="qa-item">
+    <div class="qa-question">"Why give the Pareto Analyzer away for free? That's our best feature."</div>
+    <div class="qa-answer">It IS our best feature &mdash; and that's exactly why it's free. The Pareto Analyzer creates the problem awareness that makes people pay. Without it, we're selling a fix to people who don't know they're broken. With it, every free user is a qualified lead who already knows they waste X hours per week. It costs us nothing to run &mdash; static site, no per-user costs. It's the best salesperson we could build.</div>
+  </div>
+
+  <div class="qa-item revised">
+    <div class="qa-question">"Why $29/mo? Why not more? And why add an annual plan?"</div>
+    <div class="qa-answer">$29/mo is impulse-purchase range &mdash; no manager approval needed. The annual plan at $199 ($16.50/mo effective) exists for two reasons: first, it gives users a better deal which increases conversion. Second, it locks in revenue upfront, which is critical for a tool where monthly churn is a risk. We test both and let the data tell us which users prefer. Starting at $29 gives room to adjust &mdash; we can always test $19 or $39 later.</div>
+  </div>
+
+  <div class="qa-item revised">
+    <div class="qa-question">"How do you know coaches will pay $149/mo?"</div>
+    <div class="qa-answer">We don't assume they will &mdash; we test. Before building anything, you talk to 10-15 coaches. But the bar isn't "do they say yes" &mdash; it's "will 3 of them prepay or sign a pilot agreement with a conversion date." Words in a friendly conversation aren't demand. Money and written commitments are. If fewer than 3 commit, we skip the coach tier entirely and focus on individuals.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-question">"Why not go straight to companies?"</div>
+    <div class="qa-answer">Companies pay more per deal, but they take 3-6 months to close. We need revenue in weeks, not quarters. We'll pursue L&amp;D and HR teams starting month 4, but right now we don't have case studies, testimonials, or social proof &mdash; all things enterprise buyers require. The first 90 days build that proof.</div>
+  </div>
+
+  <div class="qa-item revised">
+    <div class="qa-question">"Your ad budget is $300/mo &mdash; is that enough?"</div>
+    <div class="qa-answer">At realistic B2B CPCs of $2-3, $300/mo gets us about 100-150 clicks &mdash; not thousands. That's why paid ads are NOT our primary channel. We launch on free channels first: Product Hunt, YouTube, Reddit, podcast appearances. Those bring high-intent visitors at zero cost. Paid ads amplify what's already working. If ads show positive ROAS, we scale the budget. If not, we redirect to channels that convert.</div>
+  </div>
+
+  <div class="qa-item revised">
+    <div class="qa-question">"What if nobody stays past month 1? It's a one-session tool."</div>
+    <div class="qa-answer">That's the number one risk, and it's why we built retention into the plan from day one. Monthly re-assessment lets users track how their waste patterns change. Progress tracking shows which fixes they've completed and how much time they've recovered. The before/after dashboard proves FocusLab is working. Without these features, you're right &mdash; nobody would stay. With them, FocusLab becomes an ongoing accountability partner, not a one-shot diagnostic.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-question">"What if nobody pays at all?"</div>
+    <div class="qa-answer">Then we learn something critical: either the gate is in the wrong place, the price is wrong, or the Focus Table doesn't deliver enough value. Each has a fix. Zero conversion isn't failure &mdash; it's data that tells us exactly what to change. What WOULD be failure is spending 6 months building features nobody asked for.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-question">"What makes FocusLab different from a spreadsheet?"</div>
+    <div class="qa-answer">Three things. First, the methodology &mdash; a Pareto analysis designed by an expert that surfaces the 20% of activities causing 80% of waste. Second, the fix engine &mdash; prioritized solutions, impact vs effort scoring, and an action plan. Third, speed &mdash; a spreadsheet audit takes weeks. FocusLab takes 15 minutes. And as we accumulate user data, we'll be able to say "managers in your role typically waste time on these 3 things" &mdash; a spreadsheet can never do that.</div>
+  </div>
+
+  <div class="qa-item revised">
+    <div class="qa-question">"Is $1K MRR in 90 days realistic?"</div>
+    <div class="qa-answer">Honestly &mdash; it's aggressive from zero awareness. At realistic conversion rates (3-5%) and traffic volumes (300-500 visitors/mo), we're looking at 2-5 new paying users per month from the individual track. That's $300-500 MRR by week 12, on a path to $1K by month 4-6. The coach track can accelerate this significantly &mdash; 7 coaches at $149/mo hits $1K immediately. But I'm being honest about the timeline rather than projecting numbers I can't defend. The plan is designed to reach $1K MRR, not to pretend it'll happen overnight.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-question">"Why are you the right person to sell this?"</div>
+    <div class="qa-answer">I know content marketing and ad creatives &mdash; the two primary channels. I built the product, so I can write about it authentically. What I don't know yet &mdash; pricing optimization, sales processes, enterprise deals &mdash; I'm learning actively and we're starting with channels that don't require those skills.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-question">"What happens if the coach track fails?"</div>
+    <div class="qa-answer">Nothing bad. We spent 2 weeks and zero dollars learning that coaches aren't our market. The individual track runs regardless. We're not betting the whole plan on coaches &mdash; they're an accelerator, not the foundation.</div>
+  </div>
+
+  <div class="qa-item revised">
+    <div class="qa-question">"What's your actual moat? Anyone can build a Pareto tool."</div>
+    <div class="qa-answer">You're right that the methodology alone isn't a moat. Three things become defensible over time. First, accumulated user data &mdash; as hundreds of users re-assess monthly, we build a dataset of waste patterns by role, industry, and company size that no competitor can replicate overnight. Second, coach network effects &mdash; every coach using FocusLab brings their clients in, creating a distribution channel that grows itself. Third, switching costs &mdash; users who've built months of action plans, progress history, and before/after data won't switch to a competitor and lose that history. Day one, our moat is thin. By month 6, it's real.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-question">"What's the long-term play?"</div>
+    <div class="qa-answer">The first 90 days prove the model. Once we have paying customers, case studies, and conversion data, we unlock bigger moves: L&amp;D team sales ($499/mo+), annual contracts, content ranking in Google, and a coach network that grows itself. $1K MRR is proof of concept. The playbook scales.</div>
+  </div>
+</section>
+
+<!-- ══════════ PART 14: SUCCESS CRITERIA ══════════ -->
+<section class="section" id="success">
+  <h2><span class="part-num">Part 14</span> Success Criteria</h2>
+  <p class="section-subtitle">Revised with realistic targets based on corrected funnel math.</p>
+
+  <div class="criteria-grid">
+    <div class="criteria-card working">
+      <h4>Plan is WORKING</h4>
+      <p style="font-size:0.85rem; color:var(--mid);">By week 12:</p>
+      <ul>
+        <li>100+ free completions/month</li>
+        <li>30%+ email capture rate</li>
+        <li>3%+ free-to-paid conversion</li>
+        <li>15-25 paying users</li>
+        <li>$300-500 MRR, trending toward $1K</li>
+        <li>60%+ month-2 retention</li>
+        <li>At least 1 case study</li>
+        <li>1-2 channels with positive ROAS</li>
+      </ul>
+    </div>
+    <div class="criteria-card adjust">
+      <h4>NEEDS Adjustment</h4>
+      <p style="font-size:0.85rem; color:var(--mid);">If any of these:</p>
+      <ul>
+        <li>Completions under 30/mo &rarr; traffic problem</li>
+        <li>Email capture under 15% &rarr; engagement problem</li>
+        <li>Conversion under 1.5% &rarr; value/pricing problem</li>
+        <li>Month-2 retention under 40% &rarr; churn crisis (fix retention hooks)</li>
+        <li>Coach validation fails &rarr; skip coach tier</li>
+        <li>All paid channels CAC &gt; $100 &rarr; pause paid, go all-in on free channels</li>
+      </ul>
+    </div>
+    <div class="criteria-card abandon">
+      <h4>ABANDON or Pivot</h4>
+      <p style="font-size:0.85rem; color:var(--mid);">If after 16 weeks + optimizations:</p>
+      <ul>
+        <li>Fewer than 5 paying users total</li>
+        <li>Nobody completes the free tool (product problem)</li>
+        <li>CAC exceeds LTV consistently across all channels</li>
+        <li>Month-2 retention under 20% despite retention features</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SOURCES ══════════ -->
+<div class="sources">
+  <h3>Sources &amp; Research</h3>
+  <ul>
+    <li><a href="https://designrevision.com/blog/saas-go-to-market-strategy">SaaS Go-to-Market Strategy: Complete Playbook (2026)</a></li>
+    <li><a href="https://devsquad.com/blog/go-to-market-strategy-saas">B2B SaaS Go-to-Market Strategy: Updated 2026 Guide</a></li>
+    <li><a href="https://www.contentbeta.com/blog/b2b-saas-marketing-plan/">How to Create a B2B SaaS Marketing Plan in 2026</a></li>
+    <li><a href="https://www.saashero.net/strategy/go-to-market-strategy-phases/">Go to Market Strategy Phases: 7-Step Framework for 2026</a></li>
+    <li><a href="https://www.revenera.com/blog/software-monetization/saas-pricing-models-guide/">SaaS Pricing Models: The 2026 Guide</a></li>
+    <li><a href="https://freemius.com/blog/state-of-micro-saas-2025/">AI-Driven, Founder-Led: The 2025 State of Micro-SaaS</a></li>
+    <li><a href="https://www.amraandelma.com/free-trial-conversion-statistics/">Free Trial Conversion Statistics 2026</a></li>
+    <li><a href="https://aimers.io/blog/facebook-ads-cost">Facebook Ads Cost for SaaS 2026</a></li>
+    <li><a href="https://visiblefactors.com/facebook-ads-benchmarks/">Facebook Ads Benchmarks 2026</a></li>
+    <li>Competitive analysis: RescueTime, Toggl Track, Rize, Reclaim.ai, Clockify, Harvest, Hubstaff</li>
+    <li>GTM specialist review: independent critique of v1 plan with corrections</li>
+  </ul>
+</div>
+
+</div>
+
+<script>
+  document.querySelectorAll('.qa-question').forEach(q => {
+    q.addEventListener('click', () => {
+      q.parentElement.classList.toggle('open');
+    });
+  });
+</script>
+
+</body>
+</html>

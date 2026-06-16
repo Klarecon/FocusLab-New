@@ -1,86 +1,87 @@
 # FocusLab Project State
 
-**Last updated:** 2026-06-15 by Claude via /handover
+**Last updated:** 2026-06-16 by Claude via /handover
 
 ## Quick orient
 - **Project:** FocusLab — productivity tool suite helping knowledge workers find time waste (Pareto Analyzer) and fix it (Focus Table & EvI Matrix)
 - **Repo:** https://github.com/mona2611-alt/FocusLab-New (PRIVATE)
 - **Production URL:** https://focuslab-omega.vercel.app
 - **Active branch:** main
-- **Active work:** Session 9 complete — Oren's feedback (14 items), double Pareto wizard, tighter QA system, specialist agent audits. Deployed but user reports visual/behavioral misses not caught by code-level QA. Next session must start with deployed app review.
-- **Owner:** Mona Mehta (mona@klarecon.com) — non-technical product owner. Wants FAST autonomous execution — absolutely NO permission prompts. Values visual quality highly. Expects TDD discipline. Reviews the deployed Vercel app, not localhost. Prefers options via interactive HTML pickers. Does NOT want endless review rounds — demands specialist agents (math, copy, sense-check) run BEFORE presenting work. Frustrated when working features break during refactors.
+- **Active work:** Session 10 complete — GTM (Go-to-Market) plan created. No code changes this session. This was a business planning session, not a product/code session.
+- **Owner:** Mona Mehta (mona@klarecon.com) — non-technical product owner. Has content marketing and ad creative experience but creating first business plan. Working with Oren Yonash (methodology creator). Wants FAST autonomous execution, NO permission prompts. Values visual quality. Expects TDD discipline. Reviews deployed Vercel app. Prefers HTML pickers for options. Runs parallel sessions (GTM planning in one, code in another).
 
 ## Branch state
 - All commits pushed to origin/main and deployed to Vercel
-- Latest: `e02148f Session 9 fixes: specialist agent audit — copy, math, flow, edge cases`
-- Session 9 commits (2 total):
-  - `f9be8f8` Session 9: Oren feedback — 14 items, double Pareto, tighter QA system
-  - `e02148f` Session 9 fixes: specialist agent audit — copy, math, flow, edge cases
+- Latest: `dafe5d2 Session 9 handover: session log, feedback log, project state`
+- **No new commits this session** — this was a business planning session, no code changes
 
-## What's done in this session (2026-06-15, Session 9)
+## What's done in this session (2026-06-16, Session 10)
 
-### 1. Tighter QA System (3 layers)
-- Created `src/__tests__/feedback-regression.test.ts` — 71 cumulative regression tests (was 0)
-- Total tests: 253 (was 182)
-- Updated CLAUDE.md Section 12: three-layer QA (automated hooks + regression tests + evidence-based agent)
-- New feedback intake format: every item typed as CODE or VISUAL before coding
-- QA agent must show file:line evidence for PASS, flag VISUAL items as VISUAL-CHECK
-- Updated `mona-feedback-agent.md` with evidence-based verification protocol
+### 1. GTM Plan — Full Go-to-Market Strategy Created
+Built a comprehensive go-to-market plan for FocusLab from scratch. Mona has never created a business plan before and needs to defend her logic to Oren.
 
-### 2. Oren's Feedback — 14 Items Implemented
-Oren Yonash (original Pareto methodology creator) reviewed the deployed app. His feedback was captured from 10 screenshots with comments.
+**Process:**
+- Ran web research on SaaS GTM frameworks, B2B marketing plans, pricing models (freemium vs subscription)
+- Launched Product Manager agent for competitive landscape analysis (RescueTime, Toggl, Rize, Reclaim.ai, Clockify, Harvest, Hubstaff)
+- Asked 9 clarifying questions to understand Mona's situation, constraints, and goals
+- Proposed 3 GTM approaches: Coach Multiplier, Content + Freemium Flywheel, B2B Pilot Direct
+- Mona chose a hybrid of Coach Multiplier + Content Flywheel
+- Built full plan (v1), then ran GTM specialist review which found critical issues
+- Revised to v2 incorporating all review feedback
 
-**Methodology changes (approved by Mona):**
-- O1: Removed avoidable % ("how much could you cut?") from WeighStep — Pareto now runs on raw hours
-- O3: Double Pareto two-pass wizard — IntakeStep became category-level estimation, new DrilldownStep for vital few drilldown
+**Key findings from GTM review that changed the plan:**
+- CPC was fantasy ($0.20-0.30 → corrected to $2-3.50 for B2B)
+- Missing retention strategy (one-session tool charging monthly = churn disaster)
+- Missing landing page strategy
+- Coach validation bar too low (verbal yes → needs prepay/commitment)
+- Referral incentive offered something already free
+- "Methodology is the moat" is not actually a moat
+- Free channels (Product Hunt, YouTube, Reddit, podcasts) should come before paid ads
 
-**UX/UI improvements:**
-- O2: Removed "Really zero?" prompt (redundant friction)
-- O4: Bar chart label truncation (was no-op, now truncates at 25 chars)
-- O5: Solution descriptions collapse by default + max 3 visible per drain
-- O6a: Renamed tab to "EvI Matrix"
-- O6b: Simplified dot tooltip (name + quadrant + scores only)
-- O6c: Added above-fold quadrant summary counts
-- O7: Skip/remove button on priority table rows
-- O8: Date picker min=today
-- O10: Deduplicated waste sources across pain prompt categories
+### 2. GTM Plan Folder Created
+All marketing/sales/GTM work is now stored in `/GTM Plan/` at project root. This keeps it separate from product code so parallel sessions don't interfere.
 
-**Visual fixes (from Mona's Session 8 review):**
-- #6: Centered "See your impact" CTA
-- #7: Fixed quadrant label overlap (bottom-[76px])
-- #10: Added column headers to priority table
+### 3. Files Created
+- `GTM Plan/2026-06-16-gtm-plan.html` — v1 plan (superseded by v2)
+- `GTM Plan/2026-06-16-gtm-plan-v2.html` — v2 revised plan (current, 14 sections)
+- `docs/superpowers/specs/2026-06-16-gtm-plan-design.md` — markdown spec (moved to GTM Plan in v1 HTML form)
 
-### 3. Opportunity Framing (O9)
-- Created `src/lib/data/opportunity-frames.ts` — research-backed copy across 4 time tiers (1-3h, 3-6h, 6-10h, 10+h) with role-specific frames for 10 roles
-- Sources: Cal Newport, Gloria Mark, Microsoft WTI 2025, McKinsey, DORA, HBR, HubSpot, ATD
-- Added to Payoff.tsx: "What could you do with that time?" section
-
-### 4. Specialist Agent Audits
-Ran 3 specialist agents after user flagged quality issues:
-- **Math Agent:** All calculations sound end-to-end. No contradictions. Found: DrilldownStep missing over-allocation warning, benchmarkMap silently broken (both fixed)
-- **DR Copywriter:** 19 copy issues found and fixed. Key: "Drilldown"→"Details", "Quick tasks"→"Low-Hanging Fruit" consistency, removed jargon
-- **Sense Checker:** 2 flow bugs fixed (empty state fallbacks), role change now clears stale category estimates, benchmarkMap restored
-
-### 5. Custom Sources Restored
-DrilldownStep now has "Add your own drain..." input per category with multi-entry support, "Your custom drain" label, and auto-focus.
+### 4. Memory Files Updated
+- Added `project_gtm_plan_folder.md` — all GTM work goes in /GTM Plan/
+- Added `user_business_background.md` — Mona's content marketing + ad creative experience, first business plan
+- Updated MEMORY.md index
 
 ## What's next (for the NEXT Claude Code session to pick up)
 
-1. **CRITICAL: User says deployed app still has misses.** Session 9 code passes all 67 QA checks and 253 tests, but user reports "half the things are still the same" on the deployed app. Next session MUST start by having user identify specific issues (screenshots or descriptions). Could be: browser cache, runtime behavior not caught by code checks, or genuine misses.
+### If next session is GTM/business focused:
+1. **Mona reviews the v2 GTM plan** and comes back with questions or changes
+2. **Oren reviews the plan** — may push back on pricing, segments, or strategy
+3. **Implementation planning** — if plan is approved, create detailed implementation tasks
+4. **Landing page design** — Part 5 of the plan outlines the strategy but the page needs to be designed and built
+5. **Stripe Payment Links setup** — simplest v1 payment system
+6. **Retention features** — monthly re-assessment and progress tracking (critical for $29/mo pricing to work)
+7. **YouTube demo video script** — 3-minute "watch me find 14 hours of waste"
 
-2. **Oren's feedback item O3 (Double Pareto) needs live testing.** The wizard flow changed significantly — old: Role→Context→Intake→Weigh→Results, new: Role→Context→YourTime→Details→Results. The old WeighStep is now dead code. User hasn't confirmed the new flow feels right.
-
-3. **Dead code cleanup:** WeighStep.tsx is no longer imported but still exists. Tests reference it. `weighCadence` field in store is dead. Should be cleaned up but carefully (localStorage backward compat).
-
-4. **Run specialist agents BEFORE presenting work.** User explicitly demanded: Math Agent, DR Copywriter, Sense Checker, and Mona Feedback Agent must ALL pass before declaring done. This is now a hard requirement — save to memory.
-
-5. **Pending features (not started):**
-   - Calendar week visualization
-   - Lottie animations
-   - Shareable scorecard card
-   - Highlighter fade issue (from Session 7)
+### If next session is product/code focused:
+1. **CRITICAL: User says deployed app still has visual/behavioral misses from Session 9.** Need specific screenshots or descriptions.
+2. **Double Pareto wizard flow needs live testing.** User hasn't confirmed it feels right.
+3. **Dead code cleanup:** WeighStep.tsx is no longer imported but tests reference it.
+4. **Run specialist agents BEFORE presenting work** — Math, Copywriter, Sense Checker, Mona Feedback Agent must ALL pass.
+5. **Pending features:** Calendar week visualization, Lottie animations, shareable scorecard, highlighter fade issue.
 
 ## Decisions made (non-obvious choices)
+
+### New in Session 10
+- **GTM Plan lives in `/GTM Plan/` folder** — separate from code to support parallel sessions
+- **Three-track GTM strategy:** Free channels first (zero cost), then paid ads (with realistic CPC), then coach outreach (Oren's network)
+- **Pricing model:** Free Pareto Analyzer (lead gen) → $29/mo or $199/year Pro (Focus Table access) → $149/mo Coach (if validated)
+- **Annual pricing added** to combat churn risk — one-session tool needs upfront commitment option
+- **Coach validation bar raised:** 3 prepay/signed commitments (not 6 verbal yes) before building coach tier
+- **$1K MRR timeline is honest:** 4-6 months from zero awareness, not 90 days. Plan says this explicitly.
+- **Retention features are essential, not optional:** Monthly re-assessment + progress tracking must be built alongside or before the payment system
+- **Free channels before paid:** Product Hunt, YouTube demo, Reddit, podcast appearances — exhaust these before spending $2-3/click on ads
+- **Real B2B CPC:** $1.50-3.50 per click, not the $0.20-0.30 that v1 assumed
+- **Moat is not "Oren's methodology"** — real moats are accumulated user data, coach network effects, and switching costs from saved plans/progress history
 
 ### Carried from previous sessions
 - Two separate tools, not one flow: /analyzer finds problems, /focus solves them
@@ -90,73 +91,81 @@ DrilldownStep now has "Add your own drain..." input per category with multi-entr
 - SCORE_FROM_LEVEL (low=2, med=3, high=4)
 - No $50/hr fallback
 - Agents must not make major methodology changes without asking
-
-### New in Session 9
-- **Double Pareto (Oren's methodology):** IntakeStep is now category-level estimation (rough hrs/week per pain category). Engine runs mini-Pareto to find vital few categories (80% threshold). DrilldownStep shows only vital categories for detailed source-level estimation.
-- **Avoidable % removed:** Pareto runs on raw hours. `avoidablePct` forced to 100 in store for backward compat.
-- **Three-layer QA system:** (1) pre-commit hooks, (2) cumulative feedback regression tests, (3) evidence-based QA agent with CODE/VISUAL split.
-- **Specialist agents mandatory before "done":** Math, Copywriter, Sense Checker, and Mona Feedback Agent must all pass.
-- **Opportunity framing is research-backed:** Real stats from Cal Newport, Gloria Mark, McKinsey, etc. — not placeholder copy.
-- **Role change clears category estimates:** Prevents stale data from wrong role carrying over.
-- **Custom sources live in DrilldownStep:** Not IntakeStep (which is now category-level only).
-- **Stepper labels:** "Your Time" (step 2) and "Details" (step 3) — not "Estimate"/"Drilldown" (jargon).
-- **"Low-Hanging Fruit" is always singular** — the expression is collective, never "Fruits".
-- **White Elephants action verb:** "drop or delegate these" — not "skip if you can" (too passive).
+- Three-layer QA system: hooks + regression tests + evidence-based agent
+- Specialist agents mandatory before "done": Math, Copywriter, Sense Checker, Mona Feedback
 
 ## Open questions waiting on user
 
-- **What specifically is still wrong on the deployed app?** Code passes all checks but user sees issues. Need screenshots or descriptions.
-- **Does the new double Pareto wizard flow feel right?** (Category estimate → Drilldown vital few → Results)
-- **Oren's follow-up:** May have more feedback after seeing the changes.
+- **Has Mona read the v2 GTM plan?** She asked for the revision and said she'd read it before this handover was triggered
+- **Does Oren agree with the pricing model?** ($29/mo, $199/year, $149/mo coach)
+- **Does Oren agree with the free Pareto Analyzer strategy?** He might push back on giving away the best feature
+- **Will Oren do coach validation outreach?** Plan depends on him talking to 10-15 coaches
+- **What specifically is still wrong on the deployed app?** (Carried from Session 9 — code passes all checks but user sees issues)
+- **Does the new double Pareto wizard flow feel right?** (Carried from Session 9)
 
 ## Critical file paths
 
+### GTM Plan files
 ```
-src/components/analyzer/IntakeStep.tsx           — NOW: category-level estimation (Pass 1)
-src/components/analyzer/DrilldownStep.tsx         — NEW: vital few drilldown (Pass 2)
-src/components/analyzer/AuditWizard.tsx           — Wizard orchestrator (5 steps, DrilldownStep at step 3)
-src/components/analyzer/WeighStep.tsx             — DEAD CODE: no longer imported
-src/components/analyzer/Stepper.tsx               — Step labels: Role/Context/Your Time/Details/Results
-src/components/analyzer/ResultsView.tsx           — Bar chart with truncated labels
-src/components/focus/EviMatrix.tsx                — EvI Matrix + PriorityTable (skip button, date min, column headers, above-fold summary)
-src/components/focus/SolutionPicker.tsx           — Collapsible descriptions, 3-max visible, custom fixes
-src/components/focus/FocusTable.tsx               — Action Plan (centered CTA)
-src/components/focus/FocusStage.tsx               — Tab: "EvI Matrix" (renamed)
-src/components/focus/Payoff.tsx                   — Opportunity framing + "Analyzer" naming
-src/lib/data/opportunity-frames.ts                — NEW: research-backed role-specific opportunity copy
+GTM Plan/2026-06-16-gtm-plan-v2.html     — CURRENT: Revised GTM plan (14 sections)
+GTM Plan/2026-06-16-gtm-plan.html         — SUPERSEDED: v1 plan (before GTM review)
+```
+
+### Product/code files (unchanged this session)
+```
+src/components/analyzer/IntakeStep.tsx           — Category-level estimation (Pass 1)
+src/components/analyzer/DrilldownStep.tsx         — Vital few drilldown (Pass 2)
+src/components/analyzer/AuditWizard.tsx           — Wizard orchestrator
+src/components/focus/EviMatrix.tsx                — EvI Matrix + PriorityTable
+src/components/focus/SolutionPicker.tsx           — Collapsible descriptions
+src/components/focus/FocusTable.tsx               — Action Plan
+src/components/focus/Payoff.tsx                   — Opportunity framing
+src/lib/data/opportunity-frames.ts                — Research-backed opportunity copy
 src/lib/engine/solutions-logic.ts                 — QUADRANT_META, payoff calculator
-src/stores/audit-store.ts                         — categoryEstimates, vitalCategories, avoidablePct=100
+src/stores/audit-store.ts                         — Zustand store
 src/__tests__/feedback-regression.test.ts         — 71 cumulative regression tests
-.claude/agents/mona-feedback-agent.md             — Evidence-based QA agent
 .claude/hooks/verify-done.sh                      — Pre-commit verification (8 checks)
-Feedback Log/Session 9 - Oren Feedback Review.html — Interactive feedback picker
-Feedback Log/Session 9 - Mona Responses.txt       — Mona's decisions on all items
-docs/superpowers/plans/2026-06-15-oren-feedback-implementation.md — Full implementation plan
+```
+
+### Memory files
+```
+~/.claude/projects/-Users-monamehta-Documents-FocusLab-New/memory/
+├── MEMORY.md                              — Memory index
+├── project_gtm_plan_folder.md             — NEW: GTM folder convention
+├── user_business_background.md            — NEW: Mona's business/marketing experience
+├── feedback_agent_boundaries.md
+├── feedback_copy_preferences.md
+├── feedback_visual_preferences.md
+├── feedback_workflow_preferences.md
+├── feedback_handover_ritual.md
+├── feedback_qa_tighter_system.md
+├── feedback_specialist_agents_mandatory.md
+└── feedback_never_break_working_features.md
 ```
 
 ## Known gotchas
 
 - **visx React 19 peer deps:** `.npmrc` has `legacy-peer-deps=true`
 - **Framer Motion keyframes:** Spring transitions only support 2 keyframes
-- **Unicode escapes:** `\uXXXX` in JSX text renders as raw backslash. Always use actual characters.
+- **Unicode escapes:** `\uXXXX` in JSX renders as raw backslash. Use actual characters.
 - **Vercel deploy author:** Git commits MUST use `mona@klarecon.com` as author email
-- **Recharts dot clicking:** Click handlers go on CustomDot's `<g>` SVG element directly
-- **WeighStep.tsx is dead code:** Not imported anywhere but tests reference it. Don't delete without updating tests.
-- **`hoursPerDay` field is misnamed:** In DrilldownStep it stores weekly hours. Renaming is risky (localStorage).
-- **`weighCadence` is dead:** Only used by dead WeighStep. Persisted but never read by live code.
-- **Browser cache:** User may see stale deploys. Always suggest Cmd+Shift+R or incognito.
-- **User frustrated with QA quality:** Session 9 QA agents passed everything but user found issues. Code-level checks are necessary but not sufficient — need runtime/visual verification.
+- **WeighStep.tsx is dead code:** Not imported but tests reference it
+- **`hoursPerDay` field is misnamed:** Stores weekly hours in DrilldownStep
+- **Browser cache:** User may see stale deploys. Suggest Cmd+Shift+R or incognito.
+- **User frustrated with QA quality:** Session 9 QA agents passed but user found issues. Code checks are necessary but not sufficient.
+- **Parallel sessions:** Mona runs GTM planning and code sessions in parallel. GTM work goes in `/GTM Plan/`, code work stays in `src/`. Don't let them cross.
+- **GTM plan has two versions:** v2 is current. v1 is superseded. Don't reference v1 numbers.
 
 ## How to resume work
 1. Read this file top to bottom
 2. Run `git status` and `git log --oneline -10` to confirm state
 3. Read memory files at `~/.claude/projects/-Users-monamehta-Documents-FocusLab-New/memory/`
-4. **First priority:** Ask user what specifically is wrong on the deployed app — get screenshots
-5. Run the full wizard flow yourself to understand the double Pareto experience
-6. Run ALL specialist agents (Math, Copywriter, Sense Checker, Mona Feedback) BEFORE declaring done
+4. **Determine session type:** Is user working on GTM/business or product/code?
+5. **If GTM:** Read `GTM Plan/2026-06-16-gtm-plan-v2.html` for full context. Ask what Mona/Oren thought of the plan.
+6. **If code:** First priority is getting specific bug reports from the deployed app (Session 9 issues). Run all specialist agents before declaring done.
 7. User wants autonomous execution — NEVER ask permissions, just do the work
-8. Present copy/visual options via interactive HTML pickers, not markdown
+8. Present options via interactive HTML pickers, not markdown
 9. Deploy by pushing to GitHub — NOT via `npx vercel --prod`
 10. TDD discipline: 253 tests must never regress
 11. Never say "done" until all specialist agents pass
-12. **Important boundary:** Do NOT make major methodology changes without asking
+12. Do NOT make major methodology changes without asking
