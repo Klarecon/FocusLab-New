@@ -91,7 +91,7 @@ function CustomDot(props: {
   const { cx, cy, payload, onDotClick } = props;
   if (cx == null || cy == null || !payload) return null;
 
-  const radius = Math.max(14, Math.min(28, 10 + payload.z * 3));
+  const radius = Math.max(16, Math.min(44, 12 + payload.z * 5));
   const color = QUADRANT_DOT_COLORS[payload.quadrantLabel] ?? ZONE_COLORS.C;
 
   return (
@@ -243,16 +243,17 @@ const QUADRANT_SECTION_LABELS: Record<QuadrantLabel, string> = {
 
 function PriorityTable({ dotData }: { dotData: DotData[] }) {
   const ownerOverrides = useAuditStore((s) => s.ownerOverrides);
+  const setOwnerOverride = useAuditStore((s) => s.setOwnerOverride);
   const chosenSolutions = useAuditStore((s) => s.chosenSolutions);
   const dueDates = useAuditStore((s) => s.dueDates);
   const setDueDate = useAuditStore((s) => s.setDueDate);
   const removeSolution = useAuditStore((s) => s.removeSolution);
 
-  const OWNERS_MAP: Record<string, { emoji: string; label: string }> = {
-    self: { emoji: "\uD83D\uDE4B", label: "Me" },
-    manager: { emoji: "\uD83D\uDC54", label: "My manager" },
-    team: { emoji: "\uD83D\uDC65", label: "My team" },
-  };
+  const OWNER_OPTIONS = [
+    { key: "self", label: "Me" },
+    { key: "manager", label: "My manager" },
+    { key: "team", label: "My team" },
+  ];
 
   const prioritized = useMemo(() => {
     const sorted = [...dotData].sort((a, b) => {
@@ -276,7 +277,7 @@ function PriorityTable({ dotData }: { dotData: DotData[] }) {
 
   return (
     <div
-      className="mt-6 surface-card p-6"
+      className="mt-6 surface-card p-6 overflow-x-auto"
       style={{ borderTop: "4px solid", borderImage: "linear-gradient(to right, #c4186a, #edb215) 1" }}
     >
       <h3
@@ -289,19 +290,6 @@ function PriorityTable({ dotData }: { dotData: DotData[] }) {
         Pearls first. Then the rest, in order.
       </p>
 
-      {/* Column headers */}
-      <div
-        className="flex items-center gap-3 px-4 pb-2 mb-4 text-[10px] font-medium uppercase tracking-wider"
-        style={{ color: "var(--color-ink-soft)", borderBottom: "1px solid var(--color-line)" }}
-      >
-        <span className="w-7 flex-shrink-0">#</span>
-        <span className="flex-1 min-w-0">Task</span>
-        <span className="w-24 flex-shrink-0 hidden sm:block text-center">Quadrant</span>
-        <span className="w-20 flex-shrink-0 text-center">Owner</span>
-        <span className="w-[120px] flex-shrink-0 text-center">Due</span>
-        <span className="w-6 flex-shrink-0"></span>
-      </div>
-
       {groups.map((g) => (
         <div key={g.quadrant} className="mb-6 last:mb-0">
           <div
@@ -311,66 +299,89 @@ function PriorityTable({ dotData }: { dotData: DotData[] }) {
             <span className="w-2 h-2 rounded-full" style={{ backgroundColor: QUADRANT_DOT_COLORS[g.quadrant] }} />
             {QUADRANT_SECTION_LABELS[g.quadrant]}
           </div>
-          <div className="space-y-2">
-            {g.items.map((d) => {
-              const sol = chosenSolutions.find((s) => s.id === d.id);
-              const owner = sol ? (ownerOverrides[sol.id] ?? sol.owner) : "self";
-              const ownerInfo = OWNERS_MAP[owner] ?? OWNERS_MAP.self;
-              const meta = QUADRANT_META[d.quadrantLabel];
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr
+                className="text-[10px] font-medium uppercase tracking-wider"
+                style={{ color: "var(--color-ink-soft)", borderBottom: "1px solid var(--color-line)" }}
+              >
+                <th className="text-left pb-2 pr-2 w-8">#</th>
+                <th className="text-left pb-2 pr-2">Task</th>
+                <th className="text-left pb-2 pr-2 w-28">Owner</th>
+                <th className="text-left pb-2 pr-2 w-32">Due</th>
+                <th className="pb-2 w-8"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {g.items.map((d) => {
+                const sol = chosenSolutions.find((s) => s.id === d.id);
+                const owner = sol ? (ownerOverrides[sol.id] ?? sol.owner) : "self";
 
-              return (
-                <div
-                  key={d.id}
-                  className="flex items-center gap-3 py-3 px-4 rounded-lg border"
-                  style={{ borderColor: "var(--color-line)", backgroundColor: "var(--color-card)" }}
-                >
-                  <span
-                    className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                    style={{ backgroundColor: QUADRANT_DOT_COLORS[d.quadrantLabel] }}
+                return (
+                  <tr
+                    key={d.id}
+                    className="border-b"
+                    style={{ borderColor: "var(--color-line)" }}
                   >
-                    {d.priority}
-                  </span>
-                  <span className="flex-1 text-sm font-semibold min-w-0 truncate" style={{ color: "var(--color-ink)" }}>
-                    {d.title}
-                  </span>
-                  <span
-                    className="text-[10px] font-medium px-1.5 py-0.5 rounded-full flex-shrink-0 hidden sm:inline"
-                    style={{
-                      color: QUADRANT_LABEL_COLOR[d.quadrantLabel],
-                      backgroundColor: QUADRANT_BG[d.quadrantLabel],
-                    }}
-                  >
-                    {meta.emoji} {meta.name}
-                  </span>
-                  <span className="text-xs flex-shrink-0" style={{ color: "var(--color-ink-soft)" }}>
-                    {ownerInfo.emoji} {ownerInfo.label}
-                  </span>
-                  <input
-                    type="date"
-                    value={dueDates[d.id] ?? ""}
-                    min={new Date().toISOString().split("T")[0]}
-                    onChange={(e) => setDueDate(d.id, e.target.value)}
-                    className="text-xs px-2 py-1 rounded border w-[120px] flex-shrink-0"
-                    style={{
-                      borderColor: "var(--color-line)",
-                      backgroundColor: "var(--color-paper)",
-                      color: dueDates[d.id] ? "var(--color-ink)" : "var(--color-ink-soft)",
-                    }}
-                    aria-label={`Due date for ${d.title}`}
-                  />
-                  <button
-                    onClick={() => removeSolution(d.id)}
-                    className="text-xs cursor-pointer transition-opacity hover:opacity-70 flex-shrink-0 px-2 py-1 rounded"
-                    style={{ color: "var(--color-ink-soft)" }}
-                    aria-label={`Remove ${d.title} from plan`}
-                    title="Remove from plan"
-                  >
-                    &times;
-                  </button>
-                </div>
-              );
-            })}
-          </div>
+                    <td className="py-3 pr-2 align-middle">
+                      <span
+                        className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                        style={{ backgroundColor: QUADRANT_DOT_COLORS[d.quadrantLabel] }}
+                      >
+                        {d.priority}
+                      </span>
+                    </td>
+                    <td className="py-3 pr-2 align-middle font-semibold" style={{ color: "var(--color-ink)" }}>
+                      {d.title}
+                    </td>
+                    <td className="py-3 pr-2 align-middle">
+                      <select
+                        value={owner}
+                        onChange={(e) => setOwnerOverride(d.id, e.target.value)}
+                        className="text-xs px-2 py-1.5 rounded border w-full"
+                        style={{
+                          borderColor: "var(--color-line)",
+                          backgroundColor: "var(--color-paper)",
+                          color: "var(--color-ink)",
+                        }}
+                        aria-label={`Owner for ${d.title}`}
+                      >
+                        {OWNER_OPTIONS.map((o) => (
+                          <option key={o.key} value={o.key}>{o.label}</option>
+                        ))}
+                      </select>
+                    </td>
+                    <td className="py-3 pr-2 align-middle">
+                      <input
+                        type="date"
+                        value={dueDates[d.id] ?? ""}
+                        min={new Date().toISOString().split("T")[0]}
+                        onChange={(e) => setDueDate(d.id, e.target.value)}
+                        className="text-xs px-2 py-1.5 rounded border w-full"
+                        style={{
+                          borderColor: "var(--color-line)",
+                          backgroundColor: "var(--color-paper)",
+                          color: dueDates[d.id] ? "var(--color-ink)" : "var(--color-ink-soft)",
+                        }}
+                        aria-label={`Due date for ${d.title}`}
+                      />
+                    </td>
+                    <td className="py-3 align-middle text-center">
+                      <button
+                        onClick={() => removeSolution(d.id)}
+                        className="text-sm cursor-pointer transition-opacity hover:opacity-70 px-1"
+                        style={{ color: "var(--color-ink-soft)" }}
+                        aria-label={`Remove ${d.title} from plan`}
+                        title="Remove from plan"
+                      >
+                        &times;
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       ))}
     </div>
@@ -386,7 +397,7 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
   const { drainBySlug, getZone, getSourceName } = useDrainLookup(vitalFew, usefulMany);
 
   const dotData: DotData[] = useMemo(() => {
-    return chosenSolutions.map((sol, i) => {
+    const raw = chosenSolutions.map((sol, i) => {
       const scores = solutionScores[sol.id] ?? { effort: 2, impact: 2 };
       const zone = getZone(sol);
       let reclaimApprox = 1;
@@ -409,6 +420,19 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
         reclaimHint: sol.reclaimHint,
         quadrantLabel: quadrant(scores.effort as Score, scores.impact as Score),
       };
+    });
+
+    // Jitter overlapping dots so all are visible
+    const seen = new Map<string, number>();
+    return raw.map((dot) => {
+      const key = `${dot.x},${dot.y}`;
+      const count = seen.get(key) ?? 0;
+      seen.set(key, count + 1);
+      if (count === 0) return dot;
+      const angle = (count * 2.1); // spread in different directions
+      const jitterX = Math.cos(angle) * 0.2;
+      const jitterY = Math.sin(angle) * 0.2;
+      return { ...dot, x: dot.x + jitterX, y: dot.y + jitterY };
     });
   }, [chosenSolutions, solutionScores, drainBySlug, getZone, getSourceName]);
 
@@ -545,9 +569,9 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
             {QUADRANT_META["major-project"].emoji} {QUADRANT_META["major-project"].name}
           </span>
         </div>
-        <div className="absolute bottom-[76px] left-12 z-10 pointer-events-none" aria-hidden="true">
+        <div className="absolute bottom-[100px] left-12 z-10 pointer-events-none" aria-hidden="true">
           <span
-            className="text-[10px] sm:text-xs font-semibold px-2 py-1 rounded-full"
+            className="text-[9px] sm:text-[10px] font-semibold px-2 py-1 rounded-full"
             style={{
               color: QUADRANT_LABEL_COLOR["fill-in"],
               backgroundColor: QUADRANT_BG["fill-in"],
@@ -556,9 +580,9 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
             {QUADRANT_META["fill-in"].emoji} {QUADRANT_META["fill-in"].name}
           </span>
         </div>
-        <div className="absolute bottom-[76px] right-8 z-10 pointer-events-none" aria-hidden="true">
+        <div className="absolute bottom-[100px] right-8 z-10 pointer-events-none" aria-hidden="true">
           <span
-            className="text-[10px] sm:text-xs font-semibold px-2 py-1 rounded-full"
+            className="text-[9px] sm:text-[10px] font-semibold px-2 py-1 rounded-full"
             style={{
               color: QUADRANT_LABEL_COLOR["thankless"],
               backgroundColor: QUADRANT_BG["thankless"],

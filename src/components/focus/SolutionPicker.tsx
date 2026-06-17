@@ -3,7 +3,8 @@
 import { useState, useMemo, useCallback, memo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuditStore } from "@/stores/audit-store";
-import { solutionsForWaste, isQuickWin } from "@/lib/data/solutions";
+import { solutionsForWaste, isQuickWin, type Solution as SolutionType } from "@/lib/data/solutions";
+import { SCORE_FROM_LEVEL } from "@/lib/engine/solutions-logic";
 import type { Solution } from "@/lib/data/solutions";
 import { wasteSourceBySlug } from "@/lib/data/waste-sources";
 import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
@@ -90,7 +91,12 @@ const SolutionCard = memo(function SolutionCard({
       <div className="flex items-start gap-3">
         <div className="flex-shrink-0 mt-0.5">
           {isChosen ? (
-            <AnimatedEmoji emoji="🥲" animation="pop" size="sm" />
+            <span
+              className="w-5 h-5 rounded-full inline-flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+              style={{ backgroundColor: "var(--color-reclaim)" }}
+            >
+              ✓
+            </span>
           ) : (
             <span
               className="w-5 h-5 rounded-full border-2 inline-flex"
@@ -146,12 +152,14 @@ const SolutionCard = memo(function SolutionCard({
                   : "var(--color-ink-soft)"
               }
             />
-            <span
-              className="text-xs italic"
-              style={{ color: "var(--color-ink-soft)" }}
-            >
-              {solution.reclaimHint}
-            </span>
+            {isExpanded && (
+              <span
+                className="text-xs italic"
+                style={{ color: "var(--color-ink-soft)" }}
+              >
+                {solution.reclaimHint}
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -159,12 +167,68 @@ const SolutionCard = memo(function SolutionCard({
   );
 });
 
+function InlineFix({ drain, allDrains }: { drain: DrainInfo; allDrains: DrainInfo[] }) {
+  const [text, setText] = useState("");
+  const [flash, setFlash] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const addSolution = useAuditStore((s) => s.addSolution);
+
+  const handleAdd = () => {
+    const trimmed = text.trim();
+    if (!trimmed) return;
+    const customSolution: Solution = {
+      id: `custom-${Date.now()}`,
+      wasteSlugs: [drain.slug],
+      title: trimmed,
+      description: "Custom fix added by you",
+      effort: "medium",
+      impact: "medium",
+      reclaimHint: `targets ${drain.hoursPerWeek.toFixed(1)} hrs/wk of waste`,
+      owner: "self",
+      source: { name: "You", url: "" },
+    };
+    addSolution(customSolution);
+    setText("");
+    setFlash(true);
+    setTimeout(() => setFlash(false), 1500);
+    setTimeout(() => inputRef.current?.focus(), 50);
+  };
+
+  return (
+    <div className="flex items-center gap-2 mt-3 pt-3" style={{ borderTop: "1px dashed var(--color-line)" }}>
+      <input
+        ref={inputRef}
+        type="text"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && handleAdd()}
+        placeholder="Add your own fix..."
+        className="flex-1 text-sm bg-transparent border-b-2 focus:outline-none px-1 py-1.5"
+        style={{ borderColor: "var(--color-line)", color: "var(--color-ink)" }}
+        aria-label={`Add a custom fix for ${drain.label}`}
+      />
+      <button
+        onClick={handleAdd}
+        disabled={!text.trim()}
+        className="px-3 py-1.5 rounded-md text-xs font-bold transition-all disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
+        style={{ backgroundColor: "var(--color-reclaim)", color: "#fff" }}
+      >
+        {flash ? "Added!" : "+ Add"}
+      </button>
+    </div>
+  );
+}
+
 function DrainSection({
   drain,
   index,
+  shownSolutionIds,
+  allDrains,
 }: {
   drain: DrainInfo;
   index: number;
+  shownSolutionIds: Set<string>;
+  allDrains: DrainInfo[];
 }) {
   const INITIAL_VISIBLE = 3;
   const [showAll, setShowAll] = useState(false);
@@ -173,7 +237,23 @@ function DrainSection({
   const removeSolution = useAuditStore((s) => s.removeSolution);
 
   const wasteSource = wasteSourceBySlug(drain.slug);
-  const solutions = useMemo(() => solutionsForWaste(drain.slug), [drain.slug]);
+  // Sort solutions: Pearls first, then by impact desc, effort asc
+  // Filter out solutions already shown under a previous drain
+  const solutions = useMemo(() => {
+    const raw = solutionsForWaste(drain.slug);
+    const unique = raw.filter((s) => !shownSolutionIds.has(s.id));
+    return [...unique].sort((a, b) => {
+      const aQW = isQuickWin(a) ? 0 : 1;
+      const bQW = isQuickWin(b) ? 0 : 1;
+      if (aQW !== bQW) return aQW - bQW;
+      const aImp = SCORE_FROM_LEVEL[a.impact] ?? 2;
+      const bImp = SCORE_FROM_LEVEL[b.impact] ?? 2;
+      if (aImp !== bImp) return bImp - aImp;
+      const aEff = SCORE_FROM_LEVEL[a.effort] ?? 2;
+      const bEff = SCORE_FROM_LEVEL[b.effort] ?? 2;
+      return aEff - bEff;
+    });
+  }, [drain.slug, shownSolutionIds]);
   const chosenIds = useMemo(
     () => new Set(chosenSolutions.map((s) => s.id)),
     [chosenSolutions],
@@ -226,7 +306,7 @@ function DrainSection({
       </div>
 
       {/* Solutions */}
-      {solutions.length > 0 ? (
+      {solutions.length > 0 && (
         <>
           <p
             className="text-sm font-medium mb-3"
@@ -254,13 +334,6 @@ function DrainSection({
             )}
           </div>
         </>
-      ) : (
-        <p
-          className="text-sm italic py-3"
-          style={{ color: "var(--color-ink-soft)" }}
-        >
-          We don&apos;t have pre-built fixes for this one yet. Add your own below — you probably know what would help.
-        </p>
       )}
 
       {/* Custom fixes added by the user for this drain */}
@@ -278,7 +351,12 @@ function DrainSection({
             }}
           >
             <div className="flex items-start gap-3">
-              <AnimatedEmoji emoji="🥲" animation="pop" size="sm" />
+              <span
+                className="w-5 h-5 rounded-full inline-flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                style={{ backgroundColor: "var(--color-reclaim)" }}
+              >
+                ✓
+              </span>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="font-medium text-sm" style={{ color: "var(--color-ink)" }}>{sol.title}</span>
@@ -301,6 +379,9 @@ function DrainSection({
             </div>
           </motion.div>
         ))}
+
+      {/* Inline add-your-own fix */}
+      <InlineFix drain={drain} allDrains={allDrains} />
     </motion.div>
   );
 }
@@ -311,36 +392,23 @@ export default function SolutionPicker({
   onGoToPlan,
 }: SolutionPickerProps) {
   const [zoneBOpen, setZoneBOpen] = useState(true);
-  const [customFix, setCustomFix] = useState("");
-  const [customTarget, setCustomTarget] = useState("");
-  const [justAdded, setJustAdded] = useState(false);
-  const customInputRef = useRef<HTMLInputElement>(null);
   const chosenSolutions = useAuditStore((s) => s.chosenSolutions);
-  const addSolution = useAuditStore((s) => s.addSolution);
 
   const allDrains = [...vitalFew, ...usefulMany];
 
-  const handleAddCustom = () => {
-    const trimmed = customFix.trim();
-    if (!trimmed) return;
-    const targetSlug = customTarget || (allDrains[0]?.slug ?? "");
-    const customSolution: Solution = {
-      id: `custom-${Date.now()}`,
-      wasteSlugs: targetSlug ? [targetSlug] : [],
-      title: trimmed,
-      description: "Custom fix added by you",
-      effort: "medium",
-      impact: "medium",
-      reclaimHint: `targets ${(() => { const d = allDrains.find(dr => dr.slug === targetSlug); return d ? d.hoursPerWeek.toFixed(1) + " hrs/wk of waste" : "your waste"; })()}`,
-      owner: "self",
-      source: { name: "You", url: "" },
-    };
-    addSolution(customSolution);
-    setCustomFix("");
-    setJustAdded(true);
-    setTimeout(() => setJustAdded(false), 1500);
-    setTimeout(() => customInputRef.current?.focus(), 50);
-  };
+  // Track which solution IDs have been shown to avoid duplicates across drains
+  const shownIdsByDrain = useMemo(() => {
+    const result = new Map<string, Set<string>>();
+    const globalSeen = new Set<string>();
+    for (const drain of allDrains) {
+      result.set(drain.slug, new Set(globalSeen));
+      const solutions = solutionsForWaste(drain.slug);
+      for (const sol of solutions) {
+        globalSeen.add(sol.id);
+      }
+    }
+    return result;
+  }, [allDrains]);
 
   return (
     <div>
@@ -365,7 +433,7 @@ export default function SolutionPicker({
           </div>
 
           {vitalFew.map((drain, i) => (
-            <DrainSection key={drain.slug} drain={drain} index={i} />
+            <DrainSection key={drain.slug} drain={drain} index={i} shownSolutionIds={shownIdsByDrain.get(drain.slug) ?? new Set()} allDrains={allDrains} />
           ))}
         </>
       ) : (
@@ -419,66 +487,14 @@ export default function SolutionPicker({
                     key={drain.slug}
                     drain={drain}
                     index={i}
+                    shownSolutionIds={shownIdsByDrain.get(drain.slug) ?? new Set()}
+                    allDrains={allDrains}
                   />
                 ))}
               </motion.div>
             )}
           </AnimatePresence>
         </div>
-      )}
-
-      {/* Custom fix input — only when there are drains to target */}
-      {allDrains.length > 0 && (
-      <div className="surface-card p-5 mt-6" style={{ borderLeft: "4px solid var(--color-gold)" }}>
-        <label
-          className="block text-sm font-medium mb-2"
-          style={{ color: "var(--color-ink)" }}
-        >
-          Got a fix in mind?
-        </label>
-        <div className="flex flex-col gap-2 sm:flex-row">
-          <select
-            value={customTarget}
-            onChange={(e) => setCustomTarget(e.target.value)}
-            aria-label="Target drain for custom fix"
-            className="px-3 py-2 rounded-lg text-sm border focus:outline-none sm:w-48"
-            style={{
-              backgroundColor: "var(--color-paper)",
-              borderColor: "var(--color-line)",
-              color: "var(--color-ink)",
-            }}
-          >
-            {allDrains.map((d) => (
-              <option key={d.slug} value={d.slug}>
-                {d.label}
-              </option>
-            ))}
-          </select>
-          <input
-            ref={customInputRef}
-            type="text"
-            value={customFix}
-            onChange={(e) => setCustomFix(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleAddCustom()}
-            aria-label="Custom fix description"
-            placeholder="e.g., Cancel the Monday status call..."
-            className="flex-1 px-3 py-2 rounded-lg text-sm border focus:outline-none"
-            style={{
-              backgroundColor: "var(--color-paper)",
-              borderColor: "var(--color-line)",
-              color: "var(--color-ink)",
-            }}
-          />
-          <button
-            onClick={handleAddCustom}
-            disabled={!customFix.trim()}
-            className="px-4 py-2 rounded-lg text-sm font-medium text-white transition-opacity disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed"
-            style={{ backgroundColor: "var(--color-reclaim)" }}
-          >
-            {justAdded ? "Added!" : "Add"}
-          </button>
-        </div>
-      </div>
       )}
 
       {/* Bottom bar */}

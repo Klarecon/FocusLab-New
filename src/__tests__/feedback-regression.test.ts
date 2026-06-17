@@ -300,13 +300,11 @@ describe("Focus tool copy (Sessions 7 & 8)", () => {
     expect(content).not.toMatch(/["']Quick Win["']/);
   });
 
-  it("[S8] FocusTable owner labels: Me / My manager / My team", () => {
-    const { missing } = fileContainsAll("components/focus/FocusTable.tsx", [
-      '"Me"',
-      '"My manager"',
-      '"My team"',
-    ]);
-    expect(missing, `Missing owner labels: ${missing.join(", ")}`).toEqual([]);
+  it("[S11-#10] FocusTable has no Owner or Reclaim columns (removed per user feedback)", () => {
+    const content = readSrc("components/focus/FocusTable.tsx");
+    // Owner and Reclaim columns were removed in Session 11
+    expect(content).not.toContain("onCycleOwner");
+    expect(content).not.toContain("reclaimHint");
   });
 
   it("[S8-#18] Payoff closing statement (no backwards CTA)", () => {
@@ -529,9 +527,10 @@ describe("Session 9 — Oren's feedback", () => {
     ).toBe(true);
   });
 
-  it("[S9-O6a] tab label says 'EvI Matrix' not 'Impact Matrix'", () => {
+  it("[S11-#9] tab label says 'EVI Matrix' (all caps, not EvI)", () => {
     const content = readSrc("components/focus/FocusStage.tsx");
-    expect(content).toContain("EvI Matrix");
+    expect(content).toContain("EVI Matrix");
+    expect(content).not.toContain("EvI Matrix");
     expect(content).not.toContain('"Impact Matrix"');
   });
 
@@ -603,6 +602,115 @@ describe("Session 9 — Oren's feedback", () => {
     const content = readSrc("stores/audit-store.ts");
     expect(content).toContain("categoryEstimates");
     expect(content).toContain("vitalCategories");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// SESSION 11 — Mona's Feedback
+// ---------------------------------------------------------------------------
+
+describe("Session 11 — Mona\u2019s feedback", () => {
+  it("[S11-#3] software-dev has Code sources beyond just debugging", () => {
+    const content = readSrc("lib/data/waste-sources.ts");
+    expect(content).toContain('"sdev-code-review-time"');
+    expect(content).toContain('"sdev-refactor-debt"');
+    expect(content).toContain('"sdev-merge-conflicts"');
+  });
+
+  it("[S11-#3] new software-dev Code sources have solutions", () => {
+    const content = readSrc("lib/data/solutions.ts");
+    expect(content).toContain('"sdev-code-review-time"');
+    expect(content).toContain('"sdev-refactor-debt"');
+    expect(content).toContain('"sdev-merge-conflicts"');
+  });
+
+  it("[S11-#4] Pareto chart uses abbreviate(), not truncate with ellipsis", () => {
+    const content = readSrc("components/analyzer/ResultsView.tsx");
+    expect(content).toContain("abbreviate");
+    expect(content).not.toMatch(/truncate\(.*25\)/);
+  });
+
+  it("[S11-#6] custom fix input appears before Zone A solutions", () => {
+    const content = readSrc("components/focus/SolutionPicker.tsx");
+    const customFixPos = content.indexOf("Got a fix in mind");
+    const zoneAPos = content.indexOf("Your Biggest Drains");
+    expect(customFixPos).toBeLessThan(zoneAPos);
+  });
+
+  it("[S11-#7] solutions sorted by quickWin first in DrainSection", () => {
+    expect(
+      fileContains("components/focus/SolutionPicker.tsx", "isQuickWin(a)")
+    ).toBe(true);
+  });
+
+  it("[S11-#8] setParetoResult clears stale focus selections", () => {
+    const content = readSrc("stores/audit-store.ts");
+    // setParetoResult should reset chosenSolutions
+    const setPareto = content.indexOf("setParetoResult");
+    const clearSolutions = content.indexOf("chosenSolutions: []", setPareto);
+    expect(clearSolutions).toBeGreaterThan(setPareto);
+  });
+
+  it("[S11-#8] clearFocusState action exists in store", () => {
+    expect(
+      fileContains("stores/audit-store.ts", "clearFocusState")
+    ).toBe(true);
+  });
+
+  it("[S11-#11] EVI matrix circle radius range is wider (16-44)", () => {
+    const content = readSrc("components/focus/EviMatrix.tsx");
+    expect(content).toMatch(/Math\.max\(16/);
+    expect(content).toMatch(/Math\.min\(44/);
+  });
+
+  it("[S11-#12] EVI matrix has overlap jitter for dots at same position", () => {
+    expect(
+      fileContains("components/focus/EviMatrix.tsx", "jitterX")
+    ).toBe(true);
+  });
+
+  it("[S11-#14] PriorityTable uses semantic <table> elements", () => {
+    const content = readSrc("components/focus/EviMatrix.tsx");
+    expect(content).toContain("<table");
+    expect(content).toContain("<thead>");
+    expect(content).toContain("<tbody>");
+    expect(content).toContain("<tr");
+    expect(content).toContain("<td");
+  });
+
+  it("[S11-#14] PriorityTable Owner is an editable <select>", () => {
+    const content = readSrc("components/focus/EviMatrix.tsx");
+    expect(content).toContain("setOwnerOverride");
+    expect(content).toMatch(/<select[\s\S]*?Owner/);
+  });
+
+  it("[S11-#14] PriorityTable does not show Quadrant column", () => {
+    const content = readSrc("components/focus/EviMatrix.tsx");
+    // The old quadrant badge in PriorityTable rows was a hidden sm:inline span with meta.emoji + meta.name
+    // It should no longer appear in the table rows
+    const tableStart = content.indexOf("function PriorityTable");
+    const tableEnd = content.indexOf("function EviMatrix", tableStart);
+    const tableCode = content.slice(tableStart, tableEnd > 0 ? tableEnd : undefined);
+    expect(tableCode).not.toContain("meta.emoji");
+  });
+
+  it("[S11-#15] Payoff shows low-reclaim guidance", () => {
+    expect(
+      fileContains("components/focus/Payoff.tsx", "Your fixes target only")
+    ).toBe(true);
+  });
+
+  it("[S11-#16] opportunity frames use emotional copy (no stat-first framing)", () => {
+    const content = readSrc("lib/data/opportunity-frames.ts");
+    // First frame should not lead with research stats
+    expect(content).not.toContain("Context switching eats 40%");
+    expect(content).toContain("Tiny time wins feel pointless");
+  });
+
+  it("[S11-#2] DrilldownStep shows per-category totals", () => {
+    expect(
+      fileContains("components/analyzer/DrilldownStep.tsx", "categoryTotals")
+    ).toBe(true);
   });
 });
 

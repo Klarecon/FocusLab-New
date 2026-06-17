@@ -21,120 +21,120 @@ export const OPPORTUNITY_FRAMES: OpportunityFrame[] = [
     minHours: 1,
     maxHours: 3,
     generic:
-      "Context switching eats 40% of your productive output. Even one 90-minute deep-work block per week lets you do the thinking your busiest days never allow.",
+      "Tiny time wins feel pointless until you protect them. One unbroken block a week is enough to actually finish what keeps getting interrupted.",
     byRole: {
       engineering:
-        "The average engineer codes only 52 minutes per day. One unbroken 2-hour block a week is enough to close that stuck PR or pay down the tech debt the team keeps deferring.",
+        "That\u2019s your code review backlog, finally cleared. The kind of morning where PRs actually ship instead of pile up.",
       "software-dev":
-        "Context switching costs dev teams $21,000 per developer annually. One focused coding session a week compounds into features shipped, not just tickets touched.",
+        "That\u2019s one real coding session where you actually finish something instead of just starting it between meetings.",
       marketing:
-        "62% of top B2B marketers say the key to outperforming is connecting content to business goals. 2 hours of strategy time lets you do that instead of just reacting to requests.",
+        "That\u2019s the campaign brief you keep rewriting in 10-minute bursts. One protected block and it\u2019s done \u2014 properly.",
       sales:
-        "Consistent prospecting blocks are the #1 predictor of quota attainment. Even 2 hours a week gives you the pipeline work that fills next quarter.",
+        "That\u2019s your prospecting block back. The one that fills next quarter\u2019s pipeline instead of just this week\u2019s call log.",
       product:
-        "PMs spend only 27% of time on strategy but report they should spend 51%. Two hours of protected thinking closes that gap and sharpens every roadmap decision.",
+        "That\u2019s your weekly customer call you keep canceling. Actually talk to users instead of reading Slack recaps about them.",
       design:
-        "Continuous, focused user testing cuts revision cycles dramatically. Two hours of weekly testing time compounds design quality in ways quarterly reviews never do.",
+        "That\u2019s one real design exploration instead of another rushed iteration. The kind of thinking that stops the revision cycle.",
       "ceo-founder":
-        "90% of high-performing CEOs attribute their productivity to protecting uninterrupted thinking blocks. Even 2 hours a week clarifies the direction everything else follows.",
+        "That\u2019s your thinking time back \u2014 the kind where you actually set direction instead of just reacting to whatever\u2019s loudest.",
       manager:
-        "Employees who feel satisfied with their manager conversations are 81% more productive. One deep coaching session per week is the highest-leverage work you can do.",
+        "That\u2019s one real coaching conversation per week that isn\u2019t a status check. The kind where your team actually tells you what they need.",
       finance:
-        "Organizations with optimized reporting spend 60% more time on strategic analysis. 2 hours a week moves you from reconciling numbers to interpreting what they mean.",
+        "That\u2019s two hours of reading the numbers instead of just assembling them. The shift from reporter to advisor starts here.",
       operations:
-        "Streamlined workflows reduce completion time by up to 50% \u2014 but finding the bottleneck requires unbroken focus. Two hours a week to analyze, not just firefight.",
+        "That\u2019s the process review you keep deferring. Two hours to find the bottleneck instead of just working around it again.",
       executive:
-        "McKinsey research shows CEOs spend just 15% of time on deep thinking. Protecting even 2 hours weekly gives you the strategic clarity that cascades across the org.",
+        "That\u2019s the strategic block your calendar keeps eating. Protect it and you\u2019re steering, not just attending.",
     },
   },
   {
     minHours: 3,
     maxHours: 6,
     generic:
-      "That\u2019s a half-day back. USC research found that intentional time-blocking increases productivity by 50%. This is enough to finally start the thing that keeps getting pushed to \u2018next quarter.\u2019",
+      "That\u2019s a half-day back. Enough to finally start the thing that keeps getting pushed to \u2018next quarter.\u2019",
     byRole: {
       engineering:
-        "DORA metrics show that deployment frequency and change failure rate \u2014 the things that actually drive business value \u2014 improve when engineers have time for architectural thinking, not just feature sprints.",
+        "A half-day a week for the architecture work that never happens between sprints. The kind that makes next quarter\u2019s features possible.",
       "software-dev":
-        "Engineering teams with protected focus time delivered 47% more features with higher code quality. A half-day a week of unbroken coding is the difference between reactive and strategic engineering.",
+        "A half-day of unbroken coding. Not \u201C30 minutes between meetings\u201D \u2014 actual flow state where features get shipped, not just touched.",
       marketing:
-        "Organizations that invested in strategic content planning saw 80% higher marketing productivity. A half-day a week lets you design campaigns that flow instead of posting reactively.",
+        "A half-day to design campaigns that flow instead of firefighting the next post. Strategy time is how marketing becomes a revenue driver.",
       sales:
-        "80% of deals require 5+ follow-ups, but 44% of reps quit after one. A half-day for strategic prospecting and account research is where quota-crushing comes from.",
+        "A half-day of real selling instead of CRM admin. Account research, custom pitches, the follow-ups that actually close deals.",
       product:
-        "The best PMs focus on outcomes, not outputs. 5 hours a week lets you define success metrics, validate assumptions, and measure actual impact instead of just shipping.",
+        "A half-day for discovery: customer calls, data analysis, competitive research. The work that separates shipping right from just shipping fast.",
       design:
-        "Well-maintained design systems reduce rework across entire teams. A half-day a week is enough to build the component library, do deep user research, or run real discovery.",
+        "A half-day for the work you got into design to do. User research, prototyping, exploration \u2014 not just executing tickets.",
       "ceo-founder":
-        "CEOs who dedicate structured time to strategic planning lead larger, faster-growing firms. A half-day a week for market analysis, vision, and the conversations that matter.",
+        "A half-day for market analysis, vision, and the conversations that actually matter. The kind of time that makes the rest of your week sharper.",
       manager:
-        "Management coaching shows 29% ROI in 3 months and 415% annualized ROI. A half-day a week for real development conversations with your team pays for itself many times over.",
+        "A half-day for real development conversations with your team. Not status checks \u2014 the coaching that changes how people work.",
       finance:
-        "Proactive risk analysis and scenario modeling \u2014 the work that prevents financial surprises \u2014 only happens with protected focus time. A half-day weekly transforms you from reporter to strategic advisor.",
+        "A half-day for scenario modeling and risk analysis \u2014 the work that prevents financial surprises instead of explaining them after.",
       operations:
-        "Process optimization requires sustained analysis, not 15-minute check-ins. A half-day a week to map, measure, and redesign workflows delivers compounding efficiency gains.",
+        "A half-day to map, measure, and redesign workflows. Process optimization only happens with sustained focus, not 15-minute check-ins.",
       executive:
-        "65% of executives say meetings prevent them from completing their own work. A half-day a week reclaimed means you\u2019re steering, not just attending.",
+        "A half-day reclaimed means you\u2019re steering, not just attending. The strategic work that creates next year\u2019s outcomes.",
     },
   },
   {
     minHours: 6,
     maxHours: 10,
     generic:
-      "That\u2019s nearly a full day back every week. Gloria Mark\u2019s research at UC Irvine shows it takes 23 minutes to recover focus after each interruption \u2014 a full day of unbroken work lets you reach the deep flow state that fragmented days make impossible.",
+      "That\u2019s nearly a full day back every week. A full day of unbroken work lets you reach the deep flow state that fragmented days make impossible.",
     byRole: {
       engineering:
-        "A full day a week for architecture, refactoring, and system design. This is 10x-impact work that only happens with sustained focus \u2014 the kind DORA metrics directly correlate with business value.",
+        "A full day for architecture, refactoring, and system design. The 10x-impact work that only happens with sustained focus.",
       "software-dev":
-        "Enough time to build internal tools, contribute to open source, or mentor junior devs. This is the expertise-compounding work that leads to senior and staff-level roles.",
+        "A full day to build the internal tools, mentor the junior dev, or tackle that refactor everyone\u2019s been avoiding. Career-building work.",
       marketing:
-        "A full content creation and strategy day. Deep market research, competitive positioning, integrated campaign design \u2014 the work that makes marketing a revenue driver, not a cost center.",
+        "A full content creation and strategy day. The kind where you build integrated campaigns, not just react to requests.",
       sales:
-        "A full day of selling instead of admin. Strategic account planning, territory analysis, custom pitch development for your top accounts \u2014 the work that separates quota-crushers from order-takers.",
+        "A full day of selling. Strategic account planning, territory analysis, custom pitches \u2014 the work that separates quota-crushers from order-takers.",
       product:
-        "A full discovery day: customer calls, data analysis, competitive research, roadmap thinking. The work that separates PMs who ship right from PMs who just ship fast.",
+        "A full discovery day: customer calls, data deep-dives, roadmap thinking. The work that makes your next quarter\u2019s bets actually informed.",
       design:
-        "A full creative day \u2014 the kind where you do the work you actually got into design to do. User research, prototyping, design exploration, mentoring. This is career-building work.",
+        "A full creative day \u2014 user research, prototyping, mentoring. This is career-building work, not just ticket-clearing.",
       "ceo-founder":
-        "McKinsey found that high-performing CEOs treat deep thinking time as non-negotiable. A full day for vision, relationships, and the decisions only you can make.",
+        "A full day for vision, relationships, and the decisions only you can make. The non-negotiable block that high-performing founders protect.",
       manager:
-        "Enough time to actually lead: development plans, capability gap analysis, succession planning, culture-building. This is the work that turns good managers into leaders people follow.",
+        "Enough time to actually lead: development plans, capability gaps, succession planning. The work that turns managers into leaders people follow.",
       finance:
-        "A full day to move from reactive reporting to proactive financial planning. Build scenario models, strategic forecasts, capital allocation recommendations. Become the CFO\u2019s strategic partner.",
+        "A full day for proactive financial planning. Scenario models, strategic forecasts \u2014 the work that makes you the CFO\u2019s partner, not their assistant.",
       operations:
-        "A full process improvement day every week. Lean methodology, bottleneck analysis, automation strategy \u2014 the ROI of this work compounds quarter over quarter.",
+        "A full process improvement day. Lean methodology, bottleneck analysis, automation strategy \u2014 compounding ROI every quarter.",
       executive:
-        "High-performing executives balance short-term credibility with long-term vision. A full day weekly for the strategic work that creates next year\u2019s outcomes, not just this quarter\u2019s reports.",
+        "A full day for the strategic work that builds next year. Vision, key relationships, organizational design \u2014 not just this quarter\u2019s reports.",
     },
   },
   {
     minHours: 10,
     maxHours: Infinity,
     generic:
-      "That\u2019s more than a full work day every week. Cal Newport\u2019s research shows expert performers max out at 3\u20134 hours of truly deep work per day \u2014 with this much freed time, you can consistently hit that ceiling and produce work that compounds.",
+      "That\u2019s more than a full work day every week. This much protected time lets you consistently do the deep work that compounds \u2014 the kind that changes trajectories, not just to-do lists.",
     byRole: {
       engineering:
-        "Two full days of deep engineering a week. System redesigns, performance breakthroughs, innovation prototypes. This capacity level is what separates principal engineers from the rest.",
+        "Two full days of deep engineering. System redesigns, performance breakthroughs, innovation prototypes. This is what separates principal engineers from the rest.",
       "software-dev":
-        "Enough to learn an entirely new stack, build and ship internal tools, or lead a technical initiative end-to-end. This is the time investment that accelerates careers.",
+        "Enough to learn a new stack, build and ship internal tools, or lead a technical initiative end-to-end. The time investment that accelerates careers.",
       marketing:
-        "Enough to launch the new channel, run the experiment, build the brand strategy. This level of protected time turns a marketing team from reactive to market-leading.",
+        "Enough to launch the new channel, run the experiment, build the brand strategy. This is how reactive teams become market-leading ones.",
       sales:
-        "10+ more hours of selling per week. At an average close rate, that\u2019s multiple additional deals per quarter \u2014 run the math on your average deal size.",
+        "10+ more hours of selling per week. At your close rate, that\u2019s multiple additional deals per quarter. Run the math.",
       product:
-        "Enough for real strategic work: customer research programs, competitive analysis, long-term product vision. The difference between PMs who shape markets and PMs who follow backlogs.",
+        "Enough for real strategic work: customer research programs, competitive analysis, long-term vision. The difference between shaping markets and following backlogs.",
       design:
-        "Two design sprints worth of focus time every week. This is how design-driven companies are built \u2014 with designers who have space to think, not just execute.",
+        "Two design sprints of focus time every week. This is how design-driven companies are built \u2014 with designers who have space to think.",
       "ceo-founder":
-        "Two full days a week for the work that builds enterprise value: vision-setting, key relationships, strategic bets, organizational design. Stop doing everyone else\u2019s job and start doing yours.",
+        "Two full days for the work that builds enterprise value: vision, key relationships, strategic bets. Stop doing everyone else\u2019s job and start doing yours.",
       manager:
-        "Enough to transform your team: coaching programs, culture rituals, strategic hiring, capability building. This is how high-performance teams are created, not just managed.",
+        "Enough to transform your team: coaching programs, culture rituals, strategic hiring. How high-performance teams are created, not just managed.",
       finance:
-        "Enough for real financial modeling, scenario planning, strategic advisory, investor relations. This is the difference between a finance function and a finance partner.",
+        "Enough for real financial modeling, scenario planning, and strategic advisory. The difference between a finance function and a finance partner.",
       operations:
-        "Transformation-level capacity. Rebuild systems end-to-end, implement continuous improvement methodologies, design the operational infrastructure that lets the company scale.",
+        "Transformation-level capacity. Rebuild systems end-to-end, implement continuous improvement, design the infrastructure that lets the company scale.",
       executive:
-        "Two full days a week for innovation, market exploration, talent strategy, and legacy thinking. This is leadership at its highest leverage.",
+        "Two full days a week for innovation, talent strategy, and legacy thinking. Leadership at its highest leverage.",
     },
   },
 ];

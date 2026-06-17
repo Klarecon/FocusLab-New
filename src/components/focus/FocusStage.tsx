@@ -11,7 +11,7 @@ import Payoff from "./Payoff";
 const TABS = [
   { id: "assign", label: "Assign Fixes", emoji: "🎯" },
   { id: "plan", label: "Action Plan", emoji: "😤" },
-  { id: "matrix", label: "EvI Matrix", emoji: "⚡" },
+  { id: "matrix", label: "EVI Matrix", emoji: "⚡" },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];

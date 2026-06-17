@@ -230,7 +230,7 @@ export default function IntakeStep({ onNext, onBack }: IntakeStepProps) {
                   {pain.prompt}
                 </span>
                 <span className="text-xs" style={{ color: "var(--color-ink-soft)" }}>
-                  {sourceCount} time {sourceCount === 1 ? "drain" : "drains"} we&apos;ll dig into
+                  {sourceCount} time {sourceCount === 1 ? "drain" : "drains"} we{"\u2019"}ll dig into
                 </span>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">

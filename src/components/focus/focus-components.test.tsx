@@ -177,7 +177,8 @@ describe("SolutionPicker", () => {
       />,
     );
 
-    expect(screen.getByText(/don't have pre-built fixes/)).toBeInTheDocument();
+    // When no built-in solutions exist, the inline add-your-own fix input is shown
+    expect(screen.getByPlaceholderText(/Add your own fix/)).toBeInTheDocument();
   });
 
   it("adding a solution updates store", () => {
@@ -220,27 +221,18 @@ describe("FocusTable", () => {
     expect(screen.getAllByText(sol.title).length).toBeGreaterThan(0);
   });
 
-  it("owner cycling persists in store", () => {
+  it("does not render Owner or Reclaim columns (removed in S11)", () => {
     const meetingSolutions = solutionsForWaste("meet-status");
     const sol = meetingSolutions[0];
-    // sol.owner is "team" for the first meeting solution
     useAuditStore.getState().addSolution(sol);
 
     render(
       <FocusTable vitalFew={mockVitalFew} usefulMany={mockUsefulMany} />,
     );
 
-    // The owner button shows the default owner label (Team for this solution).
-    // Both desktop table and mobile card render it, so use getAllByText.
-    const ownerButtons = screen.getAllByText("My team");
-    expect(ownerButtons.length).toBeGreaterThan(0);
-    const ownerButton = ownerButtons[0].closest("button");
-    expect(ownerButton).toBeTruthy();
-    fireEvent.click(ownerButton!);
-
-    // Cycling from "team" -> next owner in the OWNERS array
-    const overrides = useAuditStore.getState().ownerOverrides;
-    expect(overrides[sol.id]).toBeDefined();
+    // Owner and Reclaim columns were removed per user feedback in Session 11
+    expect(screen.queryByText("Owner")).toBeNull();
+    expect(screen.queryByText("Reclaim")).toBeNull();
   });
 
   it("empty state", () => {

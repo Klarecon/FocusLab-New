@@ -146,6 +146,27 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
     }, 0);
   }, [activeSources, entries]);
 
+  // Per-category totals for validation against estimates
+  const categoryTotals = useMemo(() => {
+    const totals: Record<string, number> = {};
+    for (const group of vitalGroups) {
+      let sum = 0;
+      for (const source of group.sources) {
+        if (activeSet.has(source.slug)) {
+          sum += entries[source.slug]?.hoursPerDay ?? 0;
+        }
+      }
+      // Include custom sources for this group
+      for (const src of activeSources) {
+        if (src.slug.startsWith("custom-") && src.group === group.group) {
+          sum += entries[src.slug]?.hoursPerDay ?? 0;
+        }
+      }
+      totals[group.group] = sum;
+    }
+    return totals;
+  }, [vitalGroups, activeSet, entries, activeSources]);
+
   const handleCompute = () => {
     const chainEntries: ChainEntry[] = activeSources.reduce<ChainEntry[]>(
       (acc, src) => {
@@ -227,6 +248,7 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
           These are your biggest time sinks. Check the ones that hit hardest and estimate how much they cost you.
         </p>
 
+        {/* Inline counter (visible when scrolled to top) */}
         {totalDetailed > 0 && (
           <motion.div
             animate={{ scale: [1.08, 1] }}
@@ -243,6 +265,28 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
           </motion.div>
         )}
       </div>
+
+      {/* Sticky floating counter — always visible on right side */}
+      {totalDetailed > 0 && (
+        <div
+          className="fixed right-4 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center gap-1 px-4 py-4 rounded-2xl shadow-lg"
+          style={{
+            backgroundColor: "var(--color-card)",
+            border: "2px solid var(--color-waste)",
+            boxShadow: "0 4px 20px rgba(224, 62, 18, 0.15)",
+          }}
+        >
+          <span className="font-figures font-bold text-3xl" style={{ color: "var(--color-waste)" }}>
+            {totalDetailed.toFixed(1)}
+          </span>
+          <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--color-waste)" }}>
+            hrs/wk
+          </span>
+          <span className="text-[9px]" style={{ color: "var(--color-ink-soft)" }}>
+            waste spotted
+          </span>
+        </div>
+      )}
 
       <div className="space-y-6 mb-8">
         {vitalGroups.map((group, gi) => (
@@ -264,15 +308,32 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
               >
                 {group.group}
               </h3>
-              <span
-                className="text-xs font-figures font-bold px-2 py-1 rounded"
-                style={{
-                  backgroundColor: "rgba(224, 62, 18, 0.08)",
-                  color: "var(--color-waste)",
-                }}
-              >
-                ~{(categoryEstimates[group.group] ?? 0).toFixed(0)} hrs/wk estimated
-              </span>
+              <div className="flex items-center gap-2">
+                <span
+                  className="text-xs font-figures font-bold px-2 py-1 rounded"
+                  style={{
+                    backgroundColor: "rgba(224, 62, 18, 0.08)",
+                    color: "var(--color-waste)",
+                  }}
+                >
+                  ~{(categoryEstimates[group.group] ?? 0).toFixed(0)} hrs/wk estimated
+                </span>
+                {(categoryTotals[group.group] ?? 0) > 0 && (
+                  <span
+                    className="text-xs font-figures font-bold px-2 py-1 rounded"
+                    style={{
+                      backgroundColor: (categoryTotals[group.group] ?? 0) > (categoryEstimates[group.group] ?? 0) * 1.5
+                        ? "rgba(224, 62, 18, 0.12)"
+                        : "rgba(196, 24, 106, 0.08)",
+                      color: (categoryTotals[group.group] ?? 0) > (categoryEstimates[group.group] ?? 0) * 1.5
+                        ? "var(--color-waste)"
+                        : "var(--color-reclaim)",
+                    }}
+                  >
+                    {(categoryTotals[group.group] ?? 0).toFixed(1)} hrs detailed
+                  </span>
+                )}
+              </div>
             </div>
 
             <div className="space-y-1">
@@ -410,6 +471,19 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
                     </div>
                   );
                 })}
+
+              {/* Per-category warning when detailed hours greatly exceed estimate */}
+              {(categoryTotals[group.group] ?? 0) > (categoryEstimates[group.group] ?? 0) * 1.5 && (categoryEstimates[group.group] ?? 0) > 0 && (
+                <div
+                  className="mt-2 p-2 rounded-md flex items-start gap-2 text-xs"
+                  style={{ backgroundColor: "rgba(224, 62, 18, 0.06)", color: "var(--color-waste)" }}
+                >
+                  <span aria-hidden="true">😬</span>
+                  <span>
+                    Your detailed total ({(categoryTotals[group.group] ?? 0).toFixed(1)} hrs) is well above your {(categoryEstimates[group.group] ?? 0).toFixed(0)}-hr estimate for {group.group}. Double-check these numbers.
+                  </span>
+                </div>
+              )}
 
               {/* Add custom drain input */}
               <div className="mt-3 pt-3 flex items-center gap-2" style={{ borderTop: "1px dashed var(--color-line)" }}>

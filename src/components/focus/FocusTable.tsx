@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useCallback } from "react";
+import { useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuditStore } from "@/stores/audit-store";
 import { quadrant, QUADRANT_META } from "@/lib/engine/solutions-logic";
@@ -14,23 +14,6 @@ interface FocusTableProps {
   vitalFew: DrainInfo[];
   usefulMany: DrainInfo[];
   onGoToMatrix?: () => void;
-}
-
-const OWNERS = [
-  { key: "self", emoji: "🙋", label: "Me" },
-  { key: "manager", emoji: "👔", label: "My manager" },
-  { key: "team", emoji: "👥", label: "My team" },
-] as const;
-
-type OwnerKey = (typeof OWNERS)[number]["key"];
-
-function nextOwner(current: string): OwnerKey {
-  const idx = OWNERS.findIndex((o) => o.key === current);
-  return OWNERS[((idx >= 0 ? idx : 0) + 1) % OWNERS.length].key;
-}
-
-function ownerDisplay(owner: string) {
-  return OWNERS.find((o) => o.key === owner) ?? OWNERS[0];
 }
 
 function ZoneBadge({ zone }: { zone: "A" | "B" | "C" }) {
@@ -95,12 +78,9 @@ function ActionCard({
   sourceName,
   effort,
   impact,
-  owner,
-  reclaimHint,
   onRemove,
   onSetEffort,
   onSetImpact,
-  onCycleOwner,
   index,
 }: {
   solution: Solution;
@@ -108,15 +88,11 @@ function ActionCard({
   sourceName: string;
   effort: number;
   impact: number;
-  owner: string;
-  reclaimHint: string;
   onRemove: () => void;
   onSetEffort: (v: number) => void;
   onSetImpact: (v: number) => void;
-  onCycleOwner: () => void;
   index: number;
 }) {
-  const ow = ownerDisplay(owner);
   const q = quadrant(effort as Score, impact as Score);
   const meta = QUADRANT_META[q];
 
@@ -170,28 +146,7 @@ function ActionCard({
       </h4>
 
       {/* Controls grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div>
-          <span
-            className="block text-xs mb-1 font-medium"
-            style={{ color: "var(--color-ink-soft)" }}
-          >
-            Owner
-          </span>
-          <button
-            onClick={onCycleOwner}
-            aria-label={`Owner: ${ow.label}. Click to change.`}
-            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium cursor-pointer transition-colors hover:opacity-80 border"
-            style={{
-              borderColor: "var(--color-line)",
-              backgroundColor: "var(--color-paper)",
-              color: "var(--color-ink)",
-            }}
-          >
-            <span aria-hidden="true">{ow.emoji}</span>
-            <span>{ow.label}</span>
-          </button>
-        </div>
+      <div className="grid grid-cols-2 gap-3">
         <div>
           <span
             className="block text-xs mb-1 font-medium"
@@ -220,17 +175,6 @@ function ActionCard({
             label={`Impact rating for ${solution.title}`}
           />
         </div>
-        <div>
-          <span
-            className="block text-xs mb-1 font-medium"
-            style={{ color: "var(--color-ink-soft)" }}
-          >
-            Reclaim
-          </span>
-          <span className="text-xs italic" style={{ color: "var(--color-ink-soft)" }}>
-            {reclaimHint}
-          </span>
-        </div>
       </div>
     </motion.div>
   );
@@ -241,18 +185,7 @@ export default function FocusTable({ vitalFew, usefulMany, onGoToMatrix }: Focus
   const solutionScores = useAuditStore((s) => s.solutionScores);
   const removeSolution = useAuditStore((s) => s.removeSolution);
   const setSolutionScore = useAuditStore((s) => s.setSolutionScore);
-  const ownerOverrides = useAuditStore((s) => s.ownerOverrides);
-  const setOwnerOverride = useAuditStore((s) => s.setOwnerOverride);
-
   const { getZone, getSourceName } = useDrainLookup(vitalFew, usefulMany);
-
-  const cycleOwner = useCallback(
-    (solId: string, currentDefault: string) => {
-      const current = ownerOverrides[solId] ?? currentDefault;
-      setOwnerOverride(solId, nextOwner(current));
-    },
-    [ownerOverrides, setOwnerOverride],
-  );
 
   // Sort: Zone A first, then by impact descending
   const sortedSolutions = useMemo(() => {
@@ -308,7 +241,7 @@ export default function FocusTable({ vitalFew, usefulMany, onGoToMatrix }: Focus
           Your Action Plan
         </h2>
         <p className="text-sm mb-4" style={{ color: "var(--color-ink-soft)" }}>
-          {stats.total} {stats.total === 1 ? "fix" : "fixes"}, sorted by what matters most. Adjust the effort, impact, and owner to match your situation.
+          {stats.total} {stats.total === 1 ? "fix" : "fixes"}, sorted by what matters most. Adjust the effort and impact to match your situation.
         </p>
 
         {/* Summary pills */}
@@ -347,7 +280,6 @@ export default function FocusTable({ vitalFew, usefulMany, onGoToMatrix }: Focus
               {zoneASolutions.map((sol, i) => {
                 const zone = getZone(sol);
                 const scores = solutionScores[sol.id] ?? { effort: 2, impact: 2 };
-                const owner = ownerOverrides[sol.id] ?? sol.owner;
                 return (
                   <ActionCard
                     key={sol.id}
@@ -356,12 +288,9 @@ export default function FocusTable({ vitalFew, usefulMany, onGoToMatrix }: Focus
                     sourceName={getSourceName(sol)}
                     effort={scores.effort}
                     impact={scores.impact}
-                    owner={owner}
-                    reclaimHint={sol.reclaimHint}
                     onRemove={() => removeSolution(sol.id)}
                     onSetEffort={(v) => setSolutionScore(sol.id, { effort: v })}
                     onSetImpact={(v) => setSolutionScore(sol.id, { impact: v })}
-                    onCycleOwner={() => cycleOwner(sol.id, sol.owner)}
                     index={i}
                   />
                 );
@@ -388,7 +317,6 @@ export default function FocusTable({ vitalFew, usefulMany, onGoToMatrix }: Focus
               {zoneBSolutions.map((sol, i) => {
                 const zone = getZone(sol);
                 const scores = solutionScores[sol.id] ?? { effort: 2, impact: 2 };
-                const owner = ownerOverrides[sol.id] ?? sol.owner;
                 return (
                   <ActionCard
                     key={sol.id}
@@ -397,12 +325,9 @@ export default function FocusTable({ vitalFew, usefulMany, onGoToMatrix }: Focus
                     sourceName={getSourceName(sol)}
                     effort={scores.effort}
                     impact={scores.impact}
-                    owner={owner}
-                    reclaimHint={sol.reclaimHint}
                     onRemove={() => removeSolution(sol.id)}
                     onSetEffort={(v) => setSolutionScore(sol.id, { effort: v })}
                     onSetImpact={(v) => setSolutionScore(sol.id, { impact: v })}
-                    onCycleOwner={() => cycleOwner(sol.id, sol.owner)}
                     index={i}
                   />
                 );

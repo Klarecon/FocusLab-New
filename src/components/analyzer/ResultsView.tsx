@@ -34,8 +34,42 @@ function fmtHours(n: number, decimals = 1): string {
   return n.toFixed(decimals);
 }
 
-function truncate(str: string, max = 25): string {
-  return str.length > max ? str.slice(0, max - 1) + "\u2026" : str;
+/** Abbreviate waste source names to fit chart axis — no ellipsis ever. */
+function abbreviate(str: string, max = 22): string {
+  if (str.length <= max) return str;
+  // Common word abbreviations
+  const abbrevs: [RegExp, string][] = [
+    [/\bMeetings?\b/gi, "Mtgs"],
+    [/\bRecurring\b/gi, "Recur."],
+    [/\bwaiting\b/gi, "Wait."],
+    [/\bapproval\b/gi, "Appr."],
+    [/\bmanual\b/gi, "Man."],
+    [/\bprocess(es)?\b/gi, "Proc."],
+    [/\bSwitching\b/gi, "Switch."],
+    [/\bbetween\b/gi, "b/w"],
+    [/\byou weren't needed in\b/gi, "not needed"],
+    [/\byou didn't write\b/gi, "not yours"],
+    [/\bthat outlived their purpose\b/gi, "stale"],
+    [/\bthat run longer than needed\b/gi, "overlong"],
+    [/\bInterruptions\b/gi, "Interr."],
+    [/\bReformatting\b/gi, "Reformat."],
+    [/\bCompiling\b/gi, "Compil."],
+    [/\boperational\b/gi, "ops"],
+    [/\bRebuilding\b/gi, "Rebuild."],
+    [/\band\b/gi, "&"],
+  ];
+  let result = str;
+  for (const [pattern, replacement] of abbrevs) {
+    if (result.length <= max) break;
+    result = result.replace(pattern, replacement);
+  }
+  // If still too long, truncate at last word boundary
+  if (result.length > max) {
+    const trimmed = result.slice(0, max);
+    const lastSpace = trimmed.lastIndexOf(" ");
+    result = lastSpace > max * 0.5 ? trimmed.slice(0, lastSpace) : trimmed;
+  }
+  return result;
 }
 
 /* --- Severity tiers --- */
@@ -149,7 +183,7 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
   const chartData = useMemo(() => {
     const zoneBySlug = new Map(paretoResult.categories.map((c) => [c.categorySlug, c.zone]));
     return paretoResult.chart.map((pt) => ({
-      name: truncate(pt.label ?? pt.categorySlug),
+      name: abbreviate(pt.label ?? pt.categorySlug),
       hours: pt.hours,
       cumulative: pt.cumulativePercent,
       zone: zoneBySlug.get(pt.categorySlug) ?? "C",
@@ -364,7 +398,7 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
                 <XAxis
                   dataKey="name"
                   tick={{ fontSize: 10, fill: "var(--color-ink-soft)" }}
-                  tickFormatter={(name: string) => truncate(name, 25)}
+                  tickFormatter={(name: string) => abbreviate(name, 22)}
                   angle={-45}
                   textAnchor="end"
                   interval={0}

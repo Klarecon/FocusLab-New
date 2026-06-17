@@ -160,6 +160,9 @@ export const ROLE_WASTE: WasteSource[] = [
   { slug: "sdev-context-switch", group: "Focus", label: "Switching between repos, tickets, and Slack", muda: "switching-searching", whatCounts: "Jumping between codebases, tickets, and chat all day.", scope: ["software-dev"], emoji: emojiFor("Focus") },
   { slug: "sdev-deploy-wait", group: "Builds & reviews", label: "Waiting on deploys and CI pipelines", muda: "waiting", whatCounts: "Watching CI run, retrying flaky tests, waiting for green.", scope: ["software-dev"], emoji: emojiFor("Builds & reviews") },
   { slug: "sdev-debug-others", group: "Code", label: "Debugging code you didn\u2019t write", muda: "rework", whatCounts: "Spelunking unfamiliar code to fix someone else\u2019s bug.", scope: ["software-dev"], emoji: emojiFor("Code") },
+  { slug: "sdev-code-review-time", group: "Code", label: "Doing code reviews for others", muda: "over-processing", whatCounts: "Time spent reviewing PRs, nitpick cycles, merge conflicts.", scope: ["software-dev"], emoji: emojiFor("Code") },
+  { slug: "sdev-refactor-debt", group: "Code", label: "Refactoring brittle or unclear code", muda: "rework", whatCounts: "Cleaning up tech debt, making code maintainable.", scope: ["software-dev"], emoji: emojiFor("Code") },
+  { slug: "sdev-merge-conflicts", group: "Code", label: "Resolving merge conflicts", muda: "switching-searching", whatCounts: "Untangling conflicts, re-testing after merges.", scope: ["software-dev"], emoji: emojiFor("Code") },
   { slug: "sdev-pr-review", group: "Builds & reviews", label: "Code reviews piling up in your queue", muda: "pile-ups", whatCounts: "PRs waiting on you or your PRs waiting on others.", scope: ["software-dev"], emoji: emojiFor("Builds & reviews") },
   { slug: "sdev-env-setup", group: "Builds & reviews", label: "Fixing local dev environment issues", muda: "rework", whatCounts: "Broken Docker, missing env vars, version mismatches.", scope: ["software-dev"], emoji: emojiFor("Builds & reviews") },
 
@@ -239,6 +242,9 @@ const BENCHMARK_CATEGORY_BY_SOURCE: Record<string, string> = {
   "sdev-context-switch": "context-switching",
   "sdev-deploy-wait": "tech-debt",
   "sdev-env-setup": "tech-debt",
+  "sdev-code-review-time": "tech-debt",
+  "sdev-refactor-debt": "tech-debt",
+  "sdev-merge-conflicts": "context-switching",
   // operations
   "ops-manual-process": "admin-low-value",
   "ops-report-compile": "reporting-data-pulls",

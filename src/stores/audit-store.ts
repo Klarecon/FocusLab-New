@@ -81,6 +81,7 @@ interface AuditState {
   setWeighCadence: (cadence: "daily" | "weekly") => void;
   setCategoryEstimate: (group: string, hours: number) => void;
   setVitalCategories: (groups: string[]) => void;
+  clearFocusState: () => void;
   setStep: (step: number) => void;
   reset: () => void;
 }
@@ -178,7 +179,14 @@ export const useAuditStore = create<AuditState>()(
         })),
 
       setParetoResult: (result) =>
-        set({ paretoResult: result }),
+        set({
+          paretoResult: result,
+          // Clear stale focus selections when a new analysis completes
+          chosenSolutions: [],
+          solutionScores: {},
+          ownerOverrides: {},
+          dueDates: {},
+        }),
 
       addSolution: (solution) =>
         set((state) => {
@@ -249,6 +257,14 @@ export const useAuditStore = create<AuditState>()(
             updatedEntries[slug] = { ...entry, cadence };
           }
           return { weighCadence: cadence, entries: updatedEntries };
+        }),
+
+      clearFocusState: () =>
+        set({
+          chosenSolutions: [],
+          solutionScores: {},
+          ownerOverrides: {},
+          dueDates: {},
         }),
 
       setStep: (step) =>

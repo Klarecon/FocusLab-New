@@ -264,6 +264,51 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
               )}
             </div>
 
+            {/* Low-reclaim guidance */}
+            {reclaimableWeekly > 0 && reclaimableWeekly < totalWasteHoursWeekly * 0.15 && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="mt-6 p-4 rounded-xl text-sm"
+                style={{ backgroundColor: "rgba(237, 178, 21, 0.06)", border: "1px solid rgba(237, 178, 21, 0.15)" }}
+              >
+                <div className="flex items-start gap-2">
+                  <span aria-hidden="true">🤔</span>
+                  <div>
+                    <p className="font-medium mb-1" style={{ color: "var(--color-gold)" }}>
+                      Your fixes target only {reclaimableWeekly.toFixed(1)} of {totalWasteHoursWeekly.toFixed(1)} wasted hours
+                    </p>
+                    <p style={{ color: "var(--color-ink-soft)" }}>
+                      Try adding more fixes, targeting your biggest drains, or raising impact scores on the Action Plan tab.
+                    </p>
+                    {/* Per-fix breakdown */}
+                    {chosenSolutions.length > 0 && (
+                      <div className="mt-3 space-y-1">
+                        {chosenSolutions.map((sol) => {
+                          const credit = payoff.creditByRow[sol.id] ?? 0;
+                          const scores = solutionScores[sol.id] ?? { effort: 2, impact: 2 };
+                          return (
+                            <div key={sol.id} className="flex items-center gap-2 text-xs">
+                              <span className="font-medium truncate flex-1" style={{ color: "var(--color-ink)" }}>
+                                {sol.title}
+                              </span>
+                              <span style={{ color: "var(--color-ink-soft)" }}>
+                                impact {scores.impact}/5
+                              </span>
+                              <span className="font-bold font-figures" style={{ color: credit > 0 ? "var(--color-reclaim)" : "var(--color-ink-soft)" }}>
+                                {credit > 0 ? `+${credit.toFixed(1)} hrs` : "0 hrs"}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
             {/* Opportunity reframe */}
             {(() => {
               const { generic, roleSpecific } = getOpportunityFrame(reclaimableWeekly, roleSlug);

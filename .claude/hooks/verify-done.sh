@@ -108,6 +108,31 @@ else
   report "SCORE_FROM_LEVEL (2/3/4)" 1 "solutions-logic.ts not found"
 fi
 
+# --- Check 9: Changes are pushed to origin (no silent local-only changes) ---
+local_head=$(git rev-parse HEAD 2>/dev/null || echo "none")
+origin_head=$(git rev-parse origin/main 2>/dev/null || echo "none")
+if [ "$local_head" = "$origin_head" ]; then
+  report "Changes pushed to origin" 0 ""
+else
+  report "Changes pushed to origin" 1 "local HEAD differs from origin/main — run git push"
+fi
+
+# --- Check 10: No crying emoji in SolutionPicker ---
+crying_sol=$(grep -r "🥲" src/components/focus/SolutionPicker.tsx 2>/dev/null || true)
+if [ -z "$crying_sol" ]; then
+  report "No crying emoji in SolutionPicker" 0 ""
+else
+  report "No crying emoji in SolutionPicker" 1 "🥲 found — use checkmark instead"
+fi
+
+# --- Check 11: No 'pre-built fixes' copy ---
+prebuilt_copy=$(grep -r "pre-built fixes" src/components/ 2>/dev/null || true)
+if [ -z "$prebuilt_copy" ]; then
+  report "No 'pre-built fixes' copy" 0 ""
+else
+  report "No 'pre-built fixes' copy" 1 "bad empty state copy found"
+fi
+
 # ============================================
 # ADD NEW CHECKS ABOVE THIS LINE
 # Each repeated miss becomes a permanent check.
