@@ -343,9 +343,9 @@ describe("Focus tool copy (Sessions 7 & 8)", () => {
     ).toBe(true);
   });
 
-  it("[S8] Payoff: That adds up to", () => {
+  it("[S8→S11] Payoff shows yearly summary (streamlined in S11)", () => {
     expect(
-      fileContains("components/focus/Payoff.tsx", "That adds up to")
+      fileContains("components/focus/Payoff.tsx", "hours/year")
     ).toBe(true);
   });
 });
@@ -544,9 +544,10 @@ describe("Session 9 — Oren's feedback", () => {
     expect(content).toMatch(/pearlCount|quadrantCounts|counts\.pearls/);
   });
 
-  it("[S9-O5] SolutionCard descriptions are collapsible", () => {
+  it("[S9-O5→S11] SolutionCard is compact single row (redesigned in S11)", () => {
     const content = readSrc("components/focus/SolutionPicker.tsx");
-    expect(content).toMatch(/showDesc|expandedCard|isExpanded/);
+    // Cards are now compact — just checkbox + title, no expand needed
+    expect(content).toContain("SolutionCard");
   });
 
   it("[S9-O5] DrainSection limits visible solutions", () => {
@@ -554,9 +555,10 @@ describe("Session 9 — Oren's feedback", () => {
     expect(content).toMatch(/showAll|visibleCount|INITIAL_VISIBLE/);
   });
 
-  it("[S9-O4] bar chart truncates long labels", () => {
+  it("[S9-O4→S11] bar chart uses human-readable short labels", () => {
     const content = readSrc("components/analyzer/ResultsView.tsx");
-    expect(content).toMatch(/\.slice\(.*\.\.\.|truncate.*\d+|ellipsis/);
+    expect(content).toContain("SHORT_LABELS");
+    expect(content).toContain("abbreviate");
   });
 
   it("[S9-O10] IntakeStep deduplicates across pain prompts", () => {
@@ -579,9 +581,9 @@ describe("Session 9 — Oren's feedback", () => {
     expect(content).toMatch(/Task|Owner.*Due/);
   });
 
-  it("[S9-O9] Payoff shows opportunity framing", () => {
+  it("[S9-O9→S11] Payoff shows role-specific opportunity frame", () => {
     expect(
-      fileContains("components/focus/Payoff.tsx", "What could you do with that time")
+      fileContains("components/focus/Payoff.tsx", "getOpportunityFrame")
     ).toBe(true);
   });
 

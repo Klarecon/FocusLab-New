@@ -177,91 +177,22 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
               </div>
             </div>
 
-            {/* Quick-win split — only show when there are actual quick wins */}
-            {hasQuickWins && reclaimableWeekly !== quickWinWeekly && (
-              <div className="flex items-stretch justify-center gap-4 mb-8 flex-wrap">
-                <div
-                  className="text-center p-4 rounded-xl flex-1 min-w-[160px] max-w-[220px]"
-                  style={{ backgroundColor: "rgba(196, 24, 106, 0.06)" }}
-                >
-                  <div className="text-xs uppercase tracking-wider mb-1 font-medium" style={{ color: "var(--color-reclaim)" }}>
-                    🤩 Pearls only
-                  </div>
-                  <CountUp
-                    to={quickWinWeekly}
-                    decimals={1}
-                    suffix=" hrs/week"
-                    className="text-xl font-bold"
-                    style={{ color: "var(--color-reclaim)" }}
-                  />
-                  <div className="text-[10px] mt-1" style={{ color: "var(--color-ink-soft)" }}>
-                    what you&apos;ll save soon
-                  </div>
-                </div>
-                <div
-                  className="text-center p-4 rounded-xl flex-1 min-w-[160px] max-w-[220px]"
-                  style={{ backgroundColor: "rgba(237, 178, 21, 0.06)" }}
-                >
-                  <div className="text-xs uppercase tracking-wider mb-1 font-medium" style={{ color: "var(--color-gold)" }}>
-                    All fixes
-                  </div>
-                  <CountUp
-                    to={reclaimableWeekly}
-                    decimals={1}
-                    suffix=" hrs/week"
-                    className="text-xl font-bold"
-                    style={{ color: "var(--color-gold)" }}
-                  />
-                  <div className="text-[10px] mt-1" style={{ color: "var(--color-ink-soft)" }}>
-                    full potential
-                  </div>
-                </div>
-              </div>
-            )}
-
+            {/* Yearly summary — compact */}
             <div className="text-center">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                {hasPayInfo && <AnimatedEmoji emoji="💰" animation="pop" size="lg" />}
-                <span
-                  className="text-sm uppercase tracking-wider font-medium"
-                  style={{ color: "var(--color-reclaim)" }}
-                >
-                  That adds up to
-                </span>
-              </div>
               <div className="flex items-center justify-center gap-3 flex-wrap">
                 <CountUp
                   to={reclaimableYearly}
                   decimals={0}
                   suffix=" hours/year"
-                  className="text-3xl font-bold"
+                  className="text-2xl font-bold"
                   style={{ color: "var(--color-reclaim)" }}
                 />
                 {hasPayInfo && (
-                  <span
-                    className="text-2xl"
-                    style={{ color: "var(--color-ink-soft)" }}
-                  >
-                    (
-                    <CountUp
-                      to={reclaimableDollarsYearly}
-                      decimals={0}
-                      prefix="$"
-                      className="text-2xl font-bold"
-                      style={{ color: "var(--color-reclaim)" }}
-                    />
-                    )
+                  <span className="text-xl" style={{ color: "var(--color-ink-soft)" }}>
+                    (<CountUp to={reclaimableDollarsYearly} decimals={0} prefix="$" className="text-xl font-bold" style={{ color: "var(--color-reclaim)" }} />)
                   </span>
                 )}
               </div>
-              {hasPayInfo && hasQuickWins && quickWinDollarsYearly > 0 && (
-                <div className="text-xs mt-2" style={{ color: "var(--color-ink-soft)" }}>
-                  Pearls alone save{" "}
-                  <span className="font-semibold" style={{ color: "var(--color-reclaim)" }}>
-                    ${Math.round(quickWinDollarsYearly).toLocaleString()}/year
-                  </span>
-                </div>
-              )}
             </div>
 
             {/* Low-reclaim guidance */}
@@ -309,34 +240,26 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
               </motion.div>
             )}
 
-            {/* Opportunity reframe */}
+            {/* Opportunity reframe — short and punchy */}
             {(() => {
-              const { generic, roleSpecific } = getOpportunityFrame(reclaimableWeekly, roleSlug);
-              if (!generic) return null;
+              const { roleSpecific } = getOpportunityFrame(reclaimableWeekly, roleSlug);
+              if (!roleSpecific) return null;
               return (
                 <motion.div
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6 }}
-                  className="mt-8 text-center p-6 rounded-xl"
+                  className="mt-6 text-center p-4 rounded-xl"
                   style={{ backgroundColor: "rgba(196, 24, 106, 0.04)" }}
                 >
-                  <div className="text-sm font-medium mb-2" style={{ color: "var(--color-reclaim)" }}>
-                    What could you do with that time?
-                  </div>
-                  {roleSpecific && (
-                    <p
-                      className="text-base font-semibold mb-3"
-                      style={{
-                        fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
-                        color: "var(--color-ink)",
-                      }}
-                    >
-                      {roleSpecific}
-                    </p>
-                  )}
-                  <p className="text-sm" style={{ color: "var(--color-ink-soft)" }}>
-                    {generic}
+                  <p
+                    className="text-sm font-semibold"
+                    style={{
+                      fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
+                      color: "var(--color-ink)",
+                    }}
+                  >
+                    {roleSpecific}
                   </p>
                 </motion.div>
               );
@@ -411,7 +334,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
               &rarr;
             </motion.div>
 
-            {/* After */}
+            {/* After — framed positively */}
             <motion.div
               className="text-center p-4 rounded-xl flex-1 min-w-[180px]"
               style={{ backgroundColor: "rgba(196, 24, 106, 0.06)" }}
@@ -419,15 +342,15 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.4 }}
             >
-              <div className="text-3xl mb-2" aria-hidden="true">😮‍💨</div>
+              <div className="text-3xl mb-2" aria-hidden="true">😎</div>
               <div
                 className="text-xs uppercase tracking-wider mb-1"
                 style={{ color: "var(--color-ink-soft)" }}
               >
-                Your week after these fixes
+                You get back
               </div>
               <CountUp
-                to={afterWasteWeekly}
+                to={reclaimableWeekly}
                 decimals={1}
                 suffix=" hrs"
                 className="text-2xl font-bold"
@@ -437,7 +360,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
                 className="text-xs mt-1"
                 style={{ color: "var(--color-ink-soft)" }}
               >
-                of waste left
+                every week
               </div>
             </motion.div>
           </div>
@@ -453,7 +376,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
             border: "1px solid rgba(224, 62, 18, 0.15)",
           }}
         >
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center justify-center gap-2 mb-3">
             <AnimatedEmoji emoji="😬" animation="shake" size="md" />
             <Highlighter action="box" color="var(--color-waste)" strokeWidth={2} isView>
               <h3
@@ -467,11 +390,11 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
               </h3>
             </Highlighter>
           </div>
-          <p className="text-sm mb-4" style={{ color: "var(--color-ink-soft)" }}>
+          <p className="text-sm mb-4 text-center" style={{ color: "var(--color-ink-soft)" }}>
             In the next 12 months, without any changes:
           </p>
 
-          <div className="space-y-3 mb-6">
+          <div className="space-y-3 mb-6 text-center">
             <motion.div
               initial={{ opacity: 0, x: -12 }}
               animate={{ opacity: 1, x: 0 }}

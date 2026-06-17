@@ -34,42 +34,65 @@ function fmtHours(n: number, decimals = 1): string {
   return n.toFixed(decimals);
 }
 
-/** Abbreviate waste source names to fit chart axis — no ellipsis ever. */
-function abbreviate(str: string, max = 22): string {
-  if (str.length <= max) return str;
-  // Common word abbreviations
-  const abbrevs: [RegExp, string][] = [
-    [/\bMeetings?\b/gi, "Mtgs"],
-    [/\bRecurring\b/gi, "Recur."],
-    [/\bwaiting\b/gi, "Wait."],
-    [/\bapproval\b/gi, "Appr."],
-    [/\bmanual\b/gi, "Man."],
-    [/\bprocess(es)?\b/gi, "Proc."],
-    [/\bSwitching\b/gi, "Switch."],
-    [/\bbetween\b/gi, "b/w"],
-    [/\byou weren't needed in\b/gi, "not needed"],
-    [/\byou didn't write\b/gi, "not yours"],
-    [/\bthat outlived their purpose\b/gi, "stale"],
-    [/\bthat run longer than needed\b/gi, "overlong"],
-    [/\bInterruptions\b/gi, "Interr."],
-    [/\bReformatting\b/gi, "Reformat."],
-    [/\bCompiling\b/gi, "Compil."],
-    [/\boperational\b/gi, "ops"],
-    [/\bRebuilding\b/gi, "Rebuild."],
-    [/\band\b/gi, "&"],
-  ];
-  let result = str;
-  for (const [pattern, replacement] of abbrevs) {
-    if (result.length <= max) break;
-    result = result.replace(pattern, replacement);
-  }
-  // If still too long, truncate at last word boundary
-  if (result.length > max) {
-    const trimmed = result.slice(0, max);
-    const lastSpace = trimmed.lastIndexOf(" ");
-    result = lastSpace > max * 0.5 ? trimmed.slice(0, lastSpace) : trimmed;
-  }
-  return result;
+/** Human-readable short labels for chart axis. Hand-written rewrites for known long labels. */
+const SHORT_LABELS: Record<string, string> = {
+  "Meetings you weren\u2019t needed in": "Unneeded meetings",
+  "Recurring status update meetings": "Status meetings",
+  "Standing meetings that outlived their purpose": "Stale standups",
+  "Meetings that run longer than needed": "Overlong meetings",
+  "Triaging low-value email & CC chains": "Email triage",
+  "Noisy group threads and reply-all chains": "Noisy threads",
+  "Chasing people for status updates": "Status chasing",
+  "Updating trackers & docs by hand": "Manual trackers",
+  "Switching between too many tools": "Tool switching",
+  "Hunting for info you already have": "Info hunting",
+  "Re-finding your place after interruptions": "Refinding focus",
+  "Waiting on an approval or sign-off": "Waiting on approval",
+  "Blocked on a handoff from someone else": "Blocked on handoff",
+  "Redoing work from unclear direction": "Unclear direction redo",
+  "Doing work that was already done": "Duplicate work",
+  "Over-polishing and gold-plating work": "Over-polishing",
+  "Juggling several tasks at once": "Multitasking",
+  "Tasks stalled by missing inputs or access": "Stalled tasks",
+  "Low-value busywork while real work waits": "Low-value busywork",
+  "Manual, repetitive data entry": "Manual data entry",
+  "Forms, expenses, and timesheets": "Forms & timesheets",
+  "1:1s & reviews running on autopilot": "Autopilot 1:1s",
+  "Doing IC work instead of managing": "IC work as manager",
+  "Low-stakes approvals routed through you": "Low-stakes approvals",
+  "Fielding \u201Cgot a sec?\u201D requests all day": "Got-a-sec requests",
+  "Replying to routine mail personally": "Routine replies",
+  "Re-checking your team\u2019s work": "Rechecking team work",
+  "Decisions routed through you that needn\u2019t be": "Unnecessary approvals",
+  "Context-switching between every function": "Context switching",
+  "Inbox overload from every direction": "Inbox overload",
+  "Redoing work you delegated": "Redoing delegated work",
+  "Prep and follow-up for investor updates": "Investor prep",
+  "Being the bottleneck for every decision": "Decision bottleneck",
+  "Unplanned escalations & urgent asks": "Unplanned escalations",
+  "Waiting on brand or legal sign-off": "Brand/legal sign-off",
+  "Debugging code you didn\u2019t write": "Debugging others' code",
+  "Switching between repos, tickets, and Slack": "Repo/ticket switching",
+  "Waiting on deploys and CI pipelines": "CI/deploy waiting",
+  "Code reviews piling up in your queue": "PR review backlog",
+  "Fixing local dev environment issues": "Dev env fixes",
+  "Doing code reviews for others": "Reviewing others' code",
+  "Refactoring brittle or unclear code": "Refactoring debt",
+  "Resolving merge conflicts": "Merge conflicts",
+  "Working around brittle, undocumented code": "Tech debt workarounds",
+  "Rebuilding from specs that changed": "Spec change rebuilds",
+  "Finished code waiting in the review queue": "PR queue waiting",
+  "Waiting on slow or flaky builds": "Flaky builds",
+  "Fixing broken environments & setup": "Broken env fixes",
+  "Running processes that should be automated": "Manual processes",
+  "Chasing vendors and suppliers for updates": "Vendor chasing",
+  "Handling exceptions and edge cases by hand": "Manual exceptions",
+  "Compiling operational reports from multiple sources": "Report compiling",
+  "Dropping planned work for urgent fires": "Firefighting",
+};
+
+function abbreviate(str: string): string {
+  return SHORT_LABELS[str] ?? (str.length > 22 ? str.slice(0, str.lastIndexOf(" ", 22) || 22) : str);
 }
 
 /* --- Severity tiers --- */
@@ -398,7 +421,7 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
                 <XAxis
                   dataKey="name"
                   tick={{ fontSize: 10, fill: "var(--color-ink-soft)" }}
-                  tickFormatter={(name: string) => abbreviate(name, 22)}
+                  tickFormatter={(name: string) => abbreviate(name)}
                   angle={-45}
                   textAnchor="end"
                   interval={0}
@@ -525,21 +548,7 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
                         )}
                         .
                       </p>
-                      {benchmark && benchmark.direction !== "at" && (
-                        <p
-                          className="text-sm mt-2 font-medium px-3 py-1.5 rounded-md inline-block"
-                          style={{
-                            color: "var(--color-gold)",
-                            backgroundColor: "rgba(237, 178, 21, 0.08)",
-                          }}
-                        >
-                          Benchmark: typical worker spends {fmtHours(benchmark.typicalHours)} hrs — you&apos;re{" "}
-                          {benchmark.direction === "above"
-                            ? `${fmtHours(Math.abs(benchmark.deltaHours))} hrs above`
-                            : `${fmtHours(Math.abs(benchmark.deltaHours))} hrs below`}
-                          .
-                        </p>
-                      )}
+                      {/* Benchmark line removed — inconsistent across drains and confusing */}
                     </div>
                   </div>
                 </motion.div>

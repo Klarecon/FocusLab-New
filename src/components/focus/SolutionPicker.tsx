@@ -73,97 +73,33 @@ const SolutionCard = memo(function SolutionCard({
   isChosen: boolean;
   onToggle: () => void;
 }) {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const quickWin = isQuickWin(solution);
-
   return (
-    <motion.button
+    <button
       onClick={onToggle}
       aria-pressed={isChosen}
-      className="w-full text-left p-4 rounded-xl transition-all duration-200 cursor-pointer border"
+      className="w-full text-left px-3 py-2.5 rounded-lg transition-all duration-150 cursor-pointer border flex items-center gap-3"
       style={{
         backgroundColor: isChosen ? "rgba(196, 24, 106, 0.06)" : "var(--color-card)",
         borderColor: isChosen ? "var(--color-reclaim)" : "var(--color-line)",
       }}
-      whileHover={{ scale: 1.01 }}
-      whileTap={{ scale: 0.99 }}
     >
-      <div className="flex items-start gap-3">
-        <div className="flex-shrink-0 mt-0.5">
-          {isChosen ? (
-            <span
-              className="w-5 h-5 rounded-full inline-flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-              style={{ backgroundColor: "var(--color-reclaim)" }}
-            >
-              ✓
-            </span>
-          ) : (
-            <span
-              className="w-5 h-5 rounded-full border-2 inline-flex"
-              style={{ borderColor: "var(--color-line)" }}
-            />
-          )}
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap mb-1">
-            <span className="font-medium text-sm" style={{ color: "var(--color-ink)" }}>
-              {solution.title}
-            </span>
-            {quickWin && (
-              <span className="inline-flex items-center gap-1">
-                <AnimatedEmoji emoji="🤩" animation="pop" size="sm" />
-                <span
-                  className="text-xs font-semibold px-1.5 py-0.5 rounded-full"
-                  style={{
-                    backgroundColor: "rgba(196, 24, 106, 0.12)",
-                    color: "var(--color-reclaim)",
-                  }}
-                >
-                  Pearl
-                </span>
-              </span>
-            )}
-          </div>
-          {isExpanded ? (
-            <p className="text-xs mb-2 leading-relaxed" style={{ color: "var(--color-ink-soft)" }}>
-              {solution.description}
-            </p>
-          ) : (
-            <span
-              onClick={(e) => { e.stopPropagation(); setIsExpanded(true); }}
-              className="text-xs mb-2 underline cursor-pointer inline-block"
-              style={{ color: "var(--color-ink-soft)" }}
-            >
-              Show details
-            </span>
-          )}
-          <div className="flex items-center gap-2 flex-wrap">
-            <Badge
-              label={EFFORT_LABEL[solution.effort]}
-              color={EFFORT_COLOR[solution.effort]}
-            />
-            <Badge
-              label={IMPACT_LABEL[solution.impact]}
-              color={
-                solution.impact === "high"
-                  ? "var(--color-reclaim)"
-                  : solution.impact === "medium"
-                  ? "var(--color-gold)"
-                  : "var(--color-ink-soft)"
-              }
-            />
-            {isExpanded && (
-              <span
-                className="text-xs italic"
-                style={{ color: "var(--color-ink-soft)" }}
-              >
-                {solution.reclaimHint}
-              </span>
-            )}
-          </div>
-        </div>
-      </div>
-    </motion.button>
+      {isChosen ? (
+        <span
+          className="w-5 h-5 rounded-full inline-flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+          style={{ backgroundColor: "var(--color-reclaim)" }}
+        >
+          ✓
+        </span>
+      ) : (
+        <span
+          className="w-5 h-5 rounded-full border-2 inline-flex flex-shrink-0"
+          style={{ borderColor: "var(--color-line)" }}
+        />
+      )}
+      <span className="font-medium text-sm flex-1 min-w-0" style={{ color: "var(--color-ink)" }}>
+        {solution.title}
+      </span>
+    </button>
   );
 });
 

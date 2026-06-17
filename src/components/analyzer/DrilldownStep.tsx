@@ -266,24 +266,21 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
         )}
       </div>
 
-      {/* Sticky floating counter — always visible on right side */}
+      {/* Sticky floating counter — visible while scrolling, tight to content */}
       {totalDetailed > 0 && (
         <div
-          className="fixed right-4 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center gap-1 px-4 py-4 rounded-2xl shadow-lg"
+          className="sticky top-4 z-40 flex items-center justify-center gap-2 px-5 py-2.5 rounded-full shadow-md mx-auto w-fit mb-4"
           style={{
             backgroundColor: "var(--color-card)",
             border: "2px solid var(--color-waste)",
-            boxShadow: "0 4px 20px rgba(224, 62, 18, 0.15)",
+            boxShadow: "0 4px 16px rgba(224, 62, 18, 0.12)",
           }}
         >
-          <span className="font-figures font-bold text-3xl" style={{ color: "var(--color-waste)" }}>
+          <span className="font-figures font-bold text-2xl" style={{ color: "var(--color-waste)" }}>
             {totalDetailed.toFixed(1)}
           </span>
-          <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--color-waste)" }}>
-            hrs/wk
-          </span>
-          <span className="text-[9px]" style={{ color: "var(--color-ink-soft)" }}>
-            waste spotted
+          <span className="text-sm font-semibold" style={{ color: "var(--color-waste)" }}>
+            hrs/week of waste spotted
           </span>
         </div>
       )}

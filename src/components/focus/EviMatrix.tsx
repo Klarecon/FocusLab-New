@@ -162,10 +162,10 @@ function CustomTooltipContent({
       </div>
       <div className="flex gap-3 mt-2 text-xs">
         <span>
-          Effort: <strong>{data.x}</strong>
+          Effort: <strong>{Math.round(data.x)}</strong>
         </span>
         <span>
-          Impact: <strong>{data.y}</strong>
+          Impact: <strong>{Math.round(data.y)}</strong>
         </span>
       </div>
     </div>
@@ -569,7 +569,7 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
             {QUADRANT_META["major-project"].emoji} {QUADRANT_META["major-project"].name}
           </span>
         </div>
-        <div className="absolute bottom-[100px] left-12 z-10 pointer-events-none" aria-hidden="true">
+        <div className="absolute bottom-[120px] left-16 z-10 pointer-events-none" aria-hidden="true">
           <span
             className="text-[9px] sm:text-[10px] font-semibold px-2 py-1 rounded-full"
             style={{
@@ -580,7 +580,7 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
             {QUADRANT_META["fill-in"].emoji} {QUADRANT_META["fill-in"].name}
           </span>
         </div>
-        <div className="absolute bottom-[100px] right-8 z-10 pointer-events-none" aria-hidden="true">
+        <div className="absolute bottom-[120px] right-12 z-10 pointer-events-none" aria-hidden="true">
           <span
             className="text-[9px] sm:text-[10px] font-semibold px-2 py-1 rounded-full"
             style={{
@@ -809,9 +809,6 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Quadrant summary — grouped by quadrant with action verbs */}
-      <QuadrantSummary dotData={dotData} />
 
       {/* Prioritized Action Sequence */}
       <PriorityTable dotData={dotData} />
