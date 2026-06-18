@@ -802,4 +802,47 @@ describe("Banned patterns (permanent)", () => {
     const content = readSrc("components/analyzer/IntakeStep.tsx");
     expect(content).toMatch(/MIN_CATEGORIES\s*=\s*3/);
   });
+
+  // === Session 13 regression tests ===
+
+  it("[S13-#1] ResultsView has Zone B section ('Also eating your time')", () => {
+    const content = readSrc("components/analyzer/ResultsView.tsx");
+    expect(content).toContain('Also eating your time');
+    expect(content).toContain('c.zone === "B"');
+  });
+
+  it("[S13-#1b] ResultsView has Zone C section ('The small stuff')", () => {
+    const content = readSrc("components/analyzer/ResultsView.tsx");
+    expect(content).toContain('The small stuff');
+    expect(content).toContain('c.zone === "C"');
+  });
+
+  it("[S13-#2] FocusStage passes Zone C items to usefulMany (not just B)", () => {
+    const content = readSrc("components/focus/FocusStage.tsx");
+    expect(content).toContain('c.zone === "B" || c.zone === "C"');
+  });
+
+  it("[S13-#2b] SolutionPicker has Zone C collapsible section ('The small stuff')", () => {
+    const content = readSrc("components/focus/SolutionPicker.tsx");
+    expect(content).toContain('The small stuff');
+    expect(content).toContain('d.zone === "C"');
+  });
+
+  it("[S13-#3] EviMatrix quadrant labels positioned away from axis ticks", () => {
+    const content = readSrc("components/focus/EviMatrix.tsx");
+    // Labels should be at least 72px from left edge (past axis tick labels)
+    expect(content).toContain('left-[72px]');
+    expect(content).toContain('right-[40px]');
+  });
+
+  it("[S13-#4] Oysters Action Sequence label includes spare capacity condition", () => {
+    const content = readSrc("components/focus/EviMatrix.tsx");
+    expect(content).toContain('spare capacity');
+  });
+
+  it("[S13-#5] Payoff 'What happens' section has no Highlighter box", () => {
+    const content = readSrc("components/focus/Payoff.tsx");
+    // Should NOT have Highlighter wrapping the "What happens" heading
+    expect(content).not.toContain('action="box"');
+  });
 });

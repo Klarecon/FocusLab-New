@@ -373,48 +373,46 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
           className="rounded-xl p-8 mb-6"
           style={{
             backgroundColor: "rgba(224, 62, 18, 0.04)",
-            border: "1px solid rgba(224, 62, 18, 0.15)",
+            borderTop: "4px solid var(--color-waste)",
           }}
         >
-          <div className="flex items-center justify-center gap-2 mb-3">
+          <div className="text-center mb-6">
             <AnimatedEmoji emoji="😬" animation="shake" size="md" />
-            <Highlighter action="box" color="var(--color-waste)" strokeWidth={2} isView>
-              <h3
-                className="text-lg font-semibold"
-                style={{
-                  fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
-                  color: "var(--color-waste)",
-                }}
-              >
-                What happens if you don&apos;t fix this
-              </h3>
-            </Highlighter>
+            <h3
+              className="text-xl font-bold mt-2"
+              style={{
+                fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
+                color: "var(--color-waste)",
+              }}
+            >
+              What happens if you don&apos;t fix this
+            </h3>
+            <p className="text-sm mt-1" style={{ color: "var(--color-ink-soft)" }}>
+              In the next 12 months, without any changes:
+            </p>
           </div>
-          <p className="text-sm mb-4 text-center" style={{ color: "var(--color-ink-soft)" }}>
-            In the next 12 months, without any changes:
-          </p>
 
-          <div className="space-y-3 mb-6 text-center">
+          <div className="space-y-4 max-w-md mx-auto mb-8">
             <motion.div
               initial={{ opacity: 0, x: -12 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
-              className="flex items-start gap-2 text-sm"
+              className="flex items-center gap-3 p-3 rounded-lg"
+              style={{ backgroundColor: "rgba(224, 62, 18, 0.06)" }}
             >
-              <span className="flex-shrink-0" aria-hidden="true">💸</span>
-              <span>
-                You&rsquo;ll lose{" "}
+              <span className="text-2xl flex-shrink-0" aria-hidden="true">💸</span>
+              <span className="text-sm">
                 <CountUp
                   to={doNothingHoursYear}
                   decimals={0}
-                  className="font-bold"
+                  className="font-bold text-base"
                   style={{ color: "var(--color-waste)" }}
                 />{" "}
-                hours to the same drains &mdash; that&rsquo;s{" "}
+                hours lost &mdash;{" "}
                 <CountUp
                   to={doNothingWeeks}
                   decimals={1}
-                  className="font-bold"
+                  className="font-bold text-base"
                   style={{ color: "var(--color-waste)" }}
                 />{" "}
                 full work weeks gone
@@ -426,16 +424,16 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
                 initial={{ opacity: 0, x: -12 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.5 }}
-                className="flex items-start gap-2 text-sm"
+                className="flex items-center gap-3 p-3 rounded-lg"
+                style={{ backgroundColor: "rgba(224, 62, 18, 0.06)" }}
               >
-                <span className="flex-shrink-0" aria-hidden="true">💸</span>
-                <span>
-                  That&rsquo;s{" "}
+                <span className="text-2xl flex-shrink-0" aria-hidden="true">🔥</span>
+                <span className="text-sm">
                   <CountUp
                     to={doNothingDollars}
                     decimals={0}
                     prefix="$"
-                    className="font-bold"
+                    className="font-bold text-base"
                     style={{ color: "var(--color-waste)" }}
                   />{" "}
                   of your time burned
@@ -449,7 +447,8 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
-            className="text-center mt-6"
+            className="text-center pt-6"
+            style={{ borderTop: "1px solid rgba(224, 62, 18, 0.12)" }}
           >
             <h3
               className="text-2xl font-bold mb-2"

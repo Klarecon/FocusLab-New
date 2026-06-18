@@ -328,6 +328,7 @@ export default function SolutionPicker({
   onGoToPlan,
 }: SolutionPickerProps) {
   const [zoneBOpen, setZoneBOpen] = useState(true);
+  const [zoneCOpen, setZoneCOpen] = useState(false);
   const chosenSolutions = useAuditStore((s) => s.chosenSolutions);
 
   const allDrains = [...vitalFew, ...usefulMany];
@@ -389,7 +390,7 @@ export default function SolutionPicker({
       )}
 
       {/* Zone B — Useful Many (collapsible) */}
-      {usefulMany.length > 0 && (
+      {usefulMany.filter(d => d.zone === "B").length > 0 && (
         <div className="mt-8">
           <button
             onClick={() => setZoneBOpen(!zoneBOpen)}
@@ -405,8 +406,8 @@ export default function SolutionPicker({
             >
               &#9654;
             </motion.span>
-            Also eating your time &mdash; {usefulMany.length} more{" "}
-            {usefulMany.length === 1 ? "drain" : "drains"}
+            Also eating your time &mdash; {usefulMany.filter(d => d.zone === "B").length} more{" "}
+            {usefulMany.filter(d => d.zone === "B").length === 1 ? "drain" : "drains"}
           </button>
 
           <AnimatePresence>
@@ -418,7 +419,52 @@ export default function SolutionPicker({
                 transition={{ duration: 0.25 }}
                 className="overflow-hidden"
               >
-                {usefulMany.map((drain, i) => (
+                {usefulMany.filter(d => d.zone === "B").map((drain, i) => (
+                  <DrainSection
+                    key={drain.slug}
+                    drain={drain}
+                    index={i}
+                    shownSolutionIds={shownIdsByDrain.get(drain.slug) ?? new Set()}
+                    allDrains={allDrains}
+                  />
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      )}
+
+      {/* Zone C — The Small Stuff (collapsible) */}
+      {usefulMany.filter(d => d.zone === "C").length > 0 && (
+        <div className="mt-8">
+          <button
+            onClick={() => setZoneCOpen(!zoneCOpen)}
+            aria-expanded={zoneCOpen}
+            className="flex items-center gap-2 text-sm font-medium cursor-pointer transition-colors hover:opacity-80 mb-4"
+            style={{ color: "var(--color-ink-soft)" }}
+          >
+            <motion.span
+              animate={{ rotate: zoneCOpen ? 90 : 0 }}
+              transition={{ duration: 0.15 }}
+              className="inline-block"
+              aria-hidden="true"
+            >
+              &#9654;
+            </motion.span>
+            The small stuff &mdash; {usefulMany.filter(d => d.zone === "C").length} more{" "}
+            {usefulMany.filter(d => d.zone === "C").length === 1 ? "drain" : "drains"}
+          </button>
+
+          <AnimatePresence>
+            {zoneCOpen && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.25 }}
+                className="overflow-hidden"
+              >
+                {usefulMany.filter(d => d.zone === "C").map((drain, i) => (
                   <DrainSection
                     key={drain.slug}
                     drain={drain}

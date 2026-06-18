@@ -591,6 +591,42 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
           </div>
         )}
 
+        {/* -- Trivial many (Zone C) summary -- */}
+        {paretoResult.categories.filter((c) => c.zone === "C").length > 0 && (
+          <div className="surface-card p-6 mb-10" style={{ borderLeft: "4px solid var(--color-ink-soft)" }}>
+            <h3 className="text-lg font-bold mb-3" style={{ color: "var(--color-ink)" }}>
+              <Highlighter action="underline" color="var(--color-ink-soft)" isView>
+                The small stuff
+              </Highlighter>
+            </h3>
+            <p className="text-xs mb-3" style={{ color: "var(--color-ink-soft)" }}>
+              Not worth chasing individually — but they add up if you ignore them forever.
+            </p>
+            <div className="space-y-2">
+              {paretoResult.categories
+                .filter((c) => c.zone === "C")
+                .map((c) => (
+                  <div
+                    key={c.categorySlug}
+                    className="flex items-center justify-between py-2 border-b"
+                    style={{ borderColor: "var(--color-line)" }}
+                  >
+                    <span className="text-sm font-medium" style={{ color: "var(--color-ink)" }}>
+                      {wasteSourceBySlug(c.categorySlug)?.emoji ?? ""}{" "}
+                      {c.label ?? c.categorySlug}
+                    </span>
+                    <span
+                      className="font-figures text-sm font-bold"
+                      style={{ color: "var(--color-ink-soft)" }}
+                    >
+                      {fmtHours(c.hoursPerWeek)} hrs/wk
+                    </span>
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
+
         {/* -- Warnings -- */}
         {paretoResult.warnings.length > 0 && (
           <div

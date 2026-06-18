@@ -236,7 +236,7 @@ function QuadrantSummary({ dotData }: { dotData: DotData[] }) {
 const QUADRANT_PRIORITY_ORDER: QuadrantLabel[] = ["quick-win", "major-project", "fill-in", "thankless"];
 const QUADRANT_SECTION_LABELS: Record<QuadrantLabel, string> = {
   "quick-win": "Pearls \u2014 do these first",
-  "major-project": "Oysters \u2014 plan these next",
+  "major-project": "Oysters \u2014 plan only after Pearls are done, if you have spare capacity",
   "fill-in": "Low-Hanging Fruit \u2014 knock these out when you can",
   thankless: "White Elephants \u2014 drop or delegate these",
 };
@@ -546,8 +546,8 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
         aria-hidden="true"
         style={{ borderTop: "4px solid", borderImage: "linear-gradient(to right, #e03e12, #edb215) 1" }}
       >
-        {/* Quadrant labels — visible on all screen sizes, inset from edges */}
-        <div className="absolute top-8 left-12 z-10 pointer-events-none" aria-hidden="true">
+        {/* Quadrant labels — positioned inside chart area, away from axis ticks */}
+        <div className="absolute top-10 left-[72px] sm:left-[80px] z-10 pointer-events-none" aria-hidden="true">
           <span
             className="text-[10px] sm:text-xs font-semibold px-2 py-1 rounded-full"
             style={{
@@ -558,7 +558,7 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
             {QUADRANT_META["quick-win"].emoji} {QUADRANT_META["quick-win"].name}
           </span>
         </div>
-        <div className="absolute top-8 right-8 z-10 pointer-events-none" aria-hidden="true">
+        <div className="absolute top-10 right-[40px] sm:right-[48px] z-10 pointer-events-none" aria-hidden="true">
           <span
             className="text-[10px] sm:text-xs font-semibold px-2 py-1 rounded-full"
             style={{
@@ -569,7 +569,7 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
             {QUADRANT_META["major-project"].emoji} {QUADRANT_META["major-project"].name}
           </span>
         </div>
-        <div className="absolute bottom-[120px] left-16 z-10 pointer-events-none" aria-hidden="true">
+        <div className="absolute bottom-[100px] left-[72px] sm:left-[80px] z-10 pointer-events-none" aria-hidden="true">
           <span
             className="text-[9px] sm:text-[10px] font-semibold px-2 py-1 rounded-full"
             style={{
@@ -580,7 +580,7 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
             {QUADRANT_META["fill-in"].emoji} {QUADRANT_META["fill-in"].name}
           </span>
         </div>
-        <div className="absolute bottom-[120px] right-12 z-10 pointer-events-none" aria-hidden="true">
+        <div className="absolute bottom-[100px] right-[40px] sm:right-[48px] z-10 pointer-events-none" aria-hidden="true">
           <span
             className="text-[9px] sm:text-[10px] font-semibold px-2 py-1 rounded-full"
             style={{

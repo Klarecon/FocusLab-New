@@ -39,7 +39,7 @@ export default function FocusStage() {
           zone: c.zone,
         })),
       usefulMany: paretoResult.categories
-        .filter((c) => c.zone === "B")
+        .filter((c) => c.zone === "B" || c.zone === "C")
         .map((c) => ({
           slug: c.categorySlug,
           label: c.label ?? c.categorySlug,
