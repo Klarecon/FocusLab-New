@@ -771,4 +771,35 @@ describe("Banned patterns (permanent)", () => {
     expect(content).toMatch(/medium.*:\s*3/);
     expect(content).toMatch(/high.*:\s*4/);
   });
+
+  // --- Session 12 fixes ---
+
+  it("[S12-#1] IntakeStep has NO inline counter — only sticky counter", () => {
+    const content = readSrc("components/analyzer/IntakeStep.tsx");
+    // Must have sticky counter
+    expect(content).toContain("sticky top-4");
+    // Must NOT have inline counter (the motion.div with mt-4 inline-flex that was duplicating)
+    const inlineCounterPattern = /mt-4 inline-flex.*hrs\/week of waste flagged/s;
+    expect(content).not.toMatch(inlineCounterPattern);
+  });
+
+  it("[S12-#2] DrilldownStep has NO inline counter — only sticky counter", () => {
+    const content = readSrc("components/analyzer/DrilldownStep.tsx");
+    // Must have sticky counter
+    expect(content).toContain("sticky top-4");
+    // Must NOT have inline counter
+    const inlineCounterPattern = /mt-4 inline-flex.*hrs\/week of waste spotted/s;
+    expect(content).not.toMatch(inlineCounterPattern);
+  });
+
+  it("[S12-#3] DrilldownStep blocks 'Show me the damage' when category hours exceed estimate", () => {
+    const content = readSrc("components/analyzer/DrilldownStep.tsx");
+    expect(content).toContain("hasOverflowCategory");
+    expect(content).toContain("disabled={!hasEntries || hasOverflowCategory}");
+  });
+
+  it("[S12-#4] MIN_CATEGORIES is 3, not 2", () => {
+    const content = readSrc("components/analyzer/IntakeStep.tsx");
+    expect(content).toMatch(/MIN_CATEGORIES\s*=\s*3/);
+  });
 });

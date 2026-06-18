@@ -210,6 +210,13 @@ Every new feature or significant fix gets a test. Add to the appropriate test fi
 ### Rule 4: Visual Tests Use Grep
 Visual regression is caught by grep-based tests that scan for banned colors and required classes. After any visual change, run `phase-b-visual.test.tsx` specifically.
 
+### Rule 5: Screenshot Verification Before Done
+After any visual or UI change, run the screenshot capture pipeline and LOOK at the screenshots before declaring done:
+```bash
+npx playwright test e2e/capture-screens.spec.ts
+```
+Then read the screenshots in `e2e/screenshots/` using the Read tool (multimodal). Verify that the change actually looks right on screen — grep is not enough. Never say "PASS" on a visual item without viewing the screenshot.
+
 ---
 
 ## 10. Definition of Done
@@ -236,9 +243,14 @@ grep -r "29,107,88\|df3c18\|b9852b\|185,133,43\|5c544a" src/
 # 5. Zero window hacks
 grep -r "window\.__" src/
 # Expected: no output
+
+# 6. Screenshot visual verification (for any UI/visual changes)
+npx playwright test e2e/capture-screens.spec.ts
+# Then READ the screenshots in e2e/screenshots/ and visually verify the changes
+# Expected: all screens look correct, no duplicate elements, no overlapping text
 ```
 
-Report the output of each check when declaring done.
+Report the output of each check when declaring done. For visual changes, include which screenshots you reviewed and what you verified in each.
 
 ---
 
@@ -257,6 +269,9 @@ Report the output of each check when declaring done.
 | Asking permission mid-task | Slows execution | Execute, then report |
 | Marking done without running tests | Hides broken code | Always run full suite first |
 | Silently skipping plan steps | Creates review debt | Complete every step or flag it |
+| Saying "PASS" on visual items via grep only | User sees broken UI while code "passes" | Run Playwright screenshots and READ them |
+| Declaring done without pushing to remote | User tests old deployed code | Push + verify Vercel deployed correct commit |
+| Adding UI elements without removing replaced ones | Duplicates on screen (e.g. double counters) | Remove the old element in the same change |
 
 ---
 

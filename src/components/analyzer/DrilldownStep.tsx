@@ -216,6 +216,15 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
     return e && e.hoursPerDay > 0;
   });
 
+  // Check if any category's detailed hours exceed its estimate
+  const hasOverflowCategory = useMemo(() => {
+    return vitalGroups.some((group) => {
+      const estimate = categoryEstimates[group.group] ?? 0;
+      const detailed = categoryTotals[group.group] ?? 0;
+      return estimate > 0 && detailed > estimate;
+    });
+  }, [vitalGroups, categoryEstimates, categoryTotals]);
+
   if (vitalCategories.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
@@ -248,22 +257,6 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
           These are your biggest time sinks. Check the ones that hit hardest and estimate how much they cost you.
         </p>
 
-        {/* Inline counter (visible when scrolled to top) */}
-        {totalDetailed > 0 && (
-          <motion.div
-            animate={{ scale: [1.08, 1] }}
-            transition={{ duration: 0.15 }}
-            aria-live="polite"
-            className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-full"
-            style={{
-              backgroundColor: "rgba(224, 62, 18, 0.08)",
-              color: "var(--color-waste)",
-            }}
-          >
-            <span className="font-figures font-bold text-2xl">{totalDetailed.toFixed(1)}</span>
-            <span className="text-sm font-semibold">hrs/week of waste spotted</span>
-          </motion.div>
-        )}
       </div>
 
       {/* Sticky floating counter — visible while scrolling, tight to content */}
@@ -469,15 +462,15 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
                   );
                 })}
 
-              {/* Per-category warning when detailed hours greatly exceed estimate */}
-              {(categoryTotals[group.group] ?? 0) > (categoryEstimates[group.group] ?? 0) * 1.5 && (categoryEstimates[group.group] ?? 0) > 0 && (
+              {/* Per-category warning when detailed hours exceed estimate */}
+              {(categoryTotals[group.group] ?? 0) > (categoryEstimates[group.group] ?? 0) && (categoryEstimates[group.group] ?? 0) > 0 && (
                 <div
-                  className="mt-2 p-2 rounded-md flex items-start gap-2 text-xs"
-                  style={{ backgroundColor: "rgba(224, 62, 18, 0.06)", color: "var(--color-waste)" }}
+                  className="mt-2 p-3 rounded-md flex items-start gap-2 text-xs font-semibold"
+                  style={{ backgroundColor: "rgba(224, 62, 18, 0.10)", color: "var(--color-waste)", border: "1px solid var(--color-waste)" }}
                 >
-                  <span aria-hidden="true">😬</span>
+                  <span aria-hidden="true">😤</span>
                   <span>
-                    Your detailed total ({(categoryTotals[group.group] ?? 0).toFixed(1)} hrs) is well above your {(categoryEstimates[group.group] ?? 0).toFixed(0)}-hr estimate for {group.group}. Double-check these numbers.
+                    Your detailed total ({(categoryTotals[group.group] ?? 0).toFixed(1)} hrs) exceeds your {(categoryEstimates[group.group] ?? 0).toFixed(0)}-hr estimate for {group.group}. Reduce hours here or go back and raise your estimate.
                   </span>
                 </div>
               )}
@@ -551,23 +544,30 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
         >
           &larr; Back
         </button>
-        {activeSources.length > 0 && !hasEntries && (
-          <p className="text-xs mb-1" style={{ color: "var(--color-ink-soft)" }}>
-            Enter hours for at least one drain to continue
-          </p>
-        )}
-        <ShimmerButton
-          disabled={!hasEntries}
-          onClick={handleCompute}
-          borderRadius="12px"
-          background={hasEntries ? "var(--color-reclaim)" : "var(--color-ink-soft)"}
-          className="px-10 py-4 text-base font-bold disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          <span className="flex items-center gap-2">
-            <AnimatedEmoji emoji="🤯" animation="pop" size="sm" />
-            Show me the damage
-          </span>
-        </ShimmerButton>
+        <div className="text-right">
+          {activeSources.length > 0 && !hasEntries && (
+            <p className="text-xs mb-1" style={{ color: "var(--color-ink-soft)" }}>
+              Enter hours for at least one drain to continue
+            </p>
+          )}
+          {hasOverflowCategory && (
+            <p className="text-xs mb-1 font-semibold" style={{ color: "var(--color-waste)" }}>
+              Detailed hours can&apos;t exceed your category estimate &mdash; reduce them to continue
+            </p>
+          )}
+          <ShimmerButton
+            disabled={!hasEntries || hasOverflowCategory}
+            onClick={handleCompute}
+            borderRadius="12px"
+            background={hasEntries && !hasOverflowCategory ? "var(--color-reclaim)" : "var(--color-ink-soft)"}
+            className="px-10 py-4 text-base font-bold disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <span className="flex items-center gap-2">
+              <AnimatedEmoji emoji="🤯" animation="pop" size="sm" />
+              Show me the damage
+            </span>
+          </ShimmerButton>
+        </div>
       </div>
     </div>
   );

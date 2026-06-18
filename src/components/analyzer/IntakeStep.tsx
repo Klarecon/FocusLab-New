@@ -37,7 +37,7 @@ const ROLE_PAIN_PROMPTS: Partial<Record<RoleSlug, { prompt: string; emoji: strin
   "ceo-founder": [{ prompt: "Everything lands on your desk?", emoji: "🫠", groups: ["Leading vs doing", "Reporting", "Coordination"] }],
 };
 
-const MIN_CATEGORIES = 2;
+const MIN_CATEGORIES = 3;
 
 interface IntakeStepProps {
   onNext: () => void;
@@ -176,25 +176,6 @@ export default function IntakeStep({ onNext, onBack }: IntakeStepProps) {
           Give a rough estimate for each category. Don&apos;t overthink it &mdash; we&apos;ll zoom into the big ones next.
         </p>
 
-        {totalEstimated > 0 && (
-          <motion.div
-            key={Math.round(totalEstimated * 10)}
-            initial={{ scale: 1.08 }}
-            animate={{ scale: 1 }}
-            aria-live="polite"
-            aria-atomic="true"
-            className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-full"
-            style={{
-              backgroundColor: totalEstimated > workHoursPerWeek
-                ? "rgba(224, 62, 18, 0.12)"
-                : "rgba(224, 62, 18, 0.08)",
-              color: "var(--color-waste)",
-            }}
-          >
-            <span className="font-figures font-bold text-2xl">{totalEstimated.toFixed(1)}</span>
-            <span className="text-sm font-semibold">hrs/week of waste flagged</span>
-          </motion.div>
-        )}
       </div>
 
       {/* Sticky floating counter — visible while scrolling */}
