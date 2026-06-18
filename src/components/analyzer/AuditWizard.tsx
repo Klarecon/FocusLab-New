@@ -74,13 +74,8 @@ export default function AuditWizard() {
   const goNext = () => setStep(Math.min(step + 1, 4));
   const goBack = () => setStep(Math.max(step - 1, 0));
   const handleRestart = () => {
-    // Reset all data first, then ensure step is 0
+    // Reset all data — persist middleware writes defaults to localStorage automatically
     reset();
-    // Force-clear localStorage to prevent persist rehydration from restoring old state
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("focuslab-audit");
-    }
-    setStep(0);
   };
 
   return (
