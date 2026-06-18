@@ -49,22 +49,19 @@ export default function AuditWizard() {
   const reset = useAuditStore((s) => s.reset);
   const paretoResult = useAuditStore((s) => s.paretoResult);
 
-  // Fresh start: if user navigates to /analyzer after completing a session,
-  // reset wizard state so previous selections don't persist.
+  // If user navigates to /analyzer and already has results, show them
+  // instead of wiping everything. The "Start over" button handles reset.
   useEffect(() => {
-    const checkAndReset = () => {
+    const jumpToResults = () => {
       const s = useAuditStore.getState();
-      if (s.paretoResult) {
-        s.reset();
-        if (typeof window !== "undefined") {
-          localStorage.removeItem("focuslab-audit");
-        }
+      if (s.paretoResult && s.step !== 4) {
+        s.setStep(4);
       }
     };
     // Check after hydration
-    const unsub = useAuditStore.persist.onFinishHydration(() => checkAndReset());
+    const unsub = useAuditStore.persist.onFinishHydration(() => jumpToResults());
     // Also check immediately in case hydration already happened
-    checkAndReset();
+    jumpToResults();
     return unsub;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

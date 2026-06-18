@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuditStore } from "@/stores/audit-store";
 import SolutionPicker from "./SolutionPicker";
@@ -93,6 +94,13 @@ export default function FocusStage() {
         <p style={{ color: "var(--color-ink-soft)" }}>
           Pick the fixes that fit your life, see what&apos;s easy vs. hard, and find out how much time you actually get back.
         </p>
+        <Link
+          href="/analyzer"
+          className="inline-flex items-center gap-1 text-sm font-medium mt-2 no-underline transition-opacity hover:opacity-70"
+          style={{ color: "var(--color-reclaim)" }}
+        >
+          &larr; Back to your Pareto results
+        </Link>
       </div>
 
       {/* Tabs */}
