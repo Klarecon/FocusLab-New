@@ -1,86 +1,88 @@
 # FocusLab Project State
 
-**Last updated:** 2026-06-17 by Claude via /handover
+**Last updated:** 2026-06-18 by Claude via /handover
 
 ## Quick orient
 - **Project:** FocusLab — productivity tool suite helping knowledge workers find time waste (Pareto Analyzer) and fix it (Focus Table & EVI Matrix)
-- **Repo:** https://github.com/Klarecon/FocusLab-New (PUBLIC — changed from private this session)
+- **Repo:** https://github.com/Klarecon/FocusLab-New (PUBLIC)
 - **Production URL:** https://focuslab-omega.vercel.app
 - **Active branch:** main
-- **Active work:** Session 11 complete — 29 feedback fixes across 2 rounds, Vercel reconnected, Playwright installed. 3 items remain broken.
-- **Owner:** Mona Mehta (mona@klarecon.com) — non-technical product owner. Content marketing + ad creative experience. First business plan. Working with Oren Yonash (methodology creator). Wants FAST autonomous execution, NO permission prompts. Values visual quality. **EXTREMELY frustrated with repeated QA failures and the back-and-forth cycle.** Reviews deployed Vercel app. Prefers HTML pickers for options.
+- **Active work:** Session 12 complete — fixed 3 broken items from Session 11, built visual verification pipeline using Playwright screenshots + multimodal review.
+- **Owner:** Mona Mehta (mona@klarecon.com) — non-technical product owner. Content marketing + ad creative experience. First business plan. Working with Oren Yonash (methodology creator). Wants FAST autonomous execution, NO permission prompts. Values visual quality. Was extremely frustrated with Session 11 QA failures — demanded a method to visually verify changes before asking her to review.
 
 ## Branch state
 - All commits pushed to origin/main and deployed to Vercel
-- Latest: `06daf35 Session 11 round 2: 13 visual fixes from live app testing`
-- Vercel now connected to `Klarecon/FocusLab-New` (was broken — connected to old `mona2611-alt` repo)
+- Latest: `2e1354d Session 12: Fix 3 broken items + visual verification pipeline`
+- Vercel deploy triggered manually via `vercel --prod` (auto-deploy webhook NOT connected — see gotchas)
 
-## What's done in this session (2026-06-17, Session 11)
+## What's done in this session (2026-06-18, Session 12)
 
-### 1. Fixed 29 feedback items across 2 rounds
-See `Feedback Log/Session 11 - Feedback Log.md` for the complete item-by-item list with status.
+### 1. Fixed all 3 broken items from Session 11
+- **Duplicate sticky counters** — removed inline `motion.div` counter from both IntakeStep (was lines 179-197) and DrilldownStep (was lines 252-266). Only the sticky pill counter remains.
+- **DrilldownStep hours cap** — "Show me the damage" button is now **disabled** when any category's detailed hours exceed its estimate. Clear error message shown: "Detailed hours can't exceed your category estimate — reduce them to continue." Per-category warning now triggers at 100% (not 150%) with strong visual treatment (orange border + bold text).
+- **MIN_CATEGORIES raised to 3** — was 2, which produced useless 2-bar Pareto charts.
 
-Key changes:
-- SolutionPicker radically redesigned: compact single-row cards (checkbox + title only, no badges)
-- FocusTable: Owner + Reclaim columns removed
-- EviMatrix: proper HTML table, editable owner, QuadrantSummary removed, circle jitter + size variation
-- Payoff: dramatically shortened, positive "after" framing, center-aligned
-- ResultsView: hand-written short labels for chart axis, benchmark line removed
-- DrilldownStep + IntakeStep: sticky floating counter (but has duplicate bug)
-- Zustand: stale focus selections cleared on new analysis
-- 3 new Code waste sources for software-dev + 6 solutions
-- Opportunity frames rewritten with emotional copy
+### 2. Built visual verification pipeline
+The core innovation of this session. Solves the recurring problem of code-level "PASS" while the user sees broken UI.
 
-### 2. Fixed Vercel deployment pipeline
-- Discovered Vercel was connected to old `mona2611-alt/FocusLab-New` (repo had been transferred to Klarecon org)
-- Made repo public (Vercel Hobby plan requires public for org repos)
-- Removed branch protection on main
-- Reconnected Vercel to `Klarecon/FocusLab-New`
-- Updated git remote URL
+**How it works:**
+1. `e2e/capture-screens.spec.ts` — Playwright test that navigates the entire app flow and captures ~24 screenshots
+2. Screenshots saved to `e2e/screenshots/` (gitignored)
+3. Claude reads the screenshots using multimodal Read tool and visually verifies changes
+4. Only then declares "done"
 
-### 3. Installed Playwright
-- `@playwright/test` installed as dev dependency
-- Chromium browser installed
-- `playwright.config.ts` created
-- `e2e/visual-checks.spec.ts` with structural checks
-- NOT yet running in CI or mandatory pipeline
+**Screenshots captured across the full flow:**
+- Landing page, role selection, context step
+- IntakeStep: empty, filled, sticky counter while scrolling
+- DrilldownStep: empty, filled, sticky counter, overflow warning with disabled button
+- Results: chart + cost breakdown
+- SolutionPicker: drains with fixes, selected state, add-your-own input
+- Action Plan: fix cards with effort/impact
+- EVI Matrix: scatter chart, Action Sequence table, reclaim section, before/after cards
 
-### 4. Updated enforcement
-- `verify-done.sh` Check 9: local HEAD must match origin/main (push verification)
-- `verify-done.sh` Check 10: no crying emoji in SolutionPicker
-- `verify-done.sh` Check 11: no "pre-built fixes" copy
-- `vitest.config.ts` excludes e2e/ directory
+**Verified all 3 fixes visually** by reviewing screenshots before declaring done.
 
-### 5. Test count: 268 (was 253, +15 regression tests)
+### 3. Added 4 regression tests (272 total, was 268)
+- `[S12-#1]` IntakeStep has no inline counter — only sticky
+- `[S12-#2]` DrilldownStep has no inline counter — only sticky
+- `[S12-#3]` DrilldownStep blocks button when category hours overflow
+- `[S12-#4]` MIN_CATEGORIES is 3
+
+### 4. Updated CLAUDE.md
+- TDD Rule 5: Screenshot verification before done
+- Definition of Done step 6: Playwright screenshot visual verification
+- 3 new banned patterns: grep-only PASS, no-push declares, adding without removing
+
+### 5. Updated .gitignore
+- Added `e2e/screenshots/`, `test-results/`, `playwright-report/`
 
 ## What's next (for the NEXT Claude Code session to pick up)
 
-### CRITICAL — Fix these 3 items FIRST before anything else:
-1. **DUPLICATE STICKY COUNTERS** — both inline counter (in header) and sticky pill showing same number on IntakeStep (`src/components/analyzer/IntakeStep.tsx` ~line 179-197) and DrilldownStep (`src/components/analyzer/DrilldownStep.tsx` ~line 230-244). Remove the inline one, keep only the sticky pill.
-2. **DRILLDOWN HOURS CAP** — `src/components/analyzer/DrilldownStep.tsx` — per-category detailed hours can exceed the category estimate. User entered 5hrs against 4hr estimate. Either hard-cap the input or block the "Show me the damage" button when any category exceeds its estimate.
-3. **MIN_CATEGORIES too low** — `src/components/analyzer/IntakeStep.tsx` line 40: `const MIN_CATEGORIES = 2;` — change to 3. With only 2 categories the Pareto chart is a useless 2-bar chart.
+### Visual items needing verification on deployed app:
+1. **Inline "add your own fix"** — verify it renders under each drain section on the live site (code has InlineFix, needs human eye on deployed app)
+2. **EVI quadrant label overlap** — may still overlap at certain viewport widths
+3. **Sticky counter** — verify it's only one instance, centered, readable on the live site
 
-### Then verify on deployed app:
-4. Verify inline "add your own fix" renders under each drain section on the live site
-5. Verify EVI quadrant labels don't overlap axis text at typical viewport widths
-6. Verify sticky counter is only one instance, centered, readable
+### Infrastructure:
+4. **Vercel auto-deploy is broken** — GitHub webhook not connected to Klarecon/FocusLab-New repo. Currently must deploy manually via `vercel --prod`. User should reconnect in Vercel dashboard, or Claude should always run `vercel --prod` after pushing.
+5. **Playwright chart rendering** — Recharts ResponsiveContainer reports width/height -1 in headless mode. Results chart screenshot may be incomplete. Consider setting explicit pixel dimensions on the chart wrapper.
 
-### Remaining work:
-7. Wire Playwright tests into the mandatory verification pipeline
-8. Run Playwright against local dev server before every "done" declaration
-9. All visual items from Session 11 feedback log marked "NEEDS VISUAL VERIFICATION"
+### Remaining work from backlog:
+6. Wire Playwright visual checks (`e2e/visual-checks.spec.ts`) into the mandatory verification pipeline
+7. All visual items from Session 11 feedback log marked "NEEDS VISUAL VERIFICATION" — use screenshot pipeline to verify
+8. Calendar week visualization (not started)
+9. Before/after comparison (not started)
+10. Lottie animations (not started)
+11. Shareable scorecard card (not started)
+12. Landing page copy overhaul (not started)
 
 ## Decisions made (non-obvious choices)
 
-### New in Session 11
-- **GitHub repo is now PUBLIC** at Klarecon/FocusLab-New — required for Vercel Hobby plan with org repos. No secrets in code.
-- **Branch protection removed from main** — was blocking deploys and adding friction for a single-developer project
-- **Git remote changed** from `mona2611-alt/FocusLab-New` to `Klarecon/FocusLab-New`
-- **SolutionPicker is now ultra-compact** — single row per solution: checkbox + title. ALL badges removed (Pearl, effort, impact). User demanded this after 10 rounds of "too much text."
-- **QuadrantSummary section removed** — duplicated the Action Sequence table info
-- **Benchmark line removed from results** — inconsistent across drains and produced confusing comparisons ("you're 16.4 hrs below")
-- **Opportunity frame shortened** — only role-specific one-liner shown, no generic paragraph
-- **Before/after card flipped to positive** — "after" now shows hours reclaimed + 😎, not "waste left" + sad emoji
+### New in Session 12
+- **Visual verification via Playwright + multimodal** — instead of trying to automate pixel-level checks, take screenshots and have Claude look at them. Pragmatic, works now, catches what grep never could.
+- **Hard-block on overflow, not soft warning** — DrilldownStep disables the button entirely when hours exceed estimate. Previous approach (warning only) let users proceed with bad data.
+- **MIN_CATEGORIES = 3** — enforced minimum so Pareto chart is meaningful. Was 2 before.
+- **Manual Vercel deploy** — `vercel --prod` used because auto-deploy webhook isn't connected. Not ideal but works.
 
 ### Carried from previous sessions
 - Two separate tools, not one flow: /analyzer finds problems, /focus solves them
@@ -92,38 +94,42 @@ Key changes:
 - Agents must not make major methodology changes without asking
 - Three-layer QA system: hooks + regression tests + evidence-based agent
 - Specialist agents mandatory before "done"
+- GitHub repo is PUBLIC at Klarecon/FocusLab-New
+- Branch protection removed from main
 
 ## Open questions waiting on user
-- **Has Mona verified ANY of the round 2 fixes on the live site?** She stopped reviewing after finding the duplicate counter and 2-bar chart issues.
-- **Is the ultra-compact SolutionPicker (checkbox + title only) enough?** Or does she want SOME info like effort level back?
+- **SolutionPicker format** — Is the ultra-compact layout (checkbox + title only) enough? Or does she want SOME info like effort level back?
 - **GTM plan status** — Mona and Oren haven't confirmed feedback on the v2 GTM plan from Session 10
+- **Vercel auto-deploy** — Does Mona want to reconnect the GitHub integration in the Vercel dashboard? Otherwise Claude must manually deploy each push.
 
 ## Critical file paths
 
 ### Product/code files
 ```
-src/components/analyzer/IntakeStep.tsx           — Category-level estimation (Pass 1) — HAS DUPLICATE COUNTER BUG
-src/components/analyzer/DrilldownStep.tsx         — Vital few drilldown (Pass 2) — HAS DUPLICATE COUNTER BUG + NO HOURS CAP
+src/components/analyzer/IntakeStep.tsx           — Category estimation (Pass 1) — MIN_CATEGORIES=3, single sticky counter
+src/components/analyzer/DrilldownStep.tsx         — Vital few drilldown (Pass 2) — single sticky counter, overflow blocking
 src/components/analyzer/ResultsView.tsx           — Pareto chart + results — SHORT_LABELS map
 src/components/focus/SolutionPicker.tsx           — Compact cards, inline add-your-own, solution dedup
 src/components/focus/FocusTable.tsx               — Action Plan (Owner/Reclaim removed)
 src/components/focus/EviMatrix.tsx                — EVI Matrix + PriorityTable (proper table, no QuadrantSummary)
 src/components/focus/Payoff.tsx                   — Shortened payoff, positive framing
-src/lib/data/waste-sources.ts                     — Waste source data (3 new Code sources)
-src/lib/data/solutions.ts                         — Solution data (6 new solutions)
+src/lib/data/waste-sources.ts                     — Waste source data (3 Code sources for software-dev)
+src/lib/data/solutions.ts                         — Solution data (6 solutions for new sources)
 src/lib/data/opportunity-frames.ts                — Emotional opportunity copy
 src/lib/engine/solutions-logic.ts                 — QUADRANT_META, payoff calculator
 src/stores/audit-store.ts                         — Zustand store (clearFocusState added)
-src/__tests__/feedback-regression.test.ts         — 86 cumulative regression tests
+src/__tests__/feedback-regression.test.ts         — 90 cumulative regression tests
 .claude/hooks/verify-done.sh                      — Pre-commit verification (11 checks)
-e2e/visual-checks.spec.ts                         — Playwright visual tests (not yet in CI)
+e2e/capture-screens.spec.ts                       — Screenshot capture pipeline (24 screenshots)
+e2e/visual-checks.spec.ts                         — Playwright structural checks
 playwright.config.ts                              — Playwright configuration
 vitest.config.ts                                  — Vitest config (excludes e2e/)
 ```
 
 ### Logs
 ```
-Session Log/Session 11 — Mona Feedback + Deploy Fix.md
+Session Log/Session 12 — Visual Verification Pipeline.md
+Feedback Log/Session 12 - Feedback Log.md
 Feedback Log/Session 11 - Feedback Log.md
 ```
 
@@ -134,7 +140,7 @@ Feedback Log/Session 11 - Feedback Log.md
 
 ## Known gotchas
 
-- **DUPLICATE COUNTERS:** IntakeStep and DrilldownStep both show inline counter AND sticky counter. Remove the inline ones.
+- **Vercel auto-deploy NOT connected** — must run `vercel --prod` manually after pushing to GitHub. The Vercel-GitHub webhook is missing on the Klarecon repo.
 - **visx React 19 peer deps:** `.npmrc` has `legacy-peer-deps=true`
 - **Framer Motion keyframes:** Spring transitions only support 2 keyframes
 - **Unicode escapes:** `\uXXXX` in JSX renders as raw backslash. Use actual characters.
@@ -143,17 +149,19 @@ Feedback Log/Session 11 - Feedback Log.md
 - **GitHub repo is PUBLIC** — no secrets in code, but be aware
 - **Branch protection removed from main** — can push directly
 - **Git remote is Klarecon org:** `https://github.com/Klarecon/FocusLab-New.git`
-- **Playwright installed but NOT mandatory** — tests exist in e2e/ but aren't in the commit gate
-- **User is extremely frustrated** — do NOT promise things without verifying on deployed app first. Do NOT say "PASS" based on grep. Actually look at what renders.
+- **Recharts in headless Playwright** — ResponsiveContainer reports -1 width/height. Chart screenshots may be incomplete. Set viewport to 1280x900 minimum.
+- **SolutionPicker uses `button[aria-pressed]`** not checkboxes — Playwright tests must use `button[aria-pressed="false"]` to select solutions.
 - **Parallel sessions:** Mona runs GTM planning and code sessions in parallel. GTM work goes in `/GTM Plan/`, code work stays in `src/`.
 
 ## How to resume work
 1. Read this file top to bottom
-2. Read `Feedback Log/Session 11 - Feedback Log.md` for complete item-by-item status
+2. Read `Feedback Log/Session 12 - Feedback Log.md` for item status
 3. Run `git status` and `git log --oneline -10` to confirm state
-4. **FIX THE 3 BROKEN ITEMS FIRST** (duplicate counters, hours cap, MIN_CATEGORIES)
-5. Push and verify on deployed Vercel app before telling user anything
-6. User wants autonomous execution — NEVER ask permissions, just do the work
-7. Do NOT declare "done" until you've verified on the live app, not just grepped code
-8. TDD discipline: 268 tests must never regress
-9. Do NOT make major methodology changes without asking
+4. Run `npx vitest --run` — expect 272 tests passing
+5. Run `npx tsc --noEmit` — expect zero errors
+6. For ANY visual/UI work: run `npx playwright test e2e/capture-screens.spec.ts` then READ screenshots in `e2e/screenshots/`
+7. After pushing: run `vercel --prod` to deploy (auto-deploy not connected)
+8. User wants autonomous execution — NEVER ask permissions, just do the work
+9. Do NOT declare "done" without visual screenshot verification
+10. TDD discipline: 272 tests must never regress
+11. Do NOT make major methodology changes without asking
