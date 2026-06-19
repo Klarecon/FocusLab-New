@@ -84,7 +84,7 @@ export default function FocusStage() {
       {/* Page header */}
       <div className="mb-8">
         <h1
-          className="text-4xl sm:text-5xl font-bold mb-2"
+          className="text-2xl sm:text-4xl md:text-5xl font-bold mb-2"
           style={{
             fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
           }}
@@ -118,7 +118,7 @@ export default function FocusStage() {
             aria-controls={`tabpanel-${tab.id}`}
             id={`tab-${tab.id}`}
             onClick={() => setActiveTab(tab.id)}
-            className="relative flex-1 flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors duration-200 cursor-pointer"
+            className="relative flex-1 flex items-center justify-center gap-1 sm:gap-1.5 py-2 sm:py-2.5 px-2 sm:px-4 rounded-lg text-xs sm:text-sm font-medium transition-colors duration-200 cursor-pointer"
             style={{
               color:
                 activeTab === tab.id

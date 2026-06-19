@@ -74,7 +74,7 @@ export default function ContextStep({ onNext, onBack }: ContextStepProps) {
 
       <div className="space-y-8 max-w-lg mx-auto">
         {/* Hours per week */}
-        <div className="surface-card p-5" style={{ borderLeft: "4px solid var(--color-gold)" }}>
+        <div className="surface-card p-4 sm:p-5" style={{ borderLeft: "4px solid var(--color-gold)" }}>
           <label className="block text-sm font-semibold mb-3" style={{ color: "var(--color-ink)" }}>
             Hours per week
           </label>
@@ -86,11 +86,11 @@ export default function ContextStep({ onNext, onBack }: ContextStepProps) {
         </div>
 
         {/* Days per week */}
-        <div className="surface-card p-5" style={{ borderLeft: "4px solid var(--color-gold)" }}>
+        <div className="surface-card p-4 sm:p-5" style={{ borderLeft: "4px solid var(--color-gold)" }}>
           <label className="block text-sm font-semibold mb-3" style={{ color: "var(--color-ink)" }}>
             Days per week
           </label>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {DAYS_OPTIONS.map((d) => (
               <button
                 key={d}
@@ -112,7 +112,7 @@ export default function ContextStep({ onNext, onBack }: ContextStepProps) {
         </div>
 
         {/* Pay */}
-        <div className="surface-card p-5" style={{ borderLeft: "4px solid var(--color-gold)" }}>
+        <div className="surface-card p-4 sm:p-5" style={{ borderLeft: "4px solid var(--color-gold)" }}>
           <label className="block text-sm font-semibold mb-3" style={{ color: "var(--color-ink)" }}>
             Your pay
           </label>

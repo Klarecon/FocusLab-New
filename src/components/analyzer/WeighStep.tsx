@@ -197,7 +197,7 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
           <motion.div
             animate={{ scale: [1.03, 1] }}
             transition={{ duration: 0.15 }}
-            className="surface-card p-4 flex items-center justify-between"
+            className="surface-card p-3 sm:p-4 flex items-center justify-between gap-3"
             style={{
               borderLeft: `4px solid ${
                 totalWaste / workHoursPerWeek > 0.9
@@ -300,7 +300,7 @@ export default function WeighStep({ onNext, onBack }: WeighStepProps) {
               style={{ borderLeft: "4px solid var(--color-waste)" }}
             >
               {/* Source header */}
-              <div className="flex items-center gap-2 mb-4">
+              <div className="flex items-center gap-2 mb-4 flex-wrap">
                 <span className="text-xl" aria-hidden="true">{src.emoji}</span>
                 <h4 className="font-semibold text-sm flex-1" style={{ color: "var(--color-ink)" }}>
                   {src.label}

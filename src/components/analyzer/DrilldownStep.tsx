@@ -285,10 +285,10 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: gi * 0.08 }}
-            className="surface-card p-6"
+            className="surface-card p-4 sm:p-6"
             style={{ borderLeft: "4px solid var(--color-waste)" }}
           >
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
               <h3
                 className="font-semibold text-base"
                 style={{

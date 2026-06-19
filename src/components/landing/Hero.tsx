@@ -128,7 +128,7 @@ function WeekCalendar() {
 
 export default function Hero() {
   return (
-    <section className="relative min-h-[90vh] flex flex-col items-center justify-center text-center px-6 py-20 overflow-hidden">
+    <section className="relative min-h-[70vh] sm:min-h-[90vh] flex flex-col items-center justify-center text-center px-4 sm:px-6 py-12 sm:py-20 overflow-hidden">
       {/* Background orbiting emoji */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.07] select-none flex items-center justify-center">
         <OrbitingCircles radius={140} iconSize={40} speed={0.7} path={false}>
@@ -164,7 +164,7 @@ export default function Hero() {
 
         {/* Main headline */}
         <h1
-          className="text-5xl sm:text-6xl md:text-7xl font-bold leading-[1.05] mb-6"
+          className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] mb-4 sm:mb-6"
           style={{ fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif" }}
         >
           Most of your week is{" "}
@@ -178,7 +178,7 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="text-lg sm:text-xl mb-10 max-w-2xl mx-auto leading-relaxed"
+          className="text-base sm:text-lg md:text-xl mb-6 sm:mb-10 max-w-2xl mx-auto leading-relaxed"
           style={{ color: "var(--color-ink-soft)" }}
         >
           Meetings, email, coordination, admin — the average knowledge worker
@@ -207,7 +207,7 @@ export default function Hero() {
           <Link href="/analyzer" className="no-underline">
             <ShimmerButton
               borderRadius="12px"
-              className="px-10 py-5 text-lg font-bold"
+              className="px-6 py-4 text-base sm:px-10 sm:py-5 sm:text-lg font-bold"
             >
               <span className="flex items-center gap-2">
                 <AnimatedEmoji emoji="🔍" animation="pulse" size="sm" />

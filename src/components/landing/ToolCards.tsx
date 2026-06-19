@@ -33,7 +33,7 @@ const tools = [
 
 export default function ToolCards() {
   return (
-    <section className="px-5 py-24 max-w-5xl mx-auto">
+    <section className="px-4 py-12 sm:px-5 sm:py-24 max-w-5xl mx-auto">
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -65,7 +65,7 @@ export default function ToolCards() {
           >
             <Link
               href={tool.href}
-              className="block no-underline group rounded-xl p-10 transition-all duration-200 hover:shadow-xl hover:scale-[1.02]"
+              className="block no-underline group rounded-xl p-5 sm:p-10 transition-all duration-200 hover:shadow-xl hover:scale-[1.02]"
               style={{
                 backgroundColor: "var(--color-card)",
                 border: "1px solid var(--color-line)",

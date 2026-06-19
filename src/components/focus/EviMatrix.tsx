@@ -19,6 +19,7 @@ import { quadrant, QUADRANT_META } from "@/lib/engine/solutions-logic";
 import type { Score, QuadrantLabel } from "@/lib/engine/types";
 import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
 import { useDrainLookup, type DrainInfo } from "./shared/useDrainLookup";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 interface EviMatrixProps {
   vitalFew: DrainInfo[];
@@ -277,7 +278,7 @@ function PriorityTable({ dotData }: { dotData: DotData[] }) {
 
   return (
     <div
-      className="mt-6 surface-card p-6 overflow-x-auto"
+      className="mt-6 surface-card p-3 sm:p-6 overflow-x-auto"
       style={{ borderTop: "4px solid", borderImage: "linear-gradient(to right, #c4186a, #edb215) 1" }}
     >
       <h3
@@ -393,6 +394,7 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
   const solutionScores = useAuditStore((s) => s.solutionScores);
   const setSolutionScore = useAuditStore((s) => s.setSolutionScore);
 
+  const isMobile = useIsMobile();
   const [editingId, setEditingId] = useState<string | null>(null);
   const { drainBySlug, getZone, getSourceName } = useDrainLookup(vitalFew, usefulMany);
 
@@ -542,12 +544,12 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
       </div>
 
       <div
-        className="surface-card p-4 relative"
+        className="surface-card p-2 sm:p-4 relative"
         aria-hidden="true"
         style={{ borderTop: "4px solid", borderImage: "linear-gradient(to right, #e03e12, #edb215) 1" }}
       >
         {/* Quadrant labels — positioned inside chart area, away from axis ticks */}
-        <div className="absolute top-10 left-[72px] sm:left-[80px] z-10 pointer-events-none" aria-hidden="true">
+        <div className="absolute top-10 left-[72px] sm:left-[80px] z-10 pointer-events-none hidden sm:block" aria-hidden="true">
           <span
             className="text-[10px] sm:text-xs font-semibold px-2 py-1 rounded-full"
             style={{
@@ -558,7 +560,7 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
             {QUADRANT_META["quick-win"].emoji} {QUADRANT_META["quick-win"].name}
           </span>
         </div>
-        <div className="absolute top-10 right-[40px] sm:right-[48px] z-10 pointer-events-none" aria-hidden="true">
+        <div className="absolute top-10 right-[40px] sm:right-[48px] z-10 pointer-events-none hidden sm:block" aria-hidden="true">
           <span
             className="text-[10px] sm:text-xs font-semibold px-2 py-1 rounded-full"
             style={{
@@ -569,7 +571,7 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
             {QUADRANT_META["major-project"].emoji} {QUADRANT_META["major-project"].name}
           </span>
         </div>
-        <div className="absolute bottom-[100px] left-[72px] sm:left-[80px] z-10 pointer-events-none" aria-hidden="true">
+        <div className="absolute bottom-[100px] left-[72px] sm:left-[80px] z-10 pointer-events-none hidden sm:block" aria-hidden="true">
           <span
             className="text-[9px] sm:text-[10px] font-semibold px-2 py-1 rounded-full"
             style={{
@@ -580,7 +582,7 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
             {QUADRANT_META["fill-in"].emoji} {QUADRANT_META["fill-in"].name}
           </span>
         </div>
-        <div className="absolute bottom-[100px] right-[40px] sm:right-[48px] z-10 pointer-events-none" aria-hidden="true">
+        <div className="absolute bottom-[100px] right-[40px] sm:right-[48px] z-10 pointer-events-none hidden sm:block" aria-hidden="true">
           <span
             className="text-[9px] sm:text-[10px] font-semibold px-2 py-1 rounded-full"
             style={{
@@ -592,9 +594,9 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
           </span>
         </div>
 
-        <ResponsiveContainer width="100%" height={400}>
+        <ResponsiveContainer width="100%" height={isMobile ? 280 : 400}>
           <ScatterChart
-            margin={{ top: 30, right: 30, bottom: 20, left: 10 }}
+            margin={{ top: 20, right: isMobile ? 10 : 30, bottom: 20, left: isMobile ? 0 : 10 }}
             onClick={() => { /* dot clicks handled by CustomDot directly */ }}
           >
             {/* All 4 quadrant backgrounds */}
@@ -731,7 +733,7 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
                   Done
                 </button>
               </div>
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 <div>
                   <label
                     className="block text-xs mb-2 font-medium"
@@ -746,7 +748,7 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
                         onClick={() =>
                           setSolutionScore(editingId!, { effort: v })
                         }
-                        className="w-10 h-10 rounded-lg text-sm font-bold transition-all cursor-pointer"
+                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg text-sm font-bold transition-all cursor-pointer"
                         style={{
                           backgroundColor:
                             editingSolution.scores.effort === v
@@ -782,7 +784,7 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
                         onClick={() =>
                           setSolutionScore(editingId!, { impact: v })
                         }
-                        className="w-10 h-10 rounded-lg text-sm font-bold transition-all cursor-pointer"
+                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg text-sm font-bold transition-all cursor-pointer"
                         style={{
                           backgroundColor:
                             editingSolution.scores.impact === v

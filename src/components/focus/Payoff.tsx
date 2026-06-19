@@ -147,7 +147,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
   return (
     <div>
       {/* Big payoff numbers */}
-      <div className="surface-card p-8 mb-6" style={{ borderTop: "4px solid var(--color-reclaim)" }}>
+      <div className="surface-card p-5 sm:p-8 mb-6" style={{ borderTop: "4px solid var(--color-reclaim)" }}>
         {hasReclaimable ? (
           <>
             {/* Full potential */}
@@ -164,14 +164,14 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
                 </Highlighter>
               </div>
               <div
-                className="text-5xl font-bold mb-1"
+                className="text-3xl sm:text-5xl font-bold mb-1"
                 style={{ color: "var(--color-reclaim)" }}
               >
                 <CountUp
                   to={reclaimableWeekly}
                   decimals={1}
                   suffix=" hrs/week"
-                  className="text-5xl font-bold"
+                  className="text-3xl sm:text-5xl font-bold"
                   style={{ color: "var(--color-reclaim)" }}
                 />
               </div>
@@ -291,11 +291,11 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
 
       {/* Before / After Emotional Contrast */}
       {hasReclaimable && hasAnyWaste && (
-        <div className="surface-card p-6 mb-6 max-w-2xl mx-auto">
+        <div className="surface-card p-4 sm:p-6 mb-6 max-w-2xl mx-auto">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             {/* Before */}
             <motion.div
-              className="text-center p-4 rounded-xl flex-1 min-w-[180px]"
+              className="text-center p-3 sm:p-4 rounded-xl flex-1 min-w-0 sm:min-w-[180px]"
               style={{ backgroundColor: "rgba(224, 62, 18, 0.06)" }}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -336,7 +336,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
 
             {/* After — framed positively */}
             <motion.div
-              className="text-center p-4 rounded-xl flex-1 min-w-[180px]"
+              className="text-center p-3 sm:p-4 rounded-xl flex-1 min-w-0 sm:min-w-[180px]"
               style={{ backgroundColor: "rgba(196, 24, 106, 0.06)" }}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -370,7 +370,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
       {/* Cost of Doing Nothing */}
       {hasAnyWaste && (
         <div
-          className="rounded-xl p-8 mb-6"
+          className="rounded-xl p-5 sm:p-8 mb-6"
           style={{
             backgroundColor: "rgba(224, 62, 18, 0.04)",
             borderTop: "4px solid var(--color-waste)",

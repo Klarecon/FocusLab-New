@@ -16,9 +16,54 @@ interface StepperProps {
 }
 
 export default function Stepper({ currentStep, onStepClick }: StepperProps) {
+  const currentStepData = STEPS[currentStep];
+
   return (
     <nav aria-label="Wizard progress" className="mb-12">
-      <ol className="flex items-center justify-between gap-1">
+      {/* Mobile: Mini dots */}
+      <div className="flex sm:hidden flex-col items-center gap-2">
+        <div className="flex items-center gap-2.5">
+          {STEPS.map((s, i) => {
+            const isCompleted = i < currentStep;
+            const isCurrent = i === currentStep;
+            return (
+              <button
+                key={s.label}
+                type="button"
+                disabled={i > currentStep}
+                onClick={() => isCompleted && onStepClick(i)}
+                aria-label={`Step ${i + 1}: ${s.label}${isCompleted ? " (completed)" : isCurrent ? " (current)" : ""}`}
+                aria-current={isCurrent ? "step" : undefined}
+                className={`rounded-full transition-all duration-300 ${
+                  isCurrent
+                    ? "w-3.5 h-3.5"
+                    : "w-2.5 h-2.5"
+                } ${isCompleted ? "cursor-pointer" : "cursor-default"}`}
+                style={{
+                  background: isCurrent
+                    ? "linear-gradient(135deg, var(--color-waste), var(--color-reclaim))"
+                    : isCompleted
+                      ? "var(--color-reclaim)"
+                      : "var(--color-line)",
+                  boxShadow: isCurrent
+                    ? "0 2px 8px rgba(224, 62, 18, 0.3)"
+                    : undefined,
+                }}
+              />
+            );
+          })}
+        </div>
+        <span
+          className="text-xs font-semibold"
+          style={{ color: "var(--color-waste)" }}
+        >
+          <span aria-hidden="true">{currentStepData?.emoji}</span>{" "}
+          {currentStepData?.label}
+        </span>
+      </div>
+
+      {/* Desktop: Full circles */}
+      <ol className="hidden sm:flex items-center justify-between gap-1">
         {STEPS.map((s, i) => {
           const isCompleted = i < currentStep;
           const isCurrent = i === currentStep;
@@ -26,7 +71,6 @@ export default function Stepper({ currentStep, onStepClick }: StepperProps) {
 
           return (
             <li key={s.label} className="flex-1 flex flex-col items-center gap-2">
-              {/* Connector line (before the dot, except first) */}
               <div className="flex items-center w-full">
                 {i > 0 && (
                   <div
@@ -39,7 +83,6 @@ export default function Stepper({ currentStep, onStepClick }: StepperProps) {
                   />
                 )}
 
-                {/* Step dot */}
                 <motion.button
                   type="button"
                   disabled={isFuture}
@@ -86,7 +129,6 @@ export default function Stepper({ currentStep, onStepClick }: StepperProps) {
                 )}
               </div>
 
-              {/* Label */}
               <span
                 className="text-xs font-semibold whitespace-nowrap"
                 style={{

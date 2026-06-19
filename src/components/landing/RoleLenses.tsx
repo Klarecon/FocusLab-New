@@ -7,7 +7,7 @@ import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
 
 export default function RoleLenses() {
   return (
-    <section className="px-5 py-24 max-w-5xl mx-auto">
+    <section className="px-4 py-12 sm:px-5 sm:py-24 max-w-5xl mx-auto">
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -39,7 +39,7 @@ export default function RoleLenses() {
           >
             <Link
               href={`/analyzer?role=${role.slug}`}
-              className="block no-underline group rounded-xl p-7 text-center transition-all duration-200 hover:shadow-lg hover:scale-[1.03]"
+              className="block no-underline group rounded-xl p-4 sm:p-7 text-center transition-all duration-200 hover:shadow-lg hover:scale-[1.03]"
               style={{
                 backgroundColor: "var(--color-card)",
                 border: "1px solid var(--color-line)",

@@ -45,7 +45,7 @@ const stats = [
 export default function BenchmarkProof() {
   return (
     <section
-      className="px-5 py-24"
+      className="px-4 py-12 sm:px-5 sm:py-24"
       style={{ backgroundColor: "var(--color-ink)", color: "var(--color-paper)" }}
     >
       <div className="max-w-5xl mx-auto">
@@ -79,7 +79,7 @@ export default function BenchmarkProof() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="rounded-xl p-6 relative overflow-hidden"
+              className="rounded-xl p-4 sm:p-6 relative overflow-hidden"
               style={{
                 backgroundColor: "rgba(243, 237, 225, 0.06)",
                 border: "1px solid rgba(243, 237, 225, 0.1)",

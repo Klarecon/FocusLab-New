@@ -56,7 +56,7 @@ function DotRating({
           <button
             key={n}
             onClick={() => onChange(n)}
-            className="w-6 h-6 rounded-full border-2 transition-all duration-150 cursor-pointer hover:scale-110 relative"
+            className="w-7 h-7 sm:w-6 sm:h-6 rounded-full border-2 transition-all duration-150 cursor-pointer hover:scale-110 relative"
             style={{
               backgroundColor: filled ? activeColor : "transparent",
               borderColor: filled ? activeColor : "var(--color-line)",
@@ -103,7 +103,7 @@ function ActionCard({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, x: 20, height: 0 }}
       transition={{ delay: index * 0.04, duration: 0.25 }}
-      className="surface-card p-5 rounded-xl transition-shadow hover:shadow-md"
+      className="surface-card p-4 sm:p-5 rounded-xl transition-shadow hover:shadow-md"
       style={{
         borderLeft: `4px solid ${
           zone === "A" ? "var(--color-waste)" : zone === "B" ? "var(--color-gold)" : "var(--color-ink-soft)"
@@ -146,7 +146,7 @@ function ActionCard({
       </h4>
 
       {/* Controls grid */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2 sm:gap-3">
         <div>
           <span
             className="block text-xs mb-1 font-medium"

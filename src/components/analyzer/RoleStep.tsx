@@ -104,7 +104,7 @@ export default function RoleStep({ onNext }: RoleStepProps) {
           <p className="text-sm font-semibold mb-3" style={{ color: "var(--color-ink)" }}>
             Your level
           </p>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {LEVELS.map((level) => {
               const isActive = currentLevel === level.id;
               return (
@@ -113,7 +113,7 @@ export default function RoleStep({ onNext }: RoleStepProps) {
                   type="button"
                   onClick={() => handleSelectLevel(level.id)}
                   aria-pressed={isActive}
-                  className="p-4 rounded-xl text-left transition-all duration-200"
+                  className="p-3 sm:p-4 rounded-xl text-left transition-all duration-200"
                   style={{
                     border: isActive
                       ? "2px solid var(--color-reclaim)"
@@ -203,7 +203,7 @@ function RoleCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.3 }}
-      className="surface-card p-6 text-left transition-all duration-200"
+      className="surface-card p-4 sm:p-6 text-left transition-all duration-200"
       style={{
         borderLeft: isSelected ? "4px solid var(--color-reclaim)" : "4px solid transparent",
         borderColor: isSelected ? undefined : "var(--color-line)",

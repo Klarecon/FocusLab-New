@@ -19,6 +19,7 @@ import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { Highlighter } from "@/components/ui/highlighter";
 import { wasteSourceBySlug } from "@/lib/data/waste-sources";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 /* --- Formatters --- */
 
@@ -168,6 +169,7 @@ interface ResultsViewProps {
 export default function ResultsView({ onRestart }: ResultsViewProps) {
   const paretoResult = useAuditStore((s) => s.paretoResult);
   const workHoursPerWeek = useAuditStore((s) => s.workHoursPerWeek);
+  const isMobile = useIsMobile();
 
   // Scroll to top when results first appear
   useEffect(() => {
@@ -248,7 +250,7 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
-                        className="text-5xl sm:text-6xl md:text-7xl font-bold font-figures leading-none"
+                        className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold font-figures leading-none"
                         style={{
                           color: "#c4186a",
                           textShadow: "0 0 60px rgba(196, 24, 106, 0.3)",
@@ -275,7 +277,7 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
-                        className="text-5xl sm:text-6xl md:text-7xl font-bold font-figures leading-none"
+                        className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold font-figures leading-none"
                         style={{
                           color: "#c4186a",
                           textShadow: "0 0 60px rgba(196, 24, 106, 0.3)",
@@ -341,7 +343,7 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
           {hasWaste ? (
             <>
               <h2
-                className="font-figures font-bold mb-3 text-4xl sm:text-5xl"
+                className="font-figures font-bold mb-3 text-2xl sm:text-4xl md:text-5xl"
                 style={{ color: "var(--color-waste)" }}
               >
                 {hasCost ? (
@@ -411,11 +413,11 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
               ))}
             </tbody>
           </table>
-          <div style={{ width: "100%", height: 420 }} aria-hidden="true">
+          <div style={{ width: "100%", height: isMobile ? 300 : 420 }} aria-hidden="true">
             <ResponsiveContainer>
               <ComposedChart
                 data={chartData}
-                margin={{ top: 10, right: 30, left: 0, bottom: 100 }}
+                margin={{ top: 10, right: isMobile ? 10 : 30, left: 0, bottom: isMobile ? 70 : 100 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--color-line)" />
                 <XAxis
@@ -425,7 +427,7 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
                   angle={-45}
                   textAnchor="end"
                   interval={0}
-                  height={110}
+                  height={isMobile ? 80 : 110}
                 />
                 <YAxis
                   yAxisId="left"
@@ -520,7 +522,7 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.1 * i, duration: 0.4 }}
-                  className="surface-card p-6"
+                  className="surface-card p-4 sm:p-6"
                   style={{
                     borderLeft: "4px solid var(--color-waste)",
                     boxShadow: "0 2px 12px rgba(224, 62, 18, 0.08)",
@@ -560,7 +562,7 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
 
         {/* -- Useful many (Zone B) summary -- */}
         {paretoResult.categories.filter((c) => c.zone === "B").length > 0 && (
-          <div className="surface-card p-6 mb-10" style={{ borderLeft: "4px solid var(--color-gold)" }}>
+          <div className="surface-card p-4 sm:p-6 mb-10" style={{ borderLeft: "4px solid var(--color-gold)" }}>
             <h3 className="text-lg font-bold mb-3" style={{ color: "var(--color-ink)" }}>
               <Highlighter action="underline" color="var(--color-gold)" isView>
                 Also eating your time
@@ -593,7 +595,7 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
 
         {/* -- Trivial many (Zone C) summary -- */}
         {paretoResult.categories.filter((c) => c.zone === "C").length > 0 && (
-          <div className="surface-card p-6 mb-10" style={{ borderLeft: "4px solid var(--color-ink-soft)" }}>
+          <div className="surface-card p-4 sm:p-6 mb-10" style={{ borderLeft: "4px solid var(--color-ink-soft)" }}>
             <h3 className="text-lg font-bold mb-3" style={{ color: "var(--color-ink)" }}>
               <Highlighter action="underline" color="var(--color-ink-soft)" isView>
                 The small stuff

@@ -208,7 +208,7 @@ function DrainSection({
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.08 }}
-      className="surface-card p-6 mb-6"
+      className="surface-card p-4 sm:p-6 mb-6"
     >
       {/* Drain header */}
       <div className="flex items-center gap-3 mb-4">
@@ -481,7 +481,7 @@ export default function SolutionPicker({
 
       {/* Bottom bar */}
       <div
-        className="mt-8 flex items-center justify-between p-4 rounded-xl border"
+        className="mt-8 flex items-center justify-between gap-3 p-3 sm:p-4 rounded-xl border"
         style={{
           backgroundColor: "var(--color-card)",
           borderColor: "var(--color-line)",
@@ -500,7 +500,7 @@ export default function SolutionPicker({
           disabled={chosenSolutions.length === 0}
           borderRadius="12px"
           background={chosenSolutions.length > 0 ? "var(--color-reclaim)" : "var(--color-ink-soft)"}
-          className="px-10 py-4 text-base font-bold disabled:opacity-40 disabled:cursor-not-allowed"
+          className="px-6 py-3 sm:px-10 sm:py-4 text-sm sm:text-base font-bold disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <span className="flex items-center gap-2">
             Build your action plan
