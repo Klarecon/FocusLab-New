@@ -357,7 +357,12 @@ function PriorityTable({ dotData }: { dotData: DotData[] }) {
                         type="date"
                         value={dueDates[d.id] ?? ""}
                         min={new Date().toISOString().split("T")[0]}
-                        onChange={(e) => setDueDate(d.id, e.target.value)}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          const today = new Date().toISOString().split("T")[0];
+                          if (val && val < today) return; // block past dates (mobile Safari ignores min)
+                          setDueDate(d.id, val);
+                        }}
                         className="text-xs px-2 py-1.5 rounded border w-full"
                         style={{
                           borderColor: "var(--color-line)",
