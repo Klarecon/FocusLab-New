@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FocusLab GTM Tracker</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+    :root {
+      --pink: #c4186a;
+      --orange: #e03e12;
+      --gold: #edb215;
+      --dark: #1a1714;
+      --mid: #4a443d;
+      --soft: #8a7e74;
+      --cream: #fdf6ee;
+      --card: #ffffff;
+      --border: #e8e0d8;
+      --highlight: #fef9f0;
+      --input-bg: #faf7f3;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--cream);
+      color: var(--dark);
+      line-height: 1.5;
+    }
+
+    /* ── Top bar ── */
+    .topbar {
+      background: var(--dark);
+      color: white;
+      padding: 20px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .topbar h1 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.3rem;
+      color: var(--gold);
+    }
+
+    .topbar-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .save-status {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .btn-pink { background: var(--pink); color: white; }
+    .btn-pink:hover { background: #a01458; }
+    .btn-gold { background: var(--gold); color: var(--dark); }
+    .btn-gold:hover { background: #d4a012; }
+    .btn-outline { background: transparent; border: 1.5px solid rgba(255,255,255,0.25); color: white; }
+    .btn-outline:hover { border-color: white; }
+
+    /* ── Week tabs ── */
+    .week-tabs {
+      display: flex;
+      gap: 0;
+      background: #2d261f;
+      padding: 0 28px;
+      overflow-x: auto;
+    }
+
+    .week-tab {
+      padding: 12px 24px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.45);
+      cursor: pointer;
+      border: none;
+      background: none;
+      border-bottom: 3px solid transparent;
+      transition: all 0.15s;
+      white-space: nowrap;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .week-tab:hover { color: rgba(255,255,255,0.7); }
+    .week-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+    /* ── Container ── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 24px 20px; }
+
+    /* ── Section card ── */
+    .section {
+      background: var(--card);
+      border-radius: 14px;
+      margin-bottom: 20px;
+      overflow: hidden;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+    }
+
+    .section-header {
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.1s;
+    }
+
+    .section-header:hover { background: rgba(0,0,0,0.015); }
+
+    .section-icon { font-size: 1.2rem; }
+
+    .section-title {
+      font-family: 'Fraunces', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      flex: 1;
+    }
+
+    .section-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 10px;
+    }
+
+    .badge-organic { background: rgba(196,24,106,0.1); color: var(--pink); }
+    .badge-paid { background: rgba(237,178,21,0.15); color: #b8900e; }
+    .badge-team { background: rgba(224,62,18,0.1); color: var(--orange); }
+    .badge-core { background: rgba(26,23,20,0.08); color: var(--dark); }
+
+    .section-toggle {
+      font-size: 0.9rem;
+      color: var(--soft);
+      transition: transform 0.2s;
+    }
+
+    .section.collapsed .section-toggle { transform: rotate(-90deg); }
+    .section.collapsed .section-body { display: none; }
+
+    .section-body { padding: 0 20px 16px; }
+
+    /* ── Data grid ── */
+    .data-grid {
+      display: grid;
+      grid-template-columns: 180px repeat(5, 1fr) 90px;
+      gap: 1px;
+      background: var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      font-size: 0.82rem;
+    }
+
+    .grid-header {
+      background: #f5f0ea;
+      padding: 10px 12px;
+      font-weight: 700;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--soft);
+      text-align: center;
+    }
+
+    .grid-header:first-child { text-align: left; }
+
+    .grid-label {
+      background: var(--card);
+      padding: 8px 12px;
+      font-weight: 500;
+      color: var(--mid);
+      display: flex;
+      align-items: center;
+    }
+
+    .grid-cell {
+      background: var(--card);
+      padding: 4px;
+    }
+
+    .grid-cell input {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: var(--input-bg);
+      border-radius: 6px;
+      text-align: center;
+      font-size: 0.82rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      padding: 6px 4px;
+      color: var(--dark);
+      font-weight: 600;
+      outline: none;
+      transition: all 0.15s;
+    }
+
+    .grid-cell input:focus {
+      background: white;
+      box-shadow: 0 0 0 2px var(--pink);
+    }
+
+    .grid-cell input::placeholder {
+      color: #ccc;
+      font-weight: 400;
+    }
+
+    .grid-cell.total-cell {
+      background: #f5f0ea;
+    }
+
+    .grid-cell.total-cell input {
+      background: transparent;
+      font-weight: 700;
+      color: var(--pink);
+    }
+
+    .grid-cell input.text-input {
+      text-align: left;
+      font-weight: 400;
+      font-size: 0.78rem;
+    }
+
+    /* ── Summary section ── */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .summary-card {
+      background: var(--input-bg);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .summary-card .num {
+      font-family: 'Fraunces', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--pink);
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .summary-card .num input {
+      width: 80px;
+      border: none;
+      background: transparent;
+      text-align: center;
+      font-family: 'Fraunces', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--pink);
+      outline: none;
+    }
+
+    .summary-card .label {
+      font-size: 0.72rem;
+      color: var(--soft);
+      margin-top: 2px;
+    }
+
+    /* ── Oren report ── */
+    .report-field {
+      margin-bottom: 14px;
+    }
+
+    .report-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--soft);
+      margin-bottom: 4px;
+    }
+
+    .report-input {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.88rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--dark);
+      background: var(--input-bg);
+      outline: none;
+      transition: all 0.15s;
+      resize: none;
+    }
+
+    .report-input:focus {
+      border-color: var(--pink);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(196,24,106,0.08);
+    }
+
+    .report-template {
+      font-size: 0.78rem;
+      color: var(--soft);
+      font-style: italic;
+      margin-top: 4px;
+    }
+
+    /* ── Daily score ── */
+    .score-row {
+      display: grid;
+      grid-template-columns: 180px repeat(5, 1fr);
+      gap: 8px;
+      margin-bottom: 8px;
+      align-items: center;
+    }
+
+    .score-label {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--mid);
+    }
+
+    .score-btn-group {
+      display: flex;
+      gap: 4px;
+    }
+
+    .score-btn {
+      flex: 1;
+      padding: 6px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid var(--border);
+      background: var(--input-bg);
+      color: var(--soft);
+      transition: all 0.15s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .score-btn.good.active {
+      background: rgba(196,24,106,0.1);
+      border-color: var(--pink);
+      color: var(--pink);
+    }
+
+    .score-btn.bad.active {
+      background: rgba(224,62,18,0.1);
+      border-color: var(--orange);
+      color: var(--orange);
+    }
+
+    .score-note {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 0.78rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--dark);
+      background: var(--input-bg);
+      outline: none;
+    }
+
+    .score-note:focus {
+      border-color: var(--pink);
+      background: white;
+    }
+
+    /* ── Funnel visual ── */
+    .funnel-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin: 16px 0;
+      flex-wrap: wrap;
+    }
+
+    .funnel-step-box {
+      padding: 10px 16px;
+      border-radius: 8px;
+      text-align: center;
+      min-width: 100px;
+    }
+
+    .funnel-step-box input {
+      width: 60px;
+      border: none;
+      background: rgba(255,255,255,0.3);
+      border-radius: 4px;
+      text-align: center;
+      font-family: 'Fraunces', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      padding: 4px;
+      outline: none;
+      color: inherit;
+    }
+
+    .funnel-step-box .flabel {
+      font-size: 0.68rem;
+      margin-top: 2px;
+      opacity: 0.8;
+    }
+
+    .fs1 { background: var(--dark); color: var(--gold); }
+    .fs2 { background: var(--orange); color: white; }
+    .fs3 { background: var(--gold); color: var(--dark); }
+    .fs4 { background: var(--pink); color: white; }
+
+    .funnel-arrow { font-size: 1.2rem; color: var(--soft); }
+
+    /* ── Comparison table ── */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 180px repeat(4, 1fr) 100px;
+      gap: 1px;
+      background: var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      font-size: 0.82rem;
+    }
+
+    .compare-grid .grid-header { font-size: 0.7rem; }
+
+    .trend-up { color: var(--pink); font-weight: 700; }
+    .trend-down { color: var(--orange); font-weight: 700; }
+
+    /* ── Hidden week ── */
+    .week-content { display: none; }
+    .week-content.active { display: block; }
+
+    /* ── Export toast ── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--dark);
+      color: var(--gold);
+      padding: 14px 24px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 200;
+    }
+
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    @media (max-width: 768px) {
+      .data-grid { grid-template-columns: 140px repeat(5,1fr) 70px; font-size: 0.72rem; }
+      .summary-grid { grid-template-columns: 1fr 1fr; }
+      .topbar h1 { font-size: 1rem; }
+      .container { padding: 16px 12px; }
+      .funnel-visual { flex-direction: column; }
+      .funnel-arrow { transform: rotate(90deg); }
+      .score-row { grid-template-columns: 1fr; gap: 4px; }
+      .compare-grid { grid-template-columns: 140px repeat(4,1fr) 80px; font-size: 0.72rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <h1>FocusLab GTM Tracker</h1>
+  <div class="topbar-actions">
+    <span class="save-status" id="saveStatus">Auto-saved</span>
+    <button class="btn btn-outline" onclick="clearWeek()">Clear This Week</button>
+    <button class="btn btn-gold" onclick="exportCSV()">Export CSV</button>
+  </div>
+</div>
+
+<!-- Week tabs -->
+<div class="week-tabs">
+  <button class="week-tab active" onclick="switchWeek(0, this)">Week 1 &middot; Jun 22-26</button>
+  <button class="week-tab" onclick="switchWeek(1, this)">Week 2 &middot; Jun 29-Jul 3</button>
+  <button class="week-tab" onclick="switchWeek(2, this)">Week 3 &middot; Jul 6-10</button>
+  <button class="week-tab" onclick="switchWeek(3, this)">Week 4 &middot; Jul 13-17</button>
+  <button class="week-tab" onclick="switchWeek(4, this)">Month View</button>
+</div>
+
+<div class="container" id="app"></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const DAYS = ['Mon','Tue','Wed','Thu','Fri'];
+const WEEK_DATES = [
+  ['6/22','6/23','6/24','6/25','6/26'],
+  ['6/29','6/30','7/1','7/2','7/3'],
+  ['7/6','7/7','7/8','7/9','7/10'],
+  ['7/13','7/14','7/15','7/16','7/17'],
+];
+
+const SECTIONS = [
+  {
+    id: 'website', icon: '🌐', title: 'Website & Funnel', badge: 'Core', badgeClass: 'badge-core',
+    rows: [
+      { key: 'visitors', label: 'Landing page visitors', type: 'number' },
+      { key: 'starts', label: 'Analyzer starts', type: 'number' },
+      { key: 'completions', label: 'Analyzer completions', type: 'number' },
+      { key: 'gate_views', label: 'Gate views', type: 'number' },
+      { key: 'upgrade_clicks', label: 'Upgrade clicks', type: 'number' },
+      { key: 'new_users', label: 'New paying users', type: 'number' },
+      { key: 'revenue', label: 'Revenue ($)', type: 'number' },
+    ]
+  },
+  {
+    id: 'linkedin', icon: '💼', title: 'LinkedIn', badge: 'Organic', badgeClass: 'badge-organic',
+    rows: [
+      { key: 'li_posted', label: 'Posted? (Y/N)', type: 'text' },
+      { key: 'li_topic', label: 'Topic', type: 'longtext' },
+      { key: 'li_impressions', label: 'Impressions', type: 'number' },
+      { key: 'li_engagement', label: 'Likes + comments', type: 'number' },
+    ]
+  },
+  {
+    id: 'reddit', icon: '💬', title: 'Reddit', badge: 'Organic', badgeClass: 'badge-organic',
+    rows: [
+      { key: 'rd_posted', label: 'Posted? (Y/N)', type: 'text' },
+      { key: 'rd_sub', label: 'Subreddit', type: 'longtext' },
+      { key: 'rd_upvotes', label: 'Upvotes', type: 'number' },
+      { key: 'rd_comments', label: 'Comments', type: 'number' },
+      { key: 'rd_threads', label: 'Threads commented on', type: 'number' },
+    ]
+  },
+  {
+    id: 'outreach', icon: '📨', title: 'Outreach', badge: 'Organic', badgeClass: 'badge-organic',
+    rows: [
+      { key: 'out_dms', label: 'LinkedIn DMs sent', type: 'number' },
+      { key: 'out_emails', label: 'Emails sent', type: 'number' },
+      { key: 'out_followups', label: 'Follow-ups sent', type: 'number' },
+      { key: 'out_replies', label: 'Replies received', type: 'number' },
+      { key: 'out_tried', label: 'People who tried tool', type: 'number' },
+    ]
+  },
+  {
+    id: 'facebook', icon: '🎯', title: 'Facebook Ads', badge: '$500/mo', badgeClass: 'badge-paid',
+    rows: [
+      { key: 'fb_spend', label: 'Spend ($)', type: 'number' },
+      { key: 'fb_impressions', label: 'Impressions', type: 'number' },
+      { key: 'fb_clicks', label: 'Clicks', type: 'number' },
+      { key: 'fb_cpc', label: 'CPC ($)', type: 'number' },
+      { key: 'fb_ctr', label: 'CTR (%)', type: 'number' },
+    ]
+  },
+  {
+    id: 'blog', icon: '✍️', title: 'Blog / Content Team', badge: 'Team', badgeClass: 'badge-team',
+    rows: [
+      { key: 'blog_posts', label: 'Posts published', type: 'number' },
+      { key: 'blog_title', label: 'Post title', type: 'longtext' },
+      { key: 'blog_prospects', label: 'Prospect list size', type: 'number' },
+    ]
+  },
+];
+
+let data = {};
+let currentWeek = 0;
+
+// Load from localStorage
+function loadData() {
+  const saved = localStorage.getItem('focuslab-tracker');
+  if (saved) data = JSON.parse(saved);
+}
+
+function saveData() {
+  localStorage.setItem('focuslab-tracker', JSON.stringify(data));
+  const el = document.getElementById('saveStatus');
+  el.textContent = 'Saved just now';
+  setTimeout(() => el.textContent = 'Auto-saved', 2000);
+}
+
+function getVal(week, key, day) {
+  return (data[`w${week}_${key}_d${day}`] || '');
+}
+
+function setVal(week, key, day, value) {
+  data[`w${week}_${key}_d${day}`] = value;
+  saveData();
+  if (currentWeek === 4) renderMonth();
+}
+
+function getReport(week, key) {
+  return (data[`w${week}_report_${key}`] || '');
+}
+
+function setReport(week, key, value) {
+  data[`w${week}_report_${key}`] = value;
+  saveData();
+}
+
+function getScore(week, day) {
+  return (data[`w${week}_score_d${day}`] || '');
+}
+
+function setScore(week, day, value) {
+  data[`w${week}_score_d${day}`] = value;
+  saveData();
+  renderWeek(week);
+}
+
+function getNote(week, day, type) {
+  return (data[`w${week}_note_${type}_d${day}`] || '');
+}
+
+function setNote(week, day, type, value) {
+  data[`w${week}_note_${type}_d${day}`] = value;
+  saveData();
+}
+
+function sumRow(week, key) {
+  let total = 0;
+  for (let d = 0; d < 5; d++) {
+    const v = parseFloat(getVal(week, key, d));
+    if (!isNaN(v)) total += v;
+  }
+  return total;
+}
+
+function renderDataGrid(week, section) {
+  const dates = WEEK_DATES[week];
+  let html = '<div class="data-grid">';
+
+  // Header
+  html += '<div class="grid-header"></div>';
+  for (let d = 0; d < 5; d++) {
+    html += `<div class="grid-header">${DAYS[d]} ${dates[d]}</div>`;
+  }
+  html += '<div class="grid-header">Total</div>';
+
+  // Rows
+  for (const row of section.rows) {
+    html += `<div class="grid-label">${row.label}</div>`;
+    for (let d = 0; d < 5; d++) {
+      const val = getVal(week, row.key, d);
+      const cls = row.type === 'longtext' ? 'text-input' : '';
+      const inputType = row.type === 'number' ? 'number' : 'text';
+      const ph = row.type === 'number' ? '0' : (row.type === 'text' ? '—' : '');
+      html += `<div class="grid-cell"><input type="${inputType}" class="${cls}" value="${val}" placeholder="${ph}" onchange="setVal(${week},'${row.key}',${d},this.value)" /></div>`;
+    }
+    // Total cell
+    if (row.type === 'number') {
+      const total = sumRow(week, row.key);
+      html += `<div class="grid-cell total-cell"><input type="text" value="${total || ''}" readonly tabindex="-1" /></div>`;
+    } else {
+      html += `<div class="grid-cell total-cell"><input type="text" value="" readonly tabindex="-1" /></div>`;
+    }
+  }
+
+  html += '</div>';
+  return html;
+}
+
+function renderSection(week, section) {
+  return `
+    <div class="section" id="sec-${section.id}">
+      <div class="section-header" onclick="this.parentElement.classList.toggle('collapsed')">
+        <span class="section-icon">${section.icon}</span>
+        <span class="section-title">${section.title}</span>
+        <span class="section-badge ${section.badgeClass}">${section.badge}</span>
+        <span class="section-toggle">&#9660;</span>
+      </div>
+      <div class="section-body">
+        ${renderDataGrid(week, section)}
+      </div>
+    </div>`;
+}
+
+function renderDailyScore(week) {
+  const dates = WEEK_DATES[week];
+  let html = `
+    <div class="section">
+      <div class="section-header" onclick="this.parentElement.classList.toggle('collapsed')">
+        <span class="section-icon">&#9989;</span>
+        <span class="section-title">Daily Scorecard</span>
+        <span class="section-toggle">&#9660;</span>
+      </div>
+      <div class="section-body">
+        <div class="score-row">
+          <div class="score-label"></div>`;
+
+  for (let d = 0; d < 5; d++) {
+    html += `<div style="text-align:center;font-size:0.72rem;font-weight:700;color:var(--soft);text-transform:uppercase;">${DAYS[d]} ${dates[d]}</div>`;
+  }
+  html += '</div>';
+
+  // Good/bad row
+  html += '<div class="score-row"><div class="score-label">How was the day?</div>';
+  for (let d = 0; d < 5; d++) {
+    const score = getScore(week, d);
+    html += `<div class="score-btn-group">
+      <button class="score-btn good ${score === 'good' ? 'active' : ''}" onclick="setScore(${week},${d},'good')">Good</button>
+      <button class="score-btn bad ${score === 'bad' ? 'active' : ''}" onclick="setScore(${week},${d},'bad')">Bad</button>
+    </div>`;
+  }
+  html += '</div>';
+
+  // Win
+  html += '<div class="score-row"><div class="score-label">Win</div>';
+  for (let d = 0; d < 5; d++) {
+    html += `<div><input class="score-note" type="text" placeholder="What went well?" value="${getNote(week, d, 'win')}" onchange="setNote(${week},${d},'win',this.value)" /></div>`;
+  }
+  html += '</div>';
+
+  // Miss
+  html += '<div class="score-row"><div class="score-label">Miss</div>';
+  for (let d = 0; d < 5; d++) {
+    html += `<div><input class="score-note" type="text" placeholder="What didn't?" value="${getNote(week, d, 'miss')}" onchange="setNote(${week},${d},'miss',this.value)" /></div>`;
+  }
+  html += '</div></div></div>';
+
+  return html;
+}
+
+function renderFunnel(week) {
+  return `
+    <div class="funnel-visual">
+      <div class="funnel-step-box fs1">
+        <input type="number" value="${getReport(week,'funnel_visitors')}" placeholder="—" onchange="setReport(${week},'funnel_visitors',this.value)" />
+        <div class="flabel">Visitors</div>
+      </div>
+      <span class="funnel-arrow">&rarr;</span>
+      <div class="funnel-step-box fs2">
+        <input type="number" value="${getReport(week,'funnel_completions')}" placeholder="—" onchange="setReport(${week},'funnel_completions',this.value)" />
+        <div class="flabel">Completions</div>
+      </div>
+      <span class="funnel-arrow">&rarr;</span>
+      <div class="funnel-step-box fs3">
+        <input type="number" value="${getReport(week,'funnel_gates')}" placeholder="—" onchange="setReport(${week},'funnel_gates',this.value)" />
+        <div class="flabel">Gate views</div>
+      </div>
+      <span class="funnel-arrow">&rarr;</span>
+      <div class="funnel-step-box fs4">
+        <input type="number" value="${getReport(week,'funnel_upgrades')}" placeholder="—" onchange="setReport(${week},'funnel_upgrades',this.value)" />
+        <div class="flabel">Upgrades</div>
+      </div>
+    </div>`;
+}
+
+function renderOrenReport(week) {
+  const fields = [
+    { key: 'money', label: 'Money update', template: '"$___ new revenue this week. Total MRR: $___."' },
+    { key: 'best_channel', label: 'Best channel this week', template: 'Which channel drove the most completions? Why?' },
+    { key: 'bottleneck', label: 'Biggest bottleneck', template: 'What slowed you down or underperformed?' },
+    { key: 'next_focus', label: 'Next week focus', template: 'One thing you\'re doubling down on.' },
+    { key: 'learning', label: 'Key learning', template: 'What surprised you this week?' },
+  ];
+
+  let html = `
+    <div class="section">
+      <div class="section-header" onclick="this.parentElement.classList.toggle('collapsed')">
+        <span class="section-icon">🗣️</span>
+        <span class="section-title">Oren Call Prep</span>
+        <span class="section-badge badge-core">Weekly</span>
+        <span class="section-toggle">&#9660;</span>
+      </div>
+      <div class="section-body">
+        <p style="font-size:0.82rem;color:var(--soft);margin-bottom:14px;">Fill this in Friday. Practice saying it out loud once before the call.</p>
+        <p style="font-size:0.78rem;font-weight:600;color:var(--mid);margin-bottom:8px;">Weekly funnel</p>
+        ${renderFunnel(week)}`;
+
+  for (const f of fields) {
+    html += `
+      <div class="report-field">
+        <div class="report-label">${f.label}</div>
+        <textarea class="report-input" rows="2" placeholder="${f.template}" onchange="setReport(${week},'${f.key}',this.value)">${getReport(week, f.key)}</textarea>
+      </div>`;
+  }
+
+  html += '</div></div>';
+  return html;
+}
+
+function renderWeek(week) {
+  let html = '';
+  for (const section of SECTIONS) {
+    html += renderSection(week, section);
+  }
+  html += renderDailyScore(week);
+  html += renderOrenReport(week);
+  return html;
+}
+
+function renderMonth() {
+  const metrics = [
+    { key: 'visitors', label: 'Visitors' },
+    { key: 'completions', label: 'Completions' },
+    { key: 'gate_views', label: 'Gate views' },
+    { key: 'new_users', label: 'Paying users' },
+    { key: 'revenue', label: 'Revenue ($)' },
+    { key: 'out_dms', label: 'LinkedIn DMs' },
+    { key: 'out_emails', label: 'Emails sent' },
+    { key: 'out_replies', label: 'Outreach replies' },
+    { key: 'li_impressions', label: 'LinkedIn impressions' },
+    { key: 'fb_spend', label: 'Facebook spend ($)' },
+    { key: 'fb_clicks', label: 'Facebook clicks' },
+    { key: 'blog_posts', label: 'Blog posts' },
+  ];
+
+  let html = `
+    <div class="section">
+      <div class="section-header">
+        <span class="section-icon">📊</span>
+        <span class="section-title">Month 1 Overview</span>
+        <span class="section-badge badge-core">4 weeks</span>
+      </div>
+      <div class="section-body">
+        <div class="compare-grid" style="grid-template-columns: 180px repeat(4,1fr) 100px;">
+          <div class="grid-header">Metric</div>
+          <div class="grid-header">Week 1</div>
+          <div class="grid-header">Week 2</div>
+          <div class="grid-header">Week 3</div>
+          <div class="grid-header">Week 4</div>
+          <div class="grid-header">Total</div>`;
+
+  for (const m of metrics) {
+    html += `<div class="grid-label">${m.label}</div>`;
+    let grandTotal = 0;
+    for (let w = 0; w < 4; w++) {
+      const val = sumRow(w, m.key);
+      grandTotal += val;
+      html += `<div class="grid-cell total-cell"><input type="text" value="${val || '—'}" readonly tabindex="-1" /></div>`;
+    }
+    html += `<div class="grid-cell total-cell"><input type="text" value="${grandTotal || '—'}" readonly tabindex="-1" style="color:var(--dark);font-size:0.85rem;" /></div>`;
+  }
+
+  html += `</div>
+
+      <div style="margin-top:24px;">
+        <p style="font-size:0.78rem;font-weight:600;color:var(--mid);margin-bottom:8px;">Month-end funnel</p>
+        <div class="funnel-visual">
+          <div class="funnel-step-box fs1">
+            <input type="text" value="${totalAcross('visitors')}" readonly tabindex="-1" />
+            <div class="flabel">Visitors</div>
+          </div>
+          <span class="funnel-arrow">&rarr;</span>
+          <div class="funnel-step-box fs2">
+            <input type="text" value="${totalAcross('completions')}" readonly tabindex="-1" />
+            <div class="flabel">Completions</div>
+          </div>
+          <span class="funnel-arrow">&rarr;</span>
+          <div class="funnel-step-box fs3">
+            <input type="text" value="${totalAcross('gate_views')}" readonly tabindex="-1" />
+            <div class="flabel">Gate views</div>
+          </div>
+          <span class="funnel-arrow">&rarr;</span>
+          <div class="funnel-step-box fs4">
+            <input type="text" value="${totalAcross('new_users')}" readonly tabindex="-1" />
+            <div class="flabel">Upgrades</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;">
+        <div class="report-field">
+          <div class="report-label">Month 1 verdict for Oren</div>
+          <textarea class="report-input" rows="4" placeholder="Month 1 summary: total revenue, best channel, what to scale, what to kill, month 2 plan..." onchange="setReport(4,'month_verdict',this.value)">${getReport(4, 'month_verdict')}</textarea>
+        </div>
+      </div>
+    </div>
+  </div>`;
+
+  document.getElementById('app').innerHTML = html;
+}
+
+function totalAcross(key) {
+  let t = 0;
+  for (let w = 0; w < 4; w++) t += sumRow(w, key);
+  return t || '—';
+}
+
+function switchWeek(week, btn) {
+  currentWeek = week;
+  document.querySelectorAll('.week-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+
+  if (week === 4) {
+    renderMonth();
+  } else {
+    document.getElementById('app').innerHTML = renderWeek(week);
+  }
+}
+
+function clearWeek() {
+  if (currentWeek === 4) return;
+  if (!confirm(`Clear all data for Week ${currentWeek + 1}? This cannot be undone.`)) return;
+  const prefix = `w${currentWeek}_`;
+  Object.keys(data).forEach(k => { if (k.startsWith(prefix)) delete data[k]; });
+  saveData();
+  document.getElementById('app').innerHTML = renderWeek(currentWeek);
+  showToast('Week cleared');
+}
+
+function exportCSV() {
+  let csv = '';
+
+  for (let w = 0; w < 4; w++) {
+    csv += `\nWEEK ${w+1} (${WEEK_DATES[w][0]} - ${WEEK_DATES[w][4]})\n`;
+    csv += `,${DAYS.map((d,i) => d + ' ' + WEEK_DATES[w][i]).join(',')},Total\n`;
+
+    for (const section of SECTIONS) {
+      csv += `\n${section.title}\n`;
+      for (const row of section.rows) {
+        const vals = [];
+        for (let d = 0; d < 5; d++) vals.push(getVal(w, row.key, d) || '');
+        const total = row.type === 'number' ? sumRow(w, row.key) : '';
+        csv += `${row.label},${vals.join(',')},${total}\n`;
+      }
+    }
+
+    csv += `\nDaily Score\n`;
+    for (let d = 0; d < 5; d++) {
+      csv += `${DAYS[d]},${getScore(w,d)},${getNote(w,d,'win')},${getNote(w,d,'miss')}\n`;
+    }
+
+    csv += `\nOren Report\n`;
+    csv += `Funnel visitors,${getReport(w,'funnel_visitors')}\n`;
+    csv += `Funnel completions,${getReport(w,'funnel_completions')}\n`;
+    csv += `Funnel gates,${getReport(w,'funnel_gates')}\n`;
+    csv += `Funnel upgrades,${getReport(w,'funnel_upgrades')}\n`;
+    csv += `Money update,"${getReport(w,'money')}"\n`;
+    csv += `Best channel,"${getReport(w,'best_channel')}"\n`;
+    csv += `Bottleneck,"${getReport(w,'bottleneck')}"\n`;
+    csv += `Next focus,"${getReport(w,'next_focus')}"\n`;
+    csv += `Key learning,"${getReport(w,'learning')}"\n`;
+    csv += '\n---\n';
+  }
+
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `focuslab-tracker-${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('CSV downloaded');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Init
+loadData();
+document.getElementById('app').innerHTML = renderWeek(0);
+</script>
+
+</body>
+</html>

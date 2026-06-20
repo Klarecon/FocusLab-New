@@ -178,24 +178,25 @@ export default function IntakeStep({ onNext, onBack }: IntakeStepProps) {
 
       </div>
 
-      {/* Sticky floating counter — visible while scrolling */}
-      {totalEstimated > 0 && (
-        <div
-          className="sticky top-4 z-40 flex items-center justify-center gap-2 px-5 py-2.5 rounded-full shadow-md mx-auto w-fit mb-4"
-          style={{
-            backgroundColor: "var(--color-card)",
-            border: "2px solid var(--color-waste)",
-            boxShadow: "0 4px 16px rgba(224, 62, 18, 0.12)",
-          }}
-        >
-          <span className="font-figures font-bold text-2xl" style={{ color: "var(--color-waste)" }}>
-            {totalEstimated.toFixed(1)}
-          </span>
-          <span className="text-sm font-semibold" style={{ color: "var(--color-waste)" }}>
-            hrs/week of waste flagged
-          </span>
-        </div>
-      )}
+      {/* Sticky floating counter — always in DOM to prevent layout shift */}
+      <div
+        className="sticky top-4 z-40 flex items-center justify-center gap-2 px-5 py-2.5 rounded-full shadow-md mx-auto w-fit mb-4"
+        style={{
+          backgroundColor: "var(--color-card)",
+          border: "2px solid var(--color-waste)",
+          boxShadow: "0 4px 16px rgba(224, 62, 18, 0.12)",
+          opacity: totalEstimated > 0 ? 1 : 0,
+          pointerEvents: totalEstimated > 0 ? "auto" : "none",
+          transition: "opacity 0.2s ease",
+        }}
+      >
+        <span className="font-figures font-bold text-2xl" style={{ color: "var(--color-waste)" }}>
+          {totalEstimated.toFixed(1)}
+        </span>
+        <span className="text-sm font-semibold" style={{ color: "var(--color-waste)" }}>
+          hrs/week of waste flagged
+        </span>
+      </div>
 
       {/* Pain prompt cards with hour inputs */}
       <div className="space-y-3 mb-8">

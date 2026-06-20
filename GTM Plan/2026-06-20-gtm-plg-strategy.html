@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FocusLab GTM — Product-Led Strategy</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+    :root {
+      --waste-orange: #e03e12;
+      --reclaim-pink: #c4186a;
+      --gold: #edb215;
+      --cream: #fdf6ee;
+      --dark: #1a1714;
+      --mid: #4a443d;
+      --soft: #8a7e74;
+      --border: #e8e0d4;
+      --card: #ffffff;
+      --highlight: #fef9f0;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--cream);
+      color: var(--dark);
+      line-height: 1.7;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, var(--dark) 0%, #2d261f 100%);
+      color: white;
+      padding: 60px 40px 50px;
+      text-align: center;
+    }
+
+    .hero .badge {
+      display: inline-block;
+      background: var(--reclaim-pink);
+      color: white;
+      padding: 4px 16px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 {
+      font-family: 'Fraunces', serif;
+      font-size: 2.6rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+
+    .hero .subtitle {
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.7);
+      max-width: 650px;
+      margin: 0 auto 20px;
+    }
+
+    .hero .date {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.35);
+    }
+
+    /* ── Container ── */
+    .container { max-width: 940px; margin: 0 auto; padding: 36px 20px; }
+
+    /* ── Decision Box ── */
+    .decision-box {
+      background: var(--dark);
+      border-radius: 16px;
+      padding: 32px 36px;
+      margin-bottom: 32px;
+      color: white;
+    }
+
+    .decision-box h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.6rem;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+
+    .decision-box p {
+      font-size: 0.92rem;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 12px;
+    }
+
+    .decision-box .verdict {
+      background: rgba(196,24,106,0.15);
+      border: 2px solid var(--reclaim-pink);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-top: 16px;
+      font-size: 0.95rem;
+      color: white;
+    }
+
+    .decision-box .verdict strong { color: var(--reclaim-pink); }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 32px 36px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .card h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.5rem;
+      color: var(--dark);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card h2 .num {
+      background: var(--reclaim-pink);
+      color: white;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 14px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .card .section-sub {
+      font-size: 0.85rem;
+      color: var(--soft);
+      margin-bottom: 20px;
+    }
+
+    .card h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.1rem;
+      color: var(--dark);
+      margin: 22px 0 8px;
+    }
+
+    .card p, .card li {
+      font-size: 0.9rem;
+      color: var(--mid);
+    }
+
+    .card ul { padding-left: 18px; margin: 6px 0 14px; }
+    .card li { padding: 3px 0; }
+
+    /* ── Comparison table ── */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 0.85rem;
+    }
+
+    .compare-table th {
+      text-align: left;
+      padding: 12px 14px;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: white;
+      background: var(--dark);
+    }
+
+    .compare-table th:first-child { border-radius: 10px 0 0 0; }
+    .compare-table th:last-child { border-radius: 0 10px 0 0; }
+
+    .compare-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--mid);
+      vertical-align: top;
+    }
+
+    .compare-table tr.chosen { background: rgba(196,24,106,0.06); }
+    .compare-table tr.chosen td:first-child { color: var(--reclaim-pink); font-weight: 700; }
+
+    .tag-yes {
+      display: inline-block;
+      background: rgba(196,24,106,0.12);
+      color: var(--reclaim-pink);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 8px;
+    }
+
+    .tag-no {
+      display: inline-block;
+      background: rgba(0,0,0,0.05);
+      color: var(--soft);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 8px;
+    }
+
+    .tag-secondary {
+      display: inline-block;
+      background: rgba(237,178,21,0.15);
+      color: #b8900e;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 8px;
+    }
+
+    /* ── Flywheel ── */
+    .flywheel {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 24px 0;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .flywheel-step {
+      padding: 14px 20px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 600;
+      min-width: 140px;
+    }
+
+    .flywheel-arrow {
+      font-size: 1.4rem;
+      color: var(--soft);
+      padding: 0 4px;
+    }
+
+    .fw-1 { background: var(--dark); color: var(--gold); }
+    .fw-2 { background: var(--waste-orange); color: white; }
+    .fw-3 { background: var(--gold); color: var(--dark); }
+    .fw-4 { background: var(--reclaim-pink); color: white; }
+
+    /* ── Funnel ── */
+    .funnel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    .funnel-step {
+      padding: 12px 18px;
+      text-align: center;
+      font-size: 0.82rem;
+      color: white;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .funnel-step:nth-child(1) { background: var(--dark); width: 100%; border-radius: 10px 10px 0 0; }
+    .funnel-step:nth-child(2) { background: #3d342b; width: 84%; }
+    .funnel-step:nth-child(3) { background: var(--waste-orange); width: 66%; }
+    .funnel-step:nth-child(4) { background: var(--gold); width: 48%; color: var(--dark); }
+    .funnel-step:nth-child(5) { background: var(--reclaim-pink); width: 32%; border-radius: 0 0 10px 10px; }
+
+    .funnel-step .rate { font-weight: 400; opacity: 0.75; font-size: 0.75rem; }
+
+    /* ── Timeline ── */
+    .timeline { margin: 20px 0; }
+
+    .phase {
+      border-left: 3px solid var(--reclaim-pink);
+      padding: 0 0 24px 24px;
+      margin-left: 14px;
+      position: relative;
+    }
+
+    .phase:last-child { border-left-color: var(--gold); padding-bottom: 0; }
+
+    .phase::before {
+      content: '';
+      position: absolute;
+      left: -10px;
+      top: 2px;
+      width: 18px;
+      height: 18px;
+      background: var(--reclaim-pink);
+      border-radius: 50%;
+      border: 3px solid var(--card);
+    }
+
+    .phase:last-child::before { background: var(--gold); }
+
+    .phase-title {
+      font-family: 'Fraunces', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .phase-when {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--reclaim-pink);
+      margin-bottom: 8px;
+    }
+
+    .phase:last-child .phase-when { color: var(--gold); }
+
+    .phase ul { padding-left: 16px; }
+    .phase li { font-size: 0.85rem; color: var(--mid); padding: 2px 0; }
+
+    /* ── Callout ── */
+    .callout {
+      background: var(--dark);
+      color: var(--gold);
+      padding: 16px 24px;
+      border-radius: 10px;
+      text-align: center;
+      font-family: 'Fraunces', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 20px 0;
+    }
+
+    .talk {
+      background: var(--highlight);
+      border-left: 4px solid var(--gold);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin: 14px 0;
+      font-size: 0.85rem;
+      color: var(--mid);
+    }
+
+    .talk strong {
+      color: var(--dark);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    /* ── Gate diagram ── */
+    .gate-flow {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      align-items: center;
+      gap: 8px;
+      margin: 20px 0;
+    }
+
+    .gate-box {
+      padding: 20px 16px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .gate-box h4 {
+      font-family: 'Fraunces', serif;
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+    }
+
+    .gate-box p { font-size: 0.78rem; color: var(--mid); }
+
+    .gate-free { background: #f0f7ff; border: 2px solid #b8d4f0; }
+    .gate-free h4 { color: #2a6cb8; }
+    .gate-wall { background: rgba(224,62,18,0.08); border: 2px dashed var(--waste-orange); }
+    .gate-wall h4 { color: var(--waste-orange); }
+    .gate-paid { background: rgba(196,24,106,0.08); border: 2px solid var(--reclaim-pink); }
+    .gate-paid h4 { color: var(--reclaim-pink); }
+
+    .gate-arrow { font-size: 1.5rem; color: var(--soft); text-align: center; }
+
+    /* ── Metrics grid ── */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .metric-box {
+      background: var(--highlight);
+      border-radius: 10px;
+      padding: 18px 16px;
+      text-align: center;
+    }
+
+    .metric-box .number {
+      font-family: 'Fraunces', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--reclaim-pink);
+    }
+
+    .metric-box .label {
+      font-size: 0.75rem;
+      color: var(--soft);
+      margin-top: 4px;
+    }
+
+    /* ── Coach side-bet ── */
+    .side-bet {
+      background: #f8f0ff;
+      border: 2px solid #d4b8f0;
+      border-radius: 14px;
+      padding: 28px 32px;
+      margin-bottom: 24px;
+    }
+
+    .side-bet h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.4rem;
+      color: #6a1b9a;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .side-bet h2 .num {
+      background: #8a2ac4;
+      color: white;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 14px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .side-bet .section-sub {
+      font-size: 0.85rem;
+      color: #8a7093;
+      margin-bottom: 16px;
+    }
+
+    .side-bet p, .side-bet li { font-size: 0.9rem; color: var(--mid); }
+    .side-bet ul { padding-left: 18px; margin: 6px 0; }
+    .side-bet li { padding: 3px 0; }
+
+    .kill-criteria {
+      background: rgba(106,27,154,0.08);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-top: 14px;
+      font-size: 0.85rem;
+      color: #6a1b9a;
+    }
+
+    .kill-criteria strong { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px; }
+
+    /* ── Success criteria ── */
+    .success-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .success-col {
+      border-radius: 10px;
+      padding: 18px;
+      border: 2px solid;
+    }
+
+    .success-col.go { background: #f0faf0; border-color: #a5d6a7; }
+    .success-col.adjust { background: #fffbf0; border-color: var(--gold); }
+    .success-col.stop { background: #fff5f5; border-color: #ef9a9a; }
+    .success-col h4 { font-size: 0.9rem; margin-bottom: 8px; }
+    .success-col.go h4 { color: #2e7d32; }
+    .success-col.adjust h4 { color: #f57f17; }
+    .success-col.stop h4 { color: var(--waste-orange); }
+    .success-col li { font-size: 0.78rem; color: var(--mid); padding: 2px 0; }
+    .success-col ul { padding-left: 14px; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 1.8rem; }
+      .hero { padding: 40px 20px 30px; }
+      .card, .side-bet, .decision-box { padding: 20px; }
+      .compare-table { font-size: 0.78rem; }
+      .compare-table th, .compare-table td { padding: 8px 10px; }
+      .gate-flow { grid-template-columns: 1fr; }
+      .gate-arrow { transform: rotate(90deg); }
+      .flywheel { flex-direction: column; }
+      .flywheel-arrow { transform: rotate(90deg); }
+      .metrics-grid, .success-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="badge">v3 — Strategy Reset</span>
+  <h1>FocusLab is Product-Led</h1>
+  <p class="subtitle">The product is the sales motion. Content drives traffic. The coach track is a side bet, not the backbone.</p>
+  <span class="date">June 20, 2026</span>
+</div>
+
+<div class="container">
+
+<!-- ═══ THE DECISION ═══ -->
+<div class="decision-box">
+  <h2>Why Product-Led? Why Now?</h2>
+  <p>The v2 plan tried to be three things at once: product-led, content-led, and sales-led. That spreads a solo founder across three motions that each need different skills, different timelines, and different daily work.</p>
+  <p>The evidence points one way:</p>
+  <ul style="padding-left: 18px; margin: 10px 0 14px; font-size: 0.9rem; color: rgba(255,255,255,0.75);">
+    <li>When you posted in a vibe coding community on Reddit, builders gave detailed UX feedback and recognized real waste patterns — the product resonates even with non-target users evaluating it as critics</li>
+    <li>The price point ($29/mo) is self-serve impulse range — no sales call needed</li>
+    <li>The Pareto Analyzer already creates the "holy shit" moment that makes people want the fix</li>
+    <li>You're one person. You can't be writing content, doing sales calls, AND shipping product</li>
+  </ul>
+
+  <div class="verdict">
+    <strong>The call:</strong> FocusLab is product-led. The free Pareto Analyzer is the salesperson. Content feeds it traffic. The coach tier is Oren's side bet — it doesn't change what you build or how you spend your day.
+  </div>
+</div>
+
+<!-- ═══ 0. WHERE YOU ACTUALLY ARE ═══ -->
+<div class="card" style="border: 2px solid var(--waste-orange);">
+  <h2><span class="num" style="background:var(--waste-orange);">0</span> Where You Actually Are (Honest Check)</h2>
+  <p class="section-sub">Before planning the flywheel, acknowledge what's been tested and what hasn't.</p>
+
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>Assumption</th>
+        <th>Status</th>
+        <th>What it means</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>The product works technically</td>
+        <td><span class="tag-yes">Tested</span></td>
+        <td>279 passing tests, deployed on Vercel, mobile-responsive</td>
+      </tr>
+      <tr>
+        <td>Builders find the UX credible</td>
+        <td><span class="tag-yes">Tested</span></td>
+        <td>Reddit vibe coding community gave real UX feedback, recognized waste patterns as legitimate</td>
+      </tr>
+      <tr>
+        <td>Target users find it on their own</td>
+        <td><span class="tag-no">Not tested</span></td>
+        <td>Zero organic discovery yet. All Reddit feedback was solicited from builders, not target users searching for a productivity problem.</td>
+      </tr>
+      <tr>
+        <td>Target users complete the analyzer</td>
+        <td><span class="tag-no">Not tested</span></td>
+        <td>No new managers, team leads, or ops people have used it. The emotional hit ("you waste 14 hrs") hasn't been tested on people who feel that pain.</td>
+      </tr>
+      <tr>
+        <td>The results page triggers willingness to pay</td>
+        <td><span class="tag-no">Not tested</span></td>
+        <td>No paywall exists yet. No one has ever seen an upgrade CTA.</td>
+      </tr>
+      <tr>
+        <td>People share results with colleagues</td>
+        <td><span class="tag-no">Not tested</span></td>
+        <td>The word-of-mouth loop is theoretical.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="talk">
+    <strong>What this means</strong>
+    You have a working product that impresses other builders. That's step 0.5 — not step 1. The real test starts when someone who Googles "why am I so busy but not productive" lands on FocusLab, completes the analyzer, sees their waste in dollars, and decides whether to pay. Nothing before that moment tells you if this is a business.
+  </div>
+</div>
+
+<!-- ═══ 1. THE THREE MOTIONS COMPARED ═══ -->
+<div class="card">
+  <h2><span class="num">1</span> Why Not the Other Two?</h2>
+  <p class="section-sub">Each motion was evaluated against FocusLab's reality: solo founder, $0 revenue, live product, $29 price point.</p>
+
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>Motion</th>
+        <th>How it works</th>
+        <th>What it needs</th>
+        <th>Fit for you?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="chosen">
+        <td>Product-Led</td>
+        <td>Free tool hooks users. Product converts them. No human in the loop.</td>
+        <td>Great free experience, clear upgrade moment, volume</td>
+        <td><span class="tag-yes">Primary</span></td>
+      </tr>
+      <tr>
+        <td>Discovery / Content-Led</td>
+        <td>Blog posts, YouTube, SEO. Build authority, attract searchers.</td>
+        <td>Consistent publishing, 3-6 month ramp, writing time</td>
+        <td><span class="tag-secondary">Supports PLG</span></td>
+      </tr>
+      <tr>
+        <td>Sales-Led</td>
+        <td>Outbound calls, demos, pilots. Relationship-driven.</td>
+        <td>Sales experience, Oren's network, higher ACV to justify time</td>
+        <td><span class="tag-no">Side bet only</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="talk">
+    <strong>The key insight</strong>
+    Content doesn't replace PLG — it feeds it. Every blog post, every Reddit thread, every YouTube video has one job: get someone to try the free Pareto Analyzer. The product does the selling from there.
+  </div>
+</div>
+
+<!-- ═══ 2. THE PLG FLYWHEEL ═══ -->
+<div class="card">
+  <h2><span class="num">2</span> The PLG Flywheel</h2>
+  <p class="section-sub">Four steps, self-reinforcing. Every piece feeds the next.</p>
+
+  <div class="flywheel">
+    <div class="flywheel-step fw-1">Discover<br><span style="font-size:0.72rem;font-weight:400;opacity:0.7;">Reddit, YouTube, SEO, word of mouth</span></div>
+    <span class="flywheel-arrow">&rarr;</span>
+    <div class="flywheel-step fw-2">Emotional Hit<br><span style="font-size:0.72rem;font-weight:400;opacity:0.8;">Free Pareto: "You waste 14 hrs/wk"</span></div>
+    <span class="flywheel-arrow">&rarr;</span>
+    <div class="flywheel-step fw-3">Want the Fix<br><span style="font-size:0.72rem;font-weight:400;opacity:0.8;">Results page hooks them</span></div>
+    <span class="flywheel-arrow">&rarr;</span>
+    <div class="flywheel-step fw-4">Upgrade to Pro<br><span style="font-size:0.72rem;font-weight:400;opacity:0.8;">$29/mo for Focus Table</span></div>
+  </div>
+
+  <p style="text-align:center; font-size:0.82rem; color:var(--soft); margin-top: 8px;">Then: user tells a colleague &rarr; colleague discovers &rarr; flywheel spins again</p>
+
+  <h3>What makes this work (vs. a leaky funnel)</h3>
+  <ul>
+    <li><strong>The free tool is genuinely valuable.</strong> It's not a crippled demo. People share things that helped them.</li>
+    <li><strong>The upgrade moment is emotional, not logical.</strong> "You waste 14 hours a week" creates urgency. The Focus Table is the relief.</li>
+    <li><strong>$29/mo requires zero justification.</strong> No manager approval, no procurement, no demo call. Credit card and done.</li>
+    <li><strong>The results are shareable.</strong> "I waste more time on X than Y" is inherently interesting to talk about with coworkers.</li>
+  </ul>
+</div>
+
+<!-- ═══ 3. THE GATE: WHERE FREE ENDS AND PAID BEGINS ═══ -->
+<div class="card">
+  <h2><span class="num">3</span> The Paywall Gate</h2>
+  <p class="section-sub">The single most important product decision in PLG: where does free stop?</p>
+
+  <div class="gate-flow">
+    <div class="gate-box gate-free">
+      <h4>Free Forever</h4>
+      <p>Full Pareto Analyzer: role selection, waste identification, weighting, results with dollar impact</p>
+    </div>
+    <div class="gate-arrow">&rarr;</div>
+    <div class="gate-box gate-wall">
+      <h4>The Gate</h4>
+      <p>"You waste $X/year. Ready to fix it?" CTA on the results page.</p>
+    </div>
+    <div class="gate-arrow">&rarr;</div>
+    <div class="gate-box gate-paid">
+      <h4>Pro — $29/mo</h4>
+      <p>Focus Table + Solution Picker + Action Plan + EvI Matrix + Payoff view</p>
+    </div>
+  </div>
+
+  <h3>Why gate here and not earlier?</h3>
+  <ul>
+    <li><strong>The results page is the peak emotion.</strong> They just saw their waste quantified in dollars. That's when willingness to pay is highest.</li>
+    <li><strong>Gating earlier kills the flywheel.</strong> If they can't finish the analyzer, they have nothing to share, nothing to talk about.</li>
+    <li><strong>Gating later gives away the fix.</strong> If they can access Focus Table for free, there's no reason to pay.</li>
+  </ul>
+
+  <div class="talk">
+    <strong>The conversion moment</strong>
+    The user just saw: "You lose ~$34,000/year to waste." They're sitting with that number. The next screen says: "Here's how to fix it — starting with the changes that save the most time." That's the gate. Not a generic "upgrade to Pro" — a direct answer to the problem they just felt.
+  </div>
+</div>
+
+<!-- ═══ 4. ACQUISITION: HOW PEOPLE FIND YOU ═══ -->
+<div class="card">
+  <h2><span class="num">4</span> Acquisition Channels</h2>
+  <p class="section-sub">Content feeds the product. Every channel has one job: get someone to try the free analyzer.</p>
+
+  <h3>Tier 0 — Target user validation (before anything else)</h3>
+  <ul>
+    <li><strong>You've gotten builder feedback</strong> (Reddit vibe coding community). That told you the UX works and the waste categories resonate. Good.</li>
+    <li><strong>You haven't gotten target user feedback.</strong> The people who would actually pay — new managers, overwhelmed team leads, ops people — haven't used it yet. Before spending time on any channel below, get 10-15 of these people through the tool and watch what happens.</li>
+    <li><strong>Where to find them:</strong> LinkedIn DMs to new managers in your network, Oren's coaching contacts, r/managers, r/productivity (posting as "I built this to solve my own problem" — not in a dev/builder sub).</li>
+  </ul>
+
+  <h3>Tier 1 — Free, high-intent (after validation)</h3>
+  <ul>
+    <li><strong>Reddit</strong> — Post in subs where target users hang out: r/productivity, r/managers, r/careerguidance. NOT dev or builder communities — that's useful for UX feedback but won't test willingness to pay. "I built a thing that tells you where your time goes — try it."</li>
+    <li><strong>Product Hunt</strong> — One-shot launch. Good for initial traffic spike + backlinks. Prep a launch page, schedule it, rally upvotes.</li>
+    <li><strong>YouTube</strong> — 2-3 minute demo: "I found out I waste 14 hours a week. Here's how." Screen recording + voiceover. One video, not a channel strategy.</li>
+  </ul>
+
+  <h3>Tier 2 — Content, compounding (weeks 3-8)</h3>
+  <ul>
+    <li><strong>Blog / SEO</strong> — 4 posts targeting searches people actually make:
+      <ul style="margin: 4px 0;">
+        <li>"Why am I so busy but not productive"</li>
+        <li>"How to find where your time goes at work"</li>
+        <li>"Pareto principle for time management"</li>
+        <li>"New manager overwhelmed first 90 days"</li>
+      </ul>
+      Each post ends with a CTA to try the free analyzer. This compounds — SEO traffic grows over months.
+    </li>
+    <li><strong>LinkedIn</strong> — 2-3x/week posts. Not about FocusLab — about waste, productivity, the "14 hours" hook. Build authority. Link to the tool in comments, not the post.</li>
+  </ul>
+
+  <h3>Tier 3 — Paid amplification (only after organic proves conversion)</h3>
+  <ul>
+    <li><strong>Don't spend on ads until you know the free-to-paid conversion rate.</strong> If nobody converts organically, ads just buy more non-converters faster.</li>
+    <li>When ready: $300/mo on LinkedIn or Facebook. Target new managers, team leads, ops roles. Drive to the free analyzer, not a landing page.</li>
+    <li>Kill threshold: if CAC > $75 after 4 weeks of spend, pause and go back to free channels.</li>
+  </ul>
+</div>
+
+<!-- ═══ 5. FUNNEL MATH ═══ -->
+<div class="card">
+  <h2><span class="num">5</span> Funnel Math (Honest Numbers)</h2>
+  <p class="section-sub">Based on real B2B SaaS benchmarks at this price point. Not aspirational.</p>
+
+  <div class="funnel">
+    <div class="funnel-step"><span>400 monthly visitors</span> <span class="rate">free + organic</span></div>
+    <div class="funnel-step"><span>160 start Pareto Analyzer</span> <span class="rate">40% start rate</span></div>
+    <div class="funnel-step"><span>80 complete it</span> <span class="rate">50% completion</span></div>
+    <div class="funnel-step"><span>24 give email</span> <span class="rate">30% email capture</span></div>
+    <div class="funnel-step"><span>3-4 upgrade to Pro</span> <span class="rate">3-5% of completions</span></div>
+  </div>
+
+  <div class="metrics-grid">
+    <div class="metric-box">
+      <div class="number">3-4</div>
+      <div class="label">new Pro users / month</div>
+    </div>
+    <div class="metric-box">
+      <div class="number">$87-116</div>
+      <div class="label">new MRR / month</div>
+    </div>
+    <div class="metric-box">
+      <div class="number">$350-500</div>
+      <div class="label">MRR by month 4</div>
+    </div>
+    <div class="metric-box">
+      <div class="number">$1K</div>
+      <div class="label">MRR target: month 6-8</div>
+    </div>
+  </div>
+
+  <div class="talk">
+    <strong>Why these numbers are conservative</strong>
+    3-5% free-to-paid is standard for PLG tools at this price. Slack was 30%, but Slack is Slack. Notion runs ~4%. We're using 3% as the baseline because we have zero brand recognition. If the product is good enough (and the Reddit feedback suggests it is), this can go higher — but plan for 3%.
+  </div>
+</div>
+
+<!-- ═══ 6. RETENTION ═══ -->
+<div class="card">
+  <h2><span class="num">6</span> Retention — Why They Stay Past Month 1</h2>
+  <p class="section-sub">In PLG, retention IS the business model. Churn kills you faster than low conversion.</p>
+
+  <p>The honest risk: FocusLab feels like a one-time tool. You run the analyzer, get your plan, done. Three things prevent that:</p>
+
+  <h3>1. Monthly re-assessment</h3>
+  <p>"It's been 30 days — has your waste changed?" Waste patterns shift with projects, team changes, and seasons. A monthly nudge makes the tool evergreen.</p>
+
+  <h3>2. Action plan accountability</h3>
+  <p>The action plan has due dates. Weekly email: "You have 2 actions due this week. You've completed 3 of 7 total." This turns a one-shot plan into a recurring check-in.</p>
+
+  <h3>3. Before/after progress</h3>
+  <p>"Month 1: 14 hrs/week wasted. Month 3: 8 hrs/week." This is the scoreboard that justifies the subscription. Without it, there's no visible ROI.</p>
+
+  <div class="callout">Retention target: 60%+ at month 2. Below 40% = the product isn't sticky enough, fix it before scaling acquisition.</div>
+</div>
+
+<!-- ═══ 7. TIMELINE ═══ -->
+<div class="card">
+  <h2><span class="num">7</span> 16-Week PLG Roadmap</h2>
+  <p class="section-sub">Sequenced so each phase builds on proof from the last. No premature scaling.</p>
+
+  <div class="timeline">
+    <div class="phase">
+      <div class="phase-title">Phase 1: Test With Real Users (Pre-Flywheel)</div>
+      <div class="phase-when">Weeks 1-4</div>
+      <ul>
+        <li>Fix known UX issues (layout shift bug, mobile polish) — don't put broken product in front of target users</li>
+        <li>Build the paywall gate on results page (CTA to Focus Table)</li>
+        <li>Stripe checkout: $29/mo + $199/yr</li>
+        <li>Add email capture on results page (before the gate)</li>
+        <li>Set up basic analytics: completion rate, drop-off points, gate views</li>
+        <li>Privacy policy + terms of service</li>
+        <li><strong>Get it in front of 10-15 actual target users</strong> — new managers, team leads, ops people. Not builders, not devs. People who feel the "where does my time go" pain. Recruit from LinkedIn, manager communities, Oren's network.</li>
+        <li>Watch them use it (screen share or session replay). Where do they get confused? Do they finish? Do they react to the results?</li>
+        <li><strong>Goal:</strong> Answer one question: does the analyzer create an emotional reaction in target users? If yes, the flywheel can work. If no, fix the product before driving traffic.</li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <div class="phase-title">Phase 2: Drive Traffic (Free Channels)</div>
+      <div class="phase-when">Weeks 5-8 (only if Phase 1 validated the reaction)</div>
+      <ul>
+        <li>Product Hunt launch</li>
+        <li>YouTube demo video</li>
+        <li>Reddit posts in target-user subs: r/productivity, r/managers, r/newmanagers — NOT dev/builder subs</li>
+        <li>2 blog posts (SEO-targeted, CTA to analyzer)</li>
+        <li>LinkedIn posting begins (2-3x/week)</li>
+        <li>5-email nurture sequence for captured emails</li>
+        <li><strong>Goal:</strong> 200+ monthly visitors from people who have the problem. First paying users.</li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <div class="phase-title">Phase 3: Retention + Content</div>
+      <div class="phase-when">Weeks 9-12</div>
+      <ul>
+        <li>Build monthly re-assessment flow</li>
+        <li>Build action plan weekly nudge emails</li>
+        <li>2 more blog posts</li>
+        <li>First case study from early user</li>
+        <li>Evaluate: is organic converting? Ready for paid?</li>
+        <li><strong>Goal:</strong> 10+ paying users. Month-2 retention above 50%.</li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <div class="phase-title">Phase 4: Scale What Works</div>
+      <div class="phase-when">Weeks 13-16</div>
+      <ul>
+        <li>If conversion > 3%: start paid ads ($300/mo)</li>
+        <li>If conversion < 2%: fix the gate, test pricing, DON'T spend on ads</li>
+        <li>Double down on channels that convert, kill the rest</li>
+        <li>Referral program: "Both get 1 month free"</li>
+        <li>Before/after progress dashboard</li>
+        <li><strong>Goal:</strong> $300-500 MRR, clear path to $1K</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 8. COACH TRACK (SIDE BET) ═══ -->
+<div class="side-bet">
+  <h2><span class="num">S</span> Side Bet: Coach Track</h2>
+  <p class="section-sub">This runs in parallel. It does not change what you build or how you spend your day. This is Oren's lane.</p>
+
+  <p>The coach track is a <strong>higher-ACV, sales-led motion</strong> that only makes sense if coaches actually want it. It's not validated yet. Rules:</p>
+
+  <ul>
+    <li><strong>Oren talks to 10-15 coaches</strong> in weeks 1-4. Research conversations, not pitches.</li>
+    <li><strong>The bar is prepayment, not verbal interest.</strong> "I'd totally use that" means nothing. 3+ coaches putting down money = build it.</li>
+    <li><strong>If validated ($149/mo tier):</strong> Build coach dashboard (client management, multi-user results). 7 coaches = $1K MRR immediately.</li>
+    <li><strong>If not validated:</strong> Drop it. No hard feelings. The individual PLG track runs regardless.</li>
+  </ul>
+
+  <div class="kill-criteria">
+    <strong>Kill criteria (week 4)</strong>
+    Fewer than 3 coaches willing to prepay or sign a pilot commitment = shelve the coach tier. Revisit at month 6 when there's social proof from individual users. Do not build it on hope.
+  </div>
+</div>
+
+<!-- ═══ 9. WHAT YOU DO EVERY WEEK ═══ -->
+<div class="card">
+  <h2><span class="num">8</span> Your Weekly Routine</h2>
+  <p class="section-sub">PLG means the product does the selling. Your job is to feed it traffic and make it better.</p>
+
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>Day</th>
+        <th>Focus</th>
+        <th>Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Mon</td>
+        <td>Check metrics (completions, gate views, conversions). Fix highest-impact UX issue.</td>
+        <td>2-3 hrs</td>
+      </tr>
+      <tr>
+        <td>Tue-Wed</td>
+        <td>Product work: ship the next feature/fix from the roadmap</td>
+        <td>4-6 hrs</td>
+      </tr>
+      <tr>
+        <td>Thu</td>
+        <td>Content: write/publish 1 piece (blog, LinkedIn, Reddit thread)</td>
+        <td>2-3 hrs</td>
+      </tr>
+      <tr>
+        <td>Fri</td>
+        <td>Community: respond to Reddit/LinkedIn comments, check support emails, note feedback</td>
+        <td>1-2 hrs</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p style="margin-top: 14px; font-size: 0.85rem; color: var(--soft);">Total: ~12-15 hrs/week. This is sustainable for a side project. If it becomes full-time, scale the content and product hours, not the sales hours.</p>
+</div>
+
+<!-- ═══ 10. SUCCESS CRITERIA ═══ -->
+<div class="card">
+  <h2><span class="num">9</span> How You Know It's Working</h2>
+  <p class="section-sub">Measured at week 16. Not before — PLG needs time to compound.</p>
+
+  <div class="success-grid">
+    <div class="success-col go">
+      <h4>Working</h4>
+      <ul>
+        <li>100+ analyzer completions/mo</li>
+        <li>3%+ free-to-paid conversion</li>
+        <li>10-20 paying users</li>
+        <li>60%+ month-2 retention</li>
+        <li>$300-500 MRR, trending up</li>
+        <li>Users sharing results unprompted</li>
+      </ul>
+    </div>
+    <div class="success-col adjust">
+      <h4>Adjust</h4>
+      <ul>
+        <li>Completions under 50/mo</li>
+        <li>Conversion under 2%</li>
+        <li>Retention under 40%</li>
+        <li>Nobody shares or refers</li>
+        <li>All paid channels CAC > $75</li>
+      </ul>
+    </div>
+    <div class="success-col stop">
+      <h4>Rethink (after week 16)</h4>
+      <ul>
+        <li>Fewer than 5 paying users total</li>
+        <li>Nobody finishes the free tool</li>
+        <li>Month-2 retention under 20%</li>
+        <li>Zero organic word-of-mouth</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ BOTTOM LINE ═══ -->
+<div class="decision-box" style="margin-bottom: 0;">
+  <h2>The Bottom Line</h2>
+  <p>You don't need a sales team. You don't need a content empire. You need one thing: <strong>a free tool so good that people tell their colleagues about it, and a paid upgrade so obvious that 3% of them click "buy."</strong></p>
+  <p>Everything else — the blog posts, the Reddit threads, the YouTube video, the LinkedIn posts — exists to get more people to the free tool. That's it.</p>
+  <p>The coach track is a bonus round. If Oren validates it, great — instant MRR accelerator. If not, the individual PLG engine runs on its own.</p>
+
+  <div class="verdict">
+    <strong>Your #1 job for the next 4 weeks:</strong> Get the product in front of 10-15 people who actually have the problem — not builders, not devs, but new managers and team leads who feel overwhelmed. Fix the UX, add the paywall gate, and watch if the results page creates an emotional reaction. If it does, you have a business to scale. If it doesn't, you have a product to fix. Everything else is premature until you know which one it is.
+  </div>
+</div>
+
+</div>
+
+</body>
+</html>

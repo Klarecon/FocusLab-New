@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FocusLab — Daily Execution Plan</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+    :root {
+      --waste-orange: #e03e12;
+      --reclaim-pink: #c4186a;
+      --gold: #edb215;
+      --cream: #fdf6ee;
+      --dark: #1a1714;
+      --mid: #4a443d;
+      --soft: #8a7e74;
+      --border: #e8e0d4;
+      --card: #ffffff;
+      --highlight: #fef9f0;
+      --green-bg: #f0faf0;
+      --green-border: #a5d6a7;
+      --green-text: #2e7d32;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--cream);
+      color: var(--dark);
+      line-height: 1.7;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, var(--dark) 0%, #2d261f 100%);
+      color: white;
+      padding: 50px 40px 40px;
+      text-align: center;
+    }
+
+    .hero .badge {
+      display: inline-block;
+      background: var(--reclaim-pink);
+      color: white;
+      padding: 4px 16px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .hero h1 {
+      font-family: 'Fraunces', serif;
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .hero .subtitle {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.6);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* ── Container ── */
+    .container { max-width: 900px; margin: 0 auto; padding: 32px 20px; }
+
+    /* ── Overview box ── */
+    .overview {
+      background: var(--dark);
+      border-radius: 14px;
+      padding: 28px 32px;
+      margin-bottom: 28px;
+      color: white;
+    }
+
+    .overview h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.4rem;
+      color: var(--gold);
+      margin-bottom: 14px;
+    }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .overview-item {
+      background: rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .overview-item .num {
+      font-family: 'Fraunces', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .overview-item .label {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.5);
+      margin-top: 2px;
+    }
+
+    .overview p { font-size: 0.88rem; color: rgba(255,255,255,0.65); }
+
+    /* ── Channels strip ── */
+    .channels-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .channel-card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 16px 14px;
+      text-align: center;
+      border: 2px solid var(--border);
+    }
+
+    .channel-card .icon { font-size: 1.6rem; margin-bottom: 6px; }
+    .channel-card .name { font-size: 0.82rem; font-weight: 700; color: var(--dark); }
+    .channel-card .type { font-size: 0.68rem; color: var(--soft); margin-top: 2px; }
+    .channel-card .who { font-size: 0.72rem; color: var(--reclaim-pink); font-weight: 600; margin-top: 6px; }
+
+    /* ── Week header ── */
+    .week-header {
+      background: var(--reclaim-pink);
+      color: white;
+      border-radius: 12px 12px 0 0;
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .week-header h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .week-header .theme {
+      font-size: 0.82rem;
+      opacity: 0.85;
+    }
+
+    .week-header .dates {
+      font-size: 0.78rem;
+      opacity: 0.7;
+    }
+
+    .week-body {
+      background: var(--card);
+      border-radius: 0 0 12px 12px;
+      border: 2px solid var(--border);
+      border-top: none;
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+
+    /* ── Day row ── */
+    .day {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .day:last-child { border-bottom: none; }
+
+    .day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .day-name {
+      font-family: 'Fraunces', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .day-date {
+      font-size: 0.78rem;
+      color: var(--soft);
+    }
+
+    .day-hours {
+      font-size: 0.72rem;
+      font-weight: 600;
+      background: var(--highlight);
+      padding: 3px 10px;
+      border-radius: 8px;
+      color: var(--mid);
+    }
+
+    /* ── Task blocks ── */
+    .task-block {
+      margin-bottom: 12px;
+    }
+
+    .task-block:last-child { margin-bottom: 0; }
+
+    .task-time {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin-bottom: 4px;
+    }
+
+    .time-you { background: rgba(196,24,106,0.1); color: var(--reclaim-pink); }
+    .time-team { background: rgba(237,178,21,0.15); color: #b8900e; }
+
+    .task-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 2px;
+    }
+
+    .task-detail {
+      font-size: 0.82rem;
+      color: var(--mid);
+    }
+
+    .task-detail ul {
+      padding-left: 16px;
+      margin: 4px 0 0;
+    }
+
+    .task-detail li {
+      font-size: 0.82rem;
+      padding: 1px 0;
+    }
+
+    .task-how {
+      font-size: 0.78rem;
+      color: var(--soft);
+      font-style: italic;
+      margin-top: 4px;
+    }
+
+    /* ── Good day / bad day ── */
+    .day-verdict {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .verdict-box {
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+    }
+
+    .verdict-good {
+      background: var(--green-bg);
+      border: 1px solid var(--green-border);
+      color: var(--green-text);
+    }
+
+    .verdict-bad {
+      background: #fff5f5;
+      border: 1px solid #ef9a9a;
+      color: var(--waste-orange);
+    }
+
+    .verdict-box strong {
+      display: block;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 3px;
+    }
+
+    /* ── Team brief ── */
+    .team-brief {
+      background: rgba(237,178,21,0.08);
+      border: 2px solid var(--gold);
+      border-radius: 12px;
+      padding: 22px 26px;
+      margin-bottom: 28px;
+    }
+
+    .team-brief h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.15rem;
+      color: var(--dark);
+      margin-bottom: 10px;
+    }
+
+    .team-brief p, .team-brief li {
+      font-size: 0.85rem;
+      color: var(--mid);
+    }
+
+    .team-brief ul { padding-left: 16px; margin: 6px 0; }
+
+    /* ── Oren report ── */
+    .report-section {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 28px 32px;
+      margin-bottom: 28px;
+      border: 2px solid var(--reclaim-pink);
+    }
+
+    .report-section h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.4rem;
+      color: var(--dark);
+      margin-bottom: 6px;
+    }
+
+    .report-section .section-sub {
+      font-size: 0.85rem;
+      color: var(--soft);
+      margin-bottom: 18px;
+    }
+
+    .report-section h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.05rem;
+      margin: 18px 0 8px;
+    }
+
+    .report-section p, .report-section li {
+      font-size: 0.88rem;
+      color: var(--mid);
+    }
+
+    .report-section ul { padding-left: 16px; margin: 6px 0; }
+
+    .script-box {
+      background: var(--highlight);
+      border-left: 4px solid var(--gold);
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin: 14px 0;
+      font-size: 0.85rem;
+      color: var(--mid);
+    }
+
+    .script-box strong {
+      color: var(--dark);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .metric-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .metric-card {
+      background: var(--highlight);
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .metric-card .num {
+      font-family: 'Fraunces', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--reclaim-pink);
+    }
+
+    .metric-card .label {
+      font-size: 0.72rem;
+      color: var(--soft);
+    }
+
+    /* ── Card generic ── */
+    .card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 28px 32px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .card h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.4rem;
+      color: var(--dark);
+      margin-bottom: 14px;
+    }
+
+    .card p, .card li { font-size: 0.88rem; color: var(--mid); }
+    .card ul { padding-left: 16px; margin: 6px 0; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 1.7rem; }
+      .hero { padding: 32px 16px 28px; }
+      .overview-grid { grid-template-columns: 1fr 1fr; }
+      .channels-strip { grid-template-columns: 1fr 1fr; }
+      .day-verdict { grid-template-columns: 1fr; }
+      .metric-row { grid-template-columns: 1fr; }
+      .day { padding: 16px; }
+      .card, .report-section, .team-brief { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="badge">Execution Plan — Start June 22</span>
+  <h1>What To Do Every Day</h1>
+  <p class="subtitle">No fluff. Each day tells you exactly what to do, how long it takes, and what "done" looks like.</p>
+</div>
+
+<div class="container">
+
+<!-- ═══ OVERVIEW ═══ -->
+<div class="overview">
+  <h2>The Setup</h2>
+  <div class="overview-grid">
+    <div class="overview-item">
+      <div class="num">6</div>
+      <div class="label">hrs / day (you)</div>
+    </div>
+    <div class="overview-item">
+      <div class="num">2</div>
+      <div class="label">content team members</div>
+    </div>
+    <div class="overview-item">
+      <div class="num">$500</div>
+      <div class="label">/ month Facebook ads</div>
+    </div>
+    <div class="overview-item">
+      <div class="num">5</div>
+      <div class="label">channels running</div>
+    </div>
+  </div>
+  <p><strong>The money question:</strong> Free Pareto Analyzer hooks users. Paid Focus Table ($29/mo or $199/yr) converts them. Every channel below has one job: get people to try the free tool. The product does the selling.</p>
+</div>
+
+<!-- ═══ CHANNELS ═══ -->
+<div class="channels-strip">
+  <div class="channel-card">
+    <div class="icon">💬</div>
+    <div class="name">Reddit</div>
+    <div class="type">Organic</div>
+    <div class="who">You</div>
+  </div>
+  <div class="channel-card">
+    <div class="icon">💼</div>
+    <div class="name">LinkedIn</div>
+    <div class="type">Organic + Outreach</div>
+    <div class="who">You</div>
+  </div>
+  <div class="channel-card">
+    <div class="icon">📨</div>
+    <div class="name">Email</div>
+    <div class="type">Outreach</div>
+    <div class="who">You</div>
+  </div>
+  <div class="channel-card">
+    <div class="icon">🎯</div>
+    <div class="name">Facebook Ads</div>
+    <div class="type">Paid</div>
+    <div class="who">You</div>
+  </div>
+  <div class="channel-card">
+    <div class="icon">✍️</div>
+    <div class="name">Blog / SEO</div>
+    <div class="type">Content</div>
+    <div class="who">Content Team</div>
+  </div>
+</div>
+
+<!-- ═══ TEAM BRIEF ═══ -->
+<div class="team-brief">
+  <h3>Content Team Brief (Hand this to them on Day 1)</h3>
+  <p>Two people, two tracks. Give them this and let them run:</p>
+  <ul>
+    <li><strong>Person 1 — Blog writer.</strong> Write 2 blog posts per week. Topics come from a list you give them (below). Each post must end with a CTA: "Try the free Pareto Analyzer." Posts should be 800-1200 words, practical, not salesy. Audience: managers and team leads who feel overwhelmed.</li>
+    <li><strong>Person 2 — Outreach support + content assets.</strong> Build the outreach prospect list (LinkedIn + email), draft outreach message templates, create LinkedIn post graphics/carousels. When outreach list building is done, shift to blog writing too.</li>
+  </ul>
+  <p style="margin-top: 10px;"><strong>Blog topic bank (give them this list):</strong></p>
+  <ul>
+    <li>"Why am I always busy but never productive?"</li>
+    <li>"The Pareto Principle applied to your work week"</li>
+    <li>"5 hidden time wasters every new manager discovers too late"</li>
+    <li>"How to run a personal time audit in 5 minutes"</li>
+    <li>"What knowledge workers actually waste time on (data from 500+ assessments)"</li>
+    <li>"The real cost of context switching — calculated in dollars"</li>
+    <li>"First 90 days as a manager: where your time actually goes"</li>
+    <li>"Why time tracking apps don't fix productivity (and what does)"</li>
+  </ul>
+</div>
+
+
+<!-- ════════════════════════════════════════ -->
+<!-- ═══ WEEK 1 ═══ -->
+<!-- ════════════════════════════════════════ -->
+<div class="week-header">
+  <div>
+    <h2>Week 1: Foundation</h2>
+    <div class="theme">Set up everything so you can start promoting from Week 2</div>
+  </div>
+  <div class="dates">June 22 — 26</div>
+</div>
+<div class="week-body">
+
+  <!-- Monday -->
+  <div class="day">
+    <div class="day-header">
+      <div>
+        <div class="day-name">Monday, June 22</div>
+        <div class="day-date">Theme: Domain + Paywall</div>
+      </div>
+      <div class="day-hours">6 hrs</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 3 hrs</span>
+      <div class="task-title">Connect your domain to Vercel</div>
+      <div class="task-detail">Point your domain DNS to Vercel. Set up the custom domain so FocusLab is no longer on focuslab-omega.vercel.app. This is non-negotiable before any promotion — you can't run ads to a .vercel.app URL.</div>
+      <div class="task-how">Vercel dashboard &rarr; Project Settings &rarr; Domains &rarr; Add your domain &rarr; Update DNS at your registrar.</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 2 hrs</span>
+      <div class="task-title">Build the paywall gate on results page</div>
+      <div class="task-detail">After the Pareto Analyzer results, add a clear CTA: "Ready to fix this? Get your prioritized action plan." This gates the Focus Table behind payment. Without this, there is no way to make money.</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 1 hr</span>
+      <div class="task-title">Set up Stripe checkout</div>
+      <div class="task-detail">Create two Stripe Payment Links: $29/month and $199/year. Link them from the gate CTA. Don't overengineer this — Payment Links work without any backend.</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-team">Content Team</span>
+      <div class="task-title">Start building outreach prospect list</div>
+      <div class="task-detail">Person 2 begins finding productivity coaches and new managers on LinkedIn. Target: 100 prospects by end of week. Collect: name, title, LinkedIn URL, email (if findable).</div>
+    </div>
+
+    <div class="day-verdict">
+      <div class="verdict-box verdict-good"><strong>Good day</strong>Domain connected. Paywall CTA exists on results page. Stripe links created. Prospect list started.</div>
+      <div class="verdict-box verdict-bad"><strong>Bad day</strong>Domain still on .vercel.app. No paywall gate. No way to collect money.</div>
+    </div>
+  </div>
+
+  <!-- Tuesday -->
+  <div class="day">
+    <div class="day-header">
+      <div>
+        <div class="day-name">Tuesday, June 23</div>
+        <div class="day-date">Theme: Landing page + Analytics</div>
+      </div>
+      <div class="day-hours">6 hrs</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 4 hrs</span>
+      <div class="task-title">Build a proper landing page</div>
+      <div class="task-detail">This is what Facebook ads and LinkedIn will point to. Must answer three questions in 5 seconds: What is it? Who is it for? What do I do? One CTA: "Find your biggest time wasters — free." Links to the Pareto Analyzer.</div>
+      <div class="task-how">Keep it one page. Hero + pain point + how it works (3 steps) + social proof placeholder + CTA.</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 1.5 hrs</span>
+      <div class="task-title">Set up analytics</div>
+      <div class="task-detail">You need to track: landing page visits, analyzer starts, analyzer completions, gate views, Stripe clicks. Without this, you cannot report to Oren. Use Google Analytics 4 or a simple alternative like Plausible/Umami.</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 0.5 hr</span>
+      <div class="task-title">Add privacy policy + terms</div>
+      <div class="task-detail">Required before collecting any data or running ads. Use a generator (Termly, PrivacyPolicies.com), customize with your domain name.</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-team">Content Team</span>
+      <div class="task-title">Person 1 starts first blog post. Person 2 continues prospect list.</div>
+    </div>
+
+    <div class="day-verdict">
+      <div class="verdict-box verdict-good"><strong>Good day</strong>Landing page live on your domain. Analytics tracking page views and analyzer starts. Privacy policy published.</div>
+      <div class="verdict-box verdict-bad"><strong>Bad day</strong>No landing page. Ads would have nowhere to send people.</div>
+    </div>
+  </div>
+
+  <!-- Wednesday -->
+  <div class="day">
+    <div class="day-header">
+      <div>
+        <div class="day-name">Wednesday, June 24</div>
+        <div class="day-date">Theme: Reddit + LinkedIn setup</div>
+      </div>
+      <div class="day-hours">6 hrs</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 2 hrs</span>
+      <div class="task-title">Reddit: join communities + study the rules</div>
+      <div class="task-detail">
+        Join these subs and read the rules carefully. Understand what kind of posts get traction vs. get removed:
+        <ul>
+          <li><strong>r/productivity</strong> (~1.5M members) — allows tool sharing if it's genuinely helpful, not spammy</li>
+          <li><strong>r/managers</strong> — smaller, more targeted. Share as "I built this to solve my own problem"</li>
+          <li><strong>r/careerguidance</strong> — good for "new manager overwhelmed" angle</li>
+          <li><strong>r/projectmanagement</strong> — waste/time management resonates here</li>
+          <li><strong>r/startups</strong> — for the builder journey angle</li>
+        </ul>
+        Today: comment on 5-10 existing threads with genuine, helpful advice (not promoting). Start building karma and presence.
+      </div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 2 hrs</span>
+      <div class="task-title">Write your first 3 LinkedIn posts (don't publish yet)</div>
+      <div class="task-detail">
+        Draft three posts. You'll publish one per day starting Thursday. The angle: your journey building FocusLab.
+        <ul>
+          <li><strong>Post 1:</strong> The problem — "I realized I was wasting 14 hours a week and had no idea where it went. So I built something." (Story hook, no product link)</li>
+          <li><strong>Post 2:</strong> The insight — "The Pareto Principle says 20% of your activities cause 80% of your waste. But nobody helps you find which 20%." (Educational, link in comments)</li>
+          <li><strong>Post 3:</strong> The proof — "I tested my tool with real managers. Here's what surprised me about where their time actually goes." (Data-driven, CTA to try it)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 2 hrs</span>
+      <div class="task-title">Write outreach message templates</div>
+      <div class="task-detail">
+        Two templates — one for coaches, one for managers. Not a pitch. A genuine ask:
+        <ul>
+          <li><strong>Coach template:</strong> "Hi [name], I built a diagnostic tool that helps identify where knowledge workers waste time. I'm looking for feedback from coaches who work in this space. Would you be open to a 10-minute look? No pitch — just want your honest reaction."</li>
+          <li><strong>Manager template:</strong> "Hi [name], I noticed you recently moved into a management role — congrats. I built a free tool that helps you figure out where your team's time is actually going. Would love your feedback if you have 5 minutes to try it."</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-team">Content Team</span>
+      <div class="task-title">Person 1 finishes first blog post draft. Person 2 hits 50+ prospects on the list.</div>
+    </div>
+
+    <div class="day-verdict">
+      <div class="verdict-box verdict-good"><strong>Good day</strong>Reddit accounts active in 4+ subs with genuine comments. 3 LinkedIn posts drafted. 2 outreach templates ready. 50+ prospects found.</div>
+      <div class="verdict-box verdict-bad"><strong>Bad day</strong>Zero Reddit presence. No LinkedIn drafts. No outreach templates.</div>
+    </div>
+  </div>
+
+  <!-- Thursday -->
+  <div class="day">
+    <div class="day-header">
+      <div>
+        <div class="day-name">Thursday, June 25</div>
+        <div class="day-date">Theme: Go live — first posts + first outreach</div>
+      </div>
+      <div class="day-hours">6 hrs</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 1 hr</span>
+      <div class="task-title">Publish LinkedIn post #1</div>
+      <div class="task-detail">Post the "problem" story. No product link in the post itself — tell the story, build curiosity. If people ask in comments, share the link there.</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 1 hr</span>
+      <div class="task-title">Reddit: make your first value post</div>
+      <div class="task-detail">Post in r/productivity or r/managers. Frame: "I've been researching where knowledge workers waste the most time — here's what I found." Share insights from your data (the waste sources in FocusLab). Mention the tool only if someone asks. The goal is to start a conversation, not promote.</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 2.5 hrs</span>
+      <div class="task-title">Send first batch of outreach — 20 messages</div>
+      <div class="task-detail">10 coaches + 10 managers from the prospect list. Use LinkedIn DMs first (higher response rate than cold email for this audience). Personalize the first line — mention something from their profile. Send 20 today. Track responses in a simple spreadsheet: Name | Sent Date | Replied Y/N | Outcome.</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 1.5 hrs</span>
+      <div class="task-title">Set up Facebook Ads account + create first ad</div>
+      <div class="task-detail">
+        Don't launch yet — set up and create:
+        <ul>
+          <li>Business Manager + Ad Account + Facebook Pixel on your site</li>
+          <li>One ad creative: "Where does your work week actually go? Find out in 5 minutes — free." Image: a simple before/after or the results screen.</li>
+          <li>Audience: managers, team leads, HR professionals, 28-50 age, English-speaking</li>
+          <li>Budget: $16/day (~$500/month). Traffic campaign, optimize for landing page views.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-team">Content Team</span>
+      <div class="task-title">First blog post published on the site. Person 2 hits 100 prospects.</div>
+    </div>
+
+    <div class="day-verdict">
+      <div class="verdict-box verdict-good"><strong>Good day</strong>LinkedIn post #1 live. Reddit value post live. 20 outreach messages sent. Facebook ad created (not yet live). First blog post published.</div>
+      <div class="verdict-box verdict-bad"><strong>Bad day</strong>Nothing published. Zero outreach sent. Still "preparing."</div>
+    </div>
+  </div>
+
+  <!-- Friday -->
+  <div class="day">
+    <div class="day-header">
+      <div>
+        <div class="day-name">Friday, June 26</div>
+        <div class="day-date">Theme: Launch ads + first weekly review</div>
+      </div>
+      <div class="day-hours">6 hrs</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 1 hr</span>
+      <div class="task-title">Launch Facebook ad</div>
+      <div class="task-detail">Hit publish. Start at $16/day. Don't touch it for 3 days — Facebook needs time to optimize delivery. Resist the urge to tweak.</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 1 hr</span>
+      <div class="task-title">Publish LinkedIn post #2</div>
+      <div class="task-detail">The educational "Pareto Principle" post. Link to FocusLab in the first comment, not the post.</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 1.5 hrs</span>
+      <div class="task-title">Send 20 more outreach messages</div>
+      <div class="task-detail">Same split: coaches + managers. Follow up on any replies from yesterday's batch.</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 1 hr</span>
+      <div class="task-title">Reddit: comment on threads + reply to any engagement</div>
+      <div class="task-detail">Don't post again yet — too soon. Comment on 5-10 threads with genuine advice about productivity, time management, new manager challenges. Build credibility.</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 1.5 hrs</span>
+      <div class="task-title">Week 1 review + prep Oren report</div>
+      <div class="task-detail">Pull your numbers (see reporting section below). Write down your talking points for Oren. Practice saying them out loud once without looking at notes.</div>
+    </div>
+
+    <div class="day-verdict">
+      <div class="verdict-box verdict-good"><strong>Good day</strong>Facebook ads running. 40 total outreach messages sent. 2 LinkedIn posts published. Reddit presence in 4+ subs. Blog has 1 published post. You can tell Oren exactly what you did and what the numbers are.</div>
+      <div class="verdict-box verdict-bad"><strong>Bad day</strong>Ads not launched. Fewer than 20 outreach messages total. Can't articulate your numbers to Oren.</div>
+    </div>
+  </div>
+
+</div><!-- end week-body -->
+
+
+<!-- ════════════════════════════════════════ -->
+<!-- ═══ WEEK 2 ═══ -->
+<!-- ════════════════════════════════════════ -->
+<div class="week-header">
+  <div>
+    <h2>Week 2: Push</h2>
+    <div class="theme">All channels running. Volume up. First data comes in.</div>
+  </div>
+  <div class="dates">June 29 — July 3</div>
+</div>
+<div class="week-body">
+
+  <div class="day">
+    <div class="day-header">
+      <div>
+        <div class="day-name">Monday, June 29</div>
+        <div class="day-date">Theme: Outreach + Reddit</div>
+      </div>
+      <div class="day-hours">6 hrs</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 1 hr</span>
+      <div class="task-title">Check analytics + ad performance</div>
+      <div class="task-detail">Landing page visits? Analyzer starts? Ad CTR? CPC? Write down the numbers. Don't change the ad yet.</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 2 hrs</span>
+      <div class="task-title">Send 20 outreach messages + follow up on week 1 replies</div>
+      <div class="task-detail">You should have 40 sent from last week. Some will have replied. Respond to every reply within 24 hours. For non-replies from Thursday: send a one-line follow-up. "Just bumping this — would love your quick take if you have 5 minutes."</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 1.5 hrs</span>
+      <div class="task-title">Reddit: new value post in a different sub</div>
+      <div class="task-detail">Post in a sub you haven't posted in yet. Different angle: "As a new manager, here are the 3 biggest time traps nobody warned me about." Pure value — no product mention unless asked.</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 1.5 hrs</span>
+      <div class="task-title">LinkedIn post #3 + engage with comments on posts 1-2</div>
+      <div class="task-detail">Publish the "proof/data" post. Reply to every comment on your previous posts — LinkedIn algorithm rewards engagement in the first 2 hours.</div>
+    </div>
+
+    <div class="day-verdict">
+      <div class="verdict-box verdict-good"><strong>Good day</strong>60 total outreach messages sent. 3 LinkedIn posts live. 2 Reddit value posts across different subs. Analytics checked and numbers written down.</div>
+      <div class="verdict-box verdict-bad"><strong>Bad day</strong>No outreach follow-ups. Analytics unchecked. Channels going quiet.</div>
+    </div>
+  </div>
+
+  <div class="day">
+    <div class="day-header">
+      <div>
+        <div class="day-name">Tuesday, June 30</div>
+        <div class="day-date">Theme: Email outreach launch</div>
+      </div>
+      <div class="day-hours">6 hrs</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 2.5 hrs</span>
+      <div class="task-title">Launch email outreach campaign</div>
+      <div class="task-detail">Take the prospects who didn't respond to LinkedIn DMs + new email-only prospects from the list. Send 30 emails. Use a simple tool (GMass, Instantly, or even manual Gmail with templates). Same message framing as LinkedIn — feedback request, not a pitch.</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 2 hrs</span>
+      <div class="task-title">Write 3 more LinkedIn posts for the rest of the week</div>
+      <div class="task-detail">
+        <ul>
+          <li><strong>Post 4:</strong> A specific waste stat — "The average manager spends X hours in meetings that could've been emails. Here's how to figure out your number."</li>
+          <li><strong>Post 5:</strong> Behind the scenes — "Here's what I learned building a productivity tool that nobody asked for" (vulnerability/journey angle)</li>
+          <li><strong>Post 6:</strong> Direct CTA — "I built a free tool that finds your biggest time wasters in 5 minutes. Link in comments."</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 1.5 hrs</span>
+      <div class="task-title">Respond to all outreach replies + Reddit comments</div>
+      <div class="task-detail">By now you should have some replies from coaches/managers. If anyone tried the tool, ask: "What was your reaction when you saw the results? Was anything surprising?" Their answers become your future content.</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-team">Content Team</span>
+      <div class="task-title">Blog post #2 published. Person 2 starts building email prospect sub-list (people with email addresses).</div>
+    </div>
+
+    <div class="day-verdict">
+      <div class="verdict-box verdict-good"><strong>Good day</strong>30 emails sent. 3 LinkedIn posts drafted for the week. All replies answered within 24 hours. Blog post #2 live.</div>
+      <div class="verdict-box verdict-bad"><strong>Bad day</strong>Email outreach postponed again. Replies sitting unanswered.</div>
+    </div>
+  </div>
+
+  <div class="day">
+    <div class="day-header">
+      <div>
+        <div class="day-name">Wednesday, July 1</div>
+        <div class="day-date">Theme: Content + community</div>
+      </div>
+      <div class="day-hours">6 hrs</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 1 hr</span>
+      <div class="task-title">LinkedIn post #4 + engage</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 1.5 hrs</span>
+      <div class="task-title">Reddit: answer questions in threads + comment on relevant posts</div>
+      <div class="task-detail">No new post today. Focus on being helpful in existing threads. If someone asks "how do I figure out where my time goes?" — that's your natural opening.</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 2 hrs</span>
+      <div class="task-title">Send 20 more outreach (mix of LinkedIn DM + email)</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 1.5 hrs</span>
+      <div class="task-title">Product fixes based on feedback so far</div>
+      <div class="task-detail">By now, some outreach targets or Reddit users may have tried the tool. Fix the top UX issue they mention. Ship it same day.</div>
+    </div>
+
+    <div class="day-verdict">
+      <div class="verdict-box verdict-good"><strong>Good day</strong>80+ total outreach sent. Active in Reddit threads. LinkedIn consistent. At least one product fix shipped from real feedback.</div>
+      <div class="verdict-box verdict-bad"><strong>Bad day</strong>Outreach stalled. No engagement with communities. Ignoring feedback.</div>
+    </div>
+  </div>
+
+  <div class="day">
+    <div class="day-header">
+      <div>
+        <div class="day-name">Thursday, July 2</div>
+        <div class="day-date">Theme: Scale outreach + new Reddit post</div>
+      </div>
+      <div class="day-hours">6 hrs</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 1 hr</span>
+      <div class="task-title">LinkedIn post #5 + engage</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 1.5 hrs</span>
+      <div class="task-title">Reddit: third value post (new sub or new angle)</div>
+      <div class="task-detail">Try r/careerguidance or r/projectmanagement. Angle: "What's the biggest time waster in your job that your boss doesn't know about?" Start a discussion. Engage with every response.</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 2 hrs</span>
+      <div class="task-title">Send 20 outreach + follow up on all non-replies from week 1</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 1.5 hrs</span>
+      <div class="task-title">Review Facebook ad performance — first real data</div>
+      <div class="task-detail">Ad has been running ~7 days. Check: CTR (want > 1%), CPC (want < $3), landing page visits, analyzer starts from ad traffic. If CTR < 0.5%, the creative isn't working — change the image or headline. If CPC > $5, pause and rethink the audience.</div>
+    </div>
+
+    <div class="day-verdict">
+      <div class="verdict-box verdict-good"><strong>Good day</strong>100+ total outreach sent. 3 Reddit value posts across different subs. Facebook ad data reviewed with clear next step written down.</div>
+      <div class="verdict-box verdict-bad"><strong>Bad day</strong>Ignoring ad data. Reddit presence dying. Outreach below 80.</div>
+    </div>
+  </div>
+
+  <div class="day">
+    <div class="day-header">
+      <div>
+        <div class="day-name">Friday, July 3</div>
+        <div class="day-date">Theme: Week 2 review + Oren report</div>
+      </div>
+      <div class="day-hours">6 hrs</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 1 hr</span>
+      <div class="task-title">LinkedIn post #6 (direct CTA post)</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 1.5 hrs</span>
+      <div class="task-title">Send 20 more outreach + respond to all replies</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 1.5 hrs</span>
+      <div class="task-title">Reddit: engage with all your existing threads</div>
+      <div class="task-detail">Go back to your 3 value posts. Reply to every comment. If discussions are still active, keep them going. This is where organic discovery happens.</div>
+    </div>
+
+    <div class="task-block">
+      <span class="task-time time-you">You — 2 hrs</span>
+      <div class="task-title">Week 2 review + Oren report prep</div>
+      <div class="task-detail">Pull all numbers. Compare to week 1. Prepare your verbal report (see reporting section below). Practice once out loud.</div>
+    </div>
+
+    <div class="day-verdict">
+      <div class="verdict-box verdict-good"><strong>Good day</strong>120+ total outreach sent. 6 LinkedIn posts published. 3+ Reddit value posts. Facebook ad running and reviewed. Blog has 2+ published posts. You can give Oren a crisp 5-minute update with numbers.</div>
+      <div class="verdict-box verdict-bad"><strong>Bad day</strong>Can't tell Oren how many people visited, started the analyzer, or replied to outreach.</div>
+    </div>
+  </div>
+
+</div><!-- end week 2 -->
+
+
+<!-- ════════════════════════════════════════ -->
+<!-- ═══ WEEKS 3-4 PATTERN ═══ -->
+<!-- ════════════════════════════════════════ -->
+<div class="card">
+  <h2>Weeks 3-4: Repeating Rhythm</h2>
+  <p style="margin-bottom: 14px;">By now you have a pattern. Weeks 3-4 follow the same daily structure but with these escalations:</p>
+
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>Channel</th>
+        <th>Week 1-2 pace</th>
+        <th>Week 3-4 pace</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Outreach</strong></td>
+        <td>20/day, ~120 total by end of week 2</td>
+        <td>20/day continues. Shift to warmer leads — people who engaged with your LinkedIn posts, Reddit comments, or blog. Start email sequences for non-replies (3-touch: initial + 2 follow-ups).</td>
+      </tr>
+      <tr>
+        <td><strong>LinkedIn</strong></td>
+        <td>3 posts/week</td>
+        <td>3 posts/week continues. Start incorporating real quotes from outreach replies and user feedback. "A manager told me she spends 6 hours a week in status meetings that could be async."</td>
+      </tr>
+      <tr>
+        <td><strong>Reddit</strong></td>
+        <td>1-2 value posts/week + daily comments</td>
+        <td>2 value posts/week. By now you have karma and credibility. You can more naturally mention the tool in relevant threads without it feeling promotional.</td>
+      </tr>
+      <tr>
+        <td><strong>Facebook Ads</strong></td>
+        <td>$16/day, 1 creative</td>
+        <td>If CTR > 1%: keep running, test a second creative. If CTR < 0.5% after 2 weeks: kill the ad, try a completely different angle or audience. Don't waste money on a losing creative.</td>
+      </tr>
+      <tr>
+        <td><strong>Blog</strong></td>
+        <td>1-2 posts published</td>
+        <td>Team targets 2 posts/week. Start including internal links to the analyzer. Share blog posts in LinkedIn comments as supporting content.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p style="margin-top: 14px;"><strong>New additions in weeks 3-4:</strong></p>
+  <ul>
+    <li><strong>Email nurture sequence:</strong> Anyone who gave their email on the results page gets a 3-email sequence over 7 days. Email 1: "Here's what your results mean." Email 2: "3 quick wins you can try this week." Email 3: "Ready to build your full action plan? Upgrade to Pro."</li>
+    <li><strong>User interviews:</strong> If anyone has used the tool and replied positively, ask for a 15-minute call. Their words become your copy, your case study, your proof.</li>
+  </ul>
+</div>
+
+
+<!-- ════════════════════════════════════════ -->
+<!-- ═══ OREN REPORTING ═══ -->
+<!-- ════════════════════════════════════════ -->
+<div class="report-section">
+  <h2>How to Report to Oren</h2>
+  <p class="section-sub">Weekly call. Verbal. He doesn't need to see a doc — you need to speak clearly in the language of data. Here's exactly how.</p>
+
+  <h3>The 5 Numbers You Track Every Week</h3>
+  <p>These are the only numbers that matter. Know them cold before every call.</p>
+
+  <div class="metric-row">
+    <div class="metric-card">
+      <div class="num" style="font-size:1.2rem;">—</div>
+      <div class="label">Landing page visitors</div>
+    </div>
+    <div class="metric-card">
+      <div class="num" style="font-size:1.2rem;">—</div>
+      <div class="label">Analyzer completions</div>
+    </div>
+    <div class="metric-card">
+      <div class="num" style="font-size:1.2rem;">—</div>
+      <div class="label">Paywall gate views</div>
+    </div>
+  </div>
+  <div class="metric-row">
+    <div class="metric-card">
+      <div class="num" style="font-size:1.2rem;">—</div>
+      <div class="label">Outreach reply rate</div>
+    </div>
+    <div class="metric-card">
+      <div class="num" style="font-size:1.2rem;">—</div>
+      <div class="label">Revenue ($)</div>
+    </div>
+    <div class="metric-card">
+      <div class="num" style="font-size:1.2rem;">—</div>
+      <div class="label">Ad spend &amp; CPC</div>
+    </div>
+  </div>
+
+  <h3>The Verbal Script (Practice This)</h3>
+  <p>Say this structure every week. Fill in the numbers. Takes 3-4 minutes.</p>
+
+  <div class="script-box">
+    <strong>Open with the funnel</strong>
+    "This week, [X] people visited the landing page. Of those, [Y] started the analyzer and [Z] completed it. That's a [Z/X]% completion rate, which is [up/down/flat] from last week."
+  </div>
+
+  <div class="script-box">
+    <strong>Then the money signal</strong>
+    "[N] people saw the paywall gate. [M] clicked on the upgrade button. [P] actually paid. That's $[amount] in new revenue this week, bringing our total MRR to $[total]."
+    <br><br>
+    <em>If revenue is zero (and it will be early on):</em> "No paying users yet. [N] people saw the gate, which tells me [people are getting to the end / the funnel has a drop-off at step X]. Here's what I'm doing about it: [specific action]."
+  </div>
+
+  <div class="script-box">
+    <strong>Then the channels</strong>
+    "On outreach: I sent [X] messages, got [Y] replies, that's a [Y/X]% reply rate. [Notable response — quote one]. On LinkedIn: [X] posts, [Y] total impressions. Best performer was [topic]. On Reddit: [X] value posts, [Y] comments received. On Facebook: spending $[X]/day, getting clicks at $[CPC] each, [N] landing page visits from ads."
+  </div>
+
+  <div class="script-box">
+    <strong>Close with next week</strong>
+    "Next week I'm focusing on [one specific thing]. The biggest bottleneck right now is [specific bottleneck], and here's what I'm doing to fix it."
+  </div>
+
+  <h3>What Oren Actually Wants to Hear</h3>
+  <ul>
+    <li><strong>That you know your numbers.</strong> Not "I think it went well" — exact numbers.</li>
+    <li><strong>That you know what's working and what isn't.</strong> "LinkedIn posts get 3x more impressions than Reddit, so I'm shifting more time there."</li>
+    <li><strong>That you have a clear plan for making money.</strong> "At current conversion rates, I need X visitors/month to hit $Y MRR. Here's how I'm getting those visitors."</li>
+    <li><strong>That you're not avoiding the hard question.</strong> If revenue is zero, say "revenue is zero, here's why, here's what I'm changing." Don't hide it.</li>
+  </ul>
+
+  <h3>Weekly Tracker (Keep this in a spreadsheet)</h3>
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>Metric</th>
+        <th>Week 1</th>
+        <th>Week 2</th>
+        <th>Week 3</th>
+        <th>Week 4</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Landing page visitors</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>Analyzer starts</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>Analyzer completions</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>Paywall gate views</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>Stripe clicks</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>Paying users (new)</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>Revenue (new MRR)</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>Total MRR</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>Outreach sent</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>Outreach replies</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>Reply rate %</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>LinkedIn posts</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>LinkedIn impressions</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>Reddit posts</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>Reddit comments received</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>Facebook ad spend</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>Facebook CPC</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>Facebook landing page visits</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>Blog posts published</td><td></td><td></td><td></td><td></td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- ═══ DAILY CHEAT SHEET ═══ -->
+<div class="card" style="border: 2px solid var(--gold);">
+  <h2>Daily Cheat Sheet (Print This)</h2>
+  <p style="margin-bottom: 14px;">After week 1, your default day looks like this. Not every day is the same — rotate between these blocks:</p>
+
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>Block</th>
+        <th>Time</th>
+        <th>What</th>
+        <th>How often</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Morning check</strong></td>
+        <td>30 min</td>
+        <td>Check analytics, ad performance, reply to overnight messages</td>
+        <td>Every day</td>
+      </tr>
+      <tr>
+        <td><strong>Outreach</strong></td>
+        <td>1.5-2 hrs</td>
+        <td>Send 20 new messages + follow up on replies</td>
+        <td>Every day</td>
+      </tr>
+      <tr>
+        <td><strong>LinkedIn</strong></td>
+        <td>1 hr</td>
+        <td>Publish 1 post + engage with comments on previous posts</td>
+        <td>3x per week (Mon/Wed/Fri)</td>
+      </tr>
+      <tr>
+        <td><strong>Reddit</strong></td>
+        <td>1-1.5 hrs</td>
+        <td>Value post (1-2x/week) or comment on threads (other days)</td>
+        <td>Every day, light touch</td>
+      </tr>
+      <tr>
+        <td><strong>Product fixes</strong></td>
+        <td>1.5 hrs</td>
+        <td>Fix UX issues from user feedback. Ship same day.</td>
+        <td>2-3x per week</td>
+      </tr>
+      <tr>
+        <td><strong>Ad review</strong></td>
+        <td>30 min</td>
+        <td>Check Facebook performance. Only change after 3+ days of data.</td>
+        <td>2x per week (Mon/Thu)</td>
+      </tr>
+      <tr>
+        <td><strong>Oren report prep</strong></td>
+        <td>1.5 hrs</td>
+        <td>Pull numbers, write talking points, practice verbal delivery</td>
+        <td>Friday only</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- ═══ MONEY ANSWER ═══ -->
+<div class="overview">
+  <h2>How Does This Make Money?</h2>
+  <p style="margin-bottom: 10px;">When Oren asks this, here's the answer in one breath:</p>
+  <p style="color: var(--gold); font-size: 1rem; font-weight: 600; line-height: 1.6;">"The free Pareto Analyzer gets people to see their waste in dollars. That emotional hit drives them to the paywall, where they pay $29/month or $199/year for the fix — the Focus Table, Action Plan, and Impact Matrix. Every channel I'm running — LinkedIn, Reddit, outreach, Facebook ads, blog content — exists to get more people to try the free tool. The product does the converting. At 3% conversion and 80 completions per month, that's 2-3 paying users per month. At $29/mo each, that's $1K MRR by month 6-8. Coaches at $149/month can accelerate that — but the individual engine runs on its own."</p>
+</div>
+
+
+</div><!-- end container -->
+
+</body>
+</html>
