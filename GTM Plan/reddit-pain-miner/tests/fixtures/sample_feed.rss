@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <category term="managers" label="r/managers"/>
+  <title>Managers</title>
+  <entry>
+    <author><name>/u/tired_lead</name></author>
+    <category term="managers" label="r/managers"/>
+    <content type="html">&lt;!-- SC_OFF --&gt;&lt;div class="md"&gt;&lt;p&gt;I am completely overwhelmed and I can&amp;#39;t switch off after work anymore.&lt;/p&gt;&lt;/div&gt;&lt;!-- SC_ON --&gt; submitted by &lt;a href="https://www.reddit.com/user/tired_lead"&gt;/u/tired_lead&lt;/a&gt;</content>
+    <id>t3_abc123</id>
+    <link href="https://www.reddit.com/r/managers/comments/abc123/overwhelmed/"/>
+    <published>2026-06-20T14:30:00+00:00</published>
+    <updated>2026-06-20T14:30:00+00:00</updated>
+    <title>Overwhelmed and can't switch off</title>
+  </entry>
+  <entry>
+    <author><name>/u/sunny_dev</name></author>
+    <category term="managers" label="r/managers"/>
+    <content type="html">&lt;!-- SC_OFF --&gt;&lt;div class="md"&gt;&lt;p&gt;Got a great new coffee machine for the office today!&lt;/p&gt;&lt;/div&gt;&lt;!-- SC_ON --&gt;</content>
+    <id>t3_def456</id>
+    <link href="https://www.reddit.com/r/managers/comments/def456/coffee/"/>
+    <published>2026-06-21T09:00:00+00:00</published>
+    <updated>2026-06-21T09:00:00+00:00</updated>
+    <title>New office coffee machine</title>
+  </entry>
+</feed>

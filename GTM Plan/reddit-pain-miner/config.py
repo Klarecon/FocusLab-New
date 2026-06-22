@@ -112,3 +112,12 @@ MAX_COMMENT_CHARS = 500
 
 # Claude model used for analysis.
 MODEL = "claude-opus-4-8"
+
+# ---------------------------------------------------------------------------
+# Public-JSON fetch settings (no Reddit account/app — see reddit_fetch.py).
+# ---------------------------------------------------------------------------
+# Reddit throttles generic user-agents hard. A descriptive one is required.
+# Override per-machine by setting REDDIT_USER_AGENT in .env (optional).
+USER_AGENT = "focuslab-pain-miner/1.0 (content research script)"
+REQUEST_DELAY = 3.0       # seconds between every request (Reddit RSS throttles tightly)
+RATE_LIMIT_BACKOFF = 30   # seconds to wait after a 429 before retrying

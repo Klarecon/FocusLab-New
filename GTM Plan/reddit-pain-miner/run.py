@@ -43,11 +43,8 @@ def run_live(max_analyze: int) -> None:
             "Missing ANTHROPIC_API_KEY in .env. See README.md > Setup."
         )
 
-    print("Connecting to Reddit (read-only)...")
-    reddit = reddit_fetch.make_reddit()
-
-    print("Collecting candidate threads...")
-    candidates = reddit_fetch.collect_candidates(reddit)
+    print("Collecting candidate threads from Reddit (public JSON, no login)...")
+    candidates = reddit_fetch.collect_candidates()
     scanned = len(candidates)
     print(f"  {scanned} unique threads pulled.")
 
@@ -58,14 +55,11 @@ def run_live(max_analyze: int) -> None:
     fresh = [c for c in matched if c["id"] not in seen]
     print(f"  {len(fresh)} are new (not in previous reports).")
 
-    # Highest-engagement first, then cap to control cost.
-    fresh.sort(key=lambda c: c["score"] + c["num_comments"], reverse=True)
+    # RSS gives no engagement signal pre-analysis, so cap by feed order (newest
+    # /top feeds first) to control cost; Claude's relevance score does the real
+    # ranking afterwards.
     to_analyze = fresh[:max_analyze]
     print(f"  analyzing top {len(to_analyze)} (cap {max_analyze})...")
-
-    print("Fetching comments for candidates...")
-    for c in to_analyze:
-        reddit_fetch.enrich_with_comments(reddit, c)
 
     print("Analyzing with Claude...")
     client = anthropic.Anthropic()

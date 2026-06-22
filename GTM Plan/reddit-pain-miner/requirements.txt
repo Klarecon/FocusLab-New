@@ -1,5 +1,7 @@
 # Reddit Pain Miner dependencies
 # Install with:  pip install -U -r requirements.txt
-praw>=7.7.1
+#
+# Reddit fetching uses the public JSON endpoints via Python's stdlib (urllib) —
+# no PRAW, no Reddit account, no credentials required.
 anthropic>=0.69.0
 python-dotenv>=1.0.0

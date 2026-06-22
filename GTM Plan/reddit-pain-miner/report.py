@@ -63,19 +63,25 @@ def _thread_card(r: dict) -> str:
         if angle
         else ""
     )
+    # Build the meta line; only show upvotes/comments when we actually have them
+    # (RSS feeds report 0, so they're omitted there).
+    parts = [f"r/{_esc(r.get('subreddit',''))}"]
+    if r.get("score", 0):
+        parts.append(f"{r['score']} upvotes")
+    if r.get("num_comments", 0):
+        parts.append(f"{r['num_comments']} comments")
+    parts.append(f"relevance {r.get('relevance',0)}/100")
+    date = _fmt_date(r.get("created_utc", 0))
+    if date:
+        parts.append(date)
+    meta = " &nbsp;·&nbsp; ".join(parts)
     return f"""
       <div class="card">
         <div class="card-head">
           <a class="card-title" href="{_esc(r.get('permalink',''))}" target="_blank" rel="noopener">{_esc(r.get('title',''))}</a>
           <span class="badge" style="background:{s_color}">{_esc(sentiment)}</span>
         </div>
-        <div class="meta">
-          r/{_esc(r.get('subreddit',''))} &nbsp;·&nbsp;
-          {r.get('score',0)} upvotes &nbsp;·&nbsp;
-          {r.get('num_comments',0)} comments &nbsp;·&nbsp;
-          relevance {r.get('relevance',0)}/100 &nbsp;·&nbsp;
-          {_fmt_date(r.get('created_utc',0))}
-        </div>
+        <div class="meta">{meta}</div>
         {quotes}
         {angle_html}
       </div>"""

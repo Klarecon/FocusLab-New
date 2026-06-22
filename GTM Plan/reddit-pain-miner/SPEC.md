@@ -19,21 +19,26 @@ real people use, ranked by how much the community resonates with them.
 
 **Mona's personal Reddit account must never be at risk of being blocked.**
 
-The design eliminates the risk entirely rather than mitigating it:
+The design eliminates the risk entirely: **no Reddit account is involved at all.**
 
-- We use the **official Reddit API** (OAuth) via PRAW — the sanctioned, rate-limit-aware path.
-- Authentication is through a **dedicated Reddit "script" app registered under a separate
-  throwaway account** — never Mona's personal account.
-- The job runs **read-only**. It never logs in via a browser, never scrapes HTML, never
-  hammers endpoints. PRAW enforces Reddit's 60 req/min OAuth limit and backs off automatically.
-- Mona's browsing account is **not involved at any point**, so it cannot be rate-limited
-  or banned for automation.
+- We read Reddit's **public JSON endpoints** (the `.json` version of normal pages),
+  fetched with Python's stdlib `urllib`.
+- There is **no app, no OAuth, no login, no credentials, and no account** in the loop —
+  not even a throwaway. Nothing to register, nothing to authenticate.
+- The job is read-only and polite: a descriptive user-agent plus an enforced delay
+  between every request, with backoff on HTTP 429.
+- Because no account is ever used, no account — personal or otherwise — can be
+  rate-limited or banned.
+- (Design history: an earlier version used the official OAuth API via PRAW under a
+  throwaway "script" app. We switched to public JSON because app registration was
+  blocked by Reddit's new-account/captcha flow, and because removing the account
+  entirely is a strictly stronger guarantee for the hard constraint above.)
 
 ## 3. Decisions (locked)
 
 | Decision | Choice |
 |---|---|
-| Reddit access | Official Reddit API (OAuth, read-only) via PRAW |
+| Reddit access | Public JSON endpoints (no account/app/login) via stdlib urllib |
 | Language | Python 3.9+ |
 | Analysis engine | Claude API — `claude-opus-4-8` via the `anthropic` Python SDK, structured outputs |
 | Run cadence | Scheduled weekly via macOS `launchd` (also runnable on demand) |
@@ -42,7 +47,7 @@ The design eliminates the risk entirely rather than mitigating it:
 | Communities | Manager/leadership + burnout/mental-load + productivity-tool clusters, **ICP-scored** |
 | Extraction | Full analysis: ICP relevance, verbatim quotes, theme, sentiment, engagement, content angle |
 | Depth/cost | Balanced — keyword pre-filter, then analyze ~top 40 candidates per run |
-| Credentials | Mona needs setup instructions (included in §9) |
+| Credentials | Only an Anthropic API key (no Reddit credentials of any kind) |
 
 ## 4. Architecture
 
@@ -67,8 +72,11 @@ Reddit API ──▶ candidates ──▶ keyword pre-filter ──▶ Claude an
    - `RELEVANCE_THRESHOLD`: minimum ICP score (0–100) to include in the report.
    - `MAX_ANALYZE`: 40 (the Balanced cap).
 
-2. **`reddit_fetch.py`** — PRAW read-only client.
-   - Pulls recent (`new`) and `top` (past week) posts per subreddit, plus keyword searches.
+2. **`reddit_fetch.py`** — public-JSON fetcher (stdlib `urllib`, no account/app).
+   - Reads recent (`new`) and `top` (past week) listings per subreddit, plus
+     combined-subreddit searches, via the `.json` endpoints.
+   - Sends a descriptive user-agent + an enforced delay between every request,
+     with backoff on HTTP 429.
    - For each candidate collects: `id`, `title`, `selftext`, top N comments, `score`,
      `num_comments`, `permalink`, `subreddit`, `created_utc`.
    - Applies the keyword pre-filter to trim the set before any LLM call.
@@ -100,8 +108,8 @@ Reddit API ──▶ candidates ──▶ keyword pre-filter ──▶ Claude an
 
 ## 5. Secrets & Configuration
 
-- `.env` (gitignored) holds: `REDDIT_CLIENT_ID`, `REDDIT_CLIENT_SECRET`, `REDDIT_USER_AGENT`,
-  `ANTHROPIC_API_KEY`.
+- `.env` (gitignored) holds just `ANTHROPIC_API_KEY` (and optionally `REDDIT_USER_AGENT`
+  to customize the fetcher's user-agent). No Reddit secrets exist.
 - A `.gitignore` in the tool folder excludes `.env`, `archive/`, `seen_ids.json`, and
   `__pycache__/`.
 - Nothing secret is committed.
@@ -116,11 +124,12 @@ non-matching threads never reach the LLM.
 
 | Failure | Behavior |
 |---|---|
-| Reddit auth fails | Clear message naming the likely cause (bad creds / app type), exit cleanly — no retry-spam |
+| Reddit returns HTTP 429 (rate limit) | Back off and retry; configurable delay/backoff in `config.py` |
+| A subreddit/search request fails | Log it, skip that source, continue with the rest |
 | One thread fails analysis | Log it, skip it, continue the run |
 | Anthropic rate limit / 5xx | SDK retries with exponential backoff automatically |
 | Zero new high-relevance threads | Still writes a report saying so, so Mona knows the job ran |
-| Missing `.env` values | Fail fast at startup with a message pointing to setup §9 |
+| Missing `ANTHROPIC_API_KEY` | Fail fast at startup with a message pointing to setup §9 |
 
 ## 8. Testing
 
@@ -134,15 +143,13 @@ non-matching threads never reach the LLM.
 
 ## 9. Credential Setup (included for Mona)
 
-The implementation plan will deliver these as exact, copy-pasteable steps:
+There is **no Reddit setup** — no account, no app, no Reddit credentials. The only
+thing required:
 
-1. **Throwaway Reddit account** — create a new Reddit account (not the personal one) purely
-   to own the API app.
-2. **Register a script app** — go to `https://www.reddit.com/prefs/apps` → "create another
-   app" → choose **script** → note the `client_id` (under the app name) and `client_secret`.
-3. **User agent** — set a descriptive string like `focuslab-pain-miner/1.0 by u/<throwaway>`.
-4. **Anthropic API key** — from `https://console.anthropic.com` → API keys.
-5. Paste all four into `.env`.
+1. **Anthropic API key** — from `https://console.anthropic.com` → API keys.
+2. `cp .env.example .env` and paste the key into `ANTHROPIC_API_KEY`.
+
+That's it. The fetcher reads Reddit's public JSON endpoints with no authentication.
 
 ## 10. Out of Scope (v1)
 
@@ -159,7 +166,7 @@ GTM Plan/reddit-pain-miner/
 ├── README.md               (setup + run instructions — delivered in implementation)
 ├── .env.example
 ├── .gitignore
-├── requirements.txt        (praw, anthropic, python-dotenv)
+├── requirements.txt        (anthropic, python-dotenv — Reddit uses stdlib urllib)
 ├── config.py
 ├── reddit_fetch.py
 ├── analyze.py

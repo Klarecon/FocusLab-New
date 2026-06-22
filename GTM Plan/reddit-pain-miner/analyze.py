@@ -135,18 +135,21 @@ def analyze_all(client, candidates: list[dict]) -> list[dict]:
             continue
         if analysis["relevance"] < config.RELEVANCE_THRESHOLD:
             continue
-        engagement = c["score"] + c["num_comments"]
+        engagement = c.get("score", 0) + c.get("num_comments", 0)
+        # Relevance-led ranking. When engagement is available (0 from RSS), it
+        # nudges ordering; when it isn't, ranking is purely by relevance.
+        rank_score = round(analysis["relevance"] * (1 + engagement / 100.0), 2)
         results.append(
             {
                 "id": c["id"],
                 "title": c["title"],
                 "permalink": c["permalink"],
                 "subreddit": c["subreddit"],
-                "score": c["score"],
-                "num_comments": c["num_comments"],
+                "score": c.get("score", 0),
+                "num_comments": c.get("num_comments", 0),
                 "created_utc": c["created_utc"],
                 "engagement": engagement,
-                "rank_score": round((analysis["relevance"] / 100.0) * engagement, 2),
+                "rank_score": rank_score,
                 **analysis,
             }
         )
