@@ -1,13 +1,13 @@
 # FocusLab Project State
 
-**Last updated:** 2026-06-20 by Claude via /handover
+**Last updated:** 2026-06-22 by Claude via /handover (Session 16)
 
 ## Quick orient
 - **Project:** FocusLab — productivity tool suite helping knowledge workers find time waste (Pareto Analyzer) and fix it (Focus Table & EVI Matrix)
 - **Repo:** https://github.com/Klarecon/FocusLab-New (PUBLIC)
 - **Production URL:** https://focuslab-omega.vercel.app
 - **Active branch:** main
-- **Active work:** Session 15 complete — fixed layout shift bug from Reddit feedback, built GTM strategy (PLG), daily execution plan, and interactive weekly tracker.
+- **Active work:** Session 16 complete (GTM/research only, NO code) — refined Oren's verbal investor pitch, produced competitor analysis (`GTM Plan/2026-06-22-competitor-analysis.html`), and advised on Hermes Agent vs Claude Code. NOTE: the Session 15 IntakeStep layout-shift fix IS committed (commit a64a45a) — the prior PROJECT_STATE wrongly said it was uncommitted.
 - **Owner:** Mona Mehta (mona@klarecon.com) — non-technical product owner. Content marketing + ad creative experience. First business plan. Working with Oren Yonash (methodology creator). Wants FAST autonomous execution, NO permission prompts. Values visual quality. Gets frustrated when working features regress. Reports weekly to Oren on a call — needs to speak in data/metrics language. Has 2 content team members available (4 total, 2 on another project). Has basic Facebook ads experience. Starting GTM push June 22, 2026.
 
 ## Branch state
@@ -16,7 +16,21 @@
 - Several untracked GTM Plan files (not committed — marketing docs, not code)
 - Latest committed: `4c3e7eb Session 14 feedback log`
 
-## What's done in this session (2026-06-20, Session 15)
+## What's done in this session (2026-06-22, Session 16) — GTM/research, NO code
+
+Full detail in `Session Log/Session 16 — Investor Pitch, Competitor Analysis, Hermes Agent.md`.
+
+1. **Refined Oren's investor pitch** — turned a written paragraph into a natural spoken version + a tighter elevator version. Lead with the human sting, stat second, close on "15 minutes, not four weeks."
+2. **Competitor analysis** — created `GTM Plan/2026-06-22-competitor-analysis.html` (3 rings: Direct quiz tools / Adjacent trackers + schedulers / Substitutes coaching + DIY). Conclusion: no true twin; edge is the Pareto engine + ranked action plan.
+3. **Hermes Agent advice** — explained Nous Research's local open-source agent; gave combined-use strategy (Claude Code = brain for high-stakes work; Hermes = private always-on intern for monitoring/batch/sensitive-data jobs). Recommended NOT switching mid-launch.
+
+**No source code touched. Tests not run (none needed). Working tree is clean — nothing uncommitted.**
+
+**Heads-up:** three untracked `2026-06-22-*` files in `GTM Plan/` (oren-deck, problem-why-now-slide, the-fix-slide) were NOT created in Session 16 — likely a parallel session.
+
+---
+
+## What was done in Session 15 (2026-06-20)
 
 ### 1. Layout shift bug fix (Reddit feedback)
 - **File:** `src/components/analyzer/IntakeStep.tsx`, lines 182-198
@@ -59,7 +73,12 @@
 
 ## What's next (for the NEXT Claude Code session to pick up)
 
-### Immediate (GTM execution starts June 22):
+### Offered but not delivered in Session 16 (Mona can request):
+- 10-second + 30-second versions of the Oren investor pitch
+- Pricing + feature-gap deep-dive on Ring 1 quiz competitors (for a "why we win" slide)
+- Draft spec for a first Hermes background task (weekly competitor-pricing monitor)
+
+### Immediate (GTM execution started June 22):
 1. **Connect custom domain to Vercel** — Mona has domains but hasn't connected them. Can't run ads to a .vercel.app URL.
 2. **Build paywall gate on results page** — CTA after Pareto results, before Focus Table. This is the revenue mechanism.
 3. **Set up Stripe checkout** — Payment Links for $29/mo and $199/yr.
@@ -130,6 +149,7 @@ src/__tests__/feedback-regression.test.ts            — 97 cumulative regressio
 GTM Plan/2026-06-20-gtm-plg-strategy.html           — PLG strategy doc (v3)
 GTM Plan/2026-06-20-daily-execution-plan.html        — Day-by-day execution plan for month 1
 GTM Plan/tracker.html                                — Interactive weekly tracker (localStorage + CSV export)
+GTM Plan/2026-06-22-competitor-analysis.html         — Competitor map: 3 rings (direct/adjacent/substitute) [Session 16]
 GTM Plan/2026-06-16-gtm-brief.html                   — Original GTM brief (presentation format)
 Feedback Log/Screenshots/layout-shift-bug-demo.html  — Visual explainer of the layout shift bug
 ```
