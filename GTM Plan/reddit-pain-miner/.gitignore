@@ -1,5 +1,7 @@
 # Secrets — never commit
 .env
+*.rtf
+Reddit API.rtf
 
 # Runtime state & data
 seen_ids.json
