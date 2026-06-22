@@ -1,0 +1,60 @@
+[
+  {
+    "id": "abc123",
+    "title": "I can't switch off after work anymore and it's wrecking me",
+    "permalink": "https://www.reddit.com/r/managers/comments/abc123/example/",
+    "subreddit": "managers",
+    "score": 412,
+    "num_comments": 137,
+    "created_utc": 1750550400,
+    "engagement": 549,
+    "rank_score": 494.1,
+    "relevance": 90,
+    "pain_quotes": [
+      "I sit down for dinner and my brain is still in the standup from this morning.",
+      "I haven't felt actually off the clock in months."
+    ],
+    "theme": "Can't switch off after hours",
+    "sentiment": "resigned",
+    "content_angle": "A post on the 'always-on manager' trap and one ritual to reclaim the evening.",
+    "reasoning": "Textbook can't-unplug overwhelm from a people manager."
+  },
+  {
+    "id": "def456",
+    "title": "Drowning in meetings, zero time for real work",
+    "permalink": "https://www.reddit.com/r/middlemanagement/comments/def456/example/",
+    "subreddit": "middlemanagement",
+    "score": 233,
+    "num_comments": 64,
+    "created_utc": 1750464000,
+    "engagement": 297,
+    "rank_score": 237.6,
+    "relevance": 80,
+    "pain_quotes": [
+      "By the time my calendar clears it's 7pm and I haven't done a single thing I planned."
+    ],
+    "theme": "Buried in meetings",
+    "sentiment": "frustrated",
+    "content_angle": "How to audit a manager's calendar to find the 20% of meetings causing 80% of the overwhelm.",
+    "reasoning": "Clear overwhelm + no-time-for-real-work signal from a manager."
+  },
+  {
+    "id": "ghi789",
+    "title": "Anyone else just constantly thinking about work?",
+    "permalink": "https://www.reddit.com/r/productivity/comments/ghi789/example/",
+    "subreddit": "productivity",
+    "score": 158,
+    "num_comments": 49,
+    "created_utc": 1750377600,
+    "engagement": 207,
+    "rank_score": 144.9,
+    "relevance": 70,
+    "pain_quotes": [
+      "Even on weekends there's this low hum of work anxiety I can't turn off."
+    ],
+    "theme": "Can't switch off after hours",
+    "sentiment": "seeking help",
+    "content_angle": "A short guide to the 'mental shutdown ritual' for knowledge workers who can't stop ruminating.",
+    "reasoning": "Strong can't-unplug rumination, though role is unspecified."
+  }
+]

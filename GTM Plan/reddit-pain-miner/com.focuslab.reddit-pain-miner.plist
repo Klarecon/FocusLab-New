@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Weekly schedule for the Reddit Pain Miner (runs Mondays at 9:00 AM,
+  only when the Mac is awake).
+
+  BEFORE USING: edit the two paths below to match your machine, then:
+    cp com.focuslab.reddit-pain-miner.plist ~/Library/LaunchAgents/
+    launchctl load ~/Library/LaunchAgents/com.focuslab.reddit-pain-miner.plist
+
+  To run once immediately:
+    launchctl start com.focuslab.reddit-pain-miner
+
+  To stop scheduling:
+    launchctl unload ~/Library/LaunchAgents/com.focuslab.reddit-pain-miner.plist
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.focuslab.reddit-pain-miner</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <!-- Use the venv's python (see README > Setup). Edit this path. -->
+        <string>/Users/monamehta/Documents/FocusLab New/GTM Plan/reddit-pain-miner/.venv/bin/python</string>
+        <string>run.py</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/monamehta/Documents/FocusLab New/GTM Plan/reddit-pain-miner</string>
+
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Weekday</key>
+        <integer>1</integer>
+        <key>Hour</key>
+        <integer>9</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>/Users/monamehta/Documents/FocusLab New/GTM Plan/reddit-pain-miner/miner.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/monamehta/Documents/FocusLab New/GTM Plan/reddit-pain-miner/miner.log</string>
+</dict>
+</plist>
