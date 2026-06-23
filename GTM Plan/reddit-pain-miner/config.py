@@ -104,7 +104,7 @@ SEARCH_LIMIT = 25       # posts pulled per combined-subreddit search term
 TOP_COMMENTS = 5        # top comments fetched per analyzed thread (for context)
 
 MAX_ANALYZE = 40        # hard cap on threads sent to Claude per run (cost ceiling)
-RELEVANCE_THRESHOLD = 60  # Claude relevance score (0-100) required to make the report
+RELEVANCE_THRESHOLD = 50  # Claude relevance score (0-100) required to make the report
 
 # Truncation limits to bound token usage per analysis call.
 MAX_SELFTEXT_CHARS = 2000

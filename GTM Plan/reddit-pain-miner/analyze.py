@@ -7,8 +7,18 @@ response parses to the schema below.
 from __future__ import annotations
 
 import json
+import re
 
 import config
+
+# Models sometimes emit literal escape sequences (e.g. "—" for an em-dash)
+# inside JSON string values. Decode those to real characters so the report reads
+# cleanly.
+_ESCAPE_RE = re.compile(r"\\u([0-9a-fA-F]{4})")
+
+
+def _decode_escapes(s: str) -> str:
+    return _ESCAPE_RE.sub(lambda m: chr(int(m.group(1), 16)), s)
 
 # JSON schema the model is constrained to. Note: structured outputs don't
 # support numeric range constraints, so `relevance` is a plain integer and we
@@ -84,11 +94,11 @@ def parse_analysis(text: str) -> dict:
         relevance = 0
     data["relevance"] = max(0, min(100, relevance))
     quotes = data.get("pain_quotes") or []
-    data["pain_quotes"] = [str(q) for q in quotes if str(q).strip()]
-    data["theme"] = (data.get("theme") or "Uncategorized").strip()
+    data["pain_quotes"] = [_decode_escapes(str(q)) for q in quotes if str(q).strip()]
+    data["theme"] = _decode_escapes((data.get("theme") or "Uncategorized").strip())
     data["sentiment"] = (data.get("sentiment") or "unknown").strip()
-    data["content_angle"] = (data.get("content_angle") or "").strip()
-    data["reasoning"] = (data.get("reasoning") or "").strip()
+    data["content_angle"] = _decode_escapes((data.get("content_angle") or "").strip())
+    data["reasoning"] = _decode_escapes((data.get("reasoning") or "").strip())
     return data
 
 

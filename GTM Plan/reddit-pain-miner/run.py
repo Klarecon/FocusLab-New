@@ -43,7 +43,7 @@ def run_live(max_analyze: int) -> None:
             "Missing ANTHROPIC_API_KEY in .env. See README.md > Setup."
         )
 
-    print("Collecting candidate threads from Reddit (public JSON, no login)...")
+    print("Collecting candidate threads from Reddit (public RSS feeds, no login)...")
     candidates = reddit_fetch.collect_candidates()
     scanned = len(candidates)
     print(f"  {scanned} unique threads pulled.")
