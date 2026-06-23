@@ -912,3 +912,36 @@ describe("Session 14 — Dev-friend feedback + blank dots", () => {
     expect(content).toContain("picked"); // "N picked" pill on collapsed header
   });
 });
+
+describe("Session 15 — payoff surfacing + dot polish", () => {
+  // --- Dots: clean hollow ring, no dashed outline ---
+  it("[S15-#1] rating dots are a clean hollow ring (no dashed style)", () => {
+    const content = readSrc("components/focus/FocusTable.tsx");
+    expect(content).not.toContain('borderStyle: !filled');
+    expect(content).not.toContain('"dashed"');
+  });
+
+  // --- Payoff: variants + strip + spotlight ---
+  it("[S15-#2] Payoff supports hero/rest/strip variants", () => {
+    const content = readSrc("components/focus/Payoff.tsx");
+    expect(content).toMatch(/variant\?:\s*"full"\s*\|\s*"hero"\s*\|\s*"rest"\s*\|\s*"strip"/);
+    expect(content).toContain("See full breakdown");
+  });
+  it("[S15-#3] 'What you'd do with it' spotlight replaces the flat reframe box", () => {
+    const content = readSrc("components/focus/Payoff.tsx");
+    expect(content).toContain("What you"); // "What you'd do with it" kicker
+    expect(content).toContain("var(--color-gold)"); // gold accent on the spotlight
+  });
+
+  // --- FocusStage: number leads the Matrix tab + strip on Action Plan ---
+  it("[S15-#4] Matrix tab leads with the payoff hero, Action Plan shows the strip", () => {
+    const content = readSrc("components/focus/FocusStage.tsx");
+    expect(content).toContain('variant="hero"');
+    expect(content).toContain('variant="strip"');
+    // Hero must render before the matrix on the Matrix tab.
+    const heroIdx = content.indexOf('variant="hero"');
+    const matrixIdx = content.indexOf("<EviMatrix");
+    expect(heroIdx).toBeGreaterThan(-1);
+    expect(heroIdx).toBeLessThan(matrixIdx);
+  });
+});

@@ -216,6 +216,19 @@ test.describe("Screenshot Capture — Full Wizard Flow", () => {
     if (await actionTab.isVisible({ timeout: 2000 }).catch(() => false)) {
       await actionTab.click();
       await page.waitForTimeout(800);
+
+      // Dots start blank — rate the first few fixes (effort 2 / impact 4) so the
+      // payoff computes and the surfaced reclaim numbers actually render.
+      const effortGroups = page.locator('[aria-label^="Effort rating"]');
+      const impactGroups = page.locator('[aria-label^="Impact rating"]');
+      const rateN = Math.min(await effortGroups.count(), 3);
+      for (let i = 0; i < rateN; i++) {
+        await effortGroups.nth(i).locator("button").nth(1).click({ force: true }).catch(() => {});
+        await impactGroups.nth(i).locator("button").nth(3).click({ force: true }).catch(() => {});
+        await page.waitForTimeout(120);
+      }
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.waitForTimeout(300);
       await snap(page, "20-focus-action-plan");
     }
 

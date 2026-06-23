@@ -18,6 +18,17 @@ interface PayoffProps {
   vitalFew: DrainInfo[];
   usefulMany: DrainInfo[];
   onGoToAssign?: () => void;
+  /**
+   * Which slice to render so the payoff can lead the Matrix tab instead of
+   * hiding at the bottom:
+   *  - "full"  (default) — the whole thing, unchanged
+   *  - "hero"  — just the "You could reclaim" number + spotlight (above matrix)
+   *  - "rest"  — before/after + "what happens if you don't" (below matrix)
+   *  - "strip" — a slim reclaim banner for the Action Plan tab
+   */
+  variant?: "full" | "hero" | "rest" | "strip";
+  /** For the strip: jump to the Matrix tab for the full breakdown. */
+  onSeeBreakdown?: () => void;
 }
 
 /** Animated count-up number. */
@@ -65,7 +76,7 @@ const CountUp = memo(function CountUp({
   );
 });
 
-export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffProps) {
+export default function Payoff({ vitalFew, usefulMany, onGoToAssign, variant = "full", onSeeBreakdown }: PayoffProps) {
   const chosenSolutions = useAuditStore((s) => s.chosenSolutions);
   const solutionScores = useAuditStore((s) => s.solutionScores);
   const salary = useAuditStore((s) => s.salary);
@@ -151,9 +162,54 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
   const hasAnyWaste = totalWasteHoursWeekly > 0;
   const hasQuickWins = quickWinCount > 0 && quickWinWeekly > 0;
 
+  const showHero = variant === "full" || variant === "hero";
+  const showRest = variant === "full" || variant === "rest";
+
+  // Slim reclaim banner for the Action Plan tab — surfaces the payoff where
+  // people actually work, so the number isn't buried on the Matrix tab.
+  if (variant === "strip") {
+    if (!hasReclaimable) return null;
+    return (
+      <div
+        className="flex items-center justify-between gap-3 flex-wrap rounded-xl px-4 sm:px-5 py-3 mb-6"
+        style={{
+          background: "linear-gradient(90deg, rgba(196,24,106,0.08), rgba(237,178,21,0.05))",
+          border: "1.5px solid var(--color-reclaim)",
+        }}
+      >
+        <div className="flex items-center gap-3 min-w-0">
+          <AnimatedEmoji emoji="🎯" animation="pulse" size="md" />
+          <div className="min-w-0">
+            <div className="text-[10px] uppercase tracking-wider font-bold" style={{ color: "var(--color-ink-soft)" }}>
+              You could reclaim
+            </div>
+            <div className="text-lg sm:text-xl font-bold font-figures leading-tight" style={{ color: "var(--color-reclaim)" }}>
+              {reclaimableWeekly.toFixed(1)} hrs/wk
+              {hasPayInfo && (
+                <span className="font-medium" style={{ color: "var(--color-ink-soft)" }}>
+                  {" "}· ${Math.round(reclaimableDollarsYearly).toLocaleString()}/yr
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+        {onSeeBreakdown && (
+          <button
+            onClick={onSeeBreakdown}
+            className="text-sm font-bold cursor-pointer transition-opacity hover:opacity-70 flex-shrink-0"
+            style={{ color: "var(--color-reclaim)" }}
+          >
+            See full breakdown &rarr;
+          </button>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div>
       {/* Big payoff numbers */}
+      {showHero && (
       <div className="surface-card p-5 sm:p-8 mb-6" style={{ borderTop: "4px solid var(--color-reclaim)" }}>
         {hasReclaimable ? (
           <>
@@ -248,7 +304,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
               </motion.div>
             )}
 
-            {/* Opportunity reframe — short and punchy */}
+            {/* What you'd do with it — aspirational spotlight */}
             {(() => {
               const { roleSpecific } = getOpportunityFrame(reclaimableWeekly, roleSlug);
               if (!roleSpecific) return null;
@@ -257,18 +313,30 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6 }}
-                  className="mt-6 text-center p-4 rounded-xl"
-                  style={{ backgroundColor: "rgba(196, 24, 106, 0.04)" }}
+                  className="mt-6 flex items-start gap-3 text-left p-4 sm:p-5 rounded-r-xl bg-white"
+                  style={{
+                    borderLeft: "5px solid var(--color-gold)",
+                    boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
+                  }}
                 >
-                  <p
-                    className="text-sm font-semibold"
-                    style={{
-                      fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
-                      color: "var(--color-ink)",
-                    }}
-                  >
-                    {roleSpecific}
-                  </p>
+                  <span className="text-2xl sm:text-3xl flex-shrink-0" aria-hidden="true">🌤️</span>
+                  <div>
+                    <div
+                      className="text-[11px] font-bold uppercase tracking-wider mb-1"
+                      style={{ color: "var(--color-gold)" }}
+                    >
+                      What you&apos;d do with it
+                    </div>
+                    <p
+                      className="text-base sm:text-lg leading-snug"
+                      style={{
+                        fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
+                        color: "var(--color-ink)",
+                      }}
+                    >
+                      {roleSpecific}
+                    </p>
+                  </div>
                 </motion.div>
               );
             })()}
@@ -295,10 +363,10 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
           </p>
         )}
       </div>
-
+      )}
 
       {/* Before / After Emotional Contrast */}
-      {hasReclaimable && hasAnyWaste && (
+      {showRest && hasReclaimable && hasAnyWaste && (
         <div className="surface-card p-4 sm:p-6 mb-6 max-w-2xl mx-auto">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             {/* Before */}
@@ -376,7 +444,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
       )}
 
       {/* Cost of Doing Nothing */}
-      {hasAnyWaste && (
+      {showRest && hasAnyWaste && (
         <div
           className="rounded-xl p-5 sm:p-8 mb-6"
           style={{

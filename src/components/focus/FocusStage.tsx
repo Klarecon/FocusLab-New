@@ -170,21 +170,32 @@ export default function FocusStage() {
             />
           )}
           {activeTab === "plan" && (
-            <FocusTable
-              vitalFew={vitalFew}
-              usefulMany={usefulMany}
-              onGoToMatrix={() => setActiveTab("matrix")}
-            />
+            <>
+              {/* Surface the reclaim number where people work (was buried on Matrix tab) */}
+              <Payoff
+                variant="strip"
+                vitalFew={vitalFew}
+                usefulMany={usefulMany}
+                onSeeBreakdown={() => setActiveTab("matrix")}
+              />
+              <FocusTable
+                vitalFew={vitalFew}
+                usefulMany={usefulMany}
+                onGoToMatrix={() => setActiveTab("matrix")}
+              />
+            </>
           )}
           {activeTab === "matrix" && (
-            <div className="space-y-12">
+            <div className="space-y-8">
+              {/* Lead with the payoff number + "what you'd do with it", then the matrix */}
+              <Payoff variant="hero" vitalFew={vitalFew} usefulMany={usefulMany} />
               <EviMatrix vitalFew={vitalFew} usefulMany={usefulMany} />
               {/* Gradient divider */}
               <div
                 className="h-1 rounded-full mx-auto max-w-xs"
                 style={{ background: "linear-gradient(to right, #e03e12, #c4186a, #edb215)" }}
               />
-              <Payoff vitalFew={vitalFew} usefulMany={usefulMany} onGoToAssign={() => setActiveTab("assign")} />
+              <Payoff variant="rest" vitalFew={vitalFew} usefulMany={usefulMany} onGoToAssign={() => setActiveTab("assign")} />
             </div>
           )}
         </motion.div>

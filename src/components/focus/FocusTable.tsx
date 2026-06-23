@@ -59,10 +59,9 @@ function DotRating({
             onClick={() => onChange(n)}
             className="w-7 h-7 sm:w-6 sm:h-6 rounded-full border-2 transition-all duration-150 cursor-pointer hover:scale-110 relative"
             style={{
+              // Clean hollow ring when unset; fills with the active colour on tap.
               backgroundColor: filled ? activeColor : "transparent",
-              // Blank dots use a dashed outline to invite a first tap.
               borderColor: filled ? activeColor : "var(--color-line)",
-              borderStyle: !filled && unset ? "dashed" : "solid",
             }}
             aria-label={`Set to ${n}`}
           />
