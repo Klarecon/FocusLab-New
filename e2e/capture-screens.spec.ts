@@ -99,15 +99,23 @@ test.describe("Screenshot Capture — Full Wizard Flow", () => {
     // ===== 5. DRILLDOWN STEP =====
     await snap(page, "08-drilldown-empty");
 
-    // Check drains and fill hours
-    const checkboxes = page.locator('input[type="checkbox"]');
-    const cbCount = await checkboxes.count();
-    for (let i = 0; i < Math.min(cbCount, 5); i++) {
-      const cb = checkboxes.nth(i);
-      if (await cb.isVisible({ timeout: 1000 }).catch(() => false)) {
-        await cb.check();
-        await page.waitForTimeout(300);
+    // Groups are now collapsible — expand every group header first.
+    const headers = page.locator('button[aria-expanded]');
+    const headerCount = await headers.count();
+    for (let i = 0; i < headerCount; i++) {
+      const h = headers.nth(i);
+      if ((await h.getAttribute("aria-expanded")) === "false") {
+        await h.click({ force: true }).catch(() => {});
+        await page.waitForTimeout(120);
       }
+    }
+
+    // Select drains by clicking their rows (the checkbox is now sr-only).
+    const drainRows = page.locator('label:has(input[type="checkbox"])');
+    const cbCount = await drainRows.count();
+    for (let i = 0; i < Math.min(cbCount, 5); i++) {
+      await drainRows.nth(i).click({ force: true }).catch(() => {});
+      await page.waitForTimeout(150);
     }
 
     const hourInputs = page.locator('input[aria-label*="Hours per week"]');

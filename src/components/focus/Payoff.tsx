@@ -3,7 +3,7 @@
 import { useMemo, useEffect, useState, memo } from "react";
 import { motion, useMotionValue, animate } from "framer-motion";
 import { useAuditStore } from "@/stores/audit-store";
-import { computePayoff } from "@/lib/engine/solutions-logic";
+import { computePayoff, isRated } from "@/lib/engine/solutions-logic";
 import type {
   ChosenSolution,
   WasteBucket,
@@ -93,8 +93,15 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
     }
     const buckets = Array.from(bucketMap.values());
 
-    const chosen: ChosenSolution[] = chosenSolutions.map((sol) => {
-      const scores = solutionScores[sol.id] ?? { effort: 2, impact: 2 };
+    const chosen: ChosenSolution[] = chosenSolutions
+      .filter((sol) => {
+        // Unrated (blank-dot) fixes aren't decided yet — keep them out of the
+        // payoff totals until the user rates effort + impact.
+        const sc = solutionScores[sol.id] ?? { effort: 0, impact: 0 };
+        return isRated(sc.effort, sc.impact);
+      })
+      .map((sol) => {
+      const scores = solutionScores[sol.id] ?? { effort: 0, impact: 0 };
       let primarySlug = sol.wasteSlugs[0] ?? "";
       for (const slug of sol.wasteSlugs) {
         if (drainBySlug.has(slug)) {
@@ -218,14 +225,15 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign }: PayoffPro
                       <div className="mt-3 space-y-1">
                         {chosenSolutions.map((sol) => {
                           const credit = payoff.creditByRow[sol.id] ?? 0;
-                          const scores = solutionScores[sol.id] ?? { effort: 2, impact: 2 };
+                          const scores = solutionScores[sol.id] ?? { effort: 0, impact: 0 };
+                          const rated = isRated(scores.effort, scores.impact);
                           return (
                             <div key={sol.id} className="flex items-center gap-2 text-xs">
                               <span className="font-medium truncate flex-1" style={{ color: "var(--color-ink)" }}>
                                 {sol.title}
                               </span>
                               <span style={{ color: "var(--color-ink-soft)" }}>
-                                impact {scores.impact}/5
+                                {rated ? `impact ${scores.impact}/5` : "not rated"}
                               </span>
                               <span className="font-bold font-figures" style={{ color: credit > 0 ? "var(--color-reclaim)" : "var(--color-ink-soft)" }}>
                                 {credit > 0 ? `+${credit.toFixed(1)} hrs` : "0 hrs"}

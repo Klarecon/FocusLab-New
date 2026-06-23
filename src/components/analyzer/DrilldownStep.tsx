@@ -112,6 +112,43 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
     }
   };
 
+  // How many sources are picked in a group (built-in + custom) — drives the
+  // "N picked" pill on the collapsed header.
+  const groupPickedCount = (groupName: string, sources: WasteSource[]) => {
+    let c = sources.filter((s) => activeSet.has(s.slug)).length;
+    c += activeSources.filter(
+      (s) => s.slug.startsWith("custom-") && s.group === groupName,
+    ).length;
+    return c;
+  };
+
+  // Collapsible groups: condense the Drilldown so it isn't a wall of checkboxes.
+  // Open groups that already have picks; otherwise open the biggest-estimate one.
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(() => {
+    const withPicks = vitalGroups
+      .filter((g) => groupPickedCount(g.group, g.sources) > 0)
+      .map((g) => g.group);
+    if (withPicks.length > 0) return new Set(withPicks);
+    let top = vitalGroups[0]?.group;
+    let topVal = -1;
+    for (const g of vitalGroups) {
+      const v = categoryEstimates[g.group] ?? 0;
+      if (v > topVal) {
+        topVal = v;
+        top = g.group;
+      }
+    }
+    return top ? new Set([top]) : new Set();
+  });
+
+  const toggleGroup = (name: string) =>
+    setExpandedGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(name)) next.delete(name);
+      else next.add(name);
+      return next;
+    });
+
   const handleAddCustom = (groupName: string) => {
     const label = (customInputs[groupName] ?? "").trim();
     if (!label) return;
@@ -279,7 +316,13 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
       )}
 
       <div className="space-y-6 mb-8">
-        {vitalGroups.map((group, gi) => (
+        {vitalGroups.map((group, gi) => {
+          const isExpanded = expandedGroups.has(group.group);
+          const groupEmoji = group.sources[0]?.emoji ?? "🔧";
+          const picked = groupPickedCount(group.group, group.sources);
+          const detailed = categoryTotals[group.group] ?? 0;
+          const estimate = categoryEstimates[group.group] ?? 0;
+          return (
           <motion.div
             key={group.group}
             initial={{ opacity: 0, y: 20 }}
@@ -288,57 +331,88 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
             className="surface-card p-4 sm:p-6"
             style={{ borderLeft: "4px solid var(--color-waste)" }}
           >
-            <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-              <h3
-                className="font-semibold text-base"
-                style={{
-                  fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
-                  color: "var(--color-ink)",
-                }}
-              >
-                {group.group}
-              </h3>
-              <div className="flex items-center gap-2">
-                <span
-                  className="text-xs font-figures font-bold px-2 py-1 rounded"
+            {/* Collapsible header — click to expand/collapse the group */}
+            <button
+              type="button"
+              onClick={() => toggleGroup(group.group)}
+              aria-expanded={isExpanded}
+              className="w-full flex items-center justify-between gap-2 flex-wrap text-left cursor-pointer"
+            >
+              <span className="flex items-center gap-2 min-w-0">
+                <span className="text-xl flex-shrink-0" aria-hidden="true">{groupEmoji}</span>
+                <h3
+                  className="font-semibold text-base"
                   style={{
-                    backgroundColor: "rgba(224, 62, 18, 0.08)",
-                    color: "var(--color-waste)",
+                    fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
+                    color: "var(--color-ink)",
                   }}
                 >
-                  ~{(categoryEstimates[group.group] ?? 0).toFixed(0)} hrs/wk estimated
+                  {group.group}
+                </h3>
+              </span>
+              <span className="flex items-center gap-2 flex-wrap">
+                {picked > 0 && (
+                  <span
+                    className="text-xs font-figures font-bold px-2 py-1 rounded"
+                    style={{ backgroundColor: "rgba(196, 24, 106, 0.1)", color: "var(--color-reclaim)" }}
+                  >
+                    {picked} picked
+                  </span>
+                )}
+                <span
+                  className="text-xs font-figures font-bold px-2 py-1 rounded"
+                  style={{ backgroundColor: "rgba(224, 62, 18, 0.08)", color: "var(--color-waste)" }}
+                >
+                  ~{estimate.toFixed(0)} hrs/wk estimated
                 </span>
-                {(categoryTotals[group.group] ?? 0) > 0 && (
+                {detailed > 0 && (
                   <span
                     className="text-xs font-figures font-bold px-2 py-1 rounded"
                     style={{
-                      backgroundColor: (categoryTotals[group.group] ?? 0) > (categoryEstimates[group.group] ?? 0) * 1.5
-                        ? "rgba(224, 62, 18, 0.12)"
-                        : "rgba(196, 24, 106, 0.08)",
-                      color: (categoryTotals[group.group] ?? 0) > (categoryEstimates[group.group] ?? 0) * 1.5
-                        ? "var(--color-waste)"
-                        : "var(--color-reclaim)",
+                      backgroundColor: detailed > estimate * 1.5 ? "rgba(224, 62, 18, 0.12)" : "rgba(196, 24, 106, 0.08)",
+                      color: detailed > estimate * 1.5 ? "var(--color-waste)" : "var(--color-reclaim)",
                     }}
                   >
-                    {(categoryTotals[group.group] ?? 0).toFixed(1)} hrs detailed
+                    {detailed.toFixed(1)} hrs detailed
                   </span>
                 )}
-              </div>
-            </div>
+                <span className="text-xs ml-1" style={{ color: "var(--color-ink-soft)" }} aria-hidden="true">
+                  {isExpanded ? "▲" : "▼"}
+                </span>
+              </span>
+            </button>
 
-            <div className="space-y-1">
+            {isExpanded && (
+            <div className="space-y-1 mt-4">
               {group.sources.map((source) => {
                 const isActive = activeSet.has(source.slug);
                 const entry = entries[source.slug];
                 return (
                   <div key={source.slug}>
-                    <label className="flex items-start gap-3 p-2.5 rounded-lg cursor-pointer transition-colors hover:bg-[rgba(0,0,0,0.03)]">
+                    <label
+                      className="flex items-start gap-3 p-2.5 rounded-lg cursor-pointer transition-all border hover:bg-[rgba(0,0,0,0.03)]"
+                      style={{
+                        borderColor: isActive ? "var(--color-reclaim)" : "transparent",
+                        backgroundColor: isActive ? "rgba(196, 24, 106, 0.05)" : "transparent",
+                      }}
+                    >
                       <input
                         type="checkbox"
                         checked={isActive}
                         onChange={() => toggleSource(source)}
-                        className="mt-0.5 w-4.5 h-4.5 rounded accent-[var(--color-waste)] flex-shrink-0"
+                        className="sr-only"
                       />
+                      {/* Unified pink selection indicator — same token across the app */}
+                      <span
+                        className="mt-0.5 w-5 h-5 rounded-full inline-flex items-center justify-center flex-shrink-0 text-white text-xs font-bold border-2"
+                        style={{
+                          backgroundColor: isActive ? "var(--color-reclaim)" : "transparent",
+                          borderColor: isActive ? "var(--color-reclaim)" : "var(--color-line)",
+                        }}
+                        aria-hidden="true"
+                      >
+                        {isActive ? "✓" : ""}
+                      </span>
                       <span className="flex-shrink-0 text-base" aria-hidden="true">
                         {source.emoji}
                       </span>
@@ -402,13 +476,26 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
                   const entry = entries[source.slug];
                   return (
                     <div key={source.slug}>
-                      <label className="flex items-start gap-3 p-2.5 rounded-lg cursor-pointer transition-colors hover:bg-[rgba(0,0,0,0.03)]">
+                      <label
+                        className="flex items-start gap-3 p-2.5 rounded-lg cursor-pointer transition-all border"
+                        style={{
+                          borderColor: "var(--color-reclaim)",
+                          backgroundColor: "rgba(196, 24, 106, 0.05)",
+                        }}
+                      >
                         <input
                           type="checkbox"
                           checked={true}
                           onChange={() => toggleSource(source)}
-                          className="mt-0.5 w-4.5 h-4.5 rounded accent-[var(--color-waste)] flex-shrink-0"
+                          className="sr-only"
                         />
+                        <span
+                          className="mt-0.5 w-5 h-5 rounded-full inline-flex items-center justify-center flex-shrink-0 text-white text-xs font-bold border-2"
+                          style={{ backgroundColor: "var(--color-reclaim)", borderColor: "var(--color-reclaim)" }}
+                          aria-hidden="true"
+                        >
+                          ✓
+                        </span>
                         <span className="flex-shrink-0 text-base" aria-hidden="true">
                           {source.emoji}
                         </span>
@@ -513,8 +600,10 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
                 </button>
               </div>
             </div>
+            )}
           </motion.div>
-        ))}
+          );
+        })}
       </div>
 
       {totalDetailed > workHoursPerWeek && (

@@ -339,15 +339,17 @@ describe("Zustand store — data persistence across unmount/remount", () => {
 
     useAuditStore.getState().addSolution(sol);
 
-    // Verify solution and auto-seeded score exist
+    // New solutions start BLANK (0/0); the user rates them.
+    expect(useAuditStore.getState().solutionScores[sol.id]).toEqual({ effort: 0, impact: 0 });
+    useAuditStore.getState().setSolutionScore(sol.id, { effort: 2, impact: 4 });
+
+    // Verify solution and the user-set score persist in the store.
     const state = useAuditStore.getState();
     expect(state.chosenSolutions).toHaveLength(1);
     expect(state.chosenSolutions[0].id).toBe(sol.id);
     expect(state.solutionScores[sol.id]).toBeDefined();
 
-    // Score should use SCORE_FROM_LEVEL (not old 1/2/3 mapping)
     const score = state.solutionScores[sol.id];
-    // This solution has effort: "low" -> 2, impact: "high" -> 4
     expect(score.effort).toBe(2);
     expect(score.impact).toBe(4);
   });

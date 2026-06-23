@@ -65,16 +65,18 @@ const GROUP_EMOJI: Record<string, string> = {
   "Waiting & blocked": "\u{1F624}",    // 😤
   "Rework": "\u{1F926}",               // 🤦
   "Doing more than needed": "\u{1F971}", // 🥱
-  "Admin": "\u{1F480}",                // 💀
-  "Reporting": "\u{1F480}",            // 💀 (Admin/Reporting)
-  "CRM & data": "\u{1FAE0}",           // 🫠
-  "Prospecting": "\u{1FAE0}",          // 🫠
-  "Quotes & proposals": "\u{1FAE0}",   // 🫠
-  "Code": "\u{1F926}",                 // 🤦 (Rework)
-  "Builds & reviews": "\u{1F624}",     // 😤 (Waiting/Blocked)
-  "Creative": "\u{1F926}",             // 🤦 (Rework)
-  "Files & assets": "\u{1F480}",       // 💀 (Admin)
-  "Leading vs doing": "\u{1F971}",     // 🥱 (Over-Processing)
+  "Admin": "\u{1F480}",                       // 💀
+  // Every group below now has a UNIQUE emoji — no two categories share one, so
+  // the Drilldown's per-source icons stay distinguishable.
+  "Reporting": "\u{1F635}\u{200D}\u{1F4AB}",  // 😵‍💫 same report, repackaged till dizzy
+  "CRM & data": "\u{1F974}",                  // 🥴 woozy data-entry drudgery
+  "Prospecting": "\u{1F575}\u{FE0F}",         // 🕵️ researching prospects one tab at a time
+  "Quotes & proposals": "\u{1F975}",          // 🥵 sweating out quotes by hand
+  "Code": "\u{1F92F}",                        // 🤯 working around brittle code
+  "Builds & reviews": "\u{1F40C}",            // 🐌 waiting on slow, flaky builds
+  "Creative": "\u{1F629}",                    // 😩 endless revision rounds
+  "Files & assets": "\u{1F9F9}",              // 🧹 renaming, versioning, tidying files
+  "Leading vs doing": "\u{1F62E}\u{200D}\u{1F4A8}", // 😮‍💨 IC work when you should be leading
 };
 
 function emojiFor(group: string): string {

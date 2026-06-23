@@ -219,12 +219,27 @@ export default function IntakeStep({ onNext, onBack }: IntakeStepProps) {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: pi * 0.06, duration: 0.3 }}
-              className="surface-card p-4 flex items-center gap-3"
+              className="surface-card p-4 flex items-center gap-3 relative transition-all duration-200"
               style={{
-                borderColor: estimate > 0 ? "var(--color-waste)" : undefined,
-                borderWidth: estimate > 0 ? "1.5px" : undefined,
+                // Active (hours entered) = unified pink selected state. Orange is
+                // reserved for the waste-hours input itself, below.
+                borderColor: estimate > 0 ? "var(--color-reclaim)" : undefined,
+                borderWidth: estimate > 0 ? "2px" : undefined,
+                backgroundColor: estimate > 0 ? "rgba(196, 24, 106, 0.05)" : undefined,
+                boxShadow: estimate > 0
+                  ? "0 0 0 1px var(--color-reclaim), 0 2px 8px rgba(196, 24, 106, 0.1)"
+                  : undefined,
               }}
             >
+              {estimate > 0 && (
+                <span
+                  className="absolute top-2 right-2 w-4 h-4 rounded-full inline-flex items-center justify-center text-white text-[10px] font-bold"
+                  style={{ backgroundColor: "var(--color-reclaim)" }}
+                  aria-hidden="true"
+                >
+                  ✓
+                </span>
+              )}
               <AnimatedEmoji emoji={pain.emoji} animation="pulse" size="lg" />
               <div className="flex-1 min-w-0">
                 <span className="font-semibold text-base block" style={{ color: "var(--color-ink)" }}>

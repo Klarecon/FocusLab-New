@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuditStore } from "@/stores/audit-store";
-import { quadrant, QUADRANT_META } from "@/lib/engine/solutions-logic";
+import { quadrant, QUADRANT_META, isRated } from "@/lib/engine/solutions-logic";
 import type { Solution } from "@/lib/data/solutions";
 import type { Score } from "@/lib/engine/types";
 import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
@@ -47,6 +47,7 @@ function DotRating({
   onChange: (val: number) => void;
   label?: string;
 }) {
+  const unset = value <= 0;
   return (
     <div className="flex gap-1 items-center" role="group" aria-label={label ?? "Rating"}>
       {Array.from({ length: max }, (_, i) => {
@@ -59,14 +60,19 @@ function DotRating({
             className="w-7 h-7 sm:w-6 sm:h-6 rounded-full border-2 transition-all duration-150 cursor-pointer hover:scale-110 relative"
             style={{
               backgroundColor: filled ? activeColor : "transparent",
+              // Blank dots use a dashed outline to invite a first tap.
               borderColor: filled ? activeColor : "var(--color-line)",
+              borderStyle: !filled && unset ? "dashed" : "solid",
             }}
             aria-label={`Set to ${n}`}
           />
         );
       })}
-      <span className="text-[10px] ml-1 font-figures" style={{ color: "var(--color-ink-soft)" }}>
-        {value}/5
+      <span
+        className="text-[10px] ml-1 font-figures"
+        style={{ color: unset ? "var(--color-reclaim)" : "var(--color-ink-soft)" }}
+      >
+        {unset ? "tap to rate" : `${value}/5`}
       </span>
     </div>
   );
@@ -93,6 +99,7 @@ function ActionCard({
   onSetImpact: (v: number) => void;
   index: number;
 }) {
+  const rated = isRated(effort, impact);
   const q = quadrant(effort as Score, impact as Score);
   const meta = QUADRANT_META[q];
 
@@ -117,15 +124,24 @@ function ActionCard({
           <span className="text-xs truncate" style={{ color: "var(--color-ink-soft)" }}>
             {sourceName}
           </span>
-          <span
-            className="text-[10px] font-medium px-1.5 py-0.5 rounded-full flex-shrink-0 hidden sm:inline"
-            style={{
-              color: q === "quick-win" ? "#c4186a" : q === "major-project" ? "#edb215" : q === "thankless" ? "#e03e12" : "#655b4d",
-              backgroundColor: q === "quick-win" ? "rgba(196,24,106,0.08)" : q === "major-project" ? "rgba(237,178,21,0.08)" : q === "thankless" ? "rgba(224,62,18,0.08)" : "rgba(0,0,0,0.04)",
-            }}
-          >
-            {meta.emoji} {meta.name}
-          </span>
+          {rated ? (
+            <span
+              className="text-[10px] font-medium px-1.5 py-0.5 rounded-full flex-shrink-0 hidden sm:inline"
+              style={{
+                color: q === "quick-win" ? "#c4186a" : q === "major-project" ? "#edb215" : q === "thankless" ? "#e03e12" : "#655b4d",
+                backgroundColor: q === "quick-win" ? "rgba(196,24,106,0.08)" : q === "major-project" ? "rgba(237,178,21,0.08)" : q === "thankless" ? "rgba(224,62,18,0.08)" : "rgba(0,0,0,0.04)",
+              }}
+            >
+              {meta.emoji} {meta.name}
+            </span>
+          ) : (
+            <span
+              className="text-[10px] font-medium px-1.5 py-0.5 rounded-full flex-shrink-0 hidden sm:inline italic"
+              style={{ color: "var(--color-ink-soft)", backgroundColor: "rgba(0,0,0,0.04)" }}
+            >
+              rate to place it
+            </span>
+          )}
         </div>
         <button
           onClick={onRemove}
@@ -156,7 +172,7 @@ function ActionCard({
           </span>
           <DotRating
             value={effort}
-            activeColor="var(--color-waste)"
+            activeColor="var(--color-gold)"
             onChange={onSetEffort}
             label={`Effort rating for ${solution.title}`}
           />
@@ -187,33 +203,41 @@ export default function FocusTable({ vitalFew, usefulMany, onGoToMatrix }: Focus
   const setSolutionScore = useAuditStore((s) => s.setSolutionScore);
   const { getZone, getSourceName } = useDrainLookup(vitalFew, usefulMany);
 
-  // Sort: Zone A first, then by impact descending
-  const sortedSolutions = useMemo(() => {
+  // Sort: Zone A first, then by impact descending. Unrated fixes (blank dots)
+  // can't be placed, so they drop to their own "Needs rating" group below.
+  const { ratedSolutions, unratedSolutions } = useMemo(() => {
     const zoneRank = { A: 0, B: 1, C: 2 };
-    return [...chosenSolutions].sort((a, b) => {
+    const ratedFor = (s: Solution) => {
+      const sc = solutionScores[s.id] ?? { effort: 0, impact: 0 };
+      return isRated(sc.effort, sc.impact);
+    };
+    const rated = chosenSolutions.filter(ratedFor).sort((a, b) => {
       const zA = zoneRank[getZone(a)];
       const zB = zoneRank[getZone(b)];
       if (zA !== zB) return zA - zB;
-      const impA = solutionScores[a.id]?.impact ?? 2;
-      const impB = solutionScores[b.id]?.impact ?? 2;
+      const impA = solutionScores[a.id]?.impact ?? 0;
+      const impB = solutionScores[b.id]?.impact ?? 0;
       return impB - impA;
     });
+    const unrated = chosenSolutions.filter((s) => !ratedFor(s));
+    return { ratedSolutions: rated, unratedSolutions: unrated };
   }, [chosenSolutions, solutionScores, getZone]);
 
-  // Summary stats
+  // Summary stats — only rated fixes can count as Quick Wins.
   const stats = useMemo(() => {
     let quickWins = 0;
     for (const sol of chosenSolutions) {
-      const scores = solutionScores[sol.id] ?? { effort: 2, impact: 2 };
+      const scores = solutionScores[sol.id] ?? { effort: 0, impact: 0 };
+      if (!isRated(scores.effort, scores.impact)) continue;
       const q = quadrant(scores.effort as Score, scores.impact as Score);
       if (q === "quick-win") quickWins++;
     }
-    return { total: chosenSolutions.length, quickWins };
-  }, [chosenSolutions, solutionScores]);
+    return { total: chosenSolutions.length, quickWins, unrated: unratedSolutions.length };
+  }, [chosenSolutions, solutionScores, unratedSolutions.length]);
 
-  // Group by zone for section headers
-  const zoneASolutions = sortedSolutions.filter((s) => getZone(s) === "A");
-  const zoneBSolutions = sortedSolutions.filter((s) => getZone(s) !== "A");
+  // Group rated solutions by zone for section headers.
+  const zoneASolutions = ratedSolutions.filter((s) => getZone(s) === "A");
+  const zoneBSolutions = ratedSolutions.filter((s) => getZone(s) !== "A");
 
   if (chosenSolutions.length === 0) {
     return (
@@ -266,7 +290,7 @@ export default function FocusTable({ vitalFew, usefulMany, onGoToMatrix }: Focus
       {/* Zone A section */}
       {zoneASolutions.length > 0 && (
         <div className="mb-4">
-          {sortedSolutions.length > zoneASolutions.length && (
+          {ratedSolutions.length > zoneASolutions.length && (
             <div
               className="text-xs font-medium uppercase tracking-wider mb-3 flex items-center gap-2"
               style={{ color: "var(--color-waste)" }}
@@ -279,7 +303,7 @@ export default function FocusTable({ vitalFew, usefulMany, onGoToMatrix }: Focus
             <AnimatePresence mode="popLayout">
               {zoneASolutions.map((sol, i) => {
                 const zone = getZone(sol);
-                const scores = solutionScores[sol.id] ?? { effort: 2, impact: 2 };
+                const scores = solutionScores[sol.id] ?? { effort: 0, impact: 0 };
                 return (
                   <ActionCard
                     key={sol.id}
@@ -316,7 +340,42 @@ export default function FocusTable({ vitalFew, usefulMany, onGoToMatrix }: Focus
             <AnimatePresence mode="popLayout">
               {zoneBSolutions.map((sol, i) => {
                 const zone = getZone(sol);
-                const scores = solutionScores[sol.id] ?? { effort: 2, impact: 2 };
+                const scores = solutionScores[sol.id] ?? { effort: 0, impact: 0 };
+                return (
+                  <ActionCard
+                    key={sol.id}
+                    solution={sol}
+                    zone={zone}
+                    sourceName={getSourceName(sol)}
+                    effort={scores.effort}
+                    impact={scores.impact}
+                    onRemove={() => removeSolution(sol.id)}
+                    onSetEffort={(v) => setSolutionScore(sol.id, { effort: v })}
+                    onSetImpact={(v) => setSolutionScore(sol.id, { impact: v })}
+                    index={i}
+                  />
+                );
+              })}
+            </AnimatePresence>
+          </div>
+        </div>
+      )}
+
+      {/* Needs rating section — blank-dot fixes that haven't been placed yet */}
+      {unratedSolutions.length > 0 && (
+        <div className="mb-4">
+          <div
+            className="text-xs font-medium uppercase tracking-wider mb-3 mt-6 flex items-center gap-2"
+            style={{ color: "var(--color-ink-soft)" }}
+          >
+            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: "var(--color-ink-soft)" }} />
+            Needs rating — set effort &amp; impact to place {unratedSolutions.length === 1 ? "it" : "them"}
+          </div>
+          <div className="space-y-3">
+            <AnimatePresence mode="popLayout">
+              {unratedSolutions.map((sol, i) => {
+                const zone = getZone(sol);
+                const scores = solutionScores[sol.id] ?? { effort: 0, impact: 0 };
                 return (
                   <ActionCard
                     key={sol.id}

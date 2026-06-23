@@ -5,8 +5,6 @@ import type { RoleSlug } from "@/lib/data/benchmarks";
 import type { WasteSource } from "@/lib/data/waste-sources";
 import type { Solution } from "@/lib/data/solutions";
 import type { ParetoResult } from "@/lib/engine/types";
-import { SCORE_FROM_LEVEL } from "@/lib/engine/solutions-logic";
-import type { Level } from "@/lib/engine/types";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -197,9 +195,11 @@ export const useAuditStore = create<AuditState>()(
             chosenSolutions: [...state.chosenSolutions, solution],
             solutionScores: {
               ...state.solutionScores,
+              // Start blank (0 = unrated): the user fills the dots themselves
+              // rather than accepting an anchored default.
               [solution.id]: state.solutionScores[solution.id] ?? {
-                effort: levelToScore(solution.effort),
-                impact: levelToScore(solution.impact),
+                effort: 0,
+                impact: 0,
               },
             },
           };
@@ -219,7 +219,7 @@ export const useAuditStore = create<AuditState>()(
           solutionScores: {
             ...state.solutionScores,
             [id]: {
-              ...(state.solutionScores[id] ?? { effort: 2, impact: 2 }),
+              ...(state.solutionScores[id] ?? { effort: 0, impact: 0 }),
               ...score,
             },
           },
@@ -283,11 +283,3 @@ export const useAuditStore = create<AuditState>()(
     },
   ),
 );
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-function levelToScore(level: Level): number {
-  return SCORE_FROM_LEVEL[level];
-}

@@ -15,7 +15,7 @@ import {
   Cell,
 } from "recharts";
 import { useAuditStore } from "@/stores/audit-store";
-import { quadrant, QUADRANT_META } from "@/lib/engine/solutions-logic";
+import { quadrant, QUADRANT_META, isRated } from "@/lib/engine/solutions-logic";
 import type { Score, QuadrantLabel } from "@/lib/engine/types";
 import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
 import { useDrainLookup, type DrainInfo } from "./shared/useDrainLookup";
@@ -404,8 +404,14 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
   const { drainBySlug, getZone, getSourceName } = useDrainLookup(vitalFew, usefulMany);
 
   const dotData: DotData[] = useMemo(() => {
-    const raw = chosenSolutions.map((sol, i) => {
-      const scores = solutionScores[sol.id] ?? { effort: 2, impact: 2 };
+    // Only rated fixes can be placed on the matrix — unrated (blank-dot) fixes
+    // would otherwise plot off-grid at the origin.
+    const rated = chosenSolutions.filter((sol) => {
+      const sc = solutionScores[sol.id] ?? { effort: 0, impact: 0 };
+      return isRated(sc.effort, sc.impact);
+    });
+    const raw = rated.map((sol, i) => {
+      const scores = solutionScores[sol.id] ?? { effort: 0, impact: 0 };
       const zone = getZone(sol);
       let reclaimApprox = 1;
       for (const slug of sol.wasteSlugs) {
@@ -447,7 +453,7 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
     if (!editingId) return null;
     const sol = chosenSolutions.find((s) => s.id === editingId);
     if (!sol) return null;
-    const scores = solutionScores[editingId] ?? { effort: 2, impact: 2 };
+    const scores = solutionScores[editingId] ?? { effort: 0, impact: 0 };
     const q = quadrant(scores.effort as Score, scores.impact as Score);
     return { sol, scores, quadrant: q };
   }, [editingId, chosenSolutions, solutionScores]);

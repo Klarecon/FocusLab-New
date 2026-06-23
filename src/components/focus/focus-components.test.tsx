@@ -267,6 +267,8 @@ describe("Payoff", () => {
   it("shows reclaimable numbers", () => {
     const meetingSolutions = solutionsForWaste("meet-status");
     useAuditStore.getState().addSolution(meetingSolutions[0]);
+    // Dots start blank; rate the fix so it counts toward the payoff.
+    useAuditStore.getState().setSolutionScore(meetingSolutions[0].id, { effort: 2, impact: 4 });
 
     render(
       <Payoff vitalFew={mockVitalFew} usefulMany={mockUsefulMany} />,
@@ -278,6 +280,7 @@ describe("Payoff", () => {
   it("shows no-pay-info note when no salary set", () => {
     const meetingSolutions = solutionsForWaste("meet-status");
     useAuditStore.getState().addSolution(meetingSolutions[0]);
+    useAuditStore.getState().setSolutionScore(meetingSolutions[0].id, { effort: 2, impact: 4 });
 
     render(
       <Payoff vitalFew={mockVitalFew} usefulMany={mockUsefulMany} />,

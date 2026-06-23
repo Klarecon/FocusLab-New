@@ -779,7 +779,7 @@ describe("Banned patterns (permanent)", () => {
     // Must have sticky counter
     expect(content).toContain("sticky top-4");
     // Must NOT have inline counter (the motion.div with mt-4 inline-flex that was duplicating)
-    const inlineCounterPattern = /mt-4 inline-flex.*hrs\/week of waste flagged/s;
+    const inlineCounterPattern = /mt-4 inline-flex[\s\S]*hrs\/week of waste flagged/;
     expect(content).not.toMatch(inlineCounterPattern);
   });
 
@@ -788,7 +788,7 @@ describe("Banned patterns (permanent)", () => {
     // Must have sticky counter
     expect(content).toContain("sticky top-4");
     // Must NOT have inline counter
-    const inlineCounterPattern = /mt-4 inline-flex.*hrs\/week of waste spotted/s;
+    const inlineCounterPattern = /mt-4 inline-flex[\s\S]*hrs\/week of waste spotted/;
     expect(content).not.toMatch(inlineCounterPattern);
   });
 
@@ -844,5 +844,71 @@ describe("Banned patterns (permanent)", () => {
     const content = readSrc("components/focus/Payoff.tsx");
     // Should NOT have Highlighter wrapping the "What happens" heading
     expect(content).not.toContain('action="box"');
+  });
+});
+
+describe("Session 14 — Dev-friend feedback + blank dots", () => {
+  // --- #1 Action Plan Effort dots are GOLD, not red (red read as "error") ---
+  it("[S14-#1] Effort DotRating uses gold, not waste-red", () => {
+    const content = readSrc("components/focus/FocusTable.tsx");
+    expect(content).toContain('activeColor="var(--color-gold)"');
+    // Impact stays pink (reclaim)
+    expect(content).toContain('activeColor="var(--color-reclaim)"');
+  });
+
+  // --- #2 Each waste category has a UNIQUE emoji (no duplicates on Drilldown) ---
+  it("[S14-#2] reassigned category emojis are present (unique per group)", () => {
+    const content = readSrc("lib/data/waste-sources.ts");
+    // The 9 de-duplicated groups each got a distinct codepoint.
+    for (const cp of ["1F635", "1F974", "1F575", "1F975", "1F92F", "1F40C", "1F629", "1F9F9", "1F62E"]) {
+      expect(content).toContain(cp);
+    }
+  });
+  it("[S14-#2b] every waste group maps to a UNIQUE emoji", () => {
+    const content = readSrc("lib/data/waste-sources.ts");
+    // Pull the GROUP_EMOJI literal block and assert no emoji value repeats.
+    const block = content.slice(content.indexOf("const GROUP_EMOJI"), content.indexOf("function emojiFor"));
+    const values = [...block.matchAll(/:\s*"([^"]+)"/g)].map((m) => m[1]);
+    expect(values.length).toBeGreaterThanOrEqual(17);
+    expect(new Set(values).size).toBe(values.length); // no duplicates
+  });
+
+  // --- #3 Blank dots: solutions start UNRATED (0/0), user fills them ---
+  it("[S14-#3] new solutions start blank (effort 0 / impact 0)", () => {
+    const content = readSrc("stores/audit-store.ts");
+    expect(content).toMatch(/effort: 0,\s*\n\s*impact: 0,/);
+    // No more anchored 2/2 default in the store
+    expect(content).not.toContain("effort: 2, impact: 2");
+  });
+  it("[S14-#3b] isRated helper gates the unrated state", () => {
+    expect(readSrc("lib/engine/solutions-logic.ts")).toContain("export function isRated");
+    const ft = readSrc("components/focus/FocusTable.tsx");
+    expect(ft).toContain("tap to rate");
+    expect(ft).toContain("rate to place it");
+    expect(ft).toContain("Needs rating");
+  });
+  it("[S14-#3c] Matrix and Payoff exclude unrated fixes", () => {
+    expect(readSrc("components/focus/EviMatrix.tsx")).toContain("isRated");
+    expect(readSrc("components/focus/Payoff.tsx")).toContain("isRated");
+  });
+
+  // --- #4 Unified selection state: Drilldown no longer uses orange native checkbox ---
+  it("[S14-#4] Drilldown rows use the unified pink selector, not orange checkbox", () => {
+    const content = readSrc("components/analyzer/DrilldownStep.tsx");
+    expect(content).not.toContain("accent-[var(--color-waste)]");
+    expect(content).toContain("sr-only");
+  });
+  it("[S14-#4b] Role and Intake cards show the unified pink check indicator", () => {
+    expect(readSrc("components/analyzer/RoleStep.tsx")).toContain("var(--color-reclaim)");
+    expect(readSrc("components/analyzer/IntakeStep.tsx")).toContain("rgba(196, 24, 106, 0.05)");
+  });
+
+  // --- #5 Condensed Drilldown: collapsible groups ---
+  it("[S14-#5] Drilldown groups are collapsible (accordion)", () => {
+    const content = readSrc("components/analyzer/DrilldownStep.tsx");
+    expect(content).toContain("expandedGroups");
+    expect(content).toContain("toggleGroup");
+    expect(content).toContain("aria-expanded");
+    expect(content).toContain("picked"); // "N picked" pill on collapsed header
   });
 });

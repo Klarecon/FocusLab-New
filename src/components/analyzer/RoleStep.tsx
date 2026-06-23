@@ -113,7 +113,7 @@ export default function RoleStep({ onNext }: RoleStepProps) {
                   type="button"
                   onClick={() => handleSelectLevel(level.id)}
                   aria-pressed={isActive}
-                  className="p-3 sm:p-4 rounded-xl text-left transition-all duration-200"
+                  className="p-3 sm:p-4 rounded-xl text-left transition-all duration-200 relative"
                   style={{
                     border: isActive
                       ? "2px solid var(--color-reclaim)"
@@ -124,6 +124,15 @@ export default function RoleStep({ onNext }: RoleStepProps) {
                       : undefined,
                   }}
                 >
+                  {isActive && (
+                    <span
+                      className="absolute top-2 right-2 w-4 h-4 rounded-full inline-flex items-center justify-center text-white text-[10px] font-bold"
+                      style={{ backgroundColor: "var(--color-reclaim)" }}
+                      aria-hidden="true"
+                    >
+                      ✓
+                    </span>
+                  )}
                   <span
                     className="block text-sm font-bold mb-1"
                     style={{ color: isActive ? "var(--color-reclaim)" : "var(--color-ink)" }}
@@ -203,7 +212,7 @@ function RoleCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.3 }}
-      className="surface-card p-4 sm:p-6 text-left transition-all duration-200"
+      className="surface-card p-4 sm:p-6 text-left transition-all duration-200 relative"
       style={{
         borderLeft: isSelected ? "4px solid var(--color-reclaim)" : "4px solid transparent",
         borderColor: isSelected ? undefined : "var(--color-line)",
@@ -219,6 +228,16 @@ function RoleCard({
           : "0 4px 16px rgba(237, 178, 21, 0.15)",
       }}
     >
+      {/* Unified selected indicator — pink filled check, same token everywhere */}
+      {isSelected && (
+        <span
+          className="absolute top-3 right-3 w-5 h-5 rounded-full inline-flex items-center justify-center text-white text-xs font-bold"
+          style={{ backgroundColor: "var(--color-reclaim)" }}
+          aria-hidden="true"
+        >
+          ✓
+        </span>
+      )}
       <div className="mb-3">
         <AnimatedEmoji
           emoji={emoji}

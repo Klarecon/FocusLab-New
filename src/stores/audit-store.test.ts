@@ -11,25 +11,39 @@ beforeEach(() => {
 // ---------------------------------------------------------------------------
 // 1. Quick-win seeding
 // ---------------------------------------------------------------------------
-describe("Quick-win seeding via addSolution", () => {
-  it("seeds effort=2, impact=4 for a low-effort high-impact solution", () => {
-    const sol: Solution = {
-      id: "test-qw",
-      wasteSlugs: ["meet-not-needed"],
-      title: "Test quick win",
-      description: "A test solution",
-      effort: "low",
-      impact: "high",
-      reclaimHint: "~1 hr",
-      owner: "self",
-      source: { name: "Test", url: "https://example.com" },
-    };
+describe("Blank-dot scoring via addSolution", () => {
+  const sol: Solution = {
+    id: "test-qw",
+    wasteSlugs: ["meet-not-needed"],
+    title: "Test quick win",
+    description: "A test solution",
+    effort: "low",
+    impact: "high",
+    reclaimHint: "~1 hr",
+    owner: "self",
+    source: { name: "Test", url: "https://example.com" },
+  };
 
+  it("starts a new solution BLANK (effort=0, impact=0) — user fills the dots", () => {
+    useAuditStore.getState().clearFocusState();
     useAuditStore.getState().addSolution(sol);
 
     const scores = useAuditStore.getState().solutionScores["test-qw"];
-    expect(scores.effort).toBe(SCORE_FROM_LEVEL["low"]); // 2
-    expect(scores.impact).toBe(SCORE_FROM_LEVEL["high"]); // 4
+    // No anchored default: blank means 0/0 until the user rates it.
+    expect(scores.effort).toBe(0);
+    expect(scores.impact).toBe(0);
+  });
+
+  it("becomes a quick win once rated low effort / high impact", () => {
+    useAuditStore.getState().clearFocusState();
+    useAuditStore.getState().addSolution(sol);
+    // SCORE_FROM_LEVEL still maps low=2, high=4 (mapping unchanged).
+    useAuditStore.getState().setSolutionScore("test-qw", {
+      effort: SCORE_FROM_LEVEL["low"],
+      impact: SCORE_FROM_LEVEL["high"],
+    });
+
+    const scores = useAuditStore.getState().solutionScores["test-qw"];
     expect(scores.effort).toBe(2);
     expect(scores.impact).toBe(4);
     expect(isQuickWinScore(scores.effort as 1 | 2 | 3 | 4 | 5, scores.impact as 1 | 2 | 3 | 4 | 5)).toBe(true);

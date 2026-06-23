@@ -84,6 +84,16 @@ export function isQuickWinScore(effort: Score, impact: Score): boolean {
 }
 
 /**
+ * A fix is "rated" once the user has set BOTH effort and impact to a real
+ * 1-5 value. Blank dots start at 0 (unrated) — an unrated fix has no quadrant,
+ * is excluded from the Quick-Win count, the Impact Matrix plot, and the payoff
+ * totals until the user fills it in.
+ */
+export function isRated(effort: number, impact: number): boolean {
+  return effort >= 1 && impact >= 1;
+}
+
+/**
  * Fraction of a waste bucket's remaining hours a solution can plausibly reclaim,
  * by impact level. A 5-point curve.
  */
