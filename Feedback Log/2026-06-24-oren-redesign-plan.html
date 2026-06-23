@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FocusLab — Oren Redesign Plan (from 23 June feedback)</title>
+<style>
+  :root{
+    --waste:#e03e12; --reclaim:#c4186a; --gold:#edb215;
+    --ink:#2c2418; --ink-soft:#655b4d;
+    --cream:#fdf6ec; --surface:#fffaf2; --line:#ece0d0;
+  }
+  *{box-sizing:border-box;}
+  body{font-family:'Plus Jakarta Sans',-apple-system,system-ui,sans-serif;background:var(--cream);color:var(--ink);margin:0;padding:44px 26px;line-height:1.55;}
+  .wrap{max-width:1000px;margin:0 auto;}
+  h1{font-family:'Fraunces',Georgia,serif;font-size:2.3rem;margin:0 0 4px;}
+  .sub{color:var(--ink-soft);margin:0 0 8px;}
+  .thesis{background:var(--ink);color:var(--cream);border-radius:16px;padding:22px 26px;margin:24px 0 36px;}
+  .thesis h2{font-family:'Fraunces',serif;margin:0 0 8px;font-size:1.3rem;color:#fff;}
+  .thesis p{margin:6px 0;font-size:0.98rem;}
+  .thesis .q{color:var(--gold);font-style:italic;}
+  h2.sec{font-family:'Fraunces',serif;font-size:1.5rem;margin:40px 0 6px;padding-bottom:8px;border-bottom:2px solid var(--line);display:flex;align-items:center;gap:10px;}
+  .lead{color:var(--ink-soft);margin:0 0 16px;}
+  table{width:100%;border-collapse:collapse;margin:10px 0 8px;font-size:0.9rem;}
+  th{text-align:left;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink-soft);padding:8px 10px;border-bottom:2px solid var(--line);}
+  td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top;}
+  td.q{color:var(--ink-soft);font-style:italic;width:30%;}
+  .pri{font-size:0.66rem;font-weight:800;padding:2px 8px;border-radius:999px;color:#fff;white-space:nowrap;}
+  .p0{background:var(--reclaim);} .p1{background:var(--waste);} .p2{background:var(--gold);color:#4a3a08;}
+  .cmp{font-size:0.7rem;font-weight:700;color:var(--reclaim);}
+  .decide{background:#fff7ea;border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:8px 14px;margin:6px 0;font-size:0.88rem;}
+  .decide b{color:#7a5e0a;}
+  .copybox{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:10px 0;}
+  .copybox .label{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink-soft);font-weight:700;}
+  .copybox .big{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:800;color:var(--reclaim);margin:4px 0;}
+  .copybox .body{font-size:0.95rem;color:var(--ink);}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:0.78rem;color:var(--ink-soft);margin:8px 0 0;}
+  .legend span{display:inline-flex;align-items:center;gap:5px;}
+  ol.seq{padding-left:22px;} ol.seq li{margin:7px 0;}
+  .seqbox{background:var(--ink);color:var(--cream);border-radius:14px;padding:20px 24px;}
+  .seqbox code{background:rgba(255,255,255,0.12);color:#ffe;padding:1px 6px;border-radius:5px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>The Next Version — Redesign Plan</h1>
+  <p class="sub">Built from Oren's 23 June feedback · everything here is a proposal; nothing is live</p>
+
+  <div class="thesis">
+    <h2>The one thesis</h2>
+    <p>Oren's verdict: the tool <b>doesn't sell yet</b> because it <span class="q">"makes me work."</span> Too tabular, too much reading, methodology followed so literally it still feels like the 40-minute exercise.</p>
+    <p>The redesign has <b>one job</b>: deliver the promise — <span class="q">"free up 10 hours, in the next 3 minutes"</span> — as a fast, plain-English, effortless experience that sells itself. Every change below serves that.</p>
+  </div>
+
+  <div class="legend">
+    <span><span class="pri p0">P0</span> blocks "it sells"</span>
+    <span><span class="pri p1">P1</span> major friction</span>
+    <span><span class="pri p2">P2</span> polish</span>
+    <span><span class="cmp">◆ component</span> uses a new Magic UI component</span>
+  </div>
+
+  <!-- ===== A. THE EXPERIENCE ===== -->
+  <h2 class="sec">A · The tool experience (Oren's #1 priority)</h2>
+  <p class="lead">Make it fast, plain, and effortless. This is what "sells the tool."</p>
+  <table>
+    <tr><th>Oren said</th><th>The change</th><th>Pri</th></tr>
+    <tr><td class="q">"Very hard to understand the language… when I hover it, it explains it."</td><td><b>Plain English everywhere + hover/tap explainers with one concrete example</b> on every waste source, fix, and term (e.g. "Admin busy work"). Concise, not walls of text.</td><td><span class="pri p0">P0</span></td></tr>
+    <tr><td class="q">"Why do you make people go back?… you fix it here."</td><td><b>Fix-in-place, never send back.</b> The over-estimate mismatch ("you said 9, you entered 12") becomes an inline, gentle nudge you resolve on the spot — no back-step.</td><td><span class="pri p0">P0</span></td></tr>
+    <tr><td class="q">"You add another screen… now I have to remember what I did."</td><td><b>Score on the same page.</b> Collapse the screen-hopping; keep prior context visible. Use the empty real estate instead of new screens. Add a real <b>Back button</b> everywhere.</td><td><span class="pri p0">P0</span></td></tr>
+    <tr><td class="q">"It makes me work with the due dates… with the owner."</td><td><b>Suggest due dates &amp; owners</b> (smart defaults the user picks from / overrides) instead of making them invent every value. <span class="cmp">◆ bento</span></td><td><span class="pri p0">P0</span></td></tr>
+    <tr><td class="q">"This action item… no agenda, no meeting. Very hard."</td><td><b>Plain action items with the "how".</b> e.g. "Prepare an agenda for every meeting — no agenda, no meeting." One-line how-to + optional example.</td><td><span class="pri p0">P0</span></td></tr>
+    <tr><td class="q">"It's too tabular… something is lost."</td><td><b>De-table the Action Plan</b> → a <b>bento layout</b> of fix cards with the reclaim gauge front-and-center, not a spreadsheet. <span class="cmp">◆ bento ◆ circular</span></td><td><span class="pri p1">P1</span></td></tr>
+    <tr><td class="q">"This overlapping on the chart is just not getting fixed… it's not selling."</td><td><b>Fix the EVI matrix dot overlap</b> (smart jitter/clustering + labels) so it reads instantly, or demote it below the headline result.</td><td><span class="pri p1">P1</span></td></tr>
+    <tr><td class="q">"The blank… irrelevant blank here." (confused by empty fields)</td><td><b>Make blank states self-explaining</b> — empty inputs/dots carry a clear "log hours to find out" / "tap to rate" affordance (we started this; push further).</td><td><span class="pri p1">P1</span></td></tr>
+    <tr><td class="q">"When you select it, it becomes dark."</td><td><b>Fix selected-state contrast</b> — selection should read as chosen (pink), never as "darkened/disabled".</td><td><span class="pri p1">P1</span></td></tr>
+    <tr><td class="q">"I couldn't add myself here… other categories you didn't think of."</td><td><b>Let users add their own top-level category</b> (not just a sub-item).</td><td><span class="pri p1">P1</span></td></tr>
+    <tr><td class="q">"Still looking a bit like the Google Form."</td><td><b>Kill the form feel</b> — cards, motion, progress, warmth. The new components carry this. <span class="cmp">◆ all</span></td><td><span class="pri p1">P1</span></td></tr>
+    <tr><td class="q">"Put 46 hours… it's letting you move forward. I had fixed this. Doesn't make sense."</td><td><b>Hard-stop the over-cap (bug).</b> Logging more than your available work-week hours must <b>block</b> progression with an in-place fix — not just warn and let you through. Regressed; re-fix and add a guard test.</td><td><span class="pri p0">P0</span></td></tr>
+    <tr><td class="q">"What is five-time brain, four-time brains? What is this?"</td><td><b>Explain the four waste types.</b> The muda category buckets are unlabelled/confusing — give each a plain name + one-line "what counts" so the user knows what they're choosing.</td><td><span class="pri p1">P1</span></td></tr>
+    <tr><td class="q">"How did you get this? Two hours?… not easily understood."</td><td><b>Make the reclaim math transparent.</b> Each reclaim figure gets a "how we got this" micro-explainer (your hours × typical cut) so no number feels conjured.</td><td><span class="pri p1">P1</span></td></tr>
+    <tr><td class="q">"White Elephant… I don't think it has to be delegated. Drop, Kill, Eliminate."</td><td><b>White Elephant verb = Drop / Eliminate</b>, remove "delegate" entirely.</td><td><span class="pri p2">P2</span></td></tr>
+    <tr><td class="q">"Look at the salary of CEO. It doesn't make any sense."</td><td><b>Fix the CEO salary benchmark</b> default.</td><td><span class="pri p2">P2</span></td></tr>
+  </table>
+
+  <!-- ===== B. LANDING + VALUE PROP ===== -->
+  <h2 class="sec">B · Landing page &amp; the value promise</h2>
+  <p class="lead">Oren on the copy: <i>"You're very bad at selling. You think logically, not marketing-wise."</i> Lead with the outcome, in his words.</p>
+
+  <div class="copybox">
+    <div class="label">The hero he sketched (3–4 words + the timeframe)</div>
+    <div class="big">Free up 10 hours of your week.</div>
+    <div class="body">In the next 3 minutes. No clocks, no time-tracking, no long forms — just your knowledge, run through a proven methodology that's worked for thousands.</div>
+  </div>
+  <table>
+    <tr><th>Oren said</th><th>The change</th><th>Pri</th></tr>
+    <tr><td class="q">"Free 10 hours in the next 3 minutes… you show them going to the beach."</td><td><b>Aspirational, marketing-first hero</b>: the outcome (free 10 hrs) + the dream (your time back) + the 3-minute promise. <span class="cmp">◆ particles ◆ circular</span></td><td><span class="pri p0">P0</span></td></tr>
+    <tr><td class="q">"It would sound generic… other productivity tools." → "No clocks. Your knowledge in our system. Proven."</td><td><b>Differentiator strip</b>: not a tracker — no clocks, no logging tools; your expertise + a methodology proven on thousands (15–20 yrs).</td><td><span class="pri p0">P0</span></td></tr>
+    <tr><td class="q">"What is this smiley on the background?"</td><td><b>Remove the stray emoji/effect</b> on the landing background.</td><td><span class="pri p2">P2</span></td></tr>
+    <tr><td class="q">"The 134 research-backed fixes — I don't like this… doesn't bring me to the right place."</td><td><b>Fix or remove the "134 fixes" section</b>; if kept, its CTA must return to the tool.</td><td><span class="pri p2">P2</span></td></tr>
+    <tr><td class="q">"The emojis appear different in your browser." (snot in Chrome)</td><td><b>Cross-browser emoji audit</b> — swap any that render badly in Chrome, or use a consistent emoji set/SVG.</td><td><span class="pri p2">P2</span></td></tr>
+  </table>
+
+  <!-- ===== C. NEEDS A DECISION FIRST ===== -->
+  <h2 class="sec">C · Needs your / Oren's call <span style="font-size:0.9rem;font-weight:400;color:var(--ink-soft)">— not mine to decide</span></h2>
+  <p class="lead">Oren was explicit: <i>"If you decide to change the methodology, you discuss… or give me two options based on my methodology."</i> These are flagged, not built, until decided:</p>
+  <div class="decide"><b>Hours vs %:</b> he questioned hours-per-week vs percentages. He can "live with" hours but wants it discussed. → I'll prepare 2 options on his methodology, not switch unilaterally.</div>
+  <div class="decide"><b>Knowledge-workers scope:</b> "we don't limit the tool to knowledge workers." → remove the qualifier (agreed), but broadening to other worker types is a discussion.</div>
+  <div class="decide"><b>Combine the two intake steps into one:</b> he agreed in principle ("only focus on A-level"). Confirm the exact merged flow before building.</div>
+  <div class="decide"><b>Drop the over-estimate "validation" entirely?</b> vs keep as inline nudge. Methodology-adjacent — confirm.</div>
+  <div class="decide"><b>"It shouldn't have rendered a graph with three reasons… the language is incorrect"</b> — I couldn't pin down which screen/graph he meant from the transcript. → One question for Oren to identify it before I fix the wrong thing.</div>
+
+  <!-- ===== D. COMPONENTS ===== -->
+  <h2 class="sec">D · Where the new components earn their place</h2>
+  <table>
+    <tr><th>Component</th><th>Used for</th></tr>
+    <tr><td><b>Particles</b></td><td>Hero background accent — subtle warmth/energy behind "Free up 10 hours" (not a toy).</td></tr>
+    <tr><td><b>Animated Circular Progress</b></td><td>The reclaim gauge — "10 hrs freed" fills a ring. Hero + Action Plan headline. The single most "sells-itself" visual.</td></tr>
+    <tr><td><b>Bento Grid</b></td><td>The Action Plan as warm cards (fix + suggested owner + due date) instead of a table. Also the landing "how it works / differentiators".</td></tr>
+    <tr><td><b>Animated Beam</b></td><td>Visualize <i>waste → reclaimed</i> (drains flowing into time-back), gold→pink. Hero or results.</td></tr>
+  </table>
+
+  <!-- ===== E. PROCESS ===== -->
+  <h2 class="sec">E · Process (Oren's working-style notes)</h2>
+  <p class="lead">Not UI, but he was clear, so it shapes how we work:</p>
+  <ul>
+    <li><b>Finish the product before marketing.</b> "Until you sell me the tool, everything else is a waste." → marketing plan is paused until the tool is approved.</li>
+    <li><b>Don't drift to "waste" when stuck.</b> "The moment you get stuck, you go do waste stuff." → stay on the product.</li>
+    <li><b>Never change methodology unilaterally.</b> Discuss, or bring 2 options on his methodology.</li>
+    <li><b>Nothing should appear he didn't ask for</b> (e.g. the rogue "delegate"). Higher quality bar — he's showing investors.</li>
+  </ul>
+
+  <!-- ===== SEQUENCE ===== -->
+  <h2 class="sec">Build sequence (after you approve the mockup)</h2>
+  <div class="seqbox">
+    <ol class="seq">
+      <li><b>Confirm the decisions in section C</b> (hours/%, merged steps) — quick, blocks the rest.</li>
+      <li><b>Landing hero + value prop</b> (P0 copy + particles + circular gauge) — the "it sells" front door.</li>
+      <li><b>Analyzer plain-language + fix-in-place + same-page scoring + add-category + back buttons</b> (P0 friction).</li>
+      <li><b>Action Plan de-tabled</b> → bento + circular reclaim gauge + suggested owners/due dates (P0/P1).</li>
+      <li><b>Matrix overlap fix, selected-state contrast, blank-state clarity</b> (P1).</li>
+      <li><b>Copy/polish</b>: White Elephant verb, CEO salary, stray emoji, "134 fixes", cross-browser emoji (P2).</li>
+    </ol>
+  </div>
+  <p class="lead" style="margin-top:16px">The mockup file shows how A, B and D come together visually. Review that next →</p>
+</div>
+</body>
+</html>
