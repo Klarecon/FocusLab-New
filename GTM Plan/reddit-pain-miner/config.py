@@ -121,3 +121,5 @@ MODEL = "claude-opus-4-8"
 USER_AGENT = "focuslab-pain-miner/1.0 (content research script)"
 REQUEST_DELAY = 3.0       # seconds between every request (Reddit RSS throttles tightly)
 RATE_LIMIT_BACKOFF = 30   # seconds to wait after a 429 before retrying
+FETCH_TIME_BUDGET = 600   # max seconds for the whole fetch phase; stop early and
+                          # proceed with whatever was gathered (prevents wedging)

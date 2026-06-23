@@ -38,7 +38,7 @@ def _user_agent() -> str:
     return os.environ.get("REDDIT_USER_AGENT") or config.USER_AGENT
 
 
-def _get_bytes(url: str, retries: int = 3) -> bytes:
+def _get_bytes(url: str, retries: int = 2) -> bytes:
     """GET a URL with a polite delay and 429 backoff. Returns raw bytes."""
     headers = {"User-Agent": _user_agent()}
     last_exc: Exception | None = None
@@ -151,7 +151,12 @@ def parse_feed(xml_bytes: bytes) -> list[dict]:
 
 
 def collect_candidates() -> list[dict]:
-    """Pull raw candidate threads from all configured RSS sources."""
+    """Pull raw candidate threads from all configured RSS sources.
+
+    Bounded by config.FETCH_TIME_BUDGET: if Reddit throttles hard, the fetch
+    stops early and proceeds with whatever was gathered (never wedges).
+    """
+    start = time.monotonic()
     seen: set[str] = set()
     out: list[dict] = []
 
@@ -162,8 +167,16 @@ def collect_candidates() -> list[dict]:
             seen.add(c["id"])
             out.append(c)
 
+    def _over_budget() -> bool:
+        if time.monotonic() - start > config.FETCH_TIME_BUDGET:
+            print(f"  ! fetch time budget reached; proceeding with {len(out)} threads")
+            return True
+        return False
+
     # Per-subreddit "new" and "top (week)" feeds.
     for name in config.SUBREDDITS:
+        if _over_budget():
+            return out
         for suffix in ("new/.rss", "top/.rss?t=week"):
             url = f"https://www.reddit.com/r/{name}/{suffix}"
             try:
@@ -174,6 +187,8 @@ def collect_candidates() -> list[dict]:
     # Combined-subreddit search feeds — one request per term.
     combined = "+".join(config.SUBREDDITS)
     for term in config.SEARCH_TERMS:
+        if _over_budget():
+            return out
         q = urllib.parse.quote(term)
         url = (
             f"https://www.reddit.com/r/{combined}/search.rss"
