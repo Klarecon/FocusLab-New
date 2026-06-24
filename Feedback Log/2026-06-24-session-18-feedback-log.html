@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session 18 — Feedback Log (Mona's 24 notes)</title>
+<style>
+  :root{--waste:#e03e12;--reclaim:#c4186a;--gold:#edb215;--ink:#2c2418;--ink-soft:#655b4d;--cream:#fdf6ec;--surface:#fffaf2;--line:#ece0d0;}
+  *{box-sizing:border-box;}
+  body{font-family:'Plus Jakarta Sans',-apple-system,system-ui,sans-serif;background:#efe6d6;color:var(--ink);margin:0;padding:32px 20px;line-height:1.5;}
+  .wrap{max-width:1040px;margin:0 auto;}
+  h1{font-family:'Fraunces',Georgia,serif;font-size:2rem;margin:0 0 2px;}
+  .sub{color:var(--ink-soft);margin:0 0 22px;}
+  table{border-collapse:collapse;width:100%;background:var(--cream);border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:0.86rem;}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top;}
+  th{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink-soft);background:var(--surface);}
+  td.n{font-weight:800;color:var(--reclaim);white-space:nowrap;}
+  .tag{display:inline-block;font-size:0.64rem;font-weight:800;text-transform:uppercase;letter-spacing:0.03em;padding:2px 8px;border-radius:999px;white-space:nowrap;}
+  .done{background:rgba(196,24,106,0.12);color:var(--reclaim);}
+  .options{background:rgba(237,178,21,0.18);color:#7a5e0a;}
+  .followup{background:rgba(224,62,18,0.12);color:var(--waste);}
+  code{background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:0.8rem;}
+  .legend{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Session 18 — Feedback Log</h1>
+  <p class="sub">2026-06-24 · Mona's 24 notes on the Oren redesign mockup + live homepage. All applied to <code>2026-06-24-oren-redesign-mockup-v2.html</code>. No <code>src/</code> code changed — mockup-first.</p>
+  <div class="legend">
+    <span class="tag done">DONE IN MOCKUP</span>
+    <span class="tag options">OPTIONS TO PICK</span>
+    <span class="tag followup">CODE/DATA FOLLOW-UP</span>
+  </div>
+  <table>
+    <tr><th>#</th><th>Mona's note</th><th>What was done</th><th>Status</th><th>Where in v2</th></tr>
+    <tr><td class="n">1</td><td>Remove "Two tools. One mission." — but save it for reuse</td><td>Removed; archived <code>ToolCards.tsx.saved</code></td><td><span class="tag done">DONE</span></td><td>Scene 0</td></tr>
+    <tr><td class="n">2</td><td>Remove "This isn't guesswork" — too AI, no value</td><td>Removed; archived <code>BenchmarkProof.tsx.saved</code></td><td><span class="tag done">DONE</span></td><td>Scene 0</td></tr>
+    <tr><td class="n">3</td><td>Don't limit to "knowledge work" — any worker, even if DB must expand</td><td>Copy broadened; DB expansion flagged as own task</td><td><span class="tag done">DONE</span> <span class="tag followup">DATA LATER</span></td><td>Scene 14</td></tr>
+    <tr><td class="n">4</td><td>Hero stat — say "a working person loses ~10 hrs"; let copywriter improve</td><td>Rewritten across 3 hero options, no "knowledge worker"</td><td><span class="tag options">PICK</span></td><td>Scene 1</td></tr>
+    <tr><td class="n">5</td><td>Don't just replace hero — combine current + mockup; designer+copywriter give options</td><td>3 combined bold/animated hero options</td><td><span class="tag options">PICK</span></td><td>Scene 1</td></tr>
+    <tr><td class="n">6</td><td>"go to the beach" is abrupt/lazy — rework with context</td><td>→ "a half-day a week, yours to spend"</td><td><span class="tag done">DONE</span></td><td>Scene 1 strip</td></tr>
+    <tr><td class="n">7</td><td>"Add a drain we didn't list" → "Add your own"</td><td>Changed</td><td><span class="tag done">DONE</span></td><td>Scene 3</td></tr>
+    <tr><td class="n">8</td><td>"Here's your week back." headline not strong enough — options</td><td>3 headline options</td><td><span class="tag options">PICK</span></td><td>Scene 5</td></tr>
+    <tr><td class="n">9</td><td>"3 fixes, owner-assigned…" subtext unclear — options</td><td>3 plain-English subtext options</td><td><span class="tag options">PICK</span></td><td>Scene 5</td></tr>
+    <tr><td class="n">10</td><td>Remove "Three minutes. No tracking. No homework."</td><td>Removed</td><td><span class="tag done">DONE</span></td><td>Scene 2</td></tr>
+    <tr><td class="n">11</td><td>Remove "Backed by 130+ researched fixes" pill</td><td>Removed</td><td><span class="tag done">DONE</span></td><td>Scene 2</td></tr>
+    <tr><td class="n">12</td><td>CTA "Free up my 10 hours" — don't promise exact 10; options</td><td>CTAs reworded (no fixed number); ring "10" reframed as a stat</td><td><span class="tag options">PICK</span></td><td>Scene 1</td></tr>
+    <tr><td class="n">13</td><td>Intake screen repeats (also in Section 2) — why?</td><td>Collapsed to ONE intake screen</td><td><span class="tag done">DONE</span></td><td>Scene 3</td></tr>
+    <tr><td class="n">14</td><td>EVI Matrix — keep label names, just fix the overlap</td><td>Dots spread + numbered; labels unchanged</td><td><span class="tag done">DONE</span></td><td>Scene 7</td></tr>
+    <tr><td class="n">15</td><td>Pareto renders with 2–3 sources — needs many to show the vital few</td><td>Below a minimum: coach to add more, no fake chart. Engine work scoped.</td><td><span class="tag done">DONE</span> <span class="tag followup">ENGINE LATER</span></td><td>Scene 12</td></tr>
+    <tr><td class="n">16</td><td>The payoff section "not good overall"</td><td>Full rework, 2 options; gauge overflow fixed</td><td><span class="tag options">PICK</span></td><td>Scene 6</td></tr>
+    <tr><td class="n">17</td><td>Blank-states section unclear → explained badly, make clearer</td><td>Rebuilt with a clear header + plain prompts + colour key</td><td><span class="tag done">DONE</span></td><td>Scene 10</td></tr>
+    <tr><td class="n">18</td><td>Hours vs % — use hours for now</td><td>Decided: hours per week; % shelved</td><td><span class="tag done">DONE</span></td><td>Scene 13</td></tr>
+    <tr><td class="n">19</td><td>Over-cap validation nice but not clear enough — options</td><td>2 clearer options (plain / do-it-for-me)</td><td><span class="tag options">PICK</span></td><td>Scene 4</td></tr>
+    <tr><td class="n">20</td><td>Four waste types — show more simply how it helps</td><td>Leads with "why this helps" + a fix per type</td><td><span class="tag done">DONE</span></td><td>Scene 8</td></tr>
+    <tr><td class="n">21</td><td>"How did you get this?" idea nice, execution poor — options</td><td>2 cleaner options (sentence / breakdown)</td><td><span class="tag options">PICK</span></td><td>Scene 9</td></tr>
+    <tr><td class="n">22</td><td>BUG: could leave impact/effort blank and still continue</td><td>Now hard-blocks Continue, highlights the missing one</td><td><span class="tag done">DONE</span> <span class="tag followup">TEST ON PORT</span></td><td>Scene 11</td></tr>
+    <tr><td class="n">23</td><td>"White Elephants — drop or DELEGATE" — never said delegate; plain English</td><td>→ "skip these — low payoff, not worth the effort"; label kept</td><td><span class="tag done">DONE</span></td><td>Scene 7</td></tr>
+    <tr><td class="n">24</td><td>Agents should hunt edge cases and solve them</td><td>Edge-case catalogue with intended behaviour (blank rating, over-cap, thin Pareto, 0 hrs, no role, bad values)</td><td><span class="tag done">DONE</span> <span class="tag followup">BUILD REST</span></td><td>Scene 14</td></tr>
+  </table>
+  <p class="sub" style="margin-top:18px"><b>Next:</b> Mona picks options on the 7 "PICK" items (Notes 4/5/12 hero, 8/9 plan, 16 payoff, 19 over-cap, 21 math), then we port into the live app. Heavier follow-ups: data expansion (Note 3), Pareto minimum (Note 15).</p>
+</div>
+</body>
+</html>
