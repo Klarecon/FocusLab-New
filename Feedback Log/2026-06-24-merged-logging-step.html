@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FocusLab — Merged logging step (types folded in)</title>
+<style>
+  :root{
+    --waste:#e03e12; --reclaim:#c4186a; --gold:#edb215; --neutral:#9a8c7a;
+    --ink:#2c2418; --ink-soft:#655b4d;
+    --cream:#fdf6ec; --surface:#fffaf2; --line:#ece0d0;
+  }
+  *{box-sizing:border-box;}
+  body{font-family:'Plus Jakarta Sans',-apple-system,system-ui,sans-serif;background:#efe6d6;color:var(--ink);margin:0;padding:32px 20px 120px;line-height:1.5;}
+  .wrap{max-width:780px;margin:0 auto;}
+  .title{font-family:'Fraunces',Georgia,serif;font-size:1.7rem;margin:0 0 2px;}
+  .subt{color:var(--ink-soft);margin:0 0 22px;font-size:0.92rem;}
+  h2,h3,h1,h4{font-family:'Fraunces',serif;}
+  .scene{background:var(--cream);border:1px solid var(--line);border-radius:20px;margin-bottom:22px;overflow:hidden;box-shadow:0 8px 30px rgba(44,36,24,0.06);}
+  .scene-label{background:var(--ink);color:var(--cream);font-size:0.72rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;padding:9px 18px;display:flex;justify-content:space-between;gap:12px;}
+  .scene-label .cmp{color:var(--gold);text-align:right;}
+  .pad{padding:28px;}
+  .fixes{background:#fff7ea;border-top:1px dashed var(--line);padding:12px 18px;font-size:0.82rem;color:var(--ink-soft);}
+  .fixes b{color:#7a5e0a;}
+
+  .bar{height:6px;background:var(--line);border-radius:3px;margin-bottom:6px;overflow:hidden;}
+  .bar i{display:block;height:100%;width:55%;background:var(--reclaim);border-radius:3px;}
+  .steplbl{font-size:0.75rem;color:var(--ink-soft);margin-bottom:14px;display:flex;justify-content:space-between;}
+  .chip{font-size:0.72rem;border:1px solid var(--line);border-radius:8px;padding:4px 9px;display:inline-flex;align-items:center;gap:5px;background:var(--cream);}
+  .chip.sug{border-color:var(--reclaim);color:var(--reclaim);font-weight:700;background:rgba(196,24,106,0.04);}
+  .chip.role{font-size:0.62rem;border-color:var(--gold);color:#7a5e0a;background:rgba(237,178,21,0.1);font-weight:700;text-transform:uppercase;letter-spacing:0.03em;padding:2px 7px;}
+
+  /* slim type-group header — teaches the type structurally, almost no text */
+  .grp{margin:18px 0 4px;}
+  .grp:first-of-type{margin-top:8px;}
+  .grphead{display:flex;align-items:center;gap:8px;padding:0 2px 7px;border-bottom:1.5px solid var(--line);}
+  .grphead .gname{font-size:0.74rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink);}
+  .grphead .ghint{font-size:0.72rem;color:var(--ink-soft);font-style:italic;margin-left:auto;}
+  @media(max-width:540px){.grphead{flex-wrap:wrap;}.grphead .ghint{margin-left:0;width:100%;}}
+
+  .row{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:12px;padding:11px 14px;margin-top:9px;background:var(--surface);}
+  .row.sel{border:2px solid var(--reclaim);background:rgba(196,24,106,0.05);box-shadow:0 0 0 1px var(--reclaim);}
+  .chk{width:21px;height:21px;border-radius:50%;border:2px solid var(--line);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.68rem;font-weight:800;}
+  .row.sel .chk{background:var(--reclaim);border-color:var(--reclaim);}
+  .row .em{font-size:1.15rem;}
+  .row .lab{flex:1;font-weight:600;font-size:0.9rem;}
+  .row .lab .why{display:block;font-weight:400;font-size:0.74rem;color:var(--ink-soft);margin-top:1px;}
+  .hrs{display:flex;align-items:center;gap:5px;white-space:nowrap;}
+  .hrs input{width:42px;text-align:right;border:none;border-bottom:2px solid var(--waste);background:transparent;font-weight:800;font-family:'Fraunces',serif;color:var(--ink);font-size:1rem;}
+  .hrs .u{font-size:0.7rem;color:var(--ink-soft);}
+  .sugg{font-size:0.68rem;color:var(--reclaim);font-weight:700;}
+
+  .addrow{display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap;}
+  .addcat{flex:1;min-width:200px;border:1.5px dashed var(--reclaim);color:var(--reclaim);border-radius:12px;padding:10px 14px;font-weight:700;font-size:0.84rem;text-align:center;background:rgba(196,24,106,0.03);}
+  .addtype{font-size:0.74rem;color:var(--ink-soft);font-weight:600;border:1px dashed var(--line);border-radius:12px;padding:10px 14px;background:transparent;cursor:pointer;}
+  .addtype b{color:var(--reclaim);}
+
+  .whytoggle{font-size:0.74rem;color:var(--reclaim);font-weight:700;cursor:pointer;user-select:none;display:inline-flex;align-items:center;gap:5px;margin:2px 0 4px;}
+  .whypop{font-size:0.82rem;color:var(--ink-soft);background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:9px 13px;margin:6px 0 2px;display:none;}
+  .whypop.open{display:block;}
+
+  .navrow{display:flex;justify-content:space-between;margin-top:20px;align-items:center;gap:12px;}
+  .btn-back{color:var(--ink-soft);font-weight:600;font-size:0.9rem;background:none;border:1.5px solid var(--line);padding:10px 20px;border-radius:12px;}
+  .btn-next{background:var(--reclaim);color:#fff;font-weight:800;padding:10px 28px;border-radius:12px;border:none;}
+
+  /* note + export */
+  .notebox{background:rgba(196,24,106,0.05);border-top:2px dashed var(--reclaim);padding:14px 18px;}
+  .notebox label{display:block;font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:var(--reclaim);margin-bottom:7px;}
+  .notebox textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;font-family:inherit;font-size:0.88rem;line-height:1.45;resize:vertical;min-height:52px;background:#fff;color:var(--ink);}
+  .notebox textarea:focus{outline:none;border-color:var(--reclaim);box-shadow:0 0 0 3px rgba(196,24,106,0.13);}
+  .exportbar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--ink);color:#fff;display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;padding:12px 18px;box-shadow:0 -6px 24px rgba(0,0,0,0.18);}
+  .exportbar button{font-family:inherit;font-weight:800;font-size:0.86rem;border:none;border-radius:10px;padding:10px 18px;cursor:pointer;}
+  .exportbar .eb-primary{background:var(--reclaim);color:#fff;}
+  .exportbar .eb-ghost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,0.3);}
+  .exportbar .eb-status{font-size:0.78rem;color:#cdbfa8;}
+  .review-banner{background:rgba(196,24,106,0.08);border:1.5px solid var(--reclaim);border-radius:14px;padding:13px 16px;margin:0 0 22px;font-size:0.88rem;color:var(--ink);}
+  .review-banner b{color:var(--reclaim);}
+  @media print{.exportbar{display:none;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="title">Merged logging step — <span style="color:var(--reclaim)">the four types folded in</span></p>
+  <p class="subt">Scene 3 (log your week) + Scene 8 (the four waste types) are now one screen. The types become slim group headers the drains sit under — so you learn the framework by scanning, not by reading a separate explainer. Standalone Scene 8 is gone.</p>
+
+  <div class="review-banner">
+    📝 <b>The idea:</b> each drain lives under its waste type. The type's name + a 3-word "escape hatch" hint carry the whole Scene-8 lesson with almost no added text. The longer "why sort waste" rationale is tucked behind one tap (👇 below the role chips), so the default view stays short.
+  </div>
+
+  <div class="scene">
+    <div class="scene-label"><span>Log your week — role, drains &amp; types on one screen</span><span class="cmp">scene 3 + 8 merged</span></div>
+    <div class="pad">
+      <div class="bar"><i style="width:55%"></i></div>
+      <div class="steplbl"><span>Tell us about your week</span><span>your biggest drains only</span></div>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center">
+        <span class="chip sug">🧑‍🔧 Marketing ✓</span>
+        <span class="chip">Manager / Team Lead ✓</span>
+        <span style="font-size:0.76rem;color:var(--ink-soft)">— changed your mind? edit right here</span>
+      </div>
+
+      <span class="whytoggle" id="whyToggle">ⓘ why are these grouped?</span>
+      <div class="whypop" id="whyPop">Each group is a <b>type</b> of waste. Name the type and you already know the kind of fix that works — that's the hint on the right of each group.</div>
+
+      <!-- GROUP 1 -->
+      <div class="grp">
+        <div class="grphead"><span class="gname">Work that adds nothing</span><span class="ghint">→ cut it or shrink it</span></div>
+        <div class="row sel"><span class="chk">✓</span><span class="em">😴</span><span class="lab">Meetings you didn't need to be in <span class="why">Invited "just in case", added nothing.</span></span><span class="hrs"><input value="3"><span class="u">hrs/wk</span></span></div>
+        <div class="row"><span class="chk"></span><span class="em">💀</span><span class="lab">Admin busy work <span class="why">Forms, expenses, data entry, status updates.</span></span><span class="hrs"><span class="sugg">typical: 2.4 →</span></span></div>
+      </div>
+
+      <!-- GROUP 2 -->
+      <div class="grp">
+        <div class="grphead"><span class="gname">Switching &amp; chasing</span><span class="ghint">→ batch it, automate it, or ask once</span></div>
+        <div class="row sel"><span class="chk">✓</span><span class="em">🫠</span><span class="lab">Email &amp; chat pile-up <span class="why">Notifications, back-and-forth, "quick" replies that aren't.</span></span><span class="hrs"><input value="2"><span class="u">hrs/wk</span></span></div>
+        <div class="row"><span class="chk"></span><span class="em">😵‍💫</span><span class="lab">Hunting for info you already have <span class="why">Searching for a doc, a number, the person who knows.</span></span><span class="hrs"><span class="sugg">typical: 1.5 →</span></span></div>
+        <div class="row"><span class="chk"></span><span class="em">🧩</span><span class="lab">Stitching marketing data by hand <span class="chip role">for your role</span> <span class="why">Pulling numbers from tools into one report.</span></span><span class="hrs"><span class="sugg">typical: 1.8 →</span></span></div>
+      </div>
+
+      <!-- GROUP 3 -->
+      <div class="grp">
+        <div class="grphead"><span class="gname">Waiting &amp; getting blocked</span><span class="ghint">→ unblock the bottleneck</span></div>
+        <div class="row"><span class="chk"></span><span class="em">⏳</span><span class="lab">Waiting on an approval or sign-off <span class="why">Idle until someone reviews or says yes.</span></span><span class="hrs"><span class="sugg">typical: 1.2 →</span></span></div>
+      </div>
+
+      <div class="addrow">
+        <div class="addcat">＋ Add your own drain</div>
+        <button class="addtype">＋ <b>New type</b></button>
+      </div>
+
+      <div class="navrow"><button class="btn-back">← Back</button><button class="btn-next">See my plan →</button></div>
+    </div>
+    <div class="fixes"><b>What carried over from Scene 8:</b> the four types (names + "escape-hatch" fix hints), "add your own type", and the role-specific drain — all folded in as structure, not prose. <b>What got dropped:</b> the "Why sort your waste" paragraph and the separate role panel (the role chip already shows it's tailored). Net new text on this screen ≈ four short group headers.</div>
+    <div class="notebox"><label>📝 Notes on the merged step</label><textarea id="note" placeholder="Too much / too little? Group headers working? Keep the ⓘ reveal or cut it? The 'for your role' tag…"></textarea></div>
+  </div>
+</div>
+
+<div class="exportbar">
+  <span class="eb-status" id="ebSaved">auto-saving on</span>
+  <button class="eb-primary" onclick="downloadNotes()">⬇ Download my note (.txt)</button>
+  <button class="eb-ghost" onclick="copyNote()">📋 Copy instead</button>
+</div>
+
+<script>
+(function(){
+  var STORE='focuslab-merged-logging-note';
+  var ta=document.getElementById('note');
+  ta.value=localStorage.getItem(STORE)||'';
+  ta.addEventListener('input',function(){ localStorage.setItem(STORE,ta.value); var el=document.getElementById('ebSaved'); el.textContent='✓ saved'; setTimeout(function(){el.textContent='auto-saving on';},1200); });
+  document.getElementById('whyToggle').addEventListener('click',function(){ document.getElementById('whyPop').classList.toggle('open'); });
+  function text(){ return 'FocusLab — merged logging step note\n\n• '+(ta.value.trim()||'(empty)')+'\n'; }
+  window.downloadNotes=function(){ var b=new Blob([text()],{type:'text/plain'}); var a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='focuslab-merged-logging-note.txt'; document.body.appendChild(a); a.click(); document.body.removeChild(a); };
+  window.copyNote=function(){ if(navigator.clipboard){navigator.clipboard.writeText(text());} var el=document.getElementById('ebSaved'); el.textContent='copied'; setTimeout(function(){el.textContent='auto-saving on';},1500); };
+})();
+</script>
+</body>
+</html>
