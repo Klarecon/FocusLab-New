@@ -159,7 +159,7 @@ export default function Hero() {
           className="text-sm font-medium tracking-widest uppercase mb-8"
           style={{ color: "var(--color-ink-soft)" }}
         >
-          A waste reduction tool for knowledge workers
+          A waste-reduction tool for any kind of work
         </motion.p>
 
         {/* Main headline */}
@@ -167,10 +167,11 @@ export default function Hero() {
           className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] mb-4 sm:mb-6"
           style={{ fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif" }}
         >
-          Most of your week is{" "}
+          Get{" "}
           <Highlighter action="highlight" color="rgba(224, 62, 18, 0.2)" strokeWidth={2} isView>
-            <span className="gradient-text">buried in busywork.</span>
-          </Highlighter>
+            <span className="gradient-text">real hours</span>
+          </Highlighter>{" "}
+          of your week back.
         </h1>
 
         {/* Subheadline */}
@@ -181,10 +182,9 @@ export default function Hero() {
           className="text-base sm:text-lg md:text-xl mb-6 sm:mb-10 max-w-2xl mx-auto leading-relaxed"
           style={{ color: "var(--color-ink-soft)" }}
         >
-          Meetings, email, coordination, admin — the average knowledge worker
-          spends <Highlighter action="underline" color="var(--color-waste)" isView><strong style={{ color: "var(--color-waste)" }}>50–70% of their week</strong></Highlighter>{" "}
-          (sometimes even more) on tasks that don&apos;t move the needle.
-          FocusLab shows you exactly where your time goes, and what to do about it.
+          A working person loses about{" "}
+          <Highlighter action="underline" color="var(--color-waste)" isView><strong style={{ color: "var(--color-waste)" }}>10 hours a week</strong></Highlighter>{" "}
+          to busywork. Find your drains and a plan to free up your hours, in 3 minutes.
         </motion.p>
 
         {/* Calendar visual */}
@@ -211,7 +211,7 @@ export default function Hero() {
             >
               <span className="flex items-center gap-2">
                 <AnimatedEmoji emoji="🔍" animation="pulse" size="sm" />
-                Find Your Hidden Waste
+                Find my hidden hours
               </span>
             </ShimmerButton>
           </Link>

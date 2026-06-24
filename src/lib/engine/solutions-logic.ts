@@ -42,19 +42,19 @@ export const QUADRANT_META: Record<
   "quick-win": {
     name: "Pearls",
     verb: "Do these first",
-    emoji: "🤩",
+    emoji: "💎",
     description: "Easy to grab, wildly valuable.",
   },
   "major-project": {
     name: "Oysters",
     verb: "Plan these only after your Pearls are done, and only if you have spare capacity",
-    emoji: "💪",
+    emoji: "🦪",
     description: "High effort, high reward.",
   },
   "fill-in": {
     name: "Low-Hanging Fruit",
     verb: "Pick one or two to knock out quickly \u2014 these take minutes, not days",
-    emoji: "🫠",
+    emoji: "🍒",
     description: "Quick to knock out, small payoff.",
   },
   thankless: {

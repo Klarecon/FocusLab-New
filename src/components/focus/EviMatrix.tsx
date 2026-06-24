@@ -239,7 +239,7 @@ const QUADRANT_SECTION_LABELS: Record<QuadrantLabel, string> = {
   "quick-win": "Pearls \u2014 do these first",
   "major-project": "Oysters \u2014 plan only after Pearls are done, if you have spare capacity",
   "fill-in": "Low-Hanging Fruit \u2014 knock these out when you can",
-  thankless: "White Elephants \u2014 drop or delegate these",
+  thankless: "White Elephants \u2014 skip these \u2014 low payoff, not worth the effort",
 };
 
 function PriorityTable({ dotData }: { dotData: DotData[] }) {
@@ -500,19 +500,19 @@ export default function EviMatrix({ vitalFew, usefulMany }: EviMatrixProps) {
             {counts.pearls > 0 && (
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
                 style={{ backgroundColor: "rgba(196, 24, 106, 0.1)", color: "#c4186a" }}>
-                🤩 {counts.pearls} {counts.pearls === 1 ? "Pearl" : "Pearls"}
+                💎 {counts.pearls} {counts.pearls === 1 ? "Pearl" : "Pearls"}
               </span>
             )}
             {counts.oysters > 0 && (
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
                 style={{ backgroundColor: "rgba(237, 178, 21, 0.1)", color: "#edb215" }}>
-                💪 {counts.oysters} {counts.oysters === 1 ? "Oyster" : "Oysters"}
+                🦪 {counts.oysters} {counts.oysters === 1 ? "Oyster" : "Oysters"}
               </span>
             )}
             {counts.lhf > 0 && (
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
                 style={{ backgroundColor: "rgba(0, 0, 0, 0.04)", color: "#655b4d" }}>
-                🫠 {counts.lhf} Low-Hanging Fruit
+                🍒 {counts.lhf} Low-Hanging Fruit
               </span>
             )}
             {counts.elephants > 0 && (

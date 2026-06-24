@@ -1,7 +1,6 @@
 import Nav from "@/components/layout/Nav";
 import Hero from "@/components/landing/Hero";
-import ToolCards from "@/components/landing/ToolCards";
-import BenchmarkProof from "@/components/landing/BenchmarkProof";
+import HowItWorks from "@/components/landing/HowItWorks";
 
 import FinalCTA from "@/components/landing/FinalCTA";
 import Footer from "@/components/layout/Footer";
@@ -12,8 +11,7 @@ export default function Home() {
       <Nav />
       <main className="flex-1">
         <Hero />
-        <ToolCards />
-        <BenchmarkProof />
+        <HowItWorks />
 
         <FinalCTA />
       </main>

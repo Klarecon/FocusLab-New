@@ -63,7 +63,7 @@ describe("Quadrant metadata (Session 8)", () => {
   it("[S8] Pearls: name, emoji, verb", () => {
     const { missing } = fileContainsAll(file, [
       '"Pearls"',
-      "🤩",
+      "💎",
       "Do these first",
     ]);
     expect(missing, `Missing in ${file}: ${missing.join(", ")}`).toEqual([]);
@@ -72,7 +72,7 @@ describe("Quadrant metadata (Session 8)", () => {
   it("[S8] Oysters: name, emoji, verb about spare capacity", () => {
     const { missing } = fileContainsAll(file, [
       '"Oysters"',
-      "💪",
+      "🦪",
       "Plan these only after your Pearls are done",
     ]);
     expect(missing, `Missing in ${file}: ${missing.join(", ")}`).toEqual([]);
@@ -81,7 +81,7 @@ describe("Quadrant metadata (Session 8)", () => {
   it("[S8] Low-Hanging Fruit: name, emoji, verb about minutes not days", () => {
     const { missing } = fileContainsAll(file, [
       '"Low-Hanging Fruit"',
-      "🫠",
+      "🍒",
       "minutes, not days",
     ]);
     expect(missing, `Missing in ${file}: ${missing.join(", ")}`).toEqual([]);
@@ -210,27 +210,27 @@ describe("Solution coverage (Session 8-#1)", () => {
 // ---------------------------------------------------------------------------
 
 describe("Landing page copy (Session 7)", () => {
-  it("[S7] Hero eyebrow copy", () => {
+  it("[S19] Hero eyebrow broadened past knowledge work", () => {
     expect(
-      fileContains("components/landing/Hero.tsx", "A waste reduction tool for knowledge workers")
+      fileContains("components/landing/Hero.tsx", "A waste-reduction tool for any kind of work")
     ).toBe(true);
   });
 
-  it("[S7] Hero headline: buried in busywork", () => {
+  it("[S19] Hero headline: real hours of your week back", () => {
     expect(
-      fileContains("components/landing/Hero.tsx", "buried in busywork")
+      fileContains("components/landing/Hero.tsx", "of your week back")
     ).toBe(true);
   });
 
-  it("[S7] Hero subhead: 50–70%", () => {
+  it("[S19] Hero subhead: about 10 hours a week", () => {
     expect(
-      fileContains("components/landing/Hero.tsx", /50.70%/)
+      fileContains("components/landing/Hero.tsx", "10 hours a week")
     ).toBe(true);
   });
 
-  it("[S7] Hero CTA: Find Your Hidden Waste", () => {
+  it("[S19] Hero CTA: Find my hidden hours", () => {
     expect(
-      fileContains("components/landing/Hero.tsx", "Find Your Hidden Waste")
+      fileContains("components/landing/Hero.tsx", "Find my hidden hours")
     ).toBe(true);
   });
 
@@ -258,9 +258,9 @@ describe("Landing page copy (Session 7)", () => {
     ).toBe(true);
   });
 
-  it("[S7] FinalCTA button: Find Your Hidden Waste", () => {
+  it("[S19] FinalCTA button: Find my hidden hours", () => {
     expect(
-      fileContains("components/landing/FinalCTA.tsx", "Find Your Hidden Waste")
+      fileContains("components/landing/FinalCTA.tsx", "Find my hidden hours")
     ).toBe(true);
   });
 });
@@ -943,5 +943,79 @@ describe("Session 15 — payoff surfacing + dot polish", () => {
     const matrixIdx = content.indexOf("<EviMatrix");
     expect(heroIdx).toBeGreaterThan(-1);
     expect(heroIdx).toBeLessThan(matrixIdx);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Session 19 — redesign port (Oren v2→v4 mockups, approved)
+// ---------------------------------------------------------------------------
+
+describe("Quadrant emojis — literal match (Session 19)", () => {
+  const logic = "lib/engine/solutions-logic.ts";
+
+  it("[S19] Pearls emoji is 💎 (gem), not 🤩", () => {
+    const content = readSrc(logic);
+    expect(content).toContain('emoji: "💎"');
+    expect(content).not.toContain('emoji: "🤩"');
+  });
+
+  it("[S19] Oysters emoji is 🦪 (oyster), not 💪", () => {
+    const content = readSrc(logic);
+    expect(content).toContain('emoji: "🦪"');
+    expect(content).not.toContain('emoji: "💪"');
+  });
+
+  it("[S19] Low-Hanging Fruit emoji is 🍒 (fruit), not 🫠", () => {
+    const content = readSrc(logic);
+    expect(content).toContain('emoji: "🍒"');
+  });
+
+  it("[S19] White Elephants stays 🐘", () => {
+    expect(readSrc(logic)).toContain("🐘");
+  });
+
+  it("[S19] EviMatrix count pills use the new emojis", () => {
+    const content = readSrc("components/focus/EviMatrix.tsx");
+    expect(content).toContain("💎");
+    expect(content).toContain("🦪");
+    expect(content).toContain("🍒");
+    expect(content).not.toContain("🤩");
+  });
+
+  it("[S19] FocusTable Pearl badge uses 💎", () => {
+    const content = readSrc("components/focus/FocusTable.tsx");
+    expect(content).toContain("💎");
+    expect(content).not.toContain("🤩");
+  });
+
+  it("[S19-#23] White Elephants label says 'skip these', not 'drop or delegate'", () => {
+    const content = readSrc("components/focus/EviMatrix.tsx");
+    expect(content).toContain("skip these");
+    expect(content).not.toContain("drop or delegate");
+  });
+});
+
+describe("Landing — removed sections + new HowItWorks (Session 19, Notes 1 & 2)", () => {
+  it("[S19] page.tsx no longer renders ToolCards or BenchmarkProof", () => {
+    const content = readSrc("app/page.tsx");
+    expect(content).not.toContain("<ToolCards");
+    expect(content).not.toContain("<BenchmarkProof");
+  });
+
+  it("[S19] page.tsx renders HowItWorks", () => {
+    expect(readSrc("app/page.tsx")).toContain("<HowItWorks");
+  });
+
+  it("[S19] HowItWorks has the approved step copy", () => {
+    const content = readSrc("components/landing/HowItWorks.tsx");
+    expect(content).toContain("Pick your role");
+    expect(content).toContain("Estimate the hours each drain costs you");
+    expect(content).toContain("ranked by hours saved");
+    expect(content).toContain("Why it");
+    expect(content).toContain("time-tracker");
+  });
+
+  it("[S19] FinalCTA no longer says 'knowledge worker'", () => {
+    expect(readSrc("components/landing/FinalCTA.tsx")).not.toContain("knowledge worker");
   });
 });

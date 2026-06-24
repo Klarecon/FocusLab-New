@@ -32,7 +32,7 @@ export default function FinalCTA() {
           className="text-lg sm:text-xl mb-8 leading-relaxed"
           style={{ color: "var(--color-ink-soft)" }}
         >
-          The average knowledge worker loses 10+ hours a week to work that
+          A working person loses about 10 hours a week to work that
           feels productive but isn&apos;t. That&apos;s{" "}
           <Highlighter action="underline" color="var(--color-waste)" isView><strong style={{ color: "var(--color-ink)" }}>6 full work weeks per year</strong></Highlighter>.{" "}
           <AnimatedEmoji emoji="🤯" animation="pop" size="md" />
@@ -45,7 +45,7 @@ export default function FinalCTA() {
           >
             <span className="flex items-center gap-3">
               <AnimatedEmoji emoji="🔥" animation="bounce" size="md" />
-              Find Your Hidden Waste
+              Find my hidden hours
             </span>
           </ShimmerButton>
         </Link>
