@@ -23,7 +23,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "FocusLab — Find Your Waste, Fix Your Week",
   description:
-    "Pareto analysis for knowledge workers. Upload your calendar, find the 20% of activities draining 80% of your time, and reclaim your week with the Focusing Table method.",
+    "Find the activities draining most of your week and reclaim your hours with the Focusing Table method — in about 3 minutes, no tracking. Built for any kind of work.",
 };
 
 export default function RootLayout({

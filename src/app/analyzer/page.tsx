@@ -4,7 +4,7 @@ import AuditWizard from "@/components/analyzer/AuditWizard";
 export const metadata = {
   title: "Pareto Analyzer — FocusLab",
   description:
-    "Find the 20% of activities draining 80% of your time. Five-step waste audit for knowledge workers.",
+    "Find the 20% of activities draining 80% of your time. A quick waste audit for any kind of work.",
 };
 
 export default function AnalyzerPage() {
