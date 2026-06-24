@@ -795,7 +795,7 @@ describe("Banned patterns (permanent)", () => {
   it("[S12-#3] DrilldownStep blocks 'Show me the damage' when category hours exceed estimate", () => {
     const content = readSrc("components/analyzer/DrilldownStep.tsx");
     expect(content).toContain("hasOverflowCategory");
-    expect(content).toContain("disabled={!hasEntries || hasOverflowCategory}");
+    expect(content).toContain("disabled={!hasEnoughDrains || hasOverflowCategory}");
   });
 
   it("[S12-#4] MIN_CATEGORIES is 3, not 2", () => {
@@ -1017,5 +1017,20 @@ describe("Landing — removed sections + new HowItWorks (Session 19, Notes 1 & 2
 
   it("[S19] FinalCTA no longer says 'knowledge worker'", () => {
     expect(readSrc("components/landing/FinalCTA.tsx")).not.toContain("knowledge worker");
+  });
+});
+
+describe("Pareto minimum drains (Session 19, Note 15/scene 12&14)", () => {
+  it("[S19] DrilldownStep requires at least 5 drains before continuing", () => {
+    const content = readSrc("components/analyzer/DrilldownStep.tsx");
+    expect(content).toContain("MIN_DRAINS = 5");
+    expect(content).toContain("hasEnoughDrains");
+    // The continue button is gated on the minimum, not just one entry.
+    expect(content).toContain("disabled={!hasEnoughDrains || hasOverflowCategory}");
+  });
+
+  it("[S19] DrilldownStep coaches toward 5 drains", () => {
+    const content = readSrc("components/analyzer/DrilldownStep.tsx");
+    expect(content).toContain("spot your vital few");
   });
 });

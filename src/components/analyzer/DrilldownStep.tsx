@@ -248,10 +248,15 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
     onNext();
   };
 
-  const hasEntries = activeSources.some((src) => {
+  // Pareto needs enough sources to show a vital-few pattern — below the
+  // minimum we coach the user to add more rather than draw a thin chart.
+  const MIN_DRAINS = 5;
+  const drainsWithHours = activeSources.filter((src) => {
     const e = entries[src.slug];
-    return e && e.hoursPerDay > 0;
-  });
+    return Boolean(e && e.hoursPerDay > 0);
+  }).length;
+  const hasEntries = drainsWithHours > 0;
+  const hasEnoughDrains = drainsWithHours >= MIN_DRAINS;
 
   // Check if any category's detailed hours exceed its estimate
   const hasOverflowCategory = useMemo(() => {
@@ -634,9 +639,9 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
           &larr; Back
         </button>
         <div className="text-right">
-          {activeSources.length > 0 && !hasEntries && (
+          {drainsWithHours < MIN_DRAINS && (
             <p className="text-xs mb-1" style={{ color: "var(--color-ink-soft)" }}>
-              Enter hours for at least one drain to continue
+              Log at least {MIN_DRAINS} drains so we can spot your vital few — you&apos;ve got {drainsWithHours}.
             </p>
           )}
           {hasOverflowCategory && (
@@ -645,10 +650,10 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
             </p>
           )}
           <ShimmerButton
-            disabled={!hasEntries || hasOverflowCategory}
+            disabled={!hasEnoughDrains || hasOverflowCategory}
             onClick={handleCompute}
             borderRadius="12px"
-            background={hasEntries && !hasOverflowCategory ? "var(--color-reclaim)" : "var(--color-ink-soft)"}
+            background={hasEnoughDrains && !hasOverflowCategory ? "var(--color-reclaim)" : "var(--color-ink-soft)"}
             className="px-10 py-4 text-base font-bold disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <span className="flex items-center gap-2">
