@@ -1,170 +1,117 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, useMotionValue, animate } from "framer-motion";
 import Link from "next/link";
 import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { Highlighter } from "@/components/ui/highlighter";
-import { OrbitingCircles } from "@/components/ui/orbiting-circles";
+import { Particles } from "@/components/ui/particles";
 
-/** Heat Map calendar — high-contrast waste blocks with stamp badge. */
-function WeekCalendar() {
-  const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
-  const schedule = [
-    [
-      { type: "waste", label: "Meetings", h: 2 },
-      { type: "work", label: "", h: 1 },
-      { type: "waste", label: "Email", h: 1.5 },
-      { type: "work", label: "", h: 1.5 },
-      { type: "waste", label: "Status sync", h: 2 },
-    ],
-    [
-      { type: "work", label: "", h: 1 },
-      { type: "waste", label: "Rework", h: 2 },
-      { type: "waste", label: "Admin", h: 1 },
-      { type: "work", label: "", h: 2 },
-      { type: "waste", label: "Slack", h: 2 },
-    ],
-    [
-      { type: "waste", label: "Meetings", h: 3 },
-      { type: "work", label: "", h: 1 },
-      { type: "waste", label: "Waiting", h: 1.5 },
-      { type: "work", label: "", h: 1 },
-      { type: "waste", label: "Email", h: 1.5 },
-    ],
-    [
-      { type: "work", label: "", h: 2 },
-      { type: "waste", label: "Coordination", h: 2 },
-      { type: "waste", label: "Meetings", h: 1.5 },
-      { type: "work", label: "", h: 1 },
-      { type: "waste", label: "Reports", h: 1.5 },
-    ],
-    [
-      { type: "waste", label: "Email", h: 1 },
-      { type: "waste", label: "Meetings", h: 2 },
-      { type: "work", label: "", h: 2 },
-      { type: "waste", label: "Admin", h: 1 },
-      { type: "work", label: "", h: 2 },
-    ],
-  ];
+/**
+ * v4 hero ring gauge (Oren-approved). A pink arc sweeps in and the centre
+ * number counts up to ~10 — the typical hours a week a person reclaims. Uses
+ * `animate` (not whileInView) so it plays above the fold and renders in
+ * screenshots.
+ */
+function RingGauge() {
+  const R = 42;
+  const C = 2 * Math.PI * R; // circumference
+  const FILL = 0.62; // illustrative sweep
+  const [num, setNum] = useState(0);
+  const mv = useMotionValue(0);
+
+  useEffect(() => {
+    const controls = animate(mv, 10, {
+      duration: 1.6,
+      ease: "easeOut",
+      onUpdate: (v) => setNum(Math.round(v)),
+    });
+    return () => controls.stop();
+  }, [mv]);
 
   return (
-    <div className="w-full max-w-lg mx-auto relative">
-      {/* Stamp badge */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.5, rotate: -8 }}
-        animate={{ opacity: 1, scale: 1, rotate: 3 }}
-        transition={{ delay: 1.6, duration: 0.4, type: "spring", stiffness: 300 }}
-        className="absolute -top-3 -right-2 sm:right-2 z-10 px-3 py-1.5 rounded-md font-bold text-sm text-white shadow-lg"
-        style={{
-          fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
-          backgroundColor: "var(--color-reclaim)",
-          boxShadow: "0 3px 12px rgba(196, 24, 106, 0.35), inset 0 1px 0 rgba(255,255,255,0.15)",
-          border: "2px solid rgba(255,255,255,0.2)",
-        }}
-      >
-        50–70% waste
-      </motion.div>
-
-      <div className="grid grid-cols-5 gap-1.5">
-        {days.map((day, di) => (
-          <div key={day} className="text-center">
-            <span
-              className="block text-xs font-semibold mb-1.5"
-              style={{ color: "var(--color-ink-soft)" }}
-            >
-              {day}
-            </span>
-            <div className="flex flex-col gap-0.5">
-              {schedule[di].map((block, bi) => (
-                <motion.div
-                  key={bi}
-                  initial={{ scaleY: 0, opacity: 0 }}
-                  animate={{ scaleY: 1, opacity: 1 }}
-                  transition={{ delay: 0.8 + di * 0.1 + bi * 0.05, duration: 0.3 }}
-                  className="rounded-sm flex items-center justify-center overflow-hidden"
-                  style={{
-                    height: `${block.h * 20}px`,
-                    backgroundColor:
-                      block.type === "waste"
-                        ? "rgba(224, 62, 18, 0.85)"
-                        : "rgba(196, 24, 106, 0.08)",
-                    borderLeft:
-                      block.type === "waste"
-                        ? "none"
-                        : "2px solid var(--color-reclaim)",
-                    transformOrigin: "top",
-                  }}
-                >
-                  {block.label && (
-                    <span
-                      className="text-[9px] sm:text-[10px] font-medium truncate px-0.5"
-                      style={{
-                        color: block.type === "waste" ? "white" : "var(--color-reclaim)",
-                      }}
-                    >
-                      {block.label}
-                    </span>
-                  )}
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        ))}
+    <div className="relative" style={{ width: 168, height: 168 }}>
+      <svg width="168" height="168" viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r={R} fill="none" stroke="#e8dcc8" strokeWidth="9" />
+        <motion.circle
+          cx="50"
+          cy="50"
+          r={R}
+          fill="none"
+          stroke="var(--color-reclaim)"
+          strokeWidth="9"
+          strokeLinecap="round"
+          transform="rotate(-90 50 50)"
+          strokeDasharray={C}
+          initial={{ strokeDashoffset: C }}
+          animate={{ strokeDashoffset: C * (1 - FILL) }}
+          transition={{ duration: 1.6, ease: "easeOut" }}
+        />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <span
+          className="font-figures font-bold leading-none"
+          style={{ fontSize: "2.5rem", color: "var(--color-reclaim)" }}
+          aria-live="polite"
+        >
+          ~{num}
+        </span>
+        <span
+          className="text-[11px] font-semibold mt-1 max-w-[92px] text-center leading-tight"
+          style={{ color: "var(--color-ink-soft)" }}
+        >
+          typical hrs/wk reclaimed
+        </span>
       </div>
-      <p
-        className="text-center mt-3 text-sm"
-        style={{
-          fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
-          fontStyle: "italic",
-          color: "var(--color-ink-soft)",
-        }}
-      >
-        The orange is your week disappearing.
-      </p>
     </div>
   );
 }
 
 export default function Hero() {
   return (
-    <section className="relative min-h-[70vh] sm:min-h-[90vh] flex flex-col items-center justify-center text-center px-4 sm:px-6 py-12 sm:py-20 overflow-hidden">
-      {/* Background orbiting emoji */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.07] select-none flex items-center justify-center">
-        <OrbitingCircles radius={140} iconSize={40} speed={0.7} path={false}>
-          <span className="text-3xl">😴</span>
-          <span className="text-3xl">🫠</span>
-          <span className="text-3xl">🤦</span>
-          <span className="text-3xl">😤</span>
-          <span className="text-3xl">💀</span>
-        </OrbitingCircles>
-        <OrbitingCircles radius={220} iconSize={36} speed={0.4} reverse path={false}>
-          <span className="text-2xl">🤯</span>
-          <span className="text-2xl">😬</span>
-          <span className="text-2xl">🥲</span>
-        </OrbitingCircles>
-      </div>
+    <section className="relative min-h-[70vh] sm:min-h-[85vh] flex flex-col items-center justify-center text-center px-4 sm:px-6 py-12 sm:py-16 overflow-hidden">
+      {/* Subtle particle field — the "make it lively" ask, on-brand pink. */}
+      <Particles
+        className="absolute inset-0 pointer-events-none"
+        quantity={70}
+        ease={70}
+        color="#c4186a"
+        size={0.7}
+        staticity={50}
+        aria-hidden="true"
+      />
 
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="relative z-10 max-w-4xl"
+        transition={{ duration: 0.7, ease: "easeOut" }}
+        className="relative z-10 max-w-3xl flex flex-col items-center"
       >
         {/* Eyebrow */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="text-sm font-medium tracking-widest uppercase mb-8"
+          transition={{ delay: 0.15 }}
+          className="text-sm font-medium tracking-widest uppercase mb-6"
           style={{ color: "var(--color-ink-soft)" }}
         >
           A waste-reduction tool for any kind of work
         </motion.p>
 
-        {/* Main headline */}
+        {/* Ring gauge */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.25, duration: 0.5 }}
+          className="mb-6"
+        >
+          <RingGauge />
+        </motion.div>
+
+        {/* Headline */}
         <h1
-          className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] mb-4 sm:mb-6"
+          className="text-3xl sm:text-5xl md:text-6xl font-bold leading-[1.05] mb-4 sm:mb-5"
           style={{ fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif" }}
         >
           Get{" "}
@@ -174,35 +121,27 @@ export default function Hero() {
           of your week back.
         </h1>
 
-        {/* Subheadline */}
+        {/* Promise — verbatim subcopy */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="text-base sm:text-lg md:text-xl mb-6 sm:mb-10 max-w-2xl mx-auto leading-relaxed"
+          className="text-base sm:text-lg md:text-xl mb-8 max-w-2xl mx-auto leading-relaxed"
           style={{ color: "var(--color-ink-soft)" }}
         >
           A working person loses about{" "}
-          <Highlighter action="underline" color="var(--color-waste)" isView><strong style={{ color: "var(--color-waste)" }}>10 hours a week</strong></Highlighter>{" "}
+          <Highlighter action="underline" color="var(--color-waste)" isView>
+            <strong style={{ color: "var(--color-waste)" }}>10 hours a week</strong>
+          </Highlighter>{" "}
           to busywork. Find your drains and a plan to free up your hours, in 3 minutes.
         </motion.p>
 
-        {/* Calendar visual */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.6 }}
-          className="mb-10"
-        >
-          <WeekCalendar />
-        </motion.div>
-
-        {/* CTA buttons */}
+        {/* CTA */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2 }}
-          className="flex flex-col items-center gap-5"
+          transition={{ delay: 0.6 }}
+          className="flex flex-col items-center gap-4"
         >
           <Link href="/analyzer" className="no-underline">
             <ShimmerButton
@@ -216,11 +155,10 @@ export default function Hero() {
             </ShimmerButton>
           </Link>
           <span className="text-sm" style={{ color: "var(--color-ink-soft)" }}>
-            3 minutes. No signup needed.
+            ⏱ About 3 minutes · nothing to install
           </span>
         </motion.div>
       </motion.div>
-
     </section>
   );
 }

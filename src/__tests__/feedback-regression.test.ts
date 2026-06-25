@@ -1056,6 +1056,31 @@ describe("Pareto minimum drains (Session 19, Note 15/scene 12&14)", () => {
     expect(content).not.toContain("pattern only shows");
   });
 
+  // S20-V4 Scene 1: Oren-approved v4 hero — ring gauge + particles + verbatim
+  // copy, old WeekCalendar hero archived for reuse.
+  it("[S20-V4-#1] Hero is the v4 ring-gauge design with particles", () => {
+    const content = readSrc("components/landing/Hero.tsx");
+    expect(content).toContain("RingGauge");
+    expect(content).toContain("typical hrs/wk reclaimed");
+    expect(content).toContain('from "@/components/ui/particles"');
+    // Old WeekCalendar hero is gone from the live component...
+    expect(content).not.toContain("WeekCalendar");
+    expect(content).not.toContain("The orange is your week disappearing");
+  });
+
+  it("[S20-V4-#1] Hero sub-CTA uses the approved 'nothing to install' line", () => {
+    expect(readSrc("components/landing/Hero.tsx")).toContain("nothing to install");
+  });
+
+  it("[S20-V4-#1] old WeekCalendar hero is archived for reuse", () => {
+    // Saved outside src/ so it doesn't ship but can be reused elsewhere.
+    const saved = fs.readFileSync(
+      path.resolve(__dirname, "../../Feedback Log/saved-sections/Hero.tsx.saved"),
+      "utf-8",
+    );
+    expect(saved).toContain("WeekCalendar");
+  });
+
   // S20-V4 Scene 4: heads-up when ~the whole week is marked as waste.
   it("[S20-V4-#4] intake + drilldown warn when nearly the whole week is waste", () => {
     const intake = readSrc("components/analyzer/IntakeStep.tsx");

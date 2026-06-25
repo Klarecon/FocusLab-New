@@ -39,6 +39,9 @@ test.describe("Screenshot Capture — Full Wizard Flow", () => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
     await snap(page, "01-landing");
+    // Hero viewport after animations settle (ring count-up + CTA).
+    await page.waitForTimeout(2200);
+    await snapViewport(page, "01b-hero-viewport");
 
     // ===== 2. ANALYZER — ROLE STEP =====
     await page.goto("/analyzer");
