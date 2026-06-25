@@ -1,0 +1,61 @@
+FOCUSLAB — SESSION 21 FEEDBACK LOG
+Mona's walkthrough of the live merged analyzer
+Date: 2026-06-25
+Commit shipped: 8f33188 (deployed to prod, verified live)
+
+================================================================
+RAW NOTES (as given) → RESOLUTION
+================================================================
+
+1. [Log screen] "Decisions routed through you that needn't be" and
+   "Low-stakes approvals routed through you" are duplicates. Keep the
+   low-stakes one and use a different, more relevant emoji (thumbs down).
+   → SHIPPED. Merged into one drain: mgr-approvals now serves managers AND
+     executives, emoji 👎. Deleted the exec duplicate, repointed solutions.
+
+2. [Step header] "Log your week" → "Log your waste".
+   → SHIPPED. LogStep header + Stepper label + landing HowItWorks title.
+
+3. [Results chart] "How come there's no C zone?"
+   → EXPLAINED + SHIPPED. Cause: every tapped drain auto-filled at 1.0 hr, so
+     the data was flat → top 2 in zone A, everything else in C, middle B empty.
+     Fix she approved: stop the auto-fill (you type real hours → zones populate).
+     Plus a flat-data safety-net line ("your time's spread evenly") as backstop.
+     NO change to the Pareto engine math.
+
+4. [Results CTA] "This is fixable." / "Now let's fix it" too weak. Wanted 3
+   options on a mockup.
+   → SHIPPED. She chose: "You've seen the bleed. Now stop it." + CTA "Build my plan".
+
+5. [Action Sequence] "Start this week ..." timing guidance feels generic.
+   Wanted 3 stronger options.
+   → DROPPED at her instruction: "don't give any suggestions for now, none are
+     good." Left the existing copy unchanged.
+
+6. [Closing card] Use the "You've got a plan..." space to spread the word.
+   → SHIPPED. Kept the headline; new share line "If this gave you hours back,
+     pass it on — know anyone drowning in busywork?" + Copy link / Share on
+     LinkedIn / Email it buttons. (She picked option B + add Email.)
+
+7. [Hero] The rotating border beam isn't there. Gave animation.mov as the
+   exact design wanted; wanted to see it on a mockup first.
+   → After mockup iteration she said: "Leave it, I don't want it. Don't put it
+     on the real site." REMOVED the existing frozen BorderBeam from the hero.
+
+================================================================
+PROCESS FEEDBACK (the sharp one)
+================================================================
+- I sent the beam mockup TWICE without actually rendering it; both were
+  frozen/wrong. She: "you even gave me a screen recording... what's the
+  problem?" and later "so you think your version matches this?"
+- Correction internalized: screenshot mockups headlessly and LOOK before
+  sending — same rule as the real app, now extended to intermediate mockups.
+
+================================================================
+OPEN (unresolved at handover)
+================================================================
+- On reopening the app to review, previous selections persist (Zustand
+  localStorage). Decide: resume vs always-fresh vs add a visible "Start fresh"
+  button. She ran /handover before answering. Pick up next session.
+- Reminder: her saved state predates the deploy, so old 1.0-hr seeds linger;
+  "Start over with a fresh audit" clears them to test item 3 properly.
