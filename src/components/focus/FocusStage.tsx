@@ -163,10 +163,13 @@ export default function FocusStage() {
           transition={{ duration: 0.2 }}
         >
           {activeTab === "assign" && (
+            // Rating now happens inline on each chosen fix, so the Assign CTA
+            // skips the separate scoring screen and goes straight to the
+            // payoff/matrix (Scene 5 merge — "one less screen and step").
             <SolutionPicker
               vitalFew={vitalFew}
               usefulMany={usefulMany}
-              onGoToPlan={() => setActiveTab("plan")}
+              onGoToPlan={() => setActiveTab("matrix")}
             />
           )}
           {activeTab === "plan" && (

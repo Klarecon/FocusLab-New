@@ -4,7 +4,8 @@ import { useState, useMemo, useCallback, memo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuditStore } from "@/stores/audit-store";
 import { solutionsForWaste, isQuickWin, type Solution as SolutionType } from "@/lib/data/solutions";
-import { SCORE_FROM_LEVEL } from "@/lib/engine/solutions-logic";
+import { SCORE_FROM_LEVEL, quadrant, isRated } from "@/lib/engine/solutions-logic";
+import type { Score, QuadrantLabel } from "@/lib/engine/types";
 import type { Solution } from "@/lib/data/solutions";
 import { wasteSourceBySlug } from "@/lib/data/waste-sources";
 import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
@@ -64,6 +65,109 @@ function Badge({
   );
 }
 
+/**
+ * Plain-words "when to start + how long" hint per quadrant (Scene 5, E2).
+ * Appears once a fix is rated, so guidance shows up right where you decide.
+ */
+const START_GUIDANCE: Record<QuadrantLabel, string> = {
+  "quick-win": "Start this week · ~30–60 min",
+  "major-project": "Plan it in · block ~half a day",
+  "fill-in": "Squeeze in when you’ve got a gap",
+  thankless: "Only if it’s quick — low payoff",
+};
+
+/** Compact 5-dot rater (gold = effort, pink = impact), matches the Action Plan. */
+function MiniDots({
+  value,
+  activeColor,
+  onChange,
+  label,
+}: {
+  value: number;
+  activeColor: string;
+  onChange: (v: number) => void;
+  label: string;
+}) {
+  const unset = value <= 0;
+  return (
+    <div className="flex gap-1 items-center" role="group" aria-label={label}>
+      {Array.from({ length: 5 }, (_, i) => {
+        const n = i + 1;
+        const filled = n <= value;
+        return (
+          <button
+            key={n}
+            type="button"
+            onClick={() => onChange(n)}
+            className="w-6 h-6 sm:w-5 sm:h-5 rounded-full border-2 transition-all duration-150 cursor-pointer hover:scale-110"
+            style={{
+              backgroundColor: filled ? activeColor : "transparent",
+              borderColor: filled ? activeColor : "var(--color-line)",
+            }}
+            aria-label={`Set to ${n}`}
+          />
+        );
+      })}
+      <span
+        className="text-[10px] ml-1 font-figures"
+        style={{ color: unset ? "var(--color-reclaim)" : "var(--color-ink-soft)" }}
+      >
+        {unset ? "tap to rate" : `${value}/5`}
+      </span>
+    </div>
+  );
+}
+
+/** Inline effort/impact rating + start guidance, shown on a chosen fix so the
+ *  user rates as they pick — no separate scoring screen (Scene 5 merge). */
+function InlineRating({ solutionId }: { solutionId: string }) {
+  const scores = useAuditStore((s) => s.solutionScores[solutionId]) ?? { effort: 0, impact: 0 };
+  const setSolutionScore = useAuditStore((s) => s.setSolutionScore);
+  const rated = isRated(scores.effort, scores.impact);
+  const guidance = rated
+    ? START_GUIDANCE[quadrant(scores.effort as Score, scores.impact as Score)]
+    : null;
+
+  return (
+    <div
+      className="mt-3 pt-3 grid grid-cols-2 gap-3"
+      style={{ borderTop: "1px dashed var(--color-line)" }}
+    >
+      <div>
+        <span className="block text-xs mb-1 font-medium" style={{ color: "var(--color-ink-soft)" }}>
+          Effort <span className="font-normal">(easy → hard)</span>
+        </span>
+        <MiniDots
+          value={scores.effort}
+          activeColor="var(--color-gold)"
+          onChange={(v) => setSolutionScore(solutionId, { effort: v })}
+          label="Effort rating"
+        />
+      </div>
+      <div>
+        <span className="block text-xs mb-1 font-medium" style={{ color: "var(--color-ink-soft)" }}>
+          Impact <span className="font-normal">(low → huge)</span>
+        </span>
+        <MiniDots
+          value={scores.impact}
+          activeColor="var(--color-reclaim)"
+          onChange={(v) => setSolutionScore(solutionId, { impact: v })}
+          label="Impact rating"
+        />
+      </div>
+      {guidance && (
+        <div
+          className="col-span-2 text-xs font-semibold flex items-center gap-1.5"
+          style={{ color: "var(--color-reclaim)" }}
+        >
+          <span aria-hidden="true">🗓️</span>
+          {guidance}
+        </div>
+      )}
+    </div>
+  );
+}
+
 const SolutionCard = memo(function SolutionCard({
   solution,
   isChosen,
@@ -74,32 +178,43 @@ const SolutionCard = memo(function SolutionCard({
   onToggle: () => void;
 }) {
   return (
-    <button
-      onClick={onToggle}
-      aria-pressed={isChosen}
-      className="w-full text-left px-3 py-2.5 rounded-lg transition-all duration-150 cursor-pointer border flex items-center gap-3"
+    <div
+      className="w-full rounded-lg transition-all duration-150 border"
       style={{
         backgroundColor: isChosen ? "rgba(196, 24, 106, 0.06)" : "var(--color-card)",
         borderColor: isChosen ? "var(--color-reclaim)" : "var(--color-line)",
       }}
     >
-      {isChosen ? (
-        <span
-          className="w-5 h-5 rounded-full inline-flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-          style={{ backgroundColor: "var(--color-reclaim)" }}
-        >
-          ✓
+      <button
+        onClick={onToggle}
+        aria-pressed={isChosen}
+        className="w-full text-left px-3 py-2.5 cursor-pointer flex items-center gap-3"
+      >
+        {isChosen ? (
+          <span
+            className="w-5 h-5 rounded-full inline-flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+            style={{ backgroundColor: "var(--color-reclaim)" }}
+          >
+            ✓
+          </span>
+        ) : (
+          <span
+            className="w-5 h-5 rounded-full border-2 inline-flex flex-shrink-0"
+            style={{ borderColor: "var(--color-line)" }}
+          />
+        )}
+        <span className="font-medium text-sm flex-1 min-w-0" style={{ color: "var(--color-ink)" }}>
+          {solution.title}
         </span>
-      ) : (
-        <span
-          className="w-5 h-5 rounded-full border-2 inline-flex flex-shrink-0"
-          style={{ borderColor: "var(--color-line)" }}
-        />
+      </button>
+
+      {/* Rate it right here — no trip to a separate scoring screen. */}
+      {isChosen && (
+        <div className="px-3 pb-3">
+          <InlineRating solutionId={solution.id} />
+        </div>
       )}
-      <span className="font-medium text-sm flex-1 min-w-0" style={{ color: "var(--color-ink)" }}>
-        {solution.title}
-      </span>
-    </button>
+    </div>
   );
 });
 
@@ -503,7 +618,7 @@ export default function SolutionPicker({
           className="px-6 py-3 sm:px-10 sm:py-4 text-sm sm:text-base font-bold disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <span className="flex items-center gap-2">
-            Build your action plan
+            See your payoff
             <span aria-hidden="true">&rarr;</span>
           </span>
         </ShimmerButton>

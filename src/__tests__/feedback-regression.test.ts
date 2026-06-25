@@ -287,10 +287,21 @@ describe("Analyzer copy (Session 7)", () => {
 });
 
 describe("Focus tool copy (Sessions 7 & 8)", () => {
-  it("[S7] SolutionPicker bottom CTA: Build your action plan", () => {
-    expect(
-      fileContains("components/focus/SolutionPicker.tsx", "Build your action plan")
-    ).toBe(true);
+  // S20-V4 Scene 5: scoring merged into the Assign step, so the CTA now goes
+  // straight to the payoff instead of a separate "build your action plan" step.
+  it("[S20-V4-#5] SolutionPicker bottom CTA: See your payoff", () => {
+    const content = readSrc("components/focus/SolutionPicker.tsx");
+    expect(content).toContain("See your payoff");
+    expect(content).not.toContain("Build your action plan");
+  });
+
+  it("[S20-V4-#5] SolutionPicker rates effort/impact inline on each chosen fix", () => {
+    const content = readSrc("components/focus/SolutionPicker.tsx");
+    expect(content).toContain("InlineRating");
+    expect(content).toContain("setSolutionScore");
+    // Start/time guidance keyed by quadrant
+    expect(content).toContain("START_GUIDANCE");
+    expect(content).toContain("Start this week");
   });
 
   it("[S8] SolutionPicker Pearl badge (not Quick Win)", () => {
