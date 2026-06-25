@@ -1056,6 +1056,36 @@ describe("Pareto minimum drains (Session 19, Note 15/scene 12&14)", () => {
     expect(content).not.toContain("pattern only shows");
   });
 
+  // S20-V4 Scene 5: solution titles rewritten to verb/action form, consistently.
+  // Mona's example: "Kill meetings" (verb) good; "No agenda, no meetings" bad.
+  it("[S20-V4-#5] solution titles are verb-first (old noun-phrase forms gone)", () => {
+    const content = readSrc("lib/data/solutions.ts");
+    // Mona's exact called-out example is fixed
+    expect(content).toContain('title: "Kill agenda-less meetings"');
+    expect(content).not.toContain('title: "No agenda, no meeting"');
+    // A sample of other noun-phrase titles are gone
+    for (const gone of [
+      'title: "Daily protected deep-work block"',
+      'title: "Single source of truth (knowledge base)"',
+      'title: "One owner (DRI) per task"',
+      'title: "Standardized brief template"',
+      'title: "Lead scoring + ICP filter"',
+      'title: "Gatekeeper (chief of staff / EA)"',
+    ]) {
+      expect(content).not.toContain(gone);
+    }
+  });
+
+  it("[S20-V4-#5] every solution title starts with a capitalized word (verb-form)", () => {
+    const content = readSrc("lib/data/solutions.ts");
+    const titles = [...content.matchAll(/title: "([^"]+)"/g)].map((m) => m[1]);
+    // Skip the interface field declaration "title: string" (no quotes) — only
+    // real titles match. Expect a healthy population and all capitalized.
+    expect(titles.length).toBeGreaterThan(90);
+    const lowerLed = titles.filter((t) => !/^[A-Z]/.test(t));
+    expect(lowerLed).toEqual([]);
+  });
+
   // S20-V4 Scene 1: Oren-approved v4 hero — ring gauge + particles + verbatim
   // copy, old WeekCalendar hero archived for reuse.
   it("[S20-V4-#1] Hero is the v4 ring-gauge design with particles", () => {
