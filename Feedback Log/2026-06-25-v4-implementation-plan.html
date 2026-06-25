@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FocusLab — v4 Review Implementation Plan (2026-06-25)</title>
+<style>
+  :root{
+    --waste:#e03e12; --reclaim:#c4186a; --gold:#edb215;
+    --ink:#2c2418; --ink-soft:#655b4d; --cream:#fdf6ec; --surface:#fffaf2; --line:#ece0d0;
+  }
+  *{box-sizing:border-box;}
+  body{font-family:'Plus Jakarta Sans',-apple-system,system-ui,sans-serif;background:#efe6d6;color:var(--ink);margin:0;padding:36px 20px 80px;line-height:1.55;}
+  .wrap{max-width:900px;margin:0 auto;}
+  h1{font-family:'Fraunces',Georgia,serif;font-size:2rem;margin:0 0 4px;}
+  h2{font-family:'Fraunces',Georgia,serif;font-size:1.35rem;margin:34px 0 10px;border-bottom:2px solid var(--line);padding-bottom:6px;}
+  h3{font-family:'Fraunces',Georgia,serif;font-size:1.08rem;margin:0 0 4px;}
+  .sub{color:var(--ink-soft);margin:0 0 20px;}
+  .card{background:var(--cream);border:1px solid var(--line);border-radius:16px;padding:20px 22px;margin-bottom:16px;box-shadow:0 6px 22px rgba(44,36,24,0.05);}
+  .card.big{border-left:5px solid var(--reclaim);}
+  .card.med{border-left:5px solid var(--gold);}
+  .card.small{border-left:5px solid var(--ink-soft);}
+  .pill{display:inline-block;font-size:0.66rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;border-radius:999px;padding:3px 10px;margin-right:6px;}
+  .p-build{background:rgba(196,24,106,0.12);color:var(--reclaim);}
+  .p-copy{background:rgba(237,178,21,0.16);color:#7a5e0a;}
+  .p-remove{background:rgba(224,62,18,0.12);color:var(--waste);}
+  .p-done{background:rgba(0,0,0,0.06);color:var(--ink-soft);}
+  .quote{font-style:italic;color:var(--ink-soft);border-left:3px solid var(--gold);padding:4px 12px;margin:8px 0;background:var(--surface);border-radius:0 8px 8px 0;}
+  table{width:100%;border-collapse:collapse;font-size:0.86rem;margin:8px 0 4px;}
+  th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--line);vertical-align:top;}
+  th{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink-soft);}
+  code{background:rgba(44,36,24,0.06);border-radius:5px;padding:1px 6px;font-size:0.82em;}
+  .agent{font-size:0.78rem;font-weight:700;color:var(--ink-soft);margin:6px 0;}
+  ul{margin:6px 0 6px 0;padding-left:20px;}
+  li{margin:3px 0;}
+  .meta{font-size:0.8rem;color:var(--ink-soft);}
+  .ok{color:#1f7a4d;font-weight:700;}
+  .risk{font-size:0.82rem;color:var(--waste);font-weight:600;}
+  .batch{background:var(--ink);color:var(--cream);border-radius:14px;padding:16px 20px;margin:10px 0;}
+  .batch h3{color:var(--gold);}
+  .batch ol{margin:6px 0 0 0;padding-left:20px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>v4 Review — Implementation Plan</h1>
+  <p class="sub">Source: <code>Feedback Log/focuslab-v4-review-notes.txt</code> · Drafted 2026-06-25 · Oren approved the v4 mockup.</p>
+
+  <h2>Where each scene stands</h2>
+  <table>
+    <tr><th>Scene</th><th>Your verdict</th><th>Status</th></tr>
+    <tr><td>0 · Homepage removals</td><td>Ok</td><td><span class="pill p-done">done</span></td></tr>
+    <tr><td>1 · Landing hero</td><td>Implement now (Oren-approved). Save old hero. Add animation.</td><td><span class="pill p-build">to build</span></td></tr>
+    <tr><td>2 · Below the hero</td><td>Ok</td><td><span class="pill p-done">done</span></td></tr>
+    <tr><td>3 · Log your week (intake)</td><td>Ok — no changes</td><td><span class="ok">approved as-is</span></td></tr>
+    <tr><td>4 · Over-cap</td><td>Ok, but add a "whole week = waste?" recheck prompt</td><td><span class="pill p-build">to build</span></td></tr>
+    <tr><td>5 · Plan + scoring on ONE screen</td><td>Merge them. "Due" not "start". Add when/how-long guidance. Verb-form copy, consistent.</td><td><span class="pill p-build">to build</span> <span class="pill p-copy">copy</span></td></tr>
+    <tr><td>6 · Payoff (Magic UI)</td><td>Ok</td><td><span class="pill p-done">done</span></td></tr>
+    <tr><td>7 · Matrix emojis</td><td>Ok</td><td><span class="pill p-done">done</span></td></tr>
+    <tr><td>8 · Four waste types</td><td>Shouldn't be a separate section/screen — redundant</td><td><span class="pill p-remove">remove</span></td></tr>
+    <tr><td>9 · Show the math</td><td>Ok</td><td><span class="pill p-done">done</span></td></tr>
+    <tr><td>10 · Blank states</td><td>Ok</td><td><span class="pill p-done">done</span></td></tr>
+    <tr><td>11 · Rating validation</td><td>Ok</td><td><span class="pill p-done">done</span></td></tr>
+    <tr><td>12 · Pareto density</td><td>Remove the word "only"</td><td><span class="pill p-copy">copy</span></td></tr>
+    <tr><td>13 · Hours decided</td><td>Ok</td><td><span class="pill p-done">done</span></td></tr>
+  </table>
+  <p class="meta">Net: 5 things to do — 1 remove, 2 copy tweaks, hero swap, and the big plan+scoring merge.</p>
+
+  <h2>Work items</h2>
+
+  <!-- SCENE 8 REMOVAL -->
+  <div class="card small">
+    <span class="pill p-remove">remove</span><span class="pill p-done">quick</span>
+    <h3>A · Pull the four-waste-types explainer (Scene 8)</h3>
+    <p class="quote">"This shouldn't be a separate section or screen, it becomes redundant. I commented about it before."</p>
+    <p class="agent">🔵 Engineer</p>
+    <ul>
+      <li>Remove the <code>WhyGroupedHover</code> "ⓘ why are these grouped?" affordance I added to the Drilldown (this is the redundant thing).</li>
+      <li>Keep <code>WASTE_TYPES</code> in <code>waste-sources.ts</code> as an internal classification (it's harmless and the engine can use it later), but stop surfacing it in the UI.</li>
+      <li>Delete the <code>[S20-#8]</code> regression tests that assert the hover renders; keep the data-layer taxonomy tests.</li>
+    </ul>
+    <p class="meta"><b>Files:</b> <code>DrilldownStep.tsx</code>, <code>feedback-regression.test.ts</code>. <span class="risk">Risk: none — purely removing what I over-built.</span></p>
+  </div>
+
+  <!-- SCENE 12 -->
+  <div class="card small">
+    <span class="pill p-copy">copy</span><span class="pill p-done">quick</span>
+    <h3>B · Scene 12 — remove "only" from the Pareto-density copy</h3>
+    <p class="quote">"The pattern only shows once — remove 'only'."</p>
+    <p class="agent">🟢 DR Copywriter</p>
+    <ul>
+      <li>The current shipped min-5 line is <em>"Log at least 5 drains so we can spot your vital few…"</em> — it has no "only", so the live copy may already be fine.</li>
+      <li>Audit the density/min-5 messaging in <code>DrilldownStep.tsx</code> for any "only" and strip it; reword to "the pattern shows once you've logged enough."</li>
+    </ul>
+    <p class="meta"><b>Files:</b> <code>DrilldownStep.tsx</code>. <span class="risk">Risk: none.</span></p>
+  </div>
+
+  <!-- SCENE 4 -->
+  <div class="card med">
+    <span class="pill p-build">to build</span>
+    <h3>C · Scene 4 — "you're calling your whole week a waste" recheck prompt</h3>
+    <p class="quote">"A person should get a heads-up that they're calling their entire week a waste, which is unusual. They should be prompted to recheck their numbers."</p>
+    <p class="agent">🔵 Engineer + 🟢 DR Copywriter</p>
+    <ul>
+      <li>Today's over-cap warning fires when total &gt; the work-week. Add a distinct, softer prompt when total waste is at/near 100% of the work week (e.g. ≥ 90%): "That's nearly your entire week marked as waste — worth a second look. Most weeks aren't all drain."</li>
+      <li>Show it on the intake estimate step and/or the detailed step where totals are summed.</li>
+    </ul>
+    <p class="meta"><b>Files:</b> <code>IntakeStep.tsx</code>, <code>DrilldownStep.tsx</code>. <span class="risk">Risk: low — additive copy + a threshold check.</span></p>
+  </div>
+
+  <!-- SCENE 1 HERO -->
+  <div class="card big">
+    <span class="pill p-build">to build</span><span class="pill p-copy">animation</span>
+    <h3>D · Scene 1 — swap in the v4 hero (Oren-approved), save the old one, add motion</h3>
+    <p class="quote">"Implement this now. Oren approved this whole version… ok to remove the existing hero. Keep it saved so I can use the design elsewhere. Plus, I want some animation here to make the page more lively."</p>
+    <p class="agent">🟠 UI/UX Designer (lead) + 🟢 DR Copywriter (already-approved copy)</p>
+    <ul>
+      <li><b>Save the current hero first:</b> copy <code>Hero.tsx</code> → <code>Feedback Log/saved-sections/Hero.tsx.saved</code> (matches how ToolCards/BenchmarkProof were archived) so you can reuse the WeekCalendar design elsewhere.</li>
+      <li><b>Build the v4 hero:</b> the ring-gauge "~10 typical hrs/wk reclaimed", headline "Get real hours of your week back.", your verbatim subcopy, CTA "Find my hidden hours →", and the "⏱ About 3 minutes · nothing to install" line. (Headline/subcopy/CTA already shipped in S19; this swaps the WeekCalendar visual → the approved ring-gauge layout.)</li>
+      <li><b>Animation:</b> entrance motion on the headline + CTA, and an animated count-up / sweep on the ring gauge so the page feels alive. Use Framer Motion <code>animate</code> (not <code>whileInView</code>) so it renders above the fold and in screenshots.</li>
+    </ul>
+    <p class="meta"><b>Files:</b> <code>Hero.tsx</code>, new <code>Feedback Log/saved-sections/Hero.tsx.saved</code>. <span class="risk">Risk: medium — it's the most visible screen; full screenshot + visual review before ship.</span></p>
+  </div>
+
+  <!-- SCENE 5 -->
+  <div class="card big">
+    <span class="pill p-build">to build (largest)</span><span class="pill p-copy">copy pass</span>
+    <h3>E · Scene 5 — plan + scoring on ONE screen, due-date guidance, verb-form copy</h3>
+    <p class="quote">"Merge this section and scoring impact &amp; effort so a person doesn't have to go back and forth — one less screen and step… It's a due date, not a start date. They should get guidance on when to start and how much time to give a solution — but don't end up with too much text… make the solutions verb/action form ('Kill meetings', not 'No agenda, no meetings'). Consistent all across."</p>
+    <p class="agent">🟣 Senior Architect → 🔵 Engineer → 🟠 UI/UX → 🟢 DR Copywriter → 🔴 QA</p>
+
+    <p style="margin-top:10px"><b>E1 — Inline scoring merge.</b> Today the flow is 3 tabs: <em>Assign Fixes</em> (pick) → <em>Action Plan</em> (rate effort/impact) → <em>EVI Matrix</em> (place + due date). Merge picking + rating so the user rates effort/impact <em>inline on each fix as they assign it</em> — no tab round-trip.</p>
+    <ul>
+      <li>Add the effort/impact dot-raters into the assign/plan card itself (the dot-rater component already exists in <code>FocusTable.tsx</code>).</li>
+      <li>Keep the matrix as the visual payoff view, fed by the inline scores. The store already holds <code>solutionScores</code>, <code>dueDates</code>, <code>ownerOverrides</code> — no schema change needed.</li>
+      <li>Drop the confusing default tag "3.2 hrs/wk wasted" from the cards (your earlier note).</li>
+    </ul>
+
+    <p><b>E2 — Due date + guidance.</b> The matrix column already says "Due" (good). Add light, non-wordy guidance per fix: a suggested <em>start window</em> and <em>time budget</em> derived from its quadrant (e.g. Quick wins → "start this week · ~30 min"; big projects → "block ~half a day"). One short line, not a paragraph.</p>
+
+    <p><b>E3 — Verb-form copy pass (all ~60+ solutions).</b> Rewrite every solution title to lead with an action verb, consistently. Examples: "No agenda, no meeting" → "Kill agenda-less meetings"; "Daily protected deep-work block" → "Block daily deep-work time"; "One owner (DRI) per task" → "Assign one owner per task".</p>
+    <ul>
+      <li>Audit all titles in <code>solutions.ts</code>; rewrite to verb-first.</li>
+      <li>Watch the regression tests — several assert exact solution strings; update them in lockstep.</li>
+      <li><span class="risk">Gotcha (from PROJECT_STATE): some <code>solutions.ts</code> lines contain an em-dash the Edit tool can't match — edit around them / target unique lines.</span></li>
+    </ul>
+    <p class="meta"><b>Files:</b> <code>FocusStage.tsx</code>, <code>SolutionPicker.tsx</code>, <code>FocusTable.tsx</code>, <code>EviMatrix.tsx</code>, <code>solutions.ts</code>, <code>feedback-regression.test.ts</code>, <code>focus-components.test.tsx</code>. <span class="risk">Risk: high — restructures the focus flow + touches the largest copy surface. Build behind the existing tests; screenshot every state.</span></p>
+  </div>
+
+  <h2>Suggested build order (ship each batch green)</h2>
+  <div class="batch">
+    <h3>Batch 5 — quick wins (low risk, same day)</h3>
+    <ol>
+      <li>A · Remove the Scene-8 hover explainer</li>
+      <li>B · Scene 12 "only" copy</li>
+      <li>C · Scene 4 whole-week recheck prompt</li>
+    </ol>
+  </div>
+  <div class="batch">
+    <h3>Batch 6 — the hero (high visibility)</h3>
+    <ol><li>D · v4 hero swap + save old + animation → full screenshot review before ship</li></ol>
+  </div>
+  <div class="batch">
+    <h3>Batch 7 — the plan+scoring merge (largest, most deliberate)</h3>
+    <ol>
+      <li>E3 · Verb-form copy pass first (isolated, testable)</li>
+      <li>E1 · Inline scoring merge</li>
+      <li>E2 · Due-date start/time guidance</li>
+    </ol>
+  </div>
+
+  <h2>Assumptions I'll make unless you say otherwise</h2>
+  <ul>
+    <li><b>Scene 8:</b> remove the hover entirely (not fold it elsewhere) — your note calls the concept redundant.</li>
+    <li><b>Whole-week threshold (Scene 4):</b> trigger the recheck prompt at ≥ 90% of the work week.</li>
+    <li><b>Hero animation:</b> tasteful entrance + ring-gauge count-up, on-brand, not flashy.</li>
+    <li><b>Verb-form copy:</b> I'll rewrite for action-verb consistency and keep meaning; you can veto any specific title.</li>
+  </ul>
+
+  <p class="meta" style="margin-top:24px">Every batch ships through the full gate: tsc · vitest (ratchet) · build · banned-color/window greps · QA hook · QA agent · Playwright screenshots read · deploy to Vercel · live-verify.</p>
+
+</div>
+</body>
+</html>

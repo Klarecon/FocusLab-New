@@ -293,6 +293,26 @@ export default function IntakeStep({ onNext, onBack }: IntakeStepProps) {
         </motion.div>
       )}
 
+      {/* Whole-week heads-up: marking ~all of your week as waste is unusual —
+          nudge a recheck before they go further (Scene 4 / v4 review). */}
+      {totalEstimated >= workHoursPerWeek * 0.9 && totalEstimated <= workHoursPerWeek && (
+        <motion.div
+          role="alert"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="surface-card p-4 mb-6 flex items-start gap-3"
+          style={{
+            borderLeft: "4px solid var(--color-gold)",
+            backgroundColor: "rgba(237, 178, 21, 0.07)",
+          }}
+        >
+          <span className="text-xl flex-shrink-0" aria-hidden="true">🤔</span>
+          <p className="text-sm" style={{ color: "var(--color-ink)" }}>
+            That&apos;s nearly your whole week ({totalEstimated.toFixed(1)} of {workHoursPerWeek} hrs) marked as waste. Most weeks aren&apos;t all drain &mdash; worth a quick double-check of your numbers before we dig in.
+          </p>
+        </motion.div>
+      )}
+
       {/* Nav */}
       <div className="flex items-center justify-between">
         <button

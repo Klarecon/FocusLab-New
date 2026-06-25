@@ -7,8 +7,6 @@ import {
   wasteSourcesForRole,
   groupWasteSources,
   benchmarkCategoryFor,
-  WASTE_TYPES,
-  WASTE_TYPES_RATIONALE,
   type WasteSource,
 } from "@/lib/data/waste-sources";
 import {
@@ -19,79 +17,6 @@ import {
 import { runAudit, type ChainEntry } from "@/lib/engine/audit-logic";
 import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
-
-/**
- * "Why are these grouped?" — a HOVER (per Mona's note: hover, not click)
- * affordance that teaches the four-waste-type framework without a separate
- * screen. Reveals the four type names + their escape-hatch fix hints on hover
- * or keyboard focus. Scene 8 of the Oren redesign, folded in as a teaching
- * device rather than a full re-bucketing of the funnel.
- */
-function WhyGroupedHover() {
-  const [open, setOpen] = useState(false);
-  return (
-    <span
-      className="relative inline-flex"
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
-    >
-      <button
-        type="button"
-        className="inline-flex items-center gap-1.5 text-xs font-semibold cursor-help transition-opacity hover:opacity-80"
-        style={{ color: "var(--color-reclaim)" }}
-        aria-expanded={open}
-        onFocus={() => setOpen(true)}
-        onBlur={() => setOpen(false)}
-      >
-        <span
-          className="inline-flex items-center justify-center w-4 h-4 rounded-full text-[10px] font-bold text-white"
-          style={{ backgroundColor: "var(--color-reclaim)" }}
-          aria-hidden="true"
-        >
-          i
-        </span>
-        why are these grouped?
-      </button>
-
-      {open && (
-        <motion.div
-          initial={{ opacity: 0, y: 4 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.15 }}
-          role="tooltip"
-          className="absolute left-1/2 -translate-x-1/2 top-full mt-2 z-50 w-[min(92vw,420px)] text-left rounded-xl p-4 shadow-lg"
-          style={{
-            backgroundColor: "var(--color-card)",
-            border: "1px solid var(--color-line)",
-            boxShadow: "0 10px 30px rgba(44,36,24,0.14)",
-          }}
-        >
-          <p className="text-sm mb-3" style={{ color: "var(--color-ink-soft)" }}>
-            {WASTE_TYPES_RATIONALE}
-          </p>
-          <div className="space-y-2">
-            {WASTE_TYPES.map((t) => (
-              <div key={t.key} className="flex items-baseline justify-between gap-3">
-                <span
-                  className="text-[11px] font-extrabold uppercase tracking-wider"
-                  style={{ color: "var(--color-ink)" }}
-                >
-                  {t.name}
-                </span>
-                <span
-                  className="text-xs font-semibold whitespace-nowrap"
-                  style={{ color: "var(--color-reclaim)" }}
-                >
-                  → {t.hint}
-                </span>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-      )}
-    </span>
-  );
-}
 
 /**
  * Build a benchmark map: category slug -> typical weekly hours.
@@ -373,9 +298,6 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
         <p style={{ color: "var(--color-ink-soft)" }}>
           These are your biggest time sinks. Check the ones that hit hardest and estimate how much they cost you.
         </p>
-        <div className="mt-3 flex justify-center">
-          <WhyGroupedHover />
-        </div>
       </div>
 
       {/* Sticky floating counter — visible while scrolling, tight to content */}
@@ -706,6 +628,26 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
         </motion.div>
       )}
 
+      {/* Whole-week heads-up (Scene 4 / v4 review): ~all of the week marked
+          as waste is unusual — nudge a recheck. */}
+      {totalDetailed >= workHoursPerWeek * 0.9 && totalDetailed <= workHoursPerWeek && (
+        <motion.div
+          role="alert"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="surface-card p-4 mb-6 flex items-start gap-3"
+          style={{
+            borderLeft: "4px solid var(--color-gold)",
+            backgroundColor: "rgba(237, 178, 21, 0.07)",
+          }}
+        >
+          <span className="text-xl flex-shrink-0" aria-hidden="true">🤔</span>
+          <p className="text-sm" style={{ color: "var(--color-ink)" }}>
+            That&apos;s nearly your whole week ({totalDetailed.toFixed(1)} of {workHoursPerWeek} hrs) marked as waste. Most weeks aren&apos;t all drain &mdash; worth a quick double-check before we dig in.
+          </p>
+        </motion.div>
+      )}
+
       <div className="flex items-center justify-between">
         <button
           type="button"
@@ -718,7 +660,7 @@ export default function DrilldownStep({ onNext, onBack }: DrilldownStepProps) {
         <div className="text-right">
           {drainsWithHours < MIN_DRAINS && (
             <p className="text-xs mb-1" style={{ color: "var(--color-ink-soft)" }}>
-              Log at least {MIN_DRAINS} drains so we can spot your vital few — you&apos;ve got {drainsWithHours}.
+              You&apos;ve logged {drainsWithHours} {drainsWithHours === 1 ? "drain" : "drains"} so far. The pattern shows once you&apos;ve added at least {MIN_DRAINS}, so add a couple more and we&apos;ll map your vital few.
             </p>
           )}
           {hasOverflowCategory && (

@@ -1046,7 +1046,26 @@ describe("Pareto minimum drains (Session 19, Note 15/scene 12&14)", () => {
 
   it("[S19] DrilldownStep coaches toward 5 drains", () => {
     const content = readSrc("components/analyzer/DrilldownStep.tsx");
-    expect(content).toContain("spot your vital few");
+    expect(content).toContain("map your vital few");
+  });
+
+  // S20-V4 Scene 12: approved density copy ported, with "only" removed.
+  it("[S20-V4-#12] min-5 message uses approved copy and drops the word 'only'", () => {
+    const content = readSrc("components/analyzer/DrilldownStep.tsx");
+    expect(content).toContain("The pattern shows once you");
+    expect(content).not.toContain("pattern only shows");
+  });
+
+  // S20-V4 Scene 4: heads-up when ~the whole week is marked as waste.
+  it("[S20-V4-#4] intake + drilldown warn when nearly the whole week is waste", () => {
+    const intake = readSrc("components/analyzer/IntakeStep.tsx");
+    const drill = readSrc("components/analyzer/DrilldownStep.tsx");
+    // 90% threshold guard present in both
+    expect(intake).toContain("workHoursPerWeek * 0.9");
+    expect(drill).toContain("workHoursPerWeek * 0.9");
+    // Recheck heads-up copy present
+    expect(intake).toContain("nearly your whole week");
+    expect(drill).toContain("nearly your whole week");
   });
 
   // S20 — Oren-redesign safe-polish batch (v3 review notes scenes 6, 9)
@@ -1119,12 +1138,12 @@ describe("Pareto minimum drains (Session 19, Note 15/scene 12&14)", () => {
     expect(content).toContain("export function wasteTypeForMuda");
   });
 
-  it("[S20-#8] DrilldownStep teaches the grouping via a HOVER affordance, not click", () => {
+  // S20-V4: Mona's v4 review — Scene 8 ("four waste types shouldn't be a
+  // separate section, it's redundant"). The Drilldown hover explainer was
+  // removed; the WASTE_TYPES taxonomy stays as an internal-only classification.
+  it("[S20-V4-#8] DrilldownStep no longer surfaces the waste-type explainer", () => {
     const content = readSrc("components/analyzer/DrilldownStep.tsx");
-    expect(content).toContain("WhyGroupedHover");
-    expect(content).toContain("why are these grouped?");
-    // Hover-driven: opens on mouse enter / focus, not on a click handler.
-    expect(content).toContain("onMouseEnter");
-    expect(content).toContain("cursor-help");
+    expect(content).not.toContain("WhyGroupedHover");
+    expect(content).not.toContain("why are these grouped?");
   });
 });
