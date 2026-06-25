@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FocusLab — Mobile Stepper Options</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-paper: #f4edde;
+      --color-ink: #2c2418;
+      --color-ink-soft: #655b4d;
+      --color-waste: #e03e12;
+      --color-reclaim: #c4186a;
+      --color-gold: #edb215;
+      --color-line: #ddd4c0;
+      --color-card: #faf6ec;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--color-paper);
+      color: var(--color-ink);
+      padding: 24px;
+    }
+
+    h1 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--color-ink-soft);
+      font-size: 0.85rem;
+      margin-bottom: 32px;
+    }
+
+    .option-section {
+      margin-bottom: 40px;
+    }
+
+    .option-label {
+      font-family: 'Fraunces', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .option-desc {
+      font-size: 0.8rem;
+      color: var(--color-ink-soft);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    /* Phone frame */
+    .phone-frame {
+      width: 375px;
+      max-width: 100%;
+      margin: 0 auto;
+      background: var(--color-card);
+      border: 2px solid var(--color-line);
+      border-radius: 20px;
+      padding: 16px;
+      position: relative;
+    }
+
+    .phone-frame::before {
+      content: 'iPhone SE — 375px';
+      position: absolute;
+      top: -20px;
+      left: 16px;
+      font-size: 0.65rem;
+      color: var(--color-ink-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Fake page content below stepper */
+    .page-content {
+      margin-top: 16px;
+      padding: 16px;
+      background: var(--color-paper);
+      border-radius: 12px;
+      border: 1px solid var(--color-line);
+    }
+
+    .page-content h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+    }
+
+    .page-content p {
+      font-size: 0.8rem;
+      color: var(--color-ink-soft);
+      line-height: 1.5;
+    }
+
+    /* =========================================
+       OPTION A — Compact Horizontal
+       ========================================= */
+    .stepper-compact {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0;
+      margin-bottom: 0;
+    }
+
+    .stepper-compact .step-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .stepper-compact .step-row {
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .stepper-compact .connector {
+      flex: 1;
+      height: 3px;
+      border-radius: 2px;
+      transition: background 0.3s;
+    }
+
+    .stepper-compact .dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      color: white;
+    }
+
+    .stepper-compact .step-label {
+      font-size: 0.6rem;
+      font-weight: 600;
+      white-space: nowrap;
+      text-align: center;
+    }
+
+    /* States */
+    .dot.completed { background: var(--color-reclaim); }
+    .dot.current { background: linear-gradient(135deg, var(--color-waste), var(--color-reclaim)); box-shadow: 0 2px 8px rgba(224,62,18,0.3); }
+    .dot.future { background: var(--color-line); color: var(--color-ink-soft); }
+    .connector.done { background: var(--color-waste); }
+    .connector.pending { background: var(--color-line); }
+    .label-completed { color: var(--color-ink); }
+    .label-current { color: var(--color-waste); }
+    .label-future { color: var(--color-ink-soft); }
+
+    /* =========================================
+       OPTION B — Progress Bar
+       ========================================= */
+    .stepper-progress {
+      margin-bottom: 0;
+    }
+
+    .progress-text {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+
+    .progress-step-name {
+      font-family: 'Fraunces', serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--color-waste);
+    }
+
+    .progress-count {
+      font-size: 0.75rem;
+      color: var(--color-ink-soft);
+      font-weight: 600;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: var(--color-line);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, var(--color-reclaim), var(--color-waste));
+      transition: width 0.4s ease;
+    }
+
+    /* =========================================
+       OPTION C — Mini Dots
+       ========================================= */
+    .stepper-dots {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 0;
+    }
+
+    .dots-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .mini-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      transition: all 0.3s;
+    }
+
+    .mini-dot.completed { background: var(--color-reclaim); }
+    .mini-dot.current {
+      width: 14px;
+      height: 14px;
+      background: linear-gradient(135deg, var(--color-waste), var(--color-reclaim));
+      box-shadow: 0 2px 8px rgba(224,62,18,0.3);
+    }
+    .mini-dot.future { background: var(--color-line); }
+
+    .dots-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .dots-emoji {
+      font-size: 1rem;
+    }
+
+    /* =========================================
+       Comparison: Desktop (current)
+       ========================================= */
+    .desktop-frame {
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto;
+      background: var(--color-card);
+      border: 2px solid var(--color-line);
+      border-radius: 12px;
+      padding: 24px;
+      position: relative;
+    }
+
+    .desktop-frame::before {
+      content: 'Desktop — current (unchanged)';
+      position: absolute;
+      top: -20px;
+      left: 16px;
+      font-size: 0.65rem;
+      color: var(--color-ink-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stepper-desktop {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2px;
+    }
+
+    .stepper-desktop .step-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .stepper-desktop .step-row {
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .stepper-desktop .connector {
+      flex: 1;
+      height: 4px;
+      border-radius: 2px;
+    }
+
+    .stepper-desktop .dot {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      color: white;
+    }
+
+    .stepper-desktop .step-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* Divider */
+    hr {
+      border: none;
+      border-top: 1px solid var(--color-line);
+      margin: 40px 0;
+    }
+
+    .vote-banner {
+      text-align: center;
+      padding: 16px;
+      background: var(--color-card);
+      border: 2px solid var(--color-waste);
+      border-radius: 12px;
+      margin-top: 32px;
+    }
+
+    .vote-banner p {
+      font-family: 'Fraunces', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--color-waste);
+    }
+
+    .vote-banner .hint {
+      font-size: 0.8rem;
+      color: var(--color-ink-soft);
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Mobile Stepper — Pick One</h1>
+  <p class="subtitle">All 3 options only affect screens under 640px. Desktop stays exactly as-is.</p>
+
+  <!-- DESKTOP REFERENCE -->
+  <div class="option-section">
+    <div class="option-label">🖥️ Desktop (current — no changes)</div>
+    <div class="option-desc">This is what users see today on desktop. It stays exactly the same regardless of which mobile option you pick.</div>
+    <div class="desktop-frame">
+      <nav class="stepper-desktop">
+        <!-- Step 1 - completed -->
+        <div class="step-item">
+          <div class="step-row">
+            <div class="dot completed">
+              <svg width="16" height="16" viewBox="0 0 14 14" fill="none"><path d="M2 7.5L5.5 11L12 3" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="connector done"></div>
+          </div>
+          <span class="step-label label-completed">🎯 Role</span>
+        </div>
+        <!-- Step 2 - current -->
+        <div class="step-item">
+          <div class="step-row">
+            <div class="connector done"></div>
+            <div class="dot current">2</div>
+            <div class="connector pending"></div>
+          </div>
+          <span class="step-label label-current">⚙️ Context</span>
+        </div>
+        <!-- Step 3 - future -->
+        <div class="step-item">
+          <div class="step-row">
+            <div class="connector pending"></div>
+            <div class="dot future">3</div>
+            <div class="connector pending"></div>
+          </div>
+          <span class="step-label label-future">🧠 Your Time</span>
+        </div>
+        <!-- Step 4 - future -->
+        <div class="step-item">
+          <div class="step-row">
+            <div class="connector pending"></div>
+            <div class="dot future">4</div>
+            <div class="connector pending"></div>
+          </div>
+          <span class="step-label label-future">🔍 Details</span>
+        </div>
+        <!-- Step 5 - future -->
+        <div class="step-item">
+          <div class="step-row">
+            <div class="connector pending"></div>
+            <div class="dot future">5</div>
+          </div>
+          <span class="step-label label-future">🤯 Results</span>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- OPTION A — Compact Horizontal -->
+  <div class="option-section">
+    <div class="option-label">🅰️ Compact Horizontal</div>
+    <div class="option-desc">Same circles-in-a-row pattern as desktop, but smaller (32px instead of 44px). Labels shrink but stay visible. Feels familiar — just tighter.</div>
+    <div class="phone-frame">
+      <nav class="stepper-compact">
+        <!-- Step 1 - completed -->
+        <div class="step-item">
+          <div class="step-row">
+            <div class="dot completed" style="width:32px;height:32px;">
+              <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M2 7.5L5.5 11L12 3" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="connector done"></div>
+          </div>
+          <span class="step-label label-completed">🎯 Role</span>
+        </div>
+        <!-- Step 2 - current -->
+        <div class="step-item">
+          <div class="step-row">
+            <div class="connector done"></div>
+            <div class="dot current" style="width:32px;height:32px;">2</div>
+            <div class="connector pending"></div>
+          </div>
+          <span class="step-label label-current">⚙️ Context</span>
+        </div>
+        <!-- Step 3 - future -->
+        <div class="step-item">
+          <div class="step-row">
+            <div class="connector pending"></div>
+            <div class="dot future" style="width:32px;height:32px;">3</div>
+            <div class="connector pending"></div>
+          </div>
+          <span class="step-label label-future">🧠 Time</span>
+        </div>
+        <!-- Step 4 - future -->
+        <div class="step-item">
+          <div class="step-row">
+            <div class="connector pending"></div>
+            <div class="dot future" style="width:32px;height:32px;">4</div>
+            <div class="connector pending"></div>
+          </div>
+          <span class="step-label label-future">🔍 Details</span>
+        </div>
+        <!-- Step 5 - future -->
+        <div class="step-item">
+          <div class="step-row">
+            <div class="connector pending"></div>
+            <div class="dot future" style="width:32px;height:32px;">5</div>
+          </div>
+          <span class="step-label label-future">🤯 Results</span>
+        </div>
+      </nav>
+
+      <div class="page-content">
+        <h3>⚙️ Context</h3>
+        <p>How many days a week do you typically work? This helps us calculate your time budget.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- OPTION B — Progress Bar -->
+  <div class="option-section">
+    <div class="option-label">🅱️ Progress Bar</div>
+    <div class="option-desc">Replaces the circles with a clean progress bar. Shows the current step name and "Step X of 5". Minimal, saves vertical space, very readable.</div>
+    <div class="phone-frame">
+      <nav class="stepper-progress">
+        <div class="progress-text">
+          <span class="progress-step-name">⚙️ Context</span>
+          <span class="progress-count">Step 2 of 5</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width: 40%;"></div>
+        </div>
+      </nav>
+
+      <div class="page-content">
+        <h3>⚙️ Context</h3>
+        <p>How many days a week do you typically work? This helps us calculate your time budget.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- OPTION C — Mini Dots -->
+  <div class="option-section">
+    <div class="option-label">🅲 Mini Dots</div>
+    <div class="option-desc">Small dots like a carousel/slideshow indicator. The current step is slightly larger and glowing. Step name shown below the dots. Very compact.</div>
+    <div class="phone-frame">
+      <nav class="stepper-dots">
+        <div class="dots-row">
+          <div class="mini-dot completed"></div>
+          <div class="mini-dot current"></div>
+          <div class="mini-dot future"></div>
+          <div class="mini-dot future"></div>
+          <div class="mini-dot future"></div>
+        </div>
+        <span class="dots-label"><span class="dots-emoji">⚙️</span> <span class="label-current">Context</span></span>
+      </nav>
+
+      <div class="page-content">
+        <h3>⚙️ Context</h3>
+        <p>How many days a week do you typically work? This helps us calculate your time budget.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="vote-banner">
+    <p>Which one feels right for FocusLab?</p>
+    <div class="hint">Tell Claude: A, B, or C</div>
+  </div>
+
+</body>
+</html>

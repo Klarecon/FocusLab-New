@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 const STEPS = [
   { label: "Role", emoji: "🎯" },
   { label: "Context", emoji: "⚙️" },
-  { label: "Log your week", emoji: "🧠" },
+  { label: "Log your waste", emoji: "🧠" },
   { label: "Results", emoji: "🤯" },
 ];
 

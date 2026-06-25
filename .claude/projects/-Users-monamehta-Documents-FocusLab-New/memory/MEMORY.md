@@ -1,0 +1,1 @@
+- [Vercel deploy author email](feedback_vercel_deploy.md) — Hobby plan blocks deploys if git email ≠ mona@klarecon.com

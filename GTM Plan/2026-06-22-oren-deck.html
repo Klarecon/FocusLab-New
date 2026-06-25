@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FocusLab — The Value Story (Oren Deck)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+  :root {
+    --waste-orange: #e03e12;
+    --reclaim-pink: #c4186a;
+    --gold: #edb215;
+    --cream: #fbf6ee;
+    --ink: #2b2018;
+    --muted: #6f6258;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #ded3c4;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    padding: 48px 32px;
+    color: var(--ink);
+  }
+
+  .slide {
+    width: 100%;
+    max-width: 1100px;
+    aspect-ratio: 16 / 9;
+    background: var(--cream);
+    border-radius: 20px;
+    box-shadow: 0 30px 80px rgba(43,32,24,0.28);
+    padding: 52px 64px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slide::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 8px;
+  }
+  .s1::before { background: linear-gradient(90deg, var(--waste-orange), var(--reclaim-pink), var(--gold)); }
+  .s2::before { background: linear-gradient(90deg, var(--gold), var(--reclaim-pink), var(--waste-orange)); }
+  .s3::before { background: linear-gradient(90deg, var(--reclaim-pink), var(--gold), var(--waste-orange)); }
+
+  .kicker {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .s1 .kicker { color: var(--waste-orange); }
+  .s2 .kicker, .s3 .kicker { color: var(--reclaim-pink); }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 44px;
+    line-height: 1.05;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    max-width: 20ch;
+  }
+  h1 .accent { color: var(--reclaim-pink); }
+
+  /* ---------- Slide 1 ---------- */
+  .quote {
+    margin: 24px 0;
+    border-left: 4px solid var(--gold);
+    padding: 4px 0 4px 22px;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.35;
+    max-width: 40ch;
+  }
+  .quote span { color: var(--muted); font-style: normal; font-family: 'Plus Jakarta Sans'; font-size: 14px; display:block; margin-top:8px; font-weight:600; }
+
+  .stats { display: flex; gap: 18px; }
+  .stat {
+    flex: 1; background: #fff; border: 1px solid #ece0d0;
+    border-radius: 14px; padding: 20px 22px;
+  }
+  .stat .num { font-family: 'Fraunces', serif; font-size: 40px; font-weight: 700; line-height: 1; color: var(--waste-orange); }
+  .stat:nth-child(2) .num { color: var(--reclaim-pink); }
+  .stat:nth-child(3) .num { color: var(--gold); }
+  .stat .label { margin-top: 10px; font-size: 13.5px; line-height: 1.4; color: var(--muted); font-weight: 500; }
+
+  /* ---------- Shared dark bar ---------- */
+  .bar {
+    background: var(--ink); color: var(--cream);
+    border-radius: 14px; padding: 22px 28px;
+    display: flex; align-items: center; gap: 20px;
+  }
+  .bar .tag {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--gold); white-space: nowrap;
+  }
+  .bar p { font-size: 17px; line-height: 1.4; font-weight: 500; }
+  .bar b { color: #fff; font-weight: 700; }
+
+  /* ---------- Slide 2 ---------- */
+  .steps { display: flex; gap: 16px; margin: 6px 0; }
+  .step {
+    flex: 1; background: #fff; border: 1px solid #ece0d0;
+    border-radius: 14px; padding: 18px 22px;
+  }
+  .step .n {
+    font-family: 'Fraunces', serif; font-size: 15px; font-weight: 700; color: #fff;
+    background: var(--waste-orange); width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; margin-bottom: 12px;
+  }
+  .step:nth-child(2) .n { background: var(--reclaim-pink); }
+  .step:nth-child(3) .n { background: var(--gold); color: var(--ink); }
+  .step h3 { font-family: 'Fraunces', serif; font-size: 21px; font-weight: 600; margin-bottom: 6px; }
+  .step p { font-size: 13.5px; line-height: 1.45; color: var(--muted); font-weight: 500; }
+
+  .diff {
+    text-align: center; font-family: 'Fraunces', serif;
+    font-size: 24px; line-height: 1.3; font-weight: 500; margin: 2px 0;
+  }
+  .diff b { color: var(--reclaim-pink); font-weight: 700; }
+  .diff s { color: var(--muted); text-decoration-color: var(--waste-orange); }
+
+  /* ---------- Slide 3 (comparison) ---------- */
+  .compare { display: flex; gap: 16px; margin: 4px 0; }
+  .col {
+    flex: 1; background: #fff; border: 1px solid #ece0d0;
+    border-radius: 14px; padding: 22px 22px; display: flex; flex-direction: column;
+  }
+  .col.win { background: var(--ink); border-color: var(--ink); }
+  .col .name {
+    font-family: 'Fraunces', serif; font-size: 21px; font-weight: 700; margin-bottom: 4px;
+  }
+  .col.win .name { color: var(--gold); }
+  .col .role { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+  .col.win .role { color: #c9bcab; }
+  .col ul { list-style: none; display: flex; flex-direction: column; gap: 11px; flex: 1; }
+  .col li { font-size: 14px; line-height: 1.35; font-weight: 500; padding-left: 24px; position: relative; }
+  .col li::before { position: absolute; left: 0; top: -1px; font-size: 15px; }
+  .col li.no::before { content: "✕"; color: var(--waste-orange); font-weight: 700; }
+  .col li.meh::before { content: "~"; color: var(--gold); font-weight: 700; }
+  .col.win { color: var(--cream); }
+  .col.win li.yes::before { content: "✓"; color: var(--gold); font-weight: 700; }
+  .col.win b { color: #fff; }
+
+  .footer {
+    position: absolute; bottom: 16px; right: 26px;
+    font-size: 11px; color: #b6a896; letter-spacing: 0.04em;
+  }
+
+  @media print {
+    body { background: #fff; gap: 0; padding: 0; }
+    .slide { box-shadow: none; border-radius: 0; page-break-after: always; max-width: 100%; height: 100vh; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ================= SLIDE 1 — PROBLEM ================= -->
+  <div class="slide s1">
+    <div>
+      <div class="kicker">The Problem</div>
+      <h1>Managers are drowning — and they <span class="accent">can't see why.</span></h1>
+      <div class="quote">
+        "90% of my life is admin. I'm exhausted. Where am I going to find the time to be strategic?"
+        <span>— the complaint behind every burnt-out manager survey</span>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="num">53%</div><div class="label">of managers say there aren't enough hours in the week to do their job</div></div>
+      <div class="stat"><div class="num">&lt;50%</div><div class="label">of their time is spent actually managing — the rest vanishes into firefighting</div></div>
+      <div class="stat"><div class="num">75%</div><div class="label">report extreme burnout — 3× more than anyone else in the org</div></div>
+    </div>
+    <div class="bar">
+      <div class="tag">Why&nbsp;Now</div>
+      <p>The pain is documented, expensive, and growing — yet managers still can't <b>see</b> where their week goes. They're begging for the fix in public. <b>FocusLab is the tool they don't have yet.</b></p>
+    </div>
+    <div class="footer">FocusLab · 1 / 3 · Problem &amp; Why Now</div>
+  </div>
+
+  <!-- ================= SLIDE 2 — THE FIX ================= -->
+  <div class="slide s2">
+    <div>
+      <div class="kicker">The Fix</div>
+      <h1>FocusLab gives managers back the one thing burnout steals: <span class="accent">time to actually lead.</span></h1>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><h3>See it</h3><p>Surfaces the invisible waste eating the week — the drag they feel but can't name.</p></div>
+      <div class="step"><div class="n">2</div><h3>Rank it</h3><p>Pinpoints the 20% causing 80% of the drain, so they know exactly where to start.</p></div>
+      <div class="step"><div class="n">3</div><h3>Fix it</h3><p>Hands over a concrete action plan — not more data, a decision they can act on today.</p></div>
+    </div>
+    <div class="diff">Every other tool <s>shows you data.</s><br />FocusLab <b>tells you what to do about it.</b></div>
+    <div class="bar">
+      <div class="tag">Why&nbsp;Pay</div>
+      <p>Diagnosing, prioritizing, and prescribing the fix are three things almost no one does alone. FocusLab does all three in <b>15 minutes</b> — turning "I'm slammed and nothing's moving" into <b>"here's the one thing I'm fixing this week."</b></p>
+    </div>
+    <div class="footer">FocusLab · 2 / 3 · The Fix</div>
+  </div>
+
+  <!-- ================= SLIDE 3 — PROOF / COMPARISON ================= -->
+  <div class="slide s3">
+    <div>
+      <div class="kicker">Why Not Just Use…</div>
+      <h1>The alternatives each do <span class="accent">one piece.</span> FocusLab does all three.</h1>
+    </div>
+    <div class="compare">
+      <div class="col">
+        <div class="name">Time-tracker apps</div>
+        <div class="role">Toggl, RescueTime</div>
+        <ul>
+          <li class="meh">Show you the raw data</li>
+          <li class="no">You interpret it yourself</li>
+          <li class="no">No idea what to fix first</li>
+          <li class="no">No plan — just dashboards</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="name">A consultant</div>
+        <div class="role">$5k+, weeks of calendar</div>
+        <ul>
+          <li class="yes" style="color:var(--ink)">Diagnoses &amp; plans well</li>
+          <li class="no">Slow — books out weeks</li>
+          <li class="no">One-off — gone next quarter</li>
+          <li class="no">Doesn't scale past you</li>
+        </ul>
+      </div>
+      <div class="col win">
+        <div class="name">FocusLab</div>
+        <div class="role">15 minutes, on demand</div>
+        <ul>
+          <li class="yes"><b>See</b> the waste — measured</li>
+          <li class="yes"><b>Rank</b> it — the vital 20%</li>
+          <li class="yes"><b>Fix</b> it — a real plan</li>
+          <li class="yes">Repeatable, every week</li>
+        </ul>
+      </div>
+    </div>
+    <div class="bar">
+      <div class="tag">The&nbsp;Wedge</div>
+      <p>Trackers give data without direction. Consultants give direction without scale. <b>FocusLab is the only one that diagnoses, prioritizes, and prescribes — in one sitting, again and again.</b></p>
+    </div>
+    <div class="footer">FocusLab · 3 / 3 · Why It Wins</div>
+  </div>
+
+</body>
+</html>

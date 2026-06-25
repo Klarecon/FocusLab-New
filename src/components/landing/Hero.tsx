@@ -7,7 +7,6 @@ import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { Highlighter } from "@/components/ui/highlighter";
 import { Particles } from "@/components/ui/particles";
-import { BorderBeam } from "@/components/ui/border-beam";
 
 /**
  * v4 hero ring gauge (Oren-approved). A pink arc sweeps in and the centre
@@ -96,9 +95,6 @@ export default function Hero() {
             staticity={40}
             aria-hidden="true"
           />
-          {/* Rotating border beam — Magic UI (note 6) */}
-          <BorderBeam size={300} duration={9} borderWidth={2.5} />
-
           <div className="relative z-10 flex flex-col items-center">
         {/* Eyebrow */}
         <motion.p

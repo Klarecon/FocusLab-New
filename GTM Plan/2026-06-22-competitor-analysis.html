@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FocusLab — Competitor Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --waste-orange:#e03e12;
+    --reclaim-pink:#c4186a;
+    --gold:#edb215;
+    --cream:#fbf6ee;
+    --ink:#2a2320;
+    --muted:#6b615a;
+    --line:#ece2d4;
+    --card:#fffdf9;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Plus Jakarta Sans',system-ui,sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    line-height:1.6;
+    padding:48px 20px 80px;
+  }
+  .wrap{max-width:920px;margin:0 auto;}
+  .kicker{
+    font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--reclaim-pink);font-weight:700;margin-bottom:12px;
+  }
+  h1{
+    font-family:'Fraunces',serif;font-weight:700;
+    font-size:2.8rem;line-height:1.08;letter-spacing:-.01em;margin-bottom:14px;
+  }
+  h1 .accent{color:var(--waste-orange);}
+  .sub{font-size:1.15rem;color:var(--muted);max-width:680px;margin-bottom:14px;}
+  .meta{font-size:.85rem;color:var(--muted);margin-bottom:40px;}
+  h2{
+    font-family:'Fraunces',serif;font-weight:600;font-size:1.85rem;
+    margin:48px 0 6px;letter-spacing:-.01em;
+  }
+  .ring-tag{
+    display:inline-block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+    font-weight:700;padding:4px 10px;border-radius:999px;margin-bottom:14px;
+  }
+  .r1{background:rgba(196,24,106,.12);color:var(--reclaim-pink);}
+  .r2{background:rgba(224,62,18,.12);color:var(--waste-orange);}
+  .r3{background:rgba(237,178,21,.18);color:#9a7400;}
+  .lead{color:var(--muted);font-size:1.02rem;margin-bottom:20px;max-width:760px;}
+  .lead strong{color:var(--ink);}
+
+  .frame{
+    background:linear-gradient(135deg,#fff6f9,#fff);
+    border:1px solid var(--line);border-left:5px solid var(--reclaim-pink);
+    border-radius:14px;padding:26px 28px;margin:8px 0 28px;
+  }
+  .frame h3{font-family:'Fraunces',serif;font-size:1.25rem;font-weight:600;margin-bottom:10px;}
+  .frame p{color:var(--muted);}
+  .frame p strong{color:var(--ink);}
+
+  table{
+    width:100%;border-collapse:collapse;background:var(--card);
+    border:1px solid var(--line);border-radius:12px;overflow:hidden;
+    margin-bottom:14px;font-size:.95rem;
+  }
+  th{
+    background:var(--ink);color:#fff;text-align:left;padding:13px 16px;
+    font-weight:600;font-size:.82rem;letter-spacing:.04em;text-transform:uppercase;
+  }
+  td{padding:14px 16px;border-top:1px solid var(--line);vertical-align:top;}
+  td:first-child{font-weight:700;color:var(--ink);white-space:nowrap;}
+  tr:nth-child(even) td{background:rgba(0,0,0,.012);}
+
+  .chips{margin-bottom:8px;}
+  .chip{
+    display:inline-block;background:var(--card);border:1px solid var(--line);
+    border-radius:10px;padding:10px 14px;margin:0 8px 10px 0;font-size:.92rem;
+  }
+  .chip b{color:var(--ink);}
+  .chip span{color:var(--muted);}
+
+  ul.notes{list-style:none;margin:6px 0 24px;}
+  ul.notes li{
+    position:relative;padding:8px 0 8px 28px;color:var(--ink);border-bottom:1px solid var(--line);
+  }
+  ul.notes li:last-child{border-bottom:none;}
+  ul.notes li::before{
+    content:"";position:absolute;left:4px;top:16px;width:9px;height:9px;
+    border-radius:50%;background:var(--waste-orange);
+  }
+  ul.notes li b{color:var(--reclaim-pink);}
+
+  .takeaway{
+    background:var(--ink);color:#fff;border-radius:16px;padding:34px 34px 30px;margin:46px 0 30px;
+  }
+  .takeaway h2{color:#fff;margin-top:0;}
+  .takeaway ol{margin:14px 0 0 20px;}
+  .takeaway li{margin-bottom:14px;padding-left:6px;}
+  .takeaway li b{color:var(--gold);}
+  .takeaway li .pink{color:#ff8fc0;}
+
+  .footnote{font-size:.8rem;color:var(--muted);border-top:1px solid var(--line);padding-top:18px;margin-top:40px;}
+  .footnote a{color:var(--reclaim-pink);text-decoration:none;}
+  .footnote a:hover{text-decoration:underline;}
+  .src-list{columns:2;column-gap:32px;margin-top:8px;}
+  @media(max-width:680px){
+    h1{font-size:2.1rem;}
+    table{font-size:.85rem;}
+    td,th{padding:10px;}
+    .src-list{columns:1;}
+    body{padding:32px 14px 60px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="kicker">FocusLab · GTM</div>
+  <h1>Who we're really up against <span class="accent">— and why most of them aren't us</span></h1>
+  <p class="sub">A competitive map for the deck. The headline: FocusLab is <strong>not</strong> a time tracker and <strong>not</strong> a calendar tool. It's a self-input diagnostic — answer questions for 15 minutes, walk away with a ranked action plan. That narrow definition changes who actually competes with us.</p>
+  <p class="meta">Prepared 22 June 2026 · sources at the bottom</p>
+
+  <div class="frame">
+    <h3>The one-line frame for investors 🫠</h3>
+    <p><strong>Trackers</strong> take four weeks to tell you the problem. <strong>Schedulers</strong> rearrange your calendar but never name the waste. <strong>Quizzes</strong> give you a personality type. <strong>FocusLab</strong> diagnoses the vital few sources of waste and hands you a ranked fix — in 15 minutes, one sitting.</p>
+  </div>
+
+  <!-- RING 1 -->
+  <h2>Ring 1 — Direct competitors</h2>
+  <span class="ring-tag r1">Same job · diagnose → prioritize → plan · fast · no tracking</span>
+  <p class="lead">These ask the user some questions and hand back a personalized plan — the same click we're fighting for. <strong>None is a true twin.</strong> They're mostly lead-magnet quizzes bolted onto a coaching or SaaS brand: shallow output, no real Pareto engine, no impact/effort ranking. That gap is our opening.</p>
+
+  <table>
+    <thead><tr><th>Tool</th><th>What it does</th><th>How it differs from FocusLab</th></tr></thead>
+    <tbody>
+      <tr><td>The ONE Thing — Productivity Quiz</td><td>3-min quiz → "productivity pattern" + custom action plan</td><td>Lead-gen quiz for a book/coaching brand. Generic output, no ranked waste sources.</td></tr>
+      <tr><td>Productivity Breakthrough Quiz <span style="font-weight:400;color:var(--muted)">(Lynne Edris)</span></td><td>Identifies your "productivity type" + customized plan</td><td>Coaching funnel, personality-typing — not root-cause waste diagnosis.</td></tr>
+      <tr><td>BeeProductive — "#1 Productivity Killer"</td><td>Names your single biggest productivity killer + action plan</td><td>Closest <i>positioning</i> match ("busy → productive"). But single-killer, not a Pareto ranking of the vital few.</td></tr>
+      <tr><td>ClickUp — "How productive is your org?"</td><td>15-Q org maturity quiz (built with IDC)</td><td>Org-level B2B lead magnet. Not individual-manager, not an action plan.</td></tr>
+      <tr><td>Mindtools — "How Productive Are You?"</td><td>Scores 5 elements incl. delegation</td><td>Score + reading list from a trusted brand — not a ranked fix plan.</td></tr>
+    </tbody>
+  </table>
+  <ul class="notes">
+    <li><b>The opening:</b> our moat is depth of diagnosis + a genuinely ranked, actionable plan — not another "you're a Visionary type 🎉" result.</li>
+  </ul>
+
+  <!-- RING 2 -->
+  <h2>Ring 2 — Adjacent</h2>
+  <span class="ring-tag r2">Same pain, different method · our pitch attacks these head-on</span>
+  <p class="lead">These are what an investor will <strong>name</strong> the moment they hear "where does my time go." We need a crisp answer for why we're not them.</p>
+
+  <div class="chips">
+    <div class="chip"><b>Time trackers &amp; analytics</b><br><span>RescueTime · Rize · Timely · Toggl · Clockify · Hubstaff · Time Doctor</span></div>
+    <div class="chip"><b>AI calendar &amp; scheduling</b><br><span>Reclaim.ai · Motion · Clockwise · Morgen · Akiflow</span></div>
+  </div>
+  <ul class="notes">
+    <li><b>Trackers:</b> passively measure where time goes. Our <i>"15 minutes, not four weeks"</i> line is aimed straight at them — they reveal the problem after weeks of data and never hand you a fix.</li>
+    <li><b>Schedulers:</b> optimize time (block focus, auto-schedule). They never diagnose root-cause waste or produce a "stop doing X" plan.</li>
+  </ul>
+
+  <!-- RING 3 -->
+  <h2>Ring 3 — Substitutes</h2>
+  <span class="ring-tag r3">What managers use today instead of any tool</span>
+  <p class="lead">The status quo is our <strong>biggest real competitor</strong> — not another app.</p>
+  <ul class="notes">
+    <li><b>Coaching platforms:</b> BetterUp Manage, Waggle, Cloverleaf — the premium, ongoing, expensive version of "help me lead better."</li>
+    <li><b>DIY:</b> a spreadsheet time audit, the Eisenhower matrix, a Pareto template in Asana/Notion, or a one-off consultant. <i>"Just do it yourself"</i> is what we have to beat.</li>
+  </ul>
+
+  <!-- TAKEAWAY -->
+  <div class="takeaway">
+    <h2>The strategic read</h2>
+    <ol>
+      <li><b>No exact twin.</b> Closest matches (BeeProductive, The ONE Thing) are thin lead-magnet quizzes, not products. Green field — but we'll have to <i>teach</i> the category.</li>
+      <li><b>Our edge is the Pareto engine + ranked action plan.</b> Quizzes give vibes; trackers give data; <span class="pink">we give a prioritized fix list.</span></li>
+      <li><b>Investors will pattern-match us to RescueTime / Reclaim.</b> Pre-empt it: "We're not a tracker. Trackers take four weeks to tell you the problem. We tell you the fix in 15 minutes."</li>
+      <li><b>Watch the incumbents.</b> Reclaim, Motion, or ClickUp could bolt a "15-min diagnostic" onto existing distribution. Speed and depth-of-methodology are our defense.</li>
+    </ol>
+  </div>
+
+  <div class="footnote">
+    <b>Sources</b>
+    <div class="src-list">
+      <a href="https://rize.io/blog/time-audit">Rize — Time Audit, Best Tools 2026</a><br>
+      <a href="https://clickup.com/blog/reclaim-ai-alternatives/">ClickUp — Best Reclaim AI Alternatives 2026</a><br>
+      <a href="https://reclaim.ai/blog/pareto-principle-for-priority-management">Reclaim.ai — Pareto for Priority Management</a><br>
+      <a href="https://the1thing.info/quiz">The ONE Thing — Productivity Quiz</a><br>
+      <a href="https://beeproductive.eu/productivity/">BeeProductive — #1 Productivity Killer</a><br>
+      <a href="https://clickup.com/general-resources/productivity-quiz">ClickUp — Org Productivity Quiz</a><br>
+      <a href="https://www.mindtools.com/ai3awid/how-productive-are-you/">Mindtools — How Productive Are You?</a><br>
+      <a href="https://cloverleaf.me/blog/best-ai-coaching-platforms-for-managers-and-teams/">Cloverleaf — AI Coaching Platforms 2026</a><br>
+      <a href="https://www.betterup.com/">BetterUp</a>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

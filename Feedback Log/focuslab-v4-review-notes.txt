@@ -1,0 +1,45 @@
+FocusLab v4 mockup — Mona's review notes
+(generated from the inline review HTML)
+
+## 0 · Removed from the homepage
+  • Scene 0 · Removals: Ok
+
+## 1 · Landing hero
+  • Scene 1 · Hero: Implement this now. Oren approved this whole version. It's ok to remove the existing hero version on the landing page. Keep it saved though so I can use the design elsewhere when I want. Plus, I want some animation here to make the page more lively.
+
+## 2 · Landing — below the hero
+  • Scene 2 · Below the hero: Ok
+
+## 3 · Log your week — ONE screen
+  • Scene 3 · Intake screen: Ok
+
+## 4 · Logged more than your week?
+  • Scene 4 · Over-cap: This ok. Also, a person should get a headsup that they're calling their entire week a waste, which is unusual. They should be prompted to recheck their numbers
+
+## 5 · Your plan — fixes + scoring on ONE screen
+  • Scene 5 · Merged plan + scoring: It's not a start date, it's a due date. They should receive some guidance on when to start and how much time to give to a solution. But, I don't want to end up having too much text on the screen. And ask the DR copywriter to make the solutions in verb/action form. For example, "Kill meetings" contains a verb/action. "No agenda, no meetings" doesn't. The language should be consistent all across
+
+## 6 · The payoff
+  • Scene 6 · Payoff (Magic UI): Ok
+
+## 7 · EVI Matrix
+  • Scene 7 · Matrix emojis: Ok
+
+## 8 · The four waste types
+  • Scene 8 · Waste types: This shouldn't be a separate section or screen, it becomes redundant. I commented about it before
+
+## 9 · "How did you get this?"
+  • Scene 9 · Show the math: Ok
+
+## 10 · Empty fields that explain themselves
+  • Scene 10 · Blank states: Ok
+
+## 11 · You can't skip a rating
+  • Scene 11 · Rating validation: Ok
+
+## 12 · Pareto needs enough sources
+  • Scene 12 · Pareto density: The pattern only shows once -- remove "only"
+
+## 13 · Hours vs % — decided
+  • Scene 13 · Hours decided: Ok
+

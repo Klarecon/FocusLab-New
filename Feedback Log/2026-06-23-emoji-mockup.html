@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drilldown Emoji Mockup — unique per category</title>
+<style>
+  :root {
+    --waste: #e03e12; --reclaim: #c4186a; --gold: #edb215;
+    --ink: #2a2320; --ink-soft: #6b5f57;
+    --cream: #fdf6ec; --surface: #fffaf2; --line: #ece0d0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, system-ui, sans-serif;
+    background: var(--cream); color: var(--ink);
+    margin: 0; padding: 44px 24px; line-height: 1.5;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+  h1 { font-family: 'Fraunces', Georgia, serif; font-size: 2.1rem; margin: 0 0 4px; }
+  .sub { color: var(--ink-soft); margin: 0 0 28px; max-width: 720px; }
+  h2 { font-family: 'Fraunces', serif; font-size: 1.35rem; margin: 36px 0 6px; }
+  .scenario { color: var(--ink-soft); font-size: 0.92rem; margin: 0 0 16px; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 820px) { .cols { grid-template-columns: 1fr; } }
+  .panel-label {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+    padding: 4px 11px; border-radius: 999px; color: #fff; display: inline-block; margin-bottom: 12px;
+  }
+  .lbl-before { background: var(--waste); }
+  .lbl-after { background: var(--reclaim); }
+
+  /* faithful drilldown group card */
+  .group {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 14px; padding: 16px 18px; margin-bottom: 14px;
+  }
+  .group-head {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+    font-family: 'Fraunces', serif; font-weight: 700; font-size: 1.05rem;
+  }
+  .group-emoji { font-size: 1.35rem; line-height: 1; }
+  .src {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 11px; border: 1px solid var(--line); border-radius: 10px;
+    margin-bottom: 8px; background: #fff;
+  }
+  .src .box { width: 17px; height: 17px; border-radius: 5px; border: 2px solid #d8cab6; flex-shrink: 0; }
+  .src.on .box { background: var(--reclaim); border-color: var(--reclaim); position: relative; }
+  .src.on .box::after { content: "✓"; color:#fff; font-size: 11px; position:absolute; top:-1px; left:2px; }
+  .src .em { font-size: 1.15rem; line-height: 1; flex-shrink: 0; }
+  .src .txt { font-size: 0.86rem; flex: 1; }
+  .src .hrs { font-size: 0.74rem; color: var(--ink-soft); border:1px solid var(--line); border-radius:7px; padding:3px 8px; background: var(--cream); white-space: nowrap; }
+  .dup-flag { color: var(--waste); font-weight: 700; }
+
+  .ref { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 10px; margin-top: 8px; }
+  .ref-item { display:flex; align-items:center; gap:10px; background: var(--surface); border:1px solid var(--line); border-radius:10px; padding:10px 12px; }
+  .ref-item .em { font-size:1.3rem; }
+  .ref-item .nm { font-size:0.85rem; font-weight:600; }
+  .ref-item.changed { border-color: var(--reclaim); box-shadow: 0 0 0 1px rgba(196,24,106,0.12); }
+  .ref-item.changed .nm::after { content:" • new"; color: var(--reclaim); font-weight:700; font-size:0.72rem; }
+  .note { background:#fff7ea; border-left:4px solid var(--gold); padding:13px 17px; border-radius:0 10px 10px 0; margin-top:30px; font-size:0.9rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Drilldown emojis — before you approve</h1>
+  <p class="sub">This is the real "select hours per source" page (from <code>DrilldownStep.tsx</code>), recreated faithfully. The scenario below is a <b>Sales user</b> — the worst case, where four different categories all show 🫠 today.</p>
+
+  <h2>The fix, in context</h2>
+  <p class="scenario">Same four groups, same sources, same hour inputs. Only the category emoji changes.</p>
+  <div class="cols">
+
+    <!-- BEFORE -->
+    <div>
+      <span class="panel-label lbl-before">Now — 🫠 four times</span>
+
+      <div class="group">
+        <div class="group-head"><span class="group-emoji">🫠</span> Email &amp; chat</div>
+        <div class="src on"><span class="box"></span><span class="em">🫠</span><span class="txt">Triaging low-value email &amp; CC chains</span><span class="hrs">4 hrs/wk</span></div>
+        <div class="src"><span class="box"></span><span class="em">🫠</span><span class="txt">Noisy group threads &amp; reply-all chains</span><span class="hrs">+ add</span></div>
+      </div>
+
+      <div class="group">
+        <div class="group-head"><span class="group-emoji">🫠</span> CRM &amp; data <span class="dup-flag">← same emoji</span></div>
+        <div class="src on"><span class="box"></span><span class="em">🫠</span><span class="txt">Logging calls &amp; emails into the CRM by hand</span><span class="hrs">3 hrs/wk</span></div>
+        <div class="src"><span class="box"></span><span class="em">🫠</span><span class="txt">Re-entering the same data in two systems</span><span class="hrs">+ add</span></div>
+      </div>
+
+      <div class="group">
+        <div class="group-head"><span class="group-emoji">🫠</span> Prospecting <span class="dup-flag">← same emoji</span></div>
+        <div class="src"><span class="box"></span><span class="em">🫠</span><span class="txt">Researching prospects one tab at a time</span><span class="hrs">+ add</span></div>
+        <div class="src on"><span class="box"></span><span class="em">🫠</span><span class="txt">Chasing bad-fit, bad-data leads</span><span class="hrs">2 hrs/wk</span></div>
+      </div>
+
+      <div class="group">
+        <div class="group-head"><span class="group-emoji">🫠</span> Quotes &amp; proposals <span class="dup-flag">← same emoji</span></div>
+        <div class="src"><span class="box"></span><span class="em">🫠</span><span class="txt">Building quotes &amp; proposals by hand</span><span class="hrs">+ add</span></div>
+      </div>
+    </div>
+
+    <!-- AFTER -->
+    <div>
+      <span class="panel-label lbl-after">After — each category distinct</span>
+
+      <div class="group">
+        <div class="group-head"><span class="group-emoji">🫠</span> Email &amp; chat</div>
+        <div class="src on"><span class="box"></span><span class="em">🫠</span><span class="txt">Triaging low-value email &amp; CC chains</span><span class="hrs">4 hrs/wk</span></div>
+        <div class="src"><span class="box"></span><span class="em">🫠</span><span class="txt">Noisy group threads &amp; reply-all chains</span><span class="hrs">+ add</span></div>
+      </div>
+
+      <div class="group">
+        <div class="group-head"><span class="group-emoji">🥴</span> CRM &amp; data</div>
+        <div class="src on"><span class="box"></span><span class="em">🥴</span><span class="txt">Logging calls &amp; emails into the CRM by hand</span><span class="hrs">3 hrs/wk</span></div>
+        <div class="src"><span class="box"></span><span class="em">🥴</span><span class="txt">Re-entering the same data in two systems</span><span class="hrs">+ add</span></div>
+      </div>
+
+      <div class="group">
+        <div class="group-head"><span class="group-emoji">🕵️</span> Prospecting</div>
+        <div class="src"><span class="box"></span><span class="em">🕵️</span><span class="txt">Researching prospects one tab at a time</span><span class="hrs">+ add</span></div>
+        <div class="src on"><span class="box"></span><span class="em">🕵️</span><span class="txt">Chasing bad-fit, bad-data leads</span><span class="hrs">2 hrs/wk</span></div>
+      </div>
+
+      <div class="group">
+        <div class="group-head"><span class="group-emoji">🥵</span> Quotes &amp; proposals</div>
+        <div class="src"><span class="box"></span><span class="em">🥵</span><span class="txt">Building quotes &amp; proposals by hand</span><span class="hrs">+ add</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <h2>All 17 categories — full new set</h2>
+  <p class="scenario">The 8 unchanged keep today's emoji. The 9 marked <b style="color:var(--reclaim)">new</b> are the reassignments.</p>
+  <div class="ref">
+    <div class="ref-item"><span class="em">😴</span><span class="nm">Meetings</span></div>
+    <div class="ref-item"><span class="em">🫠</span><span class="nm">Email &amp; chat</span></div>
+    <div class="ref-item"><span class="em">🧟</span><span class="nm">Coordination</span></div>
+    <div class="ref-item"><span class="em">🤹</span><span class="nm">Focus</span></div>
+    <div class="ref-item"><span class="em">😤</span><span class="nm">Waiting &amp; blocked</span></div>
+    <div class="ref-item"><span class="em">🤦</span><span class="nm">Rework</span></div>
+    <div class="ref-item"><span class="em">🥱</span><span class="nm">Doing more than needed</span></div>
+    <div class="ref-item"><span class="em">💀</span><span class="nm">Admin</span></div>
+    <div class="ref-item changed"><span class="em">😵‍💫</span><span class="nm">Reporting</span></div>
+    <div class="ref-item changed"><span class="em">🥴</span><span class="nm">CRM &amp; data</span></div>
+    <div class="ref-item changed"><span class="em">🕵️</span><span class="nm">Prospecting</span></div>
+    <div class="ref-item changed"><span class="em">🥵</span><span class="nm">Quotes &amp; proposals</span></div>
+    <div class="ref-item changed"><span class="em">🤯</span><span class="nm">Code</span></div>
+    <div class="ref-item changed"><span class="em">🐌</span><span class="nm">Builds &amp; reviews</span></div>
+    <div class="ref-item changed"><span class="em">😩</span><span class="nm">Creative</span></div>
+    <div class="ref-item changed"><span class="em">🧹</span><span class="nm">Files &amp; assets</span></div>
+    <div class="ref-item changed"><span class="em">😮‍💨</span><span class="nm">Leading vs doing</span></div>
+  </div>
+
+  <div class="note">
+    🧹 <b>Files &amp; assets</b>, 🕵️ <b>Prospecting</b> and 🐌 <b>Builds &amp; reviews</b> are the three non-face picks. They're evocative and on-brand (not corporate 📊📋), but if you'd rather keep it all expressive faces, say so and I'll swap them — e.g. Files → 😵, Prospecting → 🥹, Builds → 😪.
+  </div>
+</div>
+</body>
+</html>

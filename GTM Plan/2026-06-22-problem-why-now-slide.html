@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FocusLab — Problem &amp; Why Now</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+  :root {
+    --waste-orange: #e03e12;
+    --reclaim-pink: #c4186a;
+    --gold: #edb215;
+    --cream: #fbf6ee;
+    --ink: #2b2018;
+    --muted: #6f6258;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #ded3c4;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 32px;
+    color: var(--ink);
+  }
+
+  .slide {
+    width: 100%;
+    max-width: 1100px;
+    aspect-ratio: 16 / 9;
+    background: var(--cream);
+    border-radius: 20px;
+    box-shadow: 0 30px 80px rgba(43,32,24,0.28);
+    padding: 56px 64px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slide::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 8px;
+    background: linear-gradient(90deg, var(--waste-orange), var(--reclaim-pink), var(--gold));
+  }
+
+  .kicker {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--waste-orange);
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 46px;
+    line-height: 1.05;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    max-width: 18ch;
+  }
+
+  h1 .accent { color: var(--reclaim-pink); }
+
+  .quote {
+    margin: 26px 0;
+    border-left: 4px solid var(--gold);
+    padding: 4px 0 4px 22px;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.35;
+    color: var(--ink);
+    max-width: 40ch;
+  }
+  .quote span { color: var(--muted); font-style: normal; font-family: 'Plus Jakarta Sans'; font-size: 14px; display:block; margin-top:8px; font-weight:600;}
+
+  .stats {
+    display: flex;
+    gap: 18px;
+  }
+
+  .stat {
+    flex: 1;
+    background: #fff;
+    border: 1px solid #ece0d0;
+    border-radius: 14px;
+    padding: 20px 22px;
+  }
+  .stat .num {
+    font-family: 'Fraunces', serif;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--waste-orange);
+  }
+  .stat:nth-child(2) .num { color: var(--reclaim-pink); }
+  .stat:nth-child(3) .num { color: var(--gold); }
+  .stat .label {
+    margin-top: 10px;
+    font-size: 13.5px;
+    line-height: 1.4;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .whynow {
+    margin-top: 26px;
+    background: var(--ink);
+    color: var(--cream);
+    border-radius: 14px;
+    padding: 20px 26px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .whynow .tag {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    white-space: nowrap;
+  }
+  .whynow p {
+    font-size: 17px;
+    line-height: 1.4;
+    font-weight: 500;
+  }
+  .whynow b { color: #fff; font-weight: 700; }
+
+  .footer {
+    position: absolute;
+    bottom: 18px;
+    right: 26px;
+    font-size: 11px;
+    color: #b6a896;
+    letter-spacing: 0.04em;
+  }
+</style>
+</head>
+<body>
+  <div class="slide">
+    <div>
+      <div class="kicker">The Problem</div>
+      <h1>Managers are drowning — and they <span class="accent">can't see why.</span></h1>
+
+      <div class="quote">
+        "90% of my life is admin. I'm exhausted. Where am I going to find the time to be strategic?"
+        <span>— the complaint every burnt-out manager makes, in their own words</span>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="num">53%</div>
+        <div class="label">of managers say there aren't enough hours in the week to do their job</div>
+      </div>
+      <div class="stat">
+        <div class="num">&lt;50%</div>
+        <div class="label">of their time is spent actually managing — the rest vanishes into firefighting</div>
+      </div>
+      <div class="stat">
+        <div class="num">75%</div>
+        <div class="label">report extreme burnout — 3× more than anyone else in the org</div>
+      </div>
+    </div>
+
+    <div class="whynow">
+      <div class="tag">Why&nbsp;Now</div>
+      <p>The pain is documented, expensive, and growing — yet managers still can't <b>see</b> where their week goes. They're begging for the fix in public. <b>FocusLab is the tool they don't have yet.</b></p>
+    </div>
+
+    <div class="footer">FocusLab · Problem &amp; Why Now · Jun 2026</div>
+  </div>
+</body>
+</html>

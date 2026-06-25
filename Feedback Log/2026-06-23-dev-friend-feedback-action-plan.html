@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dev Friend Feedback — Action Plan (2026-06-23)</title>
+<style>
+  :root {
+    --waste-orange: #e03e12;
+    --reclaim-pink: #c4186a;
+    --gold: #edb215;
+    --cream: #fdf6ec;
+    --ink: #2a2320;
+    --muted: #6b5f57;
+    --line: #e9ddcf;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, system-ui, sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    margin: 0;
+    padding: 48px 24px;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; }
+  h1, h2, h3 { font-family: 'Fraunces', Georgia, serif; font-weight: 700; line-height: 1.15; }
+  h1 { font-size: 2.4rem; margin: 0 0 6px; }
+  .sub { color: var(--muted); font-size: 1rem; margin: 0 0 36px; }
+  h2 {
+    font-size: 1.5rem; margin: 44px 0 8px;
+    padding-bottom: 8px; border-bottom: 2px solid var(--line);
+  }
+  .lead { color: var(--muted); margin: 0 0 20px; }
+  .bucket-note {
+    background: #fff7ea; border-left: 4px solid var(--gold);
+    padding: 14px 18px; border-radius: 0 10px 10px 0; margin: 14px 0 28px;
+    font-size: 0.95rem;
+  }
+  .card {
+    background: #fff; border: 1px solid var(--line);
+    border-radius: 14px; padding: 20px 22px; margin: 14px 0;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+  }
+  .card h3 { font-size: 1.15rem; margin: 0 0 10px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .tag {
+    font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700;
+    font-size: 0.72rem; letter-spacing: 0.04em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 999px; color: #fff;
+  }
+  .p0 { background: var(--reclaim-pink); }
+  .p1 { background: var(--waste-orange); }
+  .p2 { background: var(--gold); color: #4a3a08; }
+  .done { background: #3a7d6b; }
+  .row { display: grid; grid-template-columns: 120px 1fr; gap: 4px 16px; margin: 6px 0; font-size: 0.95rem; }
+  .row .k { color: var(--muted); font-weight: 600; }
+  code {
+    background: #f4ece0; padding: 2px 7px; border-radius: 6px;
+    font-family: 'SF Mono', Menlo, monospace; font-size: 0.85em;
+  }
+  ol.steps { margin: 8px 0 0; padding-left: 20px; }
+  ol.steps li { margin: 4px 0; }
+  .effort { font-weight: 700; }
+  .pill { display:inline-block; background:#f0e6d8; color:var(--muted); padding:2px 9px; border-radius:999px; font-size:0.8rem; font-weight:600; }
+  .seq { background: var(--ink); color: var(--cream); border-radius: 14px; padding: 22px 24px; margin-top: 16px; }
+  .seq ol { margin: 8px 0 0; padding-left: 22px; }
+  .seq li { margin: 6px 0; }
+  .seq code { background: rgba(255,255,255,0.12); color: #ffe; }
+  a.q { color: var(--reclaim-pink); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Dev Friend Feedback — Action Plan</h1>
+  <p class="sub">FocusLab · 2026-06-23 · Source: manual notes from developer friend review</p>
+
+  <p class="lead">The notes split into two buckets. <strong>Bucket A — Infrastructure</strong> is mostly already handled because FocusLab runs on Vercel; these become <em>quick verifications</em>, not build work. <strong>Bucket B — Product &amp; UX</strong> is the real work. Everything below is grounded in the actual codebase (file:line references included).</p>
+
+  <!-- ============ BUCKET A ============ -->
+  <h2>Bucket A — Infrastructure (mostly already covered by Vercel)</h2>
+  <div class="bucket-note">
+    Your friend gave a generic web-hosting checklist. FocusLab is on <strong>Vercel</strong> (confirmed: <code>.vercel/project.json</code>, project <code>focuslab</code>), which already handles most of this. Don't go shopping for a new host — just confirm each item with him so nothing's assumed.
+  </div>
+
+  <div class="card">
+    <h3><span class="tag done">No action — verify only</span> Uptime, bandwidth, SSD, HTTPS/SSL</h3>
+    <div class="row"><span class="k">His notes</span><span>99% uptime · unlimited bandwidth ("whichever") · SSD hosting · SSL/HTTPS</span></div>
+    <div class="row"><span class="k">Reality</span><span>Vercel's global edge network already delivers ~99.99% uptime, auto-scaling bandwidth, SSD/edge caching, and <strong>automatic HTTPS</strong> on every deploy. All four are baseline, no work needed.</span></div>
+    <div class="row"><span class="k">Action</span><span>None to build. One-line reply to friend: "We're on Vercel — uptime, SSD, bandwidth and HTTPS are all handled by the platform."</span></div>
+    <div class="row"><span class="k">Effort</span><span class="effort">~0 · just confirm</span></div>
+  </div>
+
+  <div class="card">
+    <h3><span class="tag p2">P2 · Verify</span> Host support &amp; backup plan</h3>
+    <div class="row"><span class="k">His notes</span><span>How good is host support · have a backup plan</span></div>
+    <div class="row"><span class="k">Reality</span><span>Your "backup" is <strong>Git + GitHub</strong> — every deploy is a commit you can roll back to instantly from the Vercel dashboard. Code is safe. The app has no database, so there's no user data to lose yet.</span></div>
+    <div class="row"><span class="k">Action</span><span>Confirm you know how to do a one-click rollback in Vercel. Revisit real backups <em>only if/when</em> you add a database.</span></div>
+    <div class="row"><span class="k">Effort</span><span class="effort">~15 min — read Vercel rollback docs once</span></div>
+  </div>
+
+  <div class="card">
+    <h3><span class="tag p2">P2 · Learn</span> Client-side caching</h3>
+    <div class="row"><span class="k">His notes</span><span>"Caching — Ctrl+F, it's on the client side"</span></div>
+    <div class="row"><span class="k">Reading</span><span>He's pointing you to look up <em>client-side / browser caching</em> (storing files in the user's browser so repeat visits load instantly). Next.js + Vercel do this automatically for static assets.</span></div>
+    <div class="row"><span class="k">Action</span><span>No build work now. File as "understand caching" learning, not a task. Revisit only if pages feel slow on repeat load.</span></div>
+    <div class="row"><span class="k">Effort</span><span class="effort">~0 build · optional reading</span></div>
+  </div>
+
+  <!-- ============ BUCKET B ============ -->
+  <h2>Bucket B — Product &amp; UX (the real work)</h2>
+  <p class="lead">These are genuine improvements, ordered by impact-to-effort.</p>
+
+  <div class="card">
+    <h3><span class="tag p0">P0 · Do first</span> 🔴 → Fix the "Effort = red" color in Action Plan</h3>
+    <div class="row"><span class="k">His notes</span><span>"The red for Effort gives an impression of a mistake — reconsider the color."</span></div>
+    <div class="row"><span class="k">He's right</span><span>Red reads as <em>error / something's wrong</em>. Effort isn't bad — it's neutral information. This is a genuine UX bug.</span></div>
+    <div class="row"><span class="k">Where</span><span><code>src/components/focus/FocusTable.tsx:159</code> — Effort dots use <code>var(--color-waste)</code> (#e03e12). Label at line 155.</span></div>
+    <div class="row"><span class="k">Fix</span><span>Effort = the <em>cost</em> of a fix, so it can legitimately stay warm — but it must read as "scale," not "error." Recommended: use <strong>gold (#edb215)</strong> for the Effort dots so Impact/positive stays pink, waste stays orange, and Effort becomes its own neutral-warm scale. (Decision needed — see questions below.)</span></div>
+    <div class="row"><span class="k">Effort</span><span class="effort">S — one CSS var swap + a regression test</span></div>
+    <div class="row"><span class="k">Agent</span><span class="pill">🟠 UI/UX Designer → 🔴 QA</span></div>
+  </div>
+
+  <div class="card">
+    <h3><span class="tag p0">P0 · Do first</span> 📈 Add Google Analytics (drop-off &amp; dwell time)</h3>
+    <div class="row"><span class="k">His notes</span><span>GA for user data — which pages drop off, which have more dwell time, how different users use the tools.</span></div>
+    <div class="row"><span class="k">Why it's P0</span><span>This is the highest-leverage item. <strong>Currently zero analytics are installed</strong> (confirmed — no <code>gtag</code>, no <code>@vercel/analytics</code> anywhere). You're flying blind on where users abandon the wizard. Every day without it is lost learning before launch.</span></div>
+    <div class="row"><span class="k">Recommendation</span><span>Add <strong>Vercel Analytics + Speed Insights</strong> (1-line install, privacy-friendly, native to your host) <em>or</em> GA4 if you specifically want funnel/event depth. Vercel Analytics is faster to ship; GA4 gives richer drop-off funnels. (Decision needed below.)</span></div>
+    <div class="row"><span class="k">Track</span><span>Key events: wizard step reached (Role → Context → Intake → Drilldown → Results), Results viewed, Focus tab opened, solution selected. That's your drop-off funnel.</span></div>
+    <div class="row"><span class="k">Effort</span><span class="effort">S–M — install + add to layout + define ~6 events</span></div>
+    <div class="row"><span class="k">Agent</span><span class="pill">🟣 Architect (event plan) → 🔵 Engineer</span></div>
+  </div>
+
+  <div class="card">
+    <h3><span class="tag p1">P1</span> 🎛️ Better UI when selecting options</h3>
+    <div class="row"><span class="k">His notes</span><span>"Better UI when selecting options."</span></div>
+    <div class="row"><span class="k">Where</span><span>Four different selection patterns exist today — they're inconsistent:
+      <br>· <code>RoleStep.tsx:84-137</code> — grid buttons
+      <br>· <code>IntakeStep.tsx:202-259</code> — cards w/ number inputs
+      <br>· <code>DrilldownStep.tsx:330-395</code> — checkboxes + conditional hour input
+      <br>· <code>SolutionPicker.tsx:67-103</code> — custom circular checkmarks</span></div>
+    <div class="row"><span class="k">Fix</span><span>Unify the selected-state visual language across all four: same border, same pink (#c4186a) fill/glow on select, same hit-area and hover. Make "this is selected" unmistakable. This aligns with your existing high-contrast / obvious-input preference.</span></div>
+    <div class="row"><span class="k">Effort</span><span class="effort">M — design pass across 4 components + screenshot verify</span></div>
+    <div class="row"><span class="k">Agent</span><span class="pill">🟠 UI/UX Designer → 🔴 QA (Playwright screenshots)</span></div>
+  </div>
+
+  <div class="card">
+    <h3><span class="tag p1">P1</span> 🗜️ Condense groups so they take less space</h3>
+    <div class="row"><span class="k">His notes</span><span>"Combine subcategories so they occupy less space — also related to better UI."</span></div>
+    <div class="row"><span class="k">Clarification</span><span>There are no literal "subcategories" in code — the structure is <strong>waste groups → waste sources</strong> (e.g. "Meetings" → individual drains), rendered in <code>DrilldownStep.tsx</code>. He means the drilldown list is too tall / sprawling.</span></div>
+    <div class="row"><span class="k">Fix</span><span>Tighten the Drilldown layout: collapse groups by default (expand on click), or a denser 2-column grid, so the user isn't scrolling a wall of checkboxes. Pairs naturally with the P1 selection-UI pass — do them together.</span></div>
+    <div class="row"><span class="k">Effort</span><span class="effort">M — layout/density work in DrilldownStep</span></div>
+    <div class="row"><span class="k">Agent</span><span class="pill">🟠 UI/UX Designer → 🔴 QA</span></div>
+  </div>
+
+  <div class="card">
+    <h3><span class="tag p2">P2</span> 😴 Emoji review</h3>
+    <div class="row"><span class="k">His notes</span><span>"Emoji review."</span></div>
+    <div class="row"><span class="k">Where</span><span>20+ emoji across <code>IntakeStep</code>, <code>RoleStep</code>, <code>DrilldownStep</code>, <code>FocusStage</code>, <code>FocusTable</code>, landing. Reusable <code>AnimatedEmoji.tsx</code> exists.</span></div>
+    <div class="row"><span class="k">Check against brand rule</span><span>Human/emotional only (😴 🫠 🤦 😤 💀 🤯) — <strong>no corporate emoji</strong> (📊 📋 🚀 💡). RoleStep currently uses 📣 🛠️ 🔧 🧮 — audit whether those drift toward "tool/corporate." Vague feedback, so confirm with him what specifically felt off.</span></div>
+    <div class="row"><span class="k">Effort</span><span class="effort">S — audit + swap any off-brand ones</span></div>
+    <div class="row"><span class="k">Agent</span><span class="pill">🟢 DR Copywriter (owns tone) → 🟠 UI/UX</span></div>
+  </div>
+
+  <!-- ============ SEQUENCE ============ -->
+  <h2>Recommended sequence</h2>
+  <div class="seq">
+    <ol>
+      <li><strong>Ship analytics first (P0).</strong> Get <code>@vercel/analytics</code> live + the 6-event funnel. Start collecting drop-off data <em>today</em> so the UX work below is data-informed, not guessed.</li>
+      <li><strong>Fix the Effort color (P0).</strong> Fast, isolated, real bug. Swap <code>--color-waste</code> → gold for Effort dots, add a regression test, deploy.</li>
+      <li><strong>UX batch (P1+P1 together).</strong> Unify selection states <em>and</em> condense the Drilldown layout in one design pass — they touch the same components. Screenshot-verify before done.</li>
+      <li><strong>Emoji review (P2).</strong> Quick copy/tone audit once the bigger items land.</li>
+      <li><strong>Infra (Bucket A).</strong> No build — one message back to your friend confirming Vercel covers it, plus a 15-min read on Vercel rollback.</li>
+    </ol>
+  </div>
+
+  <!-- ============ DECISIONS ============ -->
+  <h2>Decisions I need from you before building</h2>
+  <div class="card">
+    <ol class="steps">
+      <li><strong>Effort color:</strong> go with <span style="color:var(--gold);font-weight:700;">gold #edb215</span> for the Effort dots? (My recommendation — keeps pink for positive, orange for waste, gold as the neutral scale.)</li>
+      <li><strong>Analytics tool:</strong> <strong>Vercel Analytics</strong> (fast, simple, privacy-first) or <strong>GA4</strong> (deeper funnels, more setup)? I lean Vercel Analytics to start.</li>
+      <li><strong>Emoji:</strong> did your friend say <em>which</em> emoji felt off, or just "review them"? Affects how deep the audit goes.</li>
+    </ol>
+  </div>
+
+</div>
+</body>
+</html>

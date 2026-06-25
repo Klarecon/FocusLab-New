@@ -248,13 +248,14 @@ export const ROLE_WASTE: WasteSource[] = [
   // MANAGER
   { slug: "mgr-1on1-autopilot", group: "Meetings", label: "1:1s & reviews running on autopilot", muda: "over-processing", whatCounts: "Recurring slots kept out of habit, not need.", scope: ["manager"], emoji: emojiFor("Meetings") },
   { slug: "mgr-ic-work", group: "Leading vs doing", label: "Doing IC work instead of managing", muda: "underused-skill", whatCounts: "Handling tasks yourself instead of empowering the team.", scope: ["manager"], emoji: emojiFor("Leading vs doing") },
-  { slug: "mgr-approvals", group: "Admin", label: "Low-stakes approvals routed through you", muda: "over-processing", whatCounts: "Expense, PTO, and access sign-offs you never really gate.", scope: ["manager"], emoji: emojiFor("Admin") },
+  { slug: "mgr-approvals", group: "Admin", label: "Low-stakes approvals routed through you", muda: "over-processing", whatCounts: "Expense, PTO, and access sign-offs you never really gate.", scope: ["manager", "executive"], emoji: "👎" },
   { slug: "mgr-unblock", group: "Focus", label: "Fielding \u201Cgot a sec?\u201D requests all day", muda: "switching-searching", whatCounts: "Being the unblock-everything hub for the team.", scope: ["manager"], emoji: emojiFor("Focus") },
 
   // EXECUTIVE
   { slug: "exec-email-delegable", group: "Email & chat", label: "Replying to routine mail personally", muda: "underused-skill", whatCounts: "Handling routine correspondence yourself, touch by touch.", scope: ["executive"], emoji: emojiFor("Email & chat") },
   { slug: "exec-recheck", group: "Leading vs doing", label: "Re-checking your team\u2019s work", muda: "underused-skill", whatCounts: "Re-doing or re-reviewing what you delegated.", scope: ["executive"], emoji: emojiFor("Leading vs doing") },
-  { slug: "exec-decide-through-you", group: "Coordination", label: "Decisions routed through you that needn\u2019t be", muda: "over-processing", whatCounts: "Being the single point every call must pass.", scope: ["executive"], emoji: emojiFor("Coordination") },
+  // "exec-decide-through-you" merged into "mgr-approvals" (now scoped manager+executive) \u2014
+  // the two read as duplicates when both roles are picked (Mona, S21 #1).
 ];
 
 const ALL_WASTE = [...UNIVERSAL_WASTE, ...ROLE_WASTE];
@@ -329,7 +330,6 @@ const BENCHMARK_CATEGORY_BY_SOURCE: Record<string, string> = {
   "design-export": "admin-low-value",
   // executive
   "exec-email-delegable": "email-messaging",
-  "exec-decide-through-you": "work-about-work",
 };
 
 /** The benchmark category a source compares against, or undefined if none. */

@@ -1,0 +1,62 @@
+FocusLab v2 mockup — Mona's review notes
+(generated from the inline review HTML)
+
+## 0 · Removed from the homepage
+  ▸ Removed sections verdict: Keep both removed
+
+## 1 · Landing hero — 3 options (all bold + animated)
+  ▸ Which hero?: Mix / none — see note
+  • Hero · Option B: I want this option with some changes. Remove "A KLARECON TOOL · PROVEN ON THOUSANDS". Subcopy: The average working person loses 10+ hours a week to busywork. That's about 6 weeks a year. Find your real drains and a plan to free-up your hours, in 3 minutes. CTA: Find my hidden hours
+  • Hero · shared strip: remove this strip, it doesn't add value
+
+## 2 · Landing — below the hero
+  • Scene 2 · Below the hero: Rough hours on the drains that hit you. 90 seconds. -- this is vague
+Ranked fixes, owners & dates already filled in. -- this is vague
+Refined 15+ years -- this is vague
+Not a 40-min exercise -- instead of saying "not a something", add something positive
+
+CTA: Find my hidden hours, to maintain consistency
+
+## 3 · Log your week — ONE screen (role + drains together)
+  • Scene 3 · Intake screen: This is ok
+
+## 4 · Logged more than your week? — 2 options
+  ▸ Which over-cap message?: B · do-it-for-me
+
+## 5 · Your plan — headline & subtext options
+  ▸ Which headline?: B · Here's where your 6.1 hours come from.
+  ▸ Which subtext?: A · Your top 3 fixes, ranked by payoff…
+  • Plan · fix cards: What bothers me is that there are only 3 fixes. Why? There should be multiple potential fixes for the waste sources. Giving them 3 fixes overall is not enough
+
+## 6 · The payoff — reworked, 2 options
+  ▸ Which payoff?: B · big stat-stack
+  • Payoff · Option B: Half a day a week back — for strategy, for rest, for whatever firefighting is stealing now.
+
+Change to: That's almost a day (if it's more than 5 hours) per week. Use it for strategy work, rest, a beach day — whatever you've been putting off because of busywork.
+
+## 7 · EVI Matrix — readable, no overlap
+  • Scene 7 · EVI Matrix: I told you not to change labels. Pearls, Low Hanging Fruits, White Elephants, and Oysters -- these are original labels and they should stay. And no need for a sub copy beneath the lables
+
+## 8 · The four waste types — now shows how it helps
+  • Scene 8 · Waste types: Doing things that don't need doing -- this doesn't nail the msg, it's vague
+
+Redoing & fixing -- the same thing twice -> change to -> the same thing multiple times
+
+## 9 · "How did you get this?" — 2 options
+  ▸ Which 'show the math'?: B · tidy breakdown
+
+## 10 · Empty fields that explain themselves
+  • Scene 10 · Blank states: Ok, but use lesser words without introducing vagueness
+
+## 11 · You can't skip a rating anymore
+  • Scene 11 · Rating validation: OK. Remove the "jump to it" button
+
+## 12 · Pareto only fires with enough sources
+  • Scene 12 · Pareto density: Ok
+
+## 13 · Hours vs % — decided
+  • Scene 13 · Hours decided: Ok
+
+## 14 · Built for any worker + edge-case hunt
+  • Scene 14 · Any worker + edge cases: 0 hours logged everywhere, Can't continue; nudge to log at least one real drain -- No. Just one drain doesn't mean anything, it needs minimum 5
+

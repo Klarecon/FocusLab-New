@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Effort Color Mockup — Action Plan card</title>
+<style>
+  :root {
+    --waste: #e03e12;
+    --reclaim: #c4186a;
+    --gold: #edb215;
+    --grey: #8a7f74;
+    --ink: #2a2320;
+    --ink-soft: #6b5f57;
+    --cream: #fdf6ec;
+    --surface: #fffaf2;
+    --line: #ece0d0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, system-ui, sans-serif;
+    background: var(--cream); color: var(--ink);
+    margin: 0; padding: 44px 24px; line-height: 1.5;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+  h1 { font-family: 'Fraunces', Georgia, serif; font-size: 2.1rem; margin: 0 0 4px; }
+  .sub { color: var(--ink-soft); margin: 0 0 8px; }
+  .legend { color: var(--ink-soft); font-size: 0.9rem; margin: 0 0 32px; }
+  .legend b { color: var(--ink); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 22px; }
+  .col-head {
+    font-family: 'Fraunces', serif; font-weight: 700; font-size: 1.05rem;
+    margin: 0 0 12px; display: flex; align-items: center; gap: 9px;
+  }
+  .chip { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; color: #fff; }
+  .chip-now { background: var(--waste); }
+  .chip-pick { background: var(--reclaim); }
+  .chip-alt { background: var(--grey); }
+
+  /* faithful fix card */
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 14px; padding: 16px 18px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
+  .card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .quad {
+    font-size: 10px; font-weight: 500; padding: 3px 8px; border-radius: 999px;
+    color: var(--reclaim); background: rgba(196,24,106,0.08);
+  }
+  .remove { font-size: 11px; color: var(--waste); background: none; border: none; cursor: pointer; }
+  .fix-title { font-size: 0.92rem; font-weight: 600; margin: 0 0 14px; color: var(--ink); }
+  .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .ctl-label { display: block; font-size: 11px; font-weight: 500; color: var(--ink-soft); margin-bottom: 6px; }
+  .ctl-label .hint { font-weight: 400; }
+  .dots { display: flex; gap: 6px; }
+  .dot { width: 16px; height: 16px; border-radius: 999px; border: 1.5px solid; }
+  .note { font-size: 0.82rem; color: var(--ink-soft); margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line); }
+  .reco { background: #fff7ea; border-left: 4px solid var(--gold); padding: 14px 18px; border-radius: 0 10px 10px 0; margin-top: 34px; font-size: 0.92rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Effort dot color — before you approve</h1>
+  <p class="sub">This is the real Action Plan fix card (from <code>FocusTable.tsx</code>), recreated faithfully. Same card, three Effort colors.</p>
+  <p class="legend">Effort = <b>easy → hard</b> (3 dots = medium). Impact = <b>low → huge</b> (4 dots) — Impact stays pink in all three. Only the <b>Effort</b> dots change.</p>
+
+  <div class="grid">
+
+    <!-- CURRENT -->
+    <div>
+      <div class="col-head"><span class="chip chip-now">Now</span> Red (#e03e12)</div>
+      <div class="card">
+        <div class="card-top">
+          <span class="quad">⚡ Quick win</span>
+          <button class="remove">Remove</button>
+        </div>
+        <div class="fix-title">Batch email into two daily windows</div>
+        <div class="controls">
+          <div>
+            <span class="ctl-label">Effort <span class="hint">(easy → hard)</span></span>
+            <div class="dots">
+              <span class="dot" style="border-color:var(--waste);background:var(--waste)"></span>
+              <span class="dot" style="border-color:var(--waste);background:var(--waste)"></span>
+              <span class="dot" style="border-color:var(--waste);background:var(--waste)"></span>
+              <span class="dot" style="border-color:#d8cab6;background:transparent"></span>
+              <span class="dot" style="border-color:#d8cab6;background:transparent"></span>
+            </div>
+          </div>
+          <div>
+            <span class="ctl-label">Impact <span class="hint">(low → huge)</span></span>
+            <div class="dots">
+              <span class="dot" style="border-color:var(--reclaim);background:var(--reclaim)"></span>
+              <span class="dot" style="border-color:var(--reclaim);background:var(--reclaim)"></span>
+              <span class="dot" style="border-color:var(--reclaim);background:var(--reclaim)"></span>
+              <span class="dot" style="border-color:var(--reclaim);background:var(--reclaim)"></span>
+              <span class="dot" style="border-color:#d8cab6;background:transparent"></span>
+            </div>
+          </div>
+        </div>
+        <p class="note">😬 Red next to pink reads as "warning vs good" — the effort looks like a <b>problem</b>.</p>
+      </div>
+    </div>
+
+    <!-- GOLD (your pick) -->
+    <div>
+      <div class="col-head"><span class="chip chip-pick">Your pick</span> Gold (#edb215)</div>
+      <div class="card">
+        <div class="card-top">
+          <span class="quad">⚡ Quick win</span>
+          <button class="remove">Remove</button>
+        </div>
+        <div class="fix-title">Batch email into two daily windows</div>
+        <div class="controls">
+          <div>
+            <span class="ctl-label">Effort <span class="hint">(easy → hard)</span></span>
+            <div class="dots">
+              <span class="dot" style="border-color:var(--gold);background:var(--gold)"></span>
+              <span class="dot" style="border-color:var(--gold);background:var(--gold)"></span>
+              <span class="dot" style="border-color:var(--gold);background:var(--gold)"></span>
+              <span class="dot" style="border-color:#d8cab6;background:transparent"></span>
+              <span class="dot" style="border-color:#d8cab6;background:transparent"></span>
+            </div>
+          </div>
+          <div>
+            <span class="ctl-label">Impact <span class="hint">(low → huge)</span></span>
+            <div class="dots">
+              <span class="dot" style="border-color:var(--reclaim);background:var(--reclaim)"></span>
+              <span class="dot" style="border-color:var(--reclaim);background:var(--reclaim)"></span>
+              <span class="dot" style="border-color:var(--reclaim);background:var(--reclaim)"></span>
+              <span class="dot" style="border-color:var(--reclaim);background:var(--reclaim)"></span>
+              <span class="dot" style="border-color:#d8cab6;background:transparent"></span>
+            </div>
+          </div>
+        </div>
+        <p class="note">🙂 Gold reads as a neutral <b>scale</b> (warm, on-brand) — effort feels measured, not wrong. Pairs cleanly with pink impact.</p>
+      </div>
+    </div>
+
+    <!-- GREY (alternative) -->
+    <div>
+      <div class="col-head"><span class="chip chip-alt">Alt</span> Muted grey (#8a7f74)</div>
+      <div class="card">
+        <div class="card-top">
+          <span class="quad">⚡ Quick win</span>
+          <button class="remove">Remove</button>
+        </div>
+        <div class="fix-title">Batch email into two daily windows</div>
+        <div class="controls">
+          <div>
+            <span class="ctl-label">Effort <span class="hint">(easy → hard)</span></span>
+            <div class="dots">
+              <span class="dot" style="border-color:var(--grey);background:var(--grey)"></span>
+              <span class="dot" style="border-color:var(--grey);background:var(--grey)"></span>
+              <span class="dot" style="border-color:var(--grey);background:var(--grey)"></span>
+              <span class="dot" style="border-color:#d8cab6;background:transparent"></span>
+              <span class="dot" style="border-color:#d8cab6;background:transparent"></span>
+            </div>
+          </div>
+          <div>
+            <span class="ctl-label">Impact <span class="hint">(low → huge)</span></span>
+            <div class="dots">
+              <span class="dot" style="border-color:var(--reclaim);background:var(--reclaim)"></span>
+              <span class="dot" style="border-color:var(--reclaim);background:var(--reclaim)"></span>
+              <span class="dot" style="border-color:var(--reclaim);background:var(--reclaim)"></span>
+              <span class="dot" style="border-color:var(--reclaim);background:var(--reclaim)"></span>
+              <span class="dot" style="border-color:#d8cab6;background:transparent"></span>
+            </div>
+          </div>
+        </div>
+        <p class="note">😐 Fully neutral — zero alarm, but a little flat / less warm than the brand's vibe.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="reco">
+    <b>My recommendation: gold.</b> It removes the "error" read while staying warm and on-palette, and it gives you a clean three-way visual language — <span style="color:var(--reclaim);font-weight:700;">pink = good/impact</span>, <span style="color:var(--gold);font-weight:700;">gold = effort/cost</span>, <span style="color:var(--waste);font-weight:700;">orange = waste</span>. Grey is the safe fallback if gold ever feels too close to the quadrant labels.
+  </div>
+</div>
+</body>
+</html>

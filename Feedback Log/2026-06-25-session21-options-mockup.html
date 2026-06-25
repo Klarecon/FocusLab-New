@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FocusLab — Session 21 Options</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --waste:#e03e12; --reclaim:#c4186a; --gold:#edb215;
+    --paper:#f3ede1; --surface:#faf6ee; --card:#fffdf8;
+    --ink:#2c2418; --ink-soft:#7a6f5f; --line:#e3d8c4;
+  }
+  @property --beam-angle{ syntax:'<angle>'; initial-value:0deg; inherits:false; }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Plus Jakarta Sans',sans-serif;line-height:1.5;}
+  .wrap{max-width:920px;margin:0 auto;padding:48px 24px 120px;}
+  h1{font-family:'Fraunces',serif;font-size:2.4rem;font-weight:700;margin:0 0 6px;}
+  .sub{color:var(--ink-soft);margin:0 0 40px;font-size:1.05rem;}
+  .section{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:30px;margin-bottom:30px;}
+  .stag{display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--reclaim);background:rgba(196,24,106,.08);padding:5px 12px;border-radius:999px;margin-bottom:14px;}
+  .section h2{font-family:'Fraunces',serif;font-size:1.5rem;margin:0 0 6px;}
+  .note{color:var(--ink-soft);font-size:.95rem;margin:0 0 22px;}
+  .opt{border:1.5px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;background:var(--card);}
+  .opt .lbl{font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:12px;}
+  .opt.rec{border-color:var(--reclaim);box-shadow:0 4px 18px rgba(196,24,106,.08);}
+  .opt.rec .lbl{color:var(--reclaim);}
+  .pill{display:inline-block;font-size:.62rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#fff;background:var(--reclaim);padding:3px 9px;border-radius:999px;margin-left:8px;vertical-align:middle;}
+
+  /* shared button look */
+  .cta{display:inline-block;background:var(--reclaim);color:#fff;font-weight:700;padding:15px 34px;border-radius:12px;font-size:1rem;border:none;box-shadow:0 6px 18px rgba(196,24,106,.28);}
+  .eyebrow{color:var(--ink-soft);font-weight:500;margin:0 0 14px;font-size:1rem;}
+  .ctablock{text-align:center;padding:14px 0 6px;}
+
+  /* ---- Item 7: rotating beam hero ---- */
+  .beamcard{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:28px;padding:46px 40px;text-align:center;overflow:hidden;}
+  .beamcard::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:2.5px;
+    background:conic-gradient(from var(--beam-angle),transparent 0deg,transparent 295deg,var(--gold) 330deg,var(--reclaim) 358deg,transparent 360deg);
+    -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;animation:spin 4s linear infinite;pointer-events:none;}
+  @keyframes spin{to{--beam-angle:360deg;}}
+  .ring{width:120px;height:120px;margin:0 auto 18px;border-radius:50%;border:9px solid #e8dcc8;border-top-color:var(--reclaim);border-right-color:var(--reclaim);display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(45deg);}
+  .ring span{transform:rotate(-45deg);}
+  .ring .big{font-family:'Fraunces',serif;font-size:2.2rem;font-weight:700;color:var(--reclaim);line-height:1;}
+  .ring .cap{font-size:.6rem;color:var(--ink-soft);font-weight:600;max-width:78px;text-align:center;margin-top:3px;}
+  .beamcard h3{font-family:'Fraunces',serif;font-size:2rem;margin:6px 0 10px;}
+  .hl{background:rgba(224,62,18,.18);padding:0 6px;border-radius:4px;}
+  .grad{background:linear-gradient(90deg,var(--waste),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;}
+
+  /* ---- Item 5: sequence rows ---- */
+  .seqrow{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);}
+  .seqnum{width:30px;height:30px;border-radius:50%;background:var(--reclaim);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.9rem;}
+  .seqnum.oy{background:var(--gold);}
+  .seqtitle{font-weight:700;font-size:.98rem;}
+  .seqguide{font-size:.82rem;font-weight:600;color:var(--reclaim);margin-top:3px;}
+  .seqguide.oy{color:var(--gold);}
+
+  /* ---- Item 3: zone chart minis ---- */
+  .bars{display:flex;align-items:flex-end;gap:5px;height:90px;margin:8px 0 4px;}
+  .bar{flex:1;border-radius:4px 4px 0 0;}
+  .bA{background:var(--waste);} .bB{background:var(--gold);} .bC{background:var(--ink-soft);}
+  .legend{font-size:.78rem;color:var(--ink-soft);}
+  .legend b.a{color:var(--waste);} .legend b.b{color:var(--gold);} .legend b.c{color:var(--ink-soft);}
+
+  .closecard{text-align:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px;}
+  .closecard h3{font-family:'Fraunces',serif;font-size:1.4rem;margin:0 0 8px;}
+  .sharebtns{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap;}
+  .sb{font-size:.78rem;font-weight:700;padding:8px 16px;border-radius:999px;border:1.5px solid var(--reclaim);color:var(--reclaim);background:transparent;}
+  .sb.solid{background:var(--reclaim);color:#fff;}
+  .how{font-size:.86rem;color:var(--ink-soft);background:rgba(237,178,21,.08);border-left:3px solid var(--gold);padding:10px 14px;border-radius:0 8px 8px 0;margin-top:10px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Session 21 — pick your options</h1>
+  <p class="sub">Hard-refreshed your walkthrough notes into choices. Tell me the letter for each. Items 1 &amp; 2 (duplicate drain + "Log your waste") I'll just do — no choice needed.</p>
+
+  <!-- ITEM 7 -->
+  <div class="section">
+    <span class="stag">Item 7 · Rotating beam — does this match what you wanted?</span>
+    <h2>The hero card, with a beam that actually travels the border</h2>
+    <p class="note">This is live — watch the bright pink→gold light run a lap around the card edge. The old version used a CSS feature your browser doesn't animate, so it sat frozen at the top. This technique (a masked conic gradient) is rock-solid. Confirm this is the look and I'll port it into the real Hero.</p>
+    <div class="beamcard">
+      <div class="ring"><span class="big">~10</span><span class="cap">typical hrs/wk reclaimed</span></div>
+      <h3>Get <span class="hl grad">real hours</span> of your week back.</h3>
+      <p class="eyebrow">A working person loses about <b style="color:var(--waste)">10 hours a week</b> to busywork.</p>
+      <button class="cta">🔍 Find my hidden hours</button>
+    </div>
+    <p class="note" style="margin-top:16px;">Tunable: speed (slower/faster lap), thickness, and how long the bright arc is. Default above is a 4-second lap. Say the word if you want it slower/subtler or faster/bolder.</p>
+  </div>
+
+  <!-- ITEM 4 -->
+  <div class="section">
+    <span class="stag">Item 4 · Results → Focus CTA (pick A / B / C)</span>
+    <h2>Stronger handoff into the fix tool</h2>
+    <p class="note">Current: "This is fixable." → "Now let's fix it →". You just showed them the $ / hours bleeding out — this is the moment to convert.</p>
+
+    <div class="opt rec">
+      <div class="lbl">Option A — loss-framed <span class="pill">recommended</span></div>
+      <div class="ctablock"><p class="eyebrow">This is the expensive part. The fix is the cheap part.</p><button class="cta">Build my fix plan →</button></div>
+    </div>
+    <div class="opt">
+      <div class="lbl">Option B — momentum</div>
+      <div class="ctablock"><p class="eyebrow">You've seen the bleed. Now stop it.</p><button class="cta">Show me the fixes →</button></div>
+    </div>
+    <div class="opt">
+      <div class="lbl">Option C — winnable</div>
+      <div class="ctablock"><p class="eyebrow">Every hour on that list is recoverable.</p><button class="cta">Get my reclaim plan →</button></div>
+    </div>
+  </div>
+
+  <!-- ITEM 5 -->
+  <div class="section">
+    <span class="stag">Item 5 · Action-sequence timing guidance (pick A / B / C)</span>
+    <h2>Less generic than "Start this week"</h2>
+    <p class="note">The little grey/pink line under each task. Current Pearls = "Start this week · ~30–60 min"; Oysters = "Plan it in · block ~half a day". Each option below sets all four quadrants.</p>
+
+    <div class="opt rec">
+      <div class="lbl">Option A — outcome + time <span class="pill">recommended</span></div>
+      <div class="seqrow"><div class="seqnum">1</div><div><div class="seqtitle">Kill agenda-less meetings</div><div class="seqguide">Fix this week → hours back next week</div></div></div>
+      <div class="seqrow"><div class="seqnum oy">5</div><div><div class="seqtitle">Set an org-wide No-Meeting Day</div><div class="seqguide oy">One focused half-day → fixed for good</div></div></div>
+      <p class="note" style="margin:10px 0 0;">Fill-in: "Spare-capacity job · no rush" · Thankless: "Low payoff · skip unless trivial"</p>
+    </div>
+
+    <div class="opt">
+      <div class="lbl">Option B — payoff-forward</div>
+      <div class="seqrow"><div class="seqnum">1</div><div><div class="seqtitle">Kill agenda-less meetings</div><div class="seqguide">Biggest bang, least effort — start today</div></div></div>
+      <div class="seqrow"><div class="seqnum oy">5</div><div><div class="seqtitle">Set an org-wide No-Meeting Day</div><div class="seqguide oy">Worth a half-day — sets up a lasting win</div></div></div>
+      <p class="note" style="margin:10px 0 0;">Fill-in: "Nice-to-have · fit it in when free" · Thankless: "Low payoff · skip unless quick"</p>
+    </div>
+
+    <div class="opt">
+      <div class="lbl">Option C — imperative / commitment</div>
+      <div class="seqrow"><div class="seqnum">1</div><div><div class="seqtitle">Kill agenda-less meetings</div><div class="seqguide">Do it this week · under an hour to set up</div></div></div>
+      <div class="seqrow"><div class="seqnum oy">5</div><div><div class="seqtitle">Set an org-wide No-Meeting Day</div><div class="seqguide oy">Block half a day · pays back for months</div></div></div>
+      <p class="note" style="margin:10px 0 0;">Fill-in: "Grab it on a slow afternoon" · Thankless: "Only if it's quick — otherwise skip"</p>
+    </div>
+  </div>
+
+  <!-- ITEM 6 -->
+  <div class="section">
+    <span class="stag">Item 6 · Closing space → spread the word (pick A / B / C)</span>
+    <h2>Turn the closing line into a share nudge</h2>
+    <p class="note">Keeps the headline "You've got a plan. Now go reclaim your week." and replaces the small grey subline with a share prompt + buttons.</p>
+
+    <div class="opt rec">
+      <div class="lbl">Option A — teammate is losing the same hours <span class="pill">recommended</span></div>
+      <div class="closecard">
+        <h3>You've got a plan. Now go reclaim your week.</h3>
+        <p style="color:var(--ink-soft);font-size:.92rem;margin:0;">Someone on your team is losing the same hours. Send them FocusLab — it takes 3 minutes.</p>
+        <div class="sharebtns"><button class="sb solid">Copy link</button><button class="sb">Share on LinkedIn</button><button class="sb">Email it</button></div>
+      </div>
+    </div>
+    <div class="opt">
+      <div class="lbl">Option B — pay it forward</div>
+      <div class="closecard">
+        <h3>You've got a plan. Now go reclaim your week.</h3>
+        <p style="color:var(--ink-soft);font-size:.92rem;margin:0;">If this gave you hours back, pass it on — know anyone drowning in busywork?</p>
+        <div class="sharebtns"><button class="sb solid">Copy link</button><button class="sb">Share on LinkedIn</button></div>
+      </div>
+    </div>
+    <div class="opt">
+      <div class="lbl">Option C — challenge framing</div>
+      <div class="closecard">
+        <h3>You've got a plan. Now go reclaim your week.</h3>
+        <p style="color:var(--ink-soft);font-size:.92rem;margin:0;">Found your hidden hours? Dare a colleague to find theirs.</p>
+        <div class="sharebtns"><button class="sb solid">Copy link</button><button class="sb">Share on LinkedIn</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ITEM 3 -->
+  <div class="section">
+    <span class="stag">Item 3 · "Where's the C zone?" — pick how to handle flat data</span>
+    <h2>Why you saw only two zones</h2>
+    <p class="note">Every drain you tapped got auto-seeded at <b>1.0 hr</b>, and you only bumped two to 2.0. So your data was <b>[2, 2, 1, 1, 1, 1, …]</b> — nearly flat. With no real "vital few," the engine puts the top 2 in <b>A</b> and the rest in <b>C</b>, and the middle <b>B</b> band comes out empty. Pareto needs a spread to show three zones. Three ways to fix it:</p>
+
+    <div class="opt rec">
+      <div class="lbl">Option A — stop auto-seeding 1.0 <span class="pill">recommended</span></div>
+      <p class="note" style="margin:0 0 8px;">Tapping a drain leaves the hours <b>blank</b> — you type the real number. Real numbers vary, so A/B/C populate naturally. Cleanest fix, zero methodology change. (The min-5 gate would count drains with a number entered.)</p>
+      <div class="bars"><div class="bar bA" style="height:95%"></div><div class="bar bA" style="height:78%"></div><div class="bar bB" style="height:55%"></div><div class="bar bB" style="height:48%"></div><div class="bar bC" style="height:30%"></div><div class="bar bC" style="height:22%"></div><div class="bar bC" style="height:18%"></div></div>
+      <p class="legend"><b class="a">█ A — biggest drains</b> &nbsp; <b class="b">█ B — also eating your time</b> &nbsp; <b class="c">█ C — the small stuff</b></p>
+    </div>
+
+    <div class="opt">
+      <div class="lbl">Option B — guarantee a middle band</div>
+      <p class="note" style="margin:0;">Keep auto-seeding, but tweak the zone math so a long flat tail can't swallow everything into C — the top slice of the tail becomes B. Always shows three zones, but it's a real change to the Pareto methodology (the thing Oren scrutinizes), so I'd only do this with your explicit ok.</p>
+    </div>
+
+    <div class="opt">
+      <div class="lbl">Option C — honest "evenly spread" state</div>
+      <p class="note" style="margin:0;">When the data really is flat, detect it and say so: "Your time is spread evenly — there's no single vital few. Trim a little across the board." Instead of forcing a misleading 2-zone chart. (Pairs well with A.)</p>
+    </div>
+    <p class="how">My pick: <b>A</b> (and I'd fold in C's flat-data message as a safety net). A fixes the root cause without touching the engine's math. Tell me if you want just A, A+C, or B.</p>
+  </div>
+
+</div>
+</body>
+</html>

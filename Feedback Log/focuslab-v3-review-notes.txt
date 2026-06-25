@@ -1,0 +1,58 @@
+FocusLab v3 mockup — Mona's review notes
+(generated from the inline review HTML)
+
+## 0 · Removed from the homepage
+  • Scene 0 · Removals: Resolved
+
+## 1 · Landing hero — your Option B, reworked
+  • Scene 1 · Hero: Use this version: A working person loses about 10 hours a week to busywork. Find your drains and a plan to free up your hours, in 3 minutes.
+
+## 2 · Landing — below the hero
+  • Scene 2 · Below the hero: Updated copy:
+Estimate the hours each drain costs you. It takes about 90 seconds.
+
+An action plan ranked by hours saved — each with a suggested owner and start date.
+
+The rest is ok
+
+## 3 · Log your week — ONE screen
+  • Scene 3 · Intake screen: No changes
+
+## 4 · Logged more than your week?
+  • Scene 4 · Over-cap: You're
+1 hour over
+a 45-hr week. Want us to shave it off the smallest drain?
+
+This section is hard to read because of its design/formatting. Needs a change
+
+## 5 · Your plan — several fixes per drain
+  ▸ Multi-fix layout + adjusted subtext OK?: See my note
+  • Scene 5 · Plan (multi-fix): This doesn't work because the idea was to merge this section and scoring impact & effort so that a person doesn't have to go back and forth. One less screen and step for them. Also, no need to tag labels by default. remove this type of tag "3.2 hrs/wk wasted" -- it confuses the reader. Also, it needs to be clear what the "you" "team" and the dates mean. It's vague as of now
+
+## 6 · The payoff — your Option B
+  • Scene 6 · Payoff: Copy wise, it's good. I want it to be a bit more pleasing aesthetically. Use the design components we've installed from magic UI
+
+## 7 · EVI Matrix — original labels restored
+  • Scene 7 · EVI Matrix: For pearls, Oysters, and Low hanging fruit, I want more matching emojis. Best if they're exactly matching
+
+## 8 · The four waste types
+  • Scene 8 · Waste types: Let the user add their type as well. And what about role-specific wastes?
+
+## 9 · "How did you get this?"
+  • Scene 9 · Show the math: Yes tucked behind the i icon
+
+## 10 · Empty fields that explain themselves
+  • Scene 10 · Blank states: I don't think the hours requires a prompt, it's self explanatory
+
+## 11 · You can't skip a rating
+  • Scene 11 · Rating validation: This is ok
+
+## 12 · Pareto needs enough sources
+  • Scene 12 · Pareto density: The way the message is written is not easy to read, it's in chunks. It happened somewhere above as well
+
+## 13 · Hours vs % — decided
+  • Scene 13 · Hours decided: Ok
+
+## 14 · Built for any worker + edge cases
+  • Scene 14 · Edge cases: Ok
+

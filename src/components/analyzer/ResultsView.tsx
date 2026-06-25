@@ -204,6 +204,15 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
   const vitalFew = paretoResult.categories.filter((c) => c.isVitalFew);
   const safeWorkHours = workHoursPerWeek > 0 ? workHoursPerWeek : 1; // guard division by zero
 
+  // Flat-data safety net (S21 #3): when every drain came in at the same hours
+  // there's no real "vital few" — Pareto collapses and the B zone is empty. Say
+  // so honestly instead of showing a misleading two-zone chart.
+  const distinctHours = new Set(
+    paretoResult.categories.map((c) => Math.round(c.hoursPerWeek * 10) / 10),
+  );
+  const isEvenlySpread =
+    paretoResult.categories.length >= 3 && distinctHours.size === 1;
+
   // Chart data from the engine result
   const chartData = useMemo(() => {
     const zoneBySlug = new Map(paretoResult.categories.map((c) => [c.categorySlug, c.zone]));
@@ -386,6 +395,19 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
             </>
           )}
         </div>
+
+        {/* -- Flat-data heads-up (S21 #3) -- */}
+        {hasWaste && isEvenlySpread && (
+          <div
+            className="surface-card p-4 sm:p-5 mb-10 flex items-start gap-3"
+            style={{ borderLeft: "4px solid var(--color-gold)", backgroundColor: "rgba(237, 178, 21, 0.07)" }}
+          >
+            <span className="text-2xl flex-shrink-0" aria-hidden="true">🫠</span>
+            <p className="text-sm" style={{ color: "var(--color-ink)" }}>
+              Your time&apos;s spread <strong>evenly</strong> across these drains — there&apos;s no single &ldquo;vital few&rdquo; to attack. Trim a little from each rather than chasing one. (If that doesn&apos;t feel right, go back and give each drain its real hours — they&apos;re rarely all the same.)
+            </p>
+          </div>
+        )}
 
         {/* -- PARETO CHART -- */}
         {hasWaste && (
@@ -650,15 +672,15 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
         {/* -- Fix it CTA -- */}
         {hasWaste ? (
           <div className="text-center py-10">
-            <p className="text-base mb-4 font-medium" style={{ color: "var(--color-ink-soft)" }}>
-              This is fixable.
+            <p className="text-lg sm:text-xl mb-4 font-bold" style={{ color: "var(--color-ink)" }}>
+              You&apos;ve seen the bleed. Now stop it.
             </p>
             <Link href="/focus" className="no-underline inline-flex justify-center">
               <ShimmerButton
                 borderRadius="12px"
                 className="px-10 py-4 text-base font-bold mx-auto"
               >
-                Now let&apos;s fix it &rarr;
+                Build my plan &rarr;
               </ShimmerButton>
             </Link>
           </div>

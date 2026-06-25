@@ -272,17 +272,23 @@ describe("Analyzer copy (Session 7)", () => {
     ).toBe(true);
   });
 
-  it("[S7] ResultsView CTA: Now let's fix it", () => {
-    // Copy uses &apos; HTML entity in JSX
+  it("[S21-#4] ResultsView CTA: Build my plan", () => {
+    // S7 copy ("Now let's fix it") replaced with a stronger CTA (Mona, S21).
     expect(
-      fileContains("components/analyzer/ResultsView.tsx", "fix it")
+      fileContains("components/analyzer/ResultsView.tsx", "Build my plan")
     ).toBe(true);
+    expect(
+      fileContains("components/analyzer/ResultsView.tsx", "Now let")
+    ).toBe(false);
   });
 
-  it("[S7] ResultsView pre-CTA: This is fixable", () => {
+  it("[S21-#4] ResultsView pre-CTA: You've seen the bleed. Now stop it.", () => {
+    expect(
+      fileContains("components/analyzer/ResultsView.tsx", "seen the bleed. Now stop it")
+    ).toBe(true);
     expect(
       fileContains("components/analyzer/ResultsView.tsx", "This is fixable")
-    ).toBe(true);
+    ).toBe(false);
   });
 });
 
@@ -1110,7 +1116,7 @@ describe("Pareto minimum drains (Session 19, Note 15/scene 12&14)", () => {
 
   it("[S20-V4-merge] wizard is now 4 steps (Role · Context · Log · Results)", () => {
     const stepper = readSrc("components/analyzer/Stepper.tsx");
-    expect(stepper).toContain("Log your week");
+    expect(stepper).toContain("Log your waste");
     expect(stepper).not.toContain("Your Time");
     expect(stepper).not.toContain('"Details"');
   });
@@ -1156,11 +1162,11 @@ describe("Pareto minimum drains (Session 19, Note 15/scene 12&14)", () => {
     expect(content).toContain("SEQUENCE_GUIDANCE[d.quadrantLabel]");
   });
 
-  // S20-V4 notes 6 & 7: rotating BorderBeam on the hero + bigger particles.
-  it("[S20-V4-#6] hero has a rotating BorderBeam", () => {
+  // S20-V4 note 7: bigger particles. (Note 6's BorderBeam was rejected in S21.)
+  it("[S21-#7] hero has NO BorderBeam (Mona rejected the beam)", () => {
     const content = readSrc("components/landing/Hero.tsx");
-    expect(content).toContain('from "@/components/ui/border-beam"');
-    expect(content).toContain("<BorderBeam");
+    expect(content).not.toContain("border-beam");
+    expect(content).not.toContain("<BorderBeam");
   });
 
   it("[S20-V4-#7] hero particles are sized up for visibility", () => {
@@ -1264,5 +1270,45 @@ describe("Pareto minimum drains (Session 19, Note 15/scene 12&14)", () => {
     const content = readSrc("components/analyzer/DrilldownStep.tsx");
     expect(content).not.toContain("WhyGroupedHover");
     expect(content).not.toContain("why are these grouped?");
+  });
+});
+
+// Session 21 — Mona's walkthrough of the live merged analyzer.
+describe("Session 21 — merged-analyzer walkthrough fixes", () => {
+  it("[S21-#1] duplicate exec/manager approval drains merged into one", () => {
+    const ws = readSrc("lib/data/waste-sources.ts");
+    // the executive-scoped duplicate is gone…
+    expect(ws).not.toContain('slug: "exec-decide-through-you"');
+    // …and the kept drain now serves managers AND executives, with 👎
+    expect(ws).toContain('scope: ["manager", "executive"], emoji: "👎"');
+  });
+
+  it("[S21-#1] no solution still points at the removed slug", () => {
+    expect(readSrc("lib/data/solutions.ts")).not.toContain("exec-decide-through-you");
+  });
+
+  it("[S21-#2] the logging step is 'Log your waste' everywhere", () => {
+    expect(readSrc("components/analyzer/LogStep.tsx")).toContain("Log your waste");
+    expect(readSrc("components/analyzer/Stepper.tsx")).toContain("Log your waste");
+    expect(readSrc("components/landing/HowItWorks.tsx")).toContain("Log your waste");
+  });
+
+  it("[S21-#3] LogStep no longer auto-seeds 1.0 hr on pick", () => {
+    expect(readSrc("components/analyzer/LogStep.tsx")).not.toContain("hoursPerDay: 1");
+  });
+
+  it("[S21-#3] ResultsView has the flat-data 'evenly spread' safety net", () => {
+    const rv = readSrc("components/analyzer/ResultsView.tsx");
+    expect(rv).toContain("isEvenlySpread");
+    expect(rv).toContain("spread");
+  });
+
+  it("[S21-#6] Payoff closing has spread-the-word share actions", () => {
+    const p = readSrc("components/focus/Payoff.tsx");
+    expect(p).toContain("ShareActions");
+    expect(p).toContain("Copy link");
+    expect(p).toContain("linkedin.com/sharing");
+    expect(p).toContain("mailto:");
+    expect(p).toContain("know anyone drowning in busywork");
   });
 });

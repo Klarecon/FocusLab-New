@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FocusLab — The Fix / Why Pay</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+  :root {
+    --waste-orange: #e03e12;
+    --reclaim-pink: #c4186a;
+    --gold: #edb215;
+    --cream: #fbf6ee;
+    --ink: #2b2018;
+    --muted: #6f6258;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #ded3c4;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 32px;
+    color: var(--ink);
+  }
+
+  .slide {
+    width: 100%;
+    max-width: 1100px;
+    aspect-ratio: 16 / 9;
+    background: var(--cream);
+    border-radius: 20px;
+    box-shadow: 0 30px 80px rgba(43,32,24,0.28);
+    padding: 52px 64px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slide::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 8px;
+    background: linear-gradient(90deg, var(--gold), var(--reclaim-pink), var(--waste-orange));
+  }
+
+  .kicker {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--reclaim-pink);
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 44px;
+    line-height: 1.05;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    max-width: 20ch;
+  }
+  h1 .accent { color: var(--reclaim-pink); }
+
+  .steps {
+    display: flex;
+    gap: 16px;
+    margin: 8px 0;
+  }
+  .step {
+    flex: 1;
+    background: #fff;
+    border: 1px solid #ece0d0;
+    border-radius: 14px;
+    padding: 20px 22px;
+    position: relative;
+  }
+  .step .n {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    background: var(--waste-orange);
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 14px;
+  }
+  .step:nth-child(2) .n { background: var(--reclaim-pink); }
+  .step:nth-child(3) .n { background: var(--gold); color: var(--ink); }
+  .step h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .step p {
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .diff {
+    text-align: center;
+    font-family: 'Fraunces', serif;
+    font-size: 25px;
+    line-height: 1.3;
+    font-weight: 500;
+    margin: 4px 0;
+  }
+  .diff b { color: var(--reclaim-pink); font-weight: 700; }
+  .diff s { color: var(--muted); text-decoration-color: var(--waste-orange); }
+
+  .whypay {
+    background: var(--ink);
+    color: var(--cream);
+    border-radius: 14px;
+    padding: 22px 28px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .whypay .tag {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    white-space: nowrap;
+  }
+  .whypay p {
+    font-size: 17.5px;
+    line-height: 1.4;
+    font-weight: 500;
+  }
+  .whypay b { color: #fff; font-weight: 700; }
+
+  .footer {
+    position: absolute;
+    bottom: 18px;
+    right: 26px;
+    font-size: 11px;
+    color: #b6a896;
+    letter-spacing: 0.04em;
+  }
+</style>
+</head>
+<body>
+  <div class="slide">
+    <div>
+      <div class="kicker">The Fix</div>
+      <h1>FocusLab gives managers back the one thing burnout steals: <span class="accent">time to actually lead.</span></h1>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="n">1</div>
+        <h3>See it</h3>
+        <p>Surfaces the invisible waste eating the week — the drag they feel but can't name.</p>
+      </div>
+      <div class="step">
+        <div class="n">2</div>
+        <h3>Rank it</h3>
+        <p>Pinpoints the 20% causing 80% of the drain, so they know exactly where to start.</p>
+      </div>
+      <div class="step">
+        <div class="n">3</div>
+        <h3>Fix it</h3>
+        <p>Hands over a concrete action plan — not more data, a decision they can act on today.</p>
+      </div>
+    </div>
+
+    <div class="diff">
+      Every other tool <s>shows you data.</s><br />
+      FocusLab <b>tells you what to do about it.</b>
+    </div>
+
+    <div class="whypay">
+      <div class="tag">Why&nbsp;Pay</div>
+      <p>Diagnosing, prioritizing, and prescribing the fix are three things almost no one does alone. FocusLab does all three in <b>15 minutes</b> — turning "I'm slammed and nothing's moving" into <b>"here's the one thing I'm fixing this week."</b> That clarity is what they pay for.</p>
+    </div>
+
+    <div class="footer">FocusLab · The Fix · Jun 2026</div>
+  </div>
+</body>
+</html>

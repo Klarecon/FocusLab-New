@@ -78,6 +78,58 @@ const CountUp = memo(function CountUp({
   );
 });
 
+/** Spread-the-word actions on the closing card (S21 #6). */
+const SHARE_URL = "https://focuslab-omega.vercel.app";
+const SHARE_TEXT =
+  "I just found hours of hidden busywork with FocusLab — it takes about 3 minutes:";
+
+function ShareActions() {
+  const [copied, setCopied] = useState(false);
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(SHARE_URL);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      /* clipboard blocked — no-op */
+    }
+  };
+  const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(SHARE_URL)}`;
+  const emailUrl = `mailto:?subject=${encodeURIComponent("Found my hidden hours with FocusLab")}&body=${encodeURIComponent(`${SHARE_TEXT} ${SHARE_URL}`)}`;
+
+  const base =
+    "no-underline text-sm font-bold px-5 py-2.5 rounded-full transition-colors duration-150 cursor-pointer";
+
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-2.5 mt-5">
+      <button
+        type="button"
+        onClick={copyLink}
+        className={base}
+        style={{ backgroundColor: "var(--color-reclaim)", color: "#fff" }}
+      >
+        {copied ? "Copied! ✓" : "Copy link"}
+      </button>
+      <a
+        href={linkedInUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={base}
+        style={{ border: "1.5px solid var(--color-reclaim)", color: "var(--color-reclaim)" }}
+      >
+        Share on LinkedIn
+      </a>
+      <a
+        href={emailUrl}
+        className={base}
+        style={{ border: "1.5px solid var(--color-reclaim)", color: "var(--color-reclaim)" }}
+      >
+        Email it
+      </a>
+    </div>
+  );
+}
+
 export default function Payoff({ vitalFew, usefulMany, onGoToAssign, variant = "full", onSeeBreakdown }: PayoffProps) {
   const chosenSolutions = useAuditStore((s) => s.chosenSolutions);
   const solutionScores = useAuditStore((s) => s.solutionScores);
@@ -368,9 +420,10 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign, variant = "
           >
             You&apos;ve got a plan. Now go reclaim your week.
           </h3>
-          <p className="text-xs" style={{ color: "var(--color-ink-soft)" }}>
-            Your plan lives here whenever you need it.
+          <p className="text-sm max-w-md mx-auto" style={{ color: "var(--color-ink-soft)" }}>
+            If this gave you hours back, pass it on — know anyone drowning in busywork?
           </p>
+          <ShareActions />
         </motion.div>
       )}
     </div>

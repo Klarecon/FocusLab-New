@@ -72,9 +72,10 @@ test.describe("Screenshot Capture — Full Wizard Flow", () => {
 
     // ===== 4. LOG STEP (merged — Option C) =====
     await snap(page, "05-log-empty");
-    await expect(page.getByRole("heading", { name: "Log your week" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Log your waste" })).toBeVisible();
 
-    // Tap ≥5 drain chips (each seeds 1 hr/wk on select, so the gate clears).
+    // Tap ≥5 drain chips. (S21: chips no longer auto-seed hours — you must type
+    // a real number on each for it to count toward the min-5 gate.)
     const chips = page.locator('[data-testid="drain-chip"]');
     const chipCount = await chips.count();
     for (let i = 0; i < Math.min(chipCount, 6); i++) {
@@ -83,10 +84,10 @@ test.describe("Screenshot Capture — Full Wizard Flow", () => {
     }
     await snap(page, "06-log-filled");
 
-    // Refine a few hours on the selected chips.
+    // Enter a VARIED spread of hours so the Pareto shows real A/B/C zones.
     const hourInputs = page.locator('input[aria-label*="Hours per week"]');
     const hourCount = await hourInputs.count();
-    const hourValues = [3, 2, 1.5, 1, 1];
+    const hourValues = [5, 3, 2, 1.5, 1, 0.5];
     for (let i = 0; i < Math.min(hourCount, hourValues.length); i++) {
       const input = hourInputs.nth(i);
       if (await input.isVisible({ timeout: 1000 }).catch(() => false)) {
@@ -108,7 +109,7 @@ test.describe("Screenshot Capture — Full Wizard Flow", () => {
     if (await damageBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
       if (await damageBtn.isEnabled()) {
         await damageBtn.click();
-        await page.waitForTimeout(2000); // chart render
+        await page.waitForTimeout(4500); // dramatic reveal (3.5s) + chart render
       }
     }
 

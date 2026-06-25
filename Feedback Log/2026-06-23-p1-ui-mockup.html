@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P1 UI Mockup — unified selection + condensed Drilldown</title>
+<style>
+  :root {
+    --waste: #e03e12; --reclaim: #c4186a; --gold: #edb215;
+    --ink: #2a2320; --ink-soft: #6b5f57;
+    --cream: #fdf6ec; --surface: #fffaf2; --line: #ece0d0;
+    --pink-tint: rgba(196,24,106,0.05);
+    --pink-glow: 0 0 0 1px var(--reclaim), 0 2px 10px rgba(196,24,106,0.12);
+  }
+  * { box-sizing: border-box; }
+  body { font-family: 'Plus Jakarta Sans', -apple-system, system-ui, sans-serif; background: var(--cream); color: var(--ink); margin: 0; padding: 44px 24px; line-height: 1.5; }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+  h1 { font-family: 'Fraunces', Georgia, serif; font-size: 2.1rem; margin: 0 0 4px; }
+  .sub { color: var(--ink-soft); margin: 0 0 10px; max-width: 760px; }
+  h2 { font-family: 'Fraunces', serif; font-size: 1.45rem; margin: 40px 0 4px; }
+  .h2note { color: var(--ink-soft); font-size: 0.92rem; margin: 0 0 18px; max-width: 780px; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: start; }
+  @media (max-width: 860px) { .cols { grid-template-columns: 1fr; } }
+  .plabel { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 4px 11px; border-radius: 999px; color: #fff; display: inline-block; margin-bottom: 12px; }
+  .lb-before { background: var(--ink-soft); }
+  .lb-after { background: var(--reclaim); }
+  .mini-h { font-size: 0.72rem; font-weight: 700; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.04em; margin: 14px 0 6px; }
+
+  /* generic selectable */
+  .opt { display:flex; align-items:center; gap:11px; width:100%; text-align:left; border-radius:11px; padding:11px 13px; margin-bottom:8px; background: var(--surface); border:1.5px solid var(--line); transition: all .15s; }
+  .ind { width:20px; height:20px; border-radius:999px; border:2px solid var(--line); flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; }
+  .opt .t { font-size:0.88rem; font-weight:500; }
+  .opt .sm { font-size:0.74rem; color:var(--ink-soft); }
+  /* selected — unified token */
+  .opt.sel { border:2px solid var(--reclaim); background: var(--pink-tint); box-shadow: var(--pink-glow); }
+  .opt.sel .ind { background: var(--reclaim); border-color: var(--reclaim); color:#fff; font-size:11px; font-weight:700; }
+  .opt.sel .t { color: var(--reclaim); font-weight:700; }
+
+  /* BEFORE inconsistent variants */
+  .v-native { width:17px;height:17px;border:2px solid var(--waste);border-radius:4px;background:var(--waste);position:relative;flex-shrink:0; }
+  .v-native::after{content:"✓";color:#fff;font-size:10px;position:absolute;top:-2px;left:2px;}
+  .v-circle-pink{width:20px;height:20px;border-radius:999px;background:var(--reclaim);color:#fff;font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .b-orange{border:1.5px solid var(--waste);}
+  .b-pinkglow{border:2px solid var(--reclaim);background:var(--pink-tint);box-shadow:var(--pink-glow);}
+  .tag-bad{font-size:0.7rem;color:var(--waste);font-weight:700;margin-left:6px;}
+  .hrs{font-size:0.74rem;color:var(--ink-soft);border:1px solid var(--line);border-radius:7px;padding:3px 8px;margin-left:auto;white-space:nowrap;}
+  .hrs.waste{color:var(--waste);border-color:rgba(224,62,18,0.3);font-weight:700;}
+
+  .emoji{font-size:1.1rem;flex-shrink:0;}
+
+  .spec{background: var(--ink); color: var(--cream); border-radius:14px; padding:20px 24px; margin-top:18px;}
+  .spec h3{font-family:'Fraunces',serif;margin:0 0 10px;font-size:1.1rem;}
+  .spec ul{margin:0;padding-left:18px;}
+  .spec li{margin:6px 0;font-size:0.9rem;}
+  .spec code{background:rgba(255,255,255,0.12);color:#ffe;padding:1px 6px;border-radius:5px;}
+  .swatch{display:inline-block;width:11px;height:11px;border-radius:3px;vertical-align:middle;margin-right:4px;}
+
+  /* Drilldown condense */
+  .grp-old{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px;}
+  .grp-head{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:700;font-size:1rem;margin-bottom:10px;}
+  .src-old{display:flex;align-items:flex-start;gap:10px;padding:8px 9px;margin-bottom:4px;}
+  .src-old .txt{font-size:0.85rem;}
+  .src-old .txt small{display:block;color:var(--ink-soft);font-size:0.72rem;margin-top:1px;}
+  .tall-note{color:var(--ink-soft);font-style:italic;font-size:0.8rem;text-align:center;padding:6px;}
+
+  /* accordion after */
+  .acc{background:var(--surface);border:1.5px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden;}
+  .acc-head{display:flex;align-items:center;gap:11px;padding:13px 15px;cursor:pointer;}
+  .acc-head .nm{font-family:'Fraunces',serif;font-weight:700;font-size:0.98rem;}
+  .acc-head .meta{margin-left:auto;display:flex;align-items:center;gap:8px;}
+  .pill{font-size:0.72rem;font-weight:600;padding:3px 9px;border-radius:999px;background:rgba(0,0,0,0.04);color:var(--ink-soft);}
+  .pill.picked{background:var(--pink-tint);color:var(--reclaim);font-weight:700;}
+  .pill.est{background:rgba(224,62,18,0.08);color:var(--waste);font-weight:700;}
+  .chev{color:var(--ink-soft);font-size:0.8rem;}
+  .acc.open{border-color:var(--reclaim);box-shadow:0 0 0 1px rgba(196,24,106,0.1);}
+  .acc-body{padding:4px 13px 13px;display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  @media (max-width:520px){ .acc-body{grid-template-columns:1fr;} }
+  .chip{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);border-radius:9px;padding:8px 10px;background:#fff;font-size:0.8rem;}
+  .chip.on{border:2px solid var(--reclaim);background:var(--pink-tint);}
+  .chip .ci{width:16px;height:16px;border-radius:999px;border:2px solid var(--line);flex-shrink:0;}
+  .chip.on .ci{background:var(--reclaim);border-color:var(--reclaim);position:relative;}
+  .chip.on .ci::after{content:"✓";color:#fff;font-size:9px;position:absolute;top:-2px;left:2px;}
+  .chip .ch{margin-left:auto;font-size:0.72rem;color:var(--waste);font-weight:700;}
+  .note{background:#fff7ea;border-left:4px solid var(--gold);padding:13px 17px;border-radius:0 10px 10px 0;margin-top:18px;font-size:0.9rem;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>P1 fixes — selection UI + condensed Drilldown</h1>
+  <p class="sub">Both approved items, mocked on the real components. Part 1 unifies how "selected" looks across all four pickers. Part 2 condenses the Drilldown so it's not a wall of checkboxes. They share the Drilldown, so I'll ship them together.</p>
+
+  <!-- ============ PART 1 ============ -->
+  <h2>Part 1 — One way to say "selected"</h2>
+  <p class="h2note">Today, four pickers signal selection four different ways — and two of them use <b style="color:var(--waste)">orange</b>, the same color as waste. After: every picker uses the same pink token — a filled ✓ circle, 2px pink border, soft pink glow.</p>
+
+  <div class="cols">
+    <!-- BEFORE -->
+    <div>
+      <span class="plabel lb-before">Now — inconsistent</span>
+
+      <div class="mini-h">Role cards</div>
+      <div class="opt b-pinkglow"><span class="v-circle-pink" style="background:none;border:2px solid var(--reclaim)"></span><span class="emoji">📣</span><span class="t" style="color:var(--reclaim);font-weight:700">Marketing</span><span class="tag-bad">glow, no check</span></div>
+
+      <div class="mini-h">Intake pain cards</div>
+      <div class="opt b-orange"><span class="emoji">😤</span><span class="t">Back-to-back meetings</span><span class="hrs waste">6 hrs/wk</span><span class="tag-bad">orange border</span></div>
+
+      <div class="mini-h">Drilldown sources</div>
+      <div class="opt"><span class="v-native"></span><span class="emoji">😴</span><span class="t">Meetings you weren't needed in</span><span class="tag-bad">orange checkbox</span></div>
+
+      <div class="mini-h">Solution picker</div>
+      <div class="opt b-pinkglow"><span class="v-circle-pink">✓</span><span class="t" style="color:var(--reclaim);font-weight:700">Batch email into two windows</span></div>
+    </div>
+
+    <!-- AFTER -->
+    <div>
+      <span class="plabel lb-after">After — unified token</span>
+
+      <div class="mini-h">Role cards</div>
+      <div class="opt sel"><span class="ind">✓</span><span class="emoji">📣</span><span class="t">Marketing</span></div>
+
+      <div class="mini-h">Intake pain cards</div>
+      <div class="opt sel"><span class="ind">✓</span><span class="emoji">😤</span><span class="t">Back-to-back meetings</span><span class="hrs waste">6 hrs/wk</span></div>
+
+      <div class="mini-h">Drilldown sources</div>
+      <div class="opt sel"><span class="ind">✓</span><span class="emoji">😴</span><span class="t">Meetings you weren't needed in</span></div>
+
+      <div class="mini-h">Solution picker</div>
+      <div class="opt sel"><span class="ind">✓</span><span class="t">Batch email into two windows</span></div>
+    </div>
+  </div>
+
+  <div class="spec">
+    <h3>The single selected-state spec (applied to all four)</h3>
+    <ul>
+      <li><b>Indicator:</b> pink filled circle, white ✓, 20px — replaces the orange browser checkbox and the no-indicator cards.</li>
+      <li><b>Container:</b> <code>2px solid #c4186a</code> border + <span class="swatch" style="background:var(--pink-tint)"></span><code>rgba(196,24,106,0.05)</code> fill + soft glow.</li>
+      <li><b>Hover (unselected):</b> border darkens, faint tint — so it's obvious a row is clickable.</li>
+      <li><b>Hit area:</b> whole row/card clickable, min 44px tall (easier taps, better a11y).</li>
+      <li><b>Orange stays for one job only:</b> <span class="swatch" style="background:var(--waste)"></span>waste <b>hours</b> values — never for "selected". Pink = you chose it, orange = how much waste.</li>
+    </ul>
+  </div>
+
+  <!-- ============ PART 2 ============ -->
+  <h2>Part 2 — Condense the Drilldown</h2>
+  <p class="h2note">Today every group is fully expanded, so the page is a long scroll of checkboxes. After: groups collapse to a one-line summary (drains inside + estimated hours + how many you've picked); tap to expand into a denser two-column grid.</p>
+
+  <div class="cols">
+    <!-- BEFORE -->
+    <div>
+      <span class="plabel lb-before">Now — everything expanded</span>
+      <div class="grp-old">
+        <div class="grp-head"><span class="emoji">😴</span> Meetings <span class="hrs est" style="margin-left:auto;background:rgba(224,62,18,0.08);color:var(--waste);border:none;font-weight:700">~5 hrs/wk</span></div>
+        <div class="src-old"><span class="v-native" style="opacity:.4;background:#fff"></span><span class="emoji">😴</span><span class="txt">Meetings you weren't needed in<small>Invited "just in case", added nothing.</small></span></div>
+        <div class="src-old"><span class="v-native" style="opacity:.4;background:#fff"></span><span class="emoji">😴</span><span class="txt">Recurring status update meetings<small>Round-the-room, no decision made.</small></span></div>
+        <div class="src-old"><span class="v-native" style="opacity:.4;background:#fff"></span><span class="emoji">😴</span><span class="txt">Standing meetings past their purpose<small>Syncs nobody questions.</small></span></div>
+        <div class="src-old"><span class="v-native" style="opacity:.4;background:#fff"></span><span class="emoji">😴</span><span class="txt">Meetings that run longer than needed<small>Done in 20, ran 60.</small></span></div>
+      </div>
+      <div class="grp-old">
+        <div class="grp-head"><span class="emoji">🫠</span> Email &amp; chat <span class="hrs est" style="margin-left:auto;background:rgba(224,62,18,0.08);color:var(--waste);border:none;font-weight:700">~4 hrs/wk</span></div>
+        <div class="src-old"><span class="v-native" style="opacity:.4;background:#fff"></span><span class="emoji">🫠</span><span class="txt">Triaging low-value email &amp; CC chains<small>Clearing mail you didn't need.</small></span></div>
+        <div class="src-old"><span class="v-native" style="opacity:.4;background:#fff"></span><span class="emoji">🫠</span><span class="txt">Noisy group threads &amp; reply-all<small>Pile-ons, thanks chains.</small></span></div>
+      </div>
+      <div class="tall-note">…7 more groups, all expanded → long scroll 😵</div>
+    </div>
+
+    <!-- AFTER -->
+    <div>
+      <span class="plabel lb-after">After — collapsed summaries</span>
+
+      <div class="acc open">
+        <div class="acc-head"><span class="emoji">😴</span><span class="nm">Meetings</span><span class="meta"><span class="pill picked">2 picked</span><span class="pill est">~5 hrs/wk</span><span class="chev">▲</span></span></div>
+        <div class="acc-body">
+          <div class="chip on"><span class="ci"></span><span class="emoji">😴</span>Weren't needed in<span class="ch">2h</span></div>
+          <div class="chip on"><span class="ci"></span><span class="emoji">😴</span>Recurring status<span class="ch">3h</span></div>
+          <div class="chip"><span class="ci"></span><span class="emoji">😴</span>Standing meetings</div>
+          <div class="chip"><span class="ci"></span><span class="emoji">😴</span>Run longer than needed</div>
+        </div>
+      </div>
+
+      <div class="acc">
+        <div class="acc-head"><span class="emoji">🫠</span><span class="nm">Email &amp; chat</span><span class="meta"><span class="pill est">~4 hrs/wk</span><span class="chev">▼</span></span></div>
+      </div>
+      <div class="acc">
+        <div class="acc-head"><span class="emoji">🧟</span><span class="nm">Coordination</span><span class="meta"><span class="pill picked">1 picked</span><span class="pill est">~3 hrs/wk</span><span class="chev">▼</span></span></div>
+      </div>
+      <div class="acc">
+        <div class="acc-head"><span class="emoji">🤹</span><span class="nm">Focus</span><span class="meta"><span class="pill est">~6 hrs/wk</span><span class="chev">▼</span></span></div>
+      </div>
+      <div class="acc">
+        <div class="acc-head"><span class="emoji">😤</span><span class="nm">Waiting &amp; blocked</span><span class="meta"><span class="pill est">~2 hrs/wk</span><span class="chev">▼</span></span></div>
+      </div>
+      <div class="tall-note" style="font-style:normal;color:var(--reclaim);font-weight:600">All 9 groups fit on one screen — open only what's relevant 🙂</div>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>Behaviour notes:</b> groups with picks show a pink <b>"N picked"</b> pill so you never lose track when collapsed. A group auto-opens if it already has selections (e.g. coming back to the step). Selecting a source reveals its hours field inline, same as today. Default: a sensible group (your biggest estimate) starts open so the page isn't all-closed on arrival.
+  </div>
+
+  <p class="h2note" style="margin-top:26px">🟠 <b>UI/UX Designer</b> phase shown above → 🔴 <b>QA</b> will screenshot-verify on the deployed build before I call it done. Nothing is coded yet — approve the direction (or call out changes) and I'll implement all four approved items together: gold Effort · unique emojis · unified selection · condensed Drilldown.</p>
+</div>
+</body>
+</html>

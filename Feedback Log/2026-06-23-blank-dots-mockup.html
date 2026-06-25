@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blank vs pre-filled dots — Effort/Impact rating</title>
+<style>
+  :root {
+    --waste:#e03e12; --reclaim:#c4186a; --gold:#edb215;
+    --ink:#2a2320; --ink-soft:#6b5f57;
+    --cream:#fdf6ec; --surface:#fffaf2; --line:#ece0d0;
+  }
+  *{box-sizing:border-box;}
+  body{font-family:'Plus Jakarta Sans',-apple-system,system-ui,sans-serif;background:var(--cream);color:var(--ink);margin:0;padding:44px 24px;line-height:1.5;}
+  .wrap{max-width:1080px;margin:0 auto;}
+  h1{font-family:'Fraunces',Georgia,serif;font-size:2.1rem;margin:0 0 4px;}
+  .sub{color:var(--ink-soft);margin:0 0 26px;max-width:760px;}
+  h2{font-family:'Fraunces',serif;font-size:1.3rem;margin:34px 0 6px;}
+  .cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;align-items:start;}
+  @media(max-width:880px){.cols{grid-template-columns:1fr;}}
+  .plabel{font-size:0.7rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:4px 11px;border-radius:999px;color:#fff;display:inline-block;margin-bottom:12px;}
+  .lb-now{background:var(--ink-soft);} .lb-empty{background:var(--reclaim);} .lb-filled{background:var(--gold);color:#4a3a08;}
+
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:0 1px 2px rgba(0,0,0,.03);}
+  .card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .quad{font-size:10px;font-weight:600;padding:3px 8px;border-radius:999px;}
+  .quad.win{color:var(--reclaim);background:rgba(196,24,106,.08);}
+  .quad.unrated{color:var(--ink-soft);background:rgba(0,0,0,.05);font-style:italic;}
+  .remove{font-size:11px;color:var(--waste);background:none;border:none;cursor:pointer;}
+  .fix-title{font-size:0.92rem;font-weight:600;margin:0 0 14px;color:var(--ink);}
+  .controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .ctl-label{display:block;font-size:11px;font-weight:500;color:var(--ink-soft);margin-bottom:6px;}
+  .ctl-label .hint{font-weight:400;}
+  .dots{display:flex;gap:6px;align-items:center;}
+  .dot{width:16px;height:16px;border-radius:999px;border:1.5px solid;}
+  .d-gold-on{border-color:var(--gold);background:var(--gold);}
+  .d-pink-on{border-color:var(--reclaim);background:var(--reclaim);}
+  .d-off{border-color:#d8cab6;background:transparent;}
+  .d-empty{border-color:#cbbba6;background:transparent;border-style:dashed;}
+  .prompt{font-size:10px;color:var(--reclaim);font-weight:600;margin-top:5px;}
+  .cursor{font-size:10px;color:var(--ink-soft);margin-left:4px;}
+  .note{font-size:0.8rem;color:var(--ink-soft);margin-top:14px;padding-top:11px;border-top:1px dashed var(--line);}
+
+  .impl{background:var(--ink);color:var(--cream);border-radius:14px;padding:20px 24px;margin-top:18px;}
+  .impl h3{font-family:'Fraunces',serif;margin:0 0 10px;font-size:1.1rem;}
+  .impl ul{margin:0;padding-left:18px;} .impl li{margin:7px 0;font-size:0.9rem;}
+  .impl code{background:rgba(255,255,255,.12);color:#ffe;padding:1px 6px;border-radius:5px;}
+  .pc{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px;}
+  @media(max-width:680px){.pc{grid-template-columns:1fr;}}
+  .pcbox{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;}
+  .pcbox h4{margin:0 0 8px;font-size:0.85rem;}
+  .pcbox.pro h4{color:var(--reclaim);} .pcbox.con h4{color:var(--waste);}
+  .pcbox ul{margin:0;padding-left:16px;} .pcbox li{font-size:0.82rem;margin:5px 0;}
+  .reco{background:#fff7ea;border-left:4px solid var(--gold);padding:14px 18px;border-radius:0 10px 10px 0;margin-top:22px;font-size:0.92rem;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Should the dots start blank?</h1>
+  <p class="sub">The Action Plan rates each fix on Effort + Impact. Today they load <b>pre-filled at "2 / medium"</b>. Your idea: start them <b>blank</b> so the user actively sets each. Here's the same card three ways — today, blank, and mid-fill — plus what it means for the quadrant logic.</p>
+
+  <div class="cols">
+
+    <!-- NOW -->
+    <div>
+      <span class="plabel lb-now">Now — pre-filled at 2</span>
+      <div class="card">
+        <div class="card-top"><span class="quad win">⚡ Quick win</span><button class="remove">Remove</button></div>
+        <div class="fix-title">Batch email into two daily windows</div>
+        <div class="controls">
+          <div>
+            <span class="ctl-label">Effort <span class="hint">(easy → hard)</span></span>
+            <div class="dots"><span class="dot d-gold-on"></span><span class="dot d-gold-on"></span><span class="dot d-off"></span><span class="dot d-off"></span><span class="dot d-off"></span></div>
+          </div>
+          <div>
+            <span class="ctl-label">Impact <span class="hint">(low → huge)</span></span>
+            <div class="dots"><span class="dot d-pink-on"></span><span class="dot d-pink-on"></span><span class="dot d-off"></span><span class="dot d-off"></span><span class="dot d-off"></span></div>
+          </div>
+        </div>
+        <p class="note">😐 Loads at 2/2. Risk: user accepts the default without thinking → every fix looks "medium," data is anchored &amp; less true.</p>
+      </div>
+    </div>
+
+    <!-- BLANK -->
+    <div>
+      <span class="plabel lb-empty">Your idea — blank</span>
+      <div class="card">
+        <div class="card-top"><span class="quad unrated">rate to place it</span><button class="remove">Remove</button></div>
+        <div class="fix-title">Batch email into two daily windows</div>
+        <div class="controls">
+          <div>
+            <span class="ctl-label">Effort <span class="hint">(easy → hard)</span></span>
+            <div class="dots"><span class="dot d-empty"></span><span class="dot d-empty"></span><span class="dot d-empty"></span><span class="dot d-empty"></span><span class="dot d-empty"></span></div>
+            <div class="prompt">↑ tap to set</div>
+          </div>
+          <div>
+            <span class="ctl-label">Impact <span class="hint">(low → huge)</span></span>
+            <div class="dots"><span class="dot d-empty"></span><span class="dot d-empty"></span><span class="dot d-empty"></span><span class="dot d-empty"></span><span class="dot d-empty"></span></div>
+            <div class="prompt">↑ tap to set</div>
+          </div>
+        </div>
+        <p class="note">🙂 Empty dashed dots invite input. Quadrant shows <i>"rate to place it"</i> until both are set — no fake "quick win."</p>
+      </div>
+    </div>
+
+    <!-- MID FILL -->
+    <div>
+      <span class="plabel lb-filled">After user fills it</span>
+      <div class="card">
+        <div class="card-top"><span class="quad win">⚡ Quick win</span><button class="remove">Remove</button></div>
+        <div class="fix-title">Batch email into two daily windows</div>
+        <div class="controls">
+          <div>
+            <span class="ctl-label">Effort <span class="hint">(easy → hard)</span></span>
+            <div class="dots"><span class="dot d-gold-on"></span><span class="dot d-off"></span><span class="dot d-off"></span><span class="dot d-off"></span><span class="dot d-off"></span></div>
+          </div>
+          <div>
+            <span class="ctl-label">Impact <span class="hint">(low → huge)</span></span>
+            <div class="dots"><span class="dot d-pink-on"></span><span class="dot d-pink-on"></span><span class="dot d-pink-on"></span><span class="dot d-pink-on"></span><span class="dot d-off"></span></div>
+          </div>
+        </div>
+        <p class="note">😤 Now it's a real rating (low effort, high impact) → genuinely earns "Quick win." The quadrant only appears once it's true.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- IMPLICATION -->
+  <h2>What blank means for the logic</h2>
+  <div class="impl">
+    <h3>The honest trade-off</h3>
+    <ul>
+      <li><b>Quadrant &amp; quick-win count:</b> a fix with no rating can't be placed. It shows an <code>unrated</code> state and is excluded from the "N quick wins" summary until rated — instead of silently counting as medium.</li>
+      <li><b>Sorting:</b> the Action Plan sorts by impact. Unrated fixes drop to a <b>"Needs rating"</b> group at the bottom so they're not lost, then sort in once rated.</li>
+      <li><b>No data loss:</b> this is purely the <i>starting</i> value. The store already holds per-fix scores — blank just means "unset" instead of defaulting to 2. <code>SCORE_FROM_LEVEL</code> (2/3/4) is untouched.</li>
+    </ul>
+  </div>
+
+  <div class="pc">
+    <div class="pcbox pro">
+      <h4>Why blank is better</h4>
+      <ul>
+        <li>Kills anchoring — no "everything's medium" garbage data</li>
+        <li>Forces a deliberate call → the matrix actually means something</li>
+        <li>Empty dots clearly signal "your turn"</li>
+      </ul>
+    </div>
+    <div class="pcbox con">
+      <h4>The cost</h4>
+      <ul>
+        <li>More taps — user must rate every fix they keep</li>
+        <li>Needs an "unrated" empty state everywhere a quadrant shows</li>
+        <li>If they skip rating, the Impact Matrix has gaps until filled</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="reco">
+    <b>My recommendation: go blank</b> — your instinct is right. Pre-filled "2" produces lazy, anchored data and a Matrix that looks decided when it isn't. Blank costs a few taps but makes every quadrant placement <i>earned</i>. I'll add the <code>unrated</code> quadrant state + a "Needs rating" sort group so nothing breaks when a fix isn't scored yet. If you'd rather keep friction low, the fallback is pre-fill <i>Effort</i> only and leave Impact blank — but I'd do full-blank.
+  </div>
+</div>
+</body>
+</html>

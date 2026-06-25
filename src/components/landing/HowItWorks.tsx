@@ -15,7 +15,7 @@ const STEPS = [
   {
     no: 2,
     emoji: "😴",
-    title: "Log your week",
+    title: "Log your waste",
     body: "Estimate the hours each drain costs you. It takes about 90 seconds.",
   },
   {

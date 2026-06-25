@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FocusLab — Redesign Mockup v2 · REVIEW (give notes inline)</title>
+<style>
+  :root{
+    --waste:#e03e12; --reclaim:#c4186a; --gold:#edb215;
+    --ink:#2c2418; --ink-soft:#655b4d;
+    --cream:#fdf6ec; --surface:#fffaf2; --line:#ece0d0;
+  }
+  *{box-sizing:border-box;}
+  body{font-family:'Plus Jakarta Sans',-apple-system,system-ui,sans-serif;background:#efe6d6;color:var(--ink);margin:0;padding:32px 20px 120px;line-height:1.5;}
+  .wrap{max-width:1080px;margin:0 auto;}
+  .title{font-family:'Fraunces',Georgia,serif;font-size:1.95rem;margin:0 0 2px;}
+  .subt{color:var(--ink-soft);margin:0 0 26px;}
+  h2,h3,h1,h4{font-family:'Fraunces',serif;}
+  .scene{background:var(--cream);border:1px solid var(--line);border-radius:20px;margin-bottom:26px;overflow:hidden;box-shadow:0 8px 30px rgba(44,36,24,0.06);}
+  .scene-label{background:var(--ink);color:var(--cream);font-size:0.72rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;padding:9px 18px;display:flex;justify-content:space-between;gap:12px;}
+  .scene-label .cmp{color:var(--gold);text-align:right;}
+  .pad{padding:30px;}
+  .fixes{background:#fff7ea;border-top:1px dashed var(--line);padding:12px 18px;font-size:0.82rem;color:var(--ink-soft);}
+  .fixes b{color:#7a5e0a;}
+  .opt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .opt-grid.two{grid-template-columns:1fr 1fr;}
+  @media(max-width:820px){.opt-grid,.opt-grid.two{grid-template-columns:1fr;}}
+  .opt{border:1.5px solid var(--line);border-radius:16px;background:var(--surface);overflow:hidden;position:relative;display:flex;flex-direction:column;}
+  .opt .oh{font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:var(--reclaim);padding:9px 14px;border-bottom:1px dashed var(--line);background:rgba(196,24,106,0.04);}
+  .opt .ob{padding:18px 16px;flex:1;}
+  .picknote{font-size:0.78rem;color:var(--ink-soft);margin:0 0 14px;}
+  .picknote b{color:var(--reclaim);}
+
+  /* ---------- HERO (animated) ---------- */
+  .hero{position:relative;text-align:center;overflow:hidden;}
+  .particles{position:absolute;inset:0;pointer-events:none;}
+  .particles i{position:absolute;width:5px;height:5px;border-radius:50%;background:var(--reclaim);opacity:0.2;animation:float 6s ease-in-out infinite;}
+  .particles i:nth-child(even){background:var(--gold);}
+  @keyframes float{0%,100%{transform:translateY(0);opacity:0.18;}50%{transform:translateY(-14px);opacity:0.32;}}
+  .gauge-wrap{position:relative;width:170px;height:170px;margin:6px auto 12px;}
+  .gauge-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .gauge-num .n{font-family:'Fraunces',serif;font-size:2.7rem;font-weight:800;color:var(--reclaim);line-height:1;}
+  .gauge-num .u{font-size:0.7rem;color:var(--ink-soft);font-weight:600;text-transform:uppercase;letter-spacing:0.03em;max-width:120px;}
+  .ring-fill{stroke-dasharray:264;stroke-dashoffset:264;animation:draw 1.8s ease-out forwards;}
+  @keyframes draw{to{stroke-dashoffset:64;}}
+  .kick{font-size:0.74rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--reclaim);}
+  .hero h1{font-size:2.1rem;margin:8px 0 6px;line-height:1.08;}
+  .hero .promise{font-size:1rem;color:var(--ink-soft);max-width:520px;margin:0 auto 16px;}
+  .hero .promise b{color:var(--ink);}
+  .cta{display:inline-block;background:var(--reclaim);color:#fff;font-weight:800;font-size:1rem;padding:13px 28px;border-radius:14px;text-decoration:none;box-shadow:0 6px 20px rgba(196,24,106,0.3);transition:transform .15s;animation:pulsecta 2.4s ease-in-out infinite;}
+  @keyframes pulsecta{0%,100%{box-shadow:0 6px 20px rgba(196,24,106,0.3);}50%{box-shadow:0 6px 28px rgba(196,24,106,0.5);}}
+  .cta-sub{font-size:0.76rem;color:var(--ink-soft);margin-top:8px;}
+  .diff{display:flex;align-items:flex-start;justify-content:center;gap:0;flex-wrap:wrap;margin-top:24px;padding-top:20px;border-top:1px solid var(--line);}
+  .node{display:flex;flex-direction:column;align-items:center;gap:6px;width:150px;text-align:center;}
+  .node .dot{width:44px;height:44px;border-radius:50%;background:var(--surface);border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:1.25rem;}
+  .node .t{font-size:0.8rem;font-weight:700;}
+  .node .s{font-size:0.7rem;color:var(--ink-soft);}
+  .beam{height:3px;width:64px;background:linear-gradient(90deg,var(--gold),var(--reclaim));border-radius:2px;margin-top:21px;position:relative;overflow:hidden;}
+  .beam::after{content:"";position:absolute;top:-2px;left:-20%;width:20%;height:7px;border-radius:50%;background:var(--reclaim);box-shadow:0 0 8px var(--reclaim);animation:run 2s linear infinite;}
+  @keyframes run{to{left:120%;}}
+
+  /* ---------- generic UI ---------- */
+  .bar{height:6px;background:var(--line);border-radius:3px;margin-bottom:6px;overflow:hidden;}
+  .bar i{display:block;height:100%;width:55%;background:var(--reclaim);border-radius:3px;}
+  .steplbl{font-size:0.75rem;color:var(--ink-soft);margin-bottom:14px;display:flex;justify-content:space-between;}
+  .row{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;background:var(--surface);}
+  .row.sel{border:2px solid var(--reclaim);background:rgba(196,24,106,0.05);box-shadow:0 0 0 1px var(--reclaim);}
+  .chk{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.7rem;font-weight:800;}
+  .row.sel .chk{background:var(--reclaim);border-color:var(--reclaim);}
+  .row .em{font-size:1.2rem;}
+  .row .lab{flex:1;font-weight:600;font-size:0.92rem;}
+  .row .lab .why{display:block;font-weight:400;font-size:0.76rem;color:var(--ink-soft);margin-top:1px;}
+  .hrs{display:flex;align-items:center;gap:5px;}
+  .hrs input{width:46px;text-align:right;border:none;border-bottom:2px solid var(--waste);background:transparent;font-weight:800;font-family:'Fraunces',serif;color:var(--ink);font-size:1rem;}
+  .hrs .u{font-size:0.72rem;color:var(--ink-soft);}
+  .sugg{font-size:0.68rem;color:var(--reclaim);font-weight:700;}
+  .addcat{border:1.5px dashed var(--reclaim);color:var(--reclaim);border-radius:12px;padding:11px 14px;font-weight:700;font-size:0.86rem;text-align:center;background:rgba(196,24,106,0.03);}
+  .navrow{display:flex;justify-content:space-between;margin-top:18px;align-items:center;gap:12px;}
+  .btn-back{color:var(--ink-soft);font-weight:600;font-size:0.9rem;background:none;border:1.5px solid var(--line);padding:10px 20px;border-radius:12px;}
+  .btn-next{background:var(--reclaim);color:#fff;font-weight:800;padding:10px 28px;border-radius:12px;border:none;}
+  .btn-disabled{background:var(--line);color:var(--ink-soft);font-weight:800;padding:10px 28px;border-radius:12px;border:none;cursor:not-allowed;}
+  .chip{font-size:0.72rem;border:1px solid var(--line);border-radius:8px;padding:4px 9px;display:inline-flex;align-items:center;gap:5px;background:var(--cream);}
+  .chip.sug{border-color:var(--reclaim);color:var(--reclaim);font-weight:700;background:rgba(196,24,106,0.04);}
+  .block{display:flex;align-items:center;gap:10px;background:rgba(224,62,18,0.08);border:1.5px solid var(--waste);border-radius:12px;padding:12px 16px;font-size:0.86rem;margin:8px 0;}
+  .block b{color:var(--waste);}
+  .block .fixin{margin-left:auto;background:var(--waste);color:#fff;font-size:0.74rem;font-weight:700;padding:5px 12px;border-radius:8px;white-space:nowrap;}
+  .warnpill{display:inline-flex;gap:6px;background:rgba(224,62,18,0.08);border:1px solid var(--waste);color:var(--waste);border-radius:999px;padding:3px 10px;font-size:0.72rem;font-weight:700;}
+
+  /* steps / diff bento */
+  .steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  @media(max-width:720px){.steps3{grid-template-columns:1fr;}}
+  .stepcard{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;text-align:center;}
+  .stepcard .no{width:30px;height:30px;border-radius:50%;background:var(--reclaim);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;}
+  .stepcard .e{font-size:1.7rem;} .stepcard h4{margin:6px 0 2px;font-size:1rem;} .stepcard p{font-size:0.8rem;color:var(--ink-soft);margin:0;}
+  .diffbento{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px;}
+  @media(max-width:720px){.diffbento{grid-template-columns:repeat(2,1fr);}}
+  .dcard{background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center;}
+  .dcard .e{font-size:1.4rem;} .dcard .t{font-weight:700;font-size:0.85rem;margin-top:4px;} .dcard .s{font-size:0.72rem;color:var(--ink-soft);}
+  .proofline{text-align:center;margin:22px 0 0;font-family:'Fraunces',serif;font-size:1.05rem;}
+  .proofline b{color:var(--reclaim);}
+
+  /* action plan bento */
+  .ap-head{display:flex;align-items:center;gap:22px;flex-wrap:wrap;margin-bottom:18px;}
+  .gw{position:relative;width:110px;height:110px;flex-shrink:0;}
+  .gw .gn{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .gw .gn .n{font-family:'Fraunces',serif;font-size:1.6rem;font-weight:800;color:var(--reclaim);line-height:1;}
+  .gw .gn .u{font-size:0.58rem;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.03em;}
+  .bento{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  @media(max-width:720px){.bento{grid-template-columns:1fr;}}
+  .bcard{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 2px 6px rgba(44,36,24,0.04);position:relative;}
+  .bcard.wide{grid-column:span 2;}
+  @media(max-width:720px){.bcard.wide{grid-column:span 1;}}
+  .bcard .qb{position:absolute;top:12px;right:12px;font-size:0.62rem;font-weight:800;padding:2px 8px;border-radius:999px;}
+  .qb.win{background:rgba(196,24,106,0.1);color:var(--reclaim);}
+  .qb.fill{background:rgba(237,178,21,0.12);color:#7a5e0a;}
+  .bcard h4{font-size:1.05rem;margin:0 0 4px;padding-right:60px;}
+  .bcard .how{font-size:0.82rem;color:var(--ink-soft);margin:0 0 12px;}
+  .meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .reclaim-tag{font-size:0.72rem;font-weight:800;color:var(--reclaim);}
+
+  /* payoff */
+  .spotlight2{display:flex;gap:12px;background:#fff;border-left:5px solid var(--gold);border-radius:0 12px 12px 0;padding:14px 16px;box-shadow:0 2px 10px rgba(0,0,0,0.04);margin:12px 0;}
+  .spotlight2 .e{font-size:1.5rem;} .spotlight2 .k{font-size:0.64rem;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;color:var(--gold);}
+  .spotlight2 .b{font-family:'Fraunces',serif;font-size:0.98rem;}
+  .split2{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;margin:12px 0 0;}
+  @media(max-width:560px){.split2{grid-template-columns:1fr;}}
+  .gain2,.cost2{border-radius:12px;padding:13px;text-align:center;}
+  .gain2{background:rgba(196,24,106,0.06);border:1.5px solid rgba(196,24,106,0.3);}
+  .cost2{background:rgba(224,62,18,0.06);border:1.5px solid var(--waste);}
+  .gain2 .v,.cost2 .v{font-family:'Fraunces',serif;font-weight:800;font-size:1.2rem;}
+  .gain2 .v{color:var(--reclaim);} .cost2 .v{color:var(--waste);}
+  .gain2 .l,.cost2 .l{font-size:0.66rem;text-transform:uppercase;color:var(--ink-soft);font-weight:700;}
+  .moneychip{display:inline-block;background:rgba(237,178,21,0.14);color:#7a5e0a;font-weight:800;font-size:0.78rem;border-radius:999px;padding:3px 12px;margin-top:6px;}
+
+  /* matrix */
+  .cmp2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:640px){.cmp2{grid-template-columns:1fr;}}
+  .cmpbox{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--surface);}
+  .cmpbox .h{font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.03em;margin-bottom:8px;}
+  .blob{width:60px;height:60px;border-radius:50%;background:var(--reclaim);opacity:0.5;margin:24px auto;position:relative;}
+  .blob::after,.blob::before{content:"";position:absolute;width:60px;height:60px;border-radius:50%;top:6px;left:8px;opacity:0.5;}
+  .blob::after{background:var(--gold);} .blob::before{background:var(--waste);top:-6px;left:-8px;}
+  .matrix{position:relative;height:190px;border-left:2px solid var(--line);border-bottom:2px solid var(--line);margin:18px 14px 30px;}
+  .matrix .qlbl{position:absolute;font-size:0.62rem;font-weight:800;text-transform:uppercase;letter-spacing:0.02em;}
+  .matrix .qsub{display:block;font-weight:600;font-size:0.58rem;text-transform:none;letter-spacing:0;color:var(--ink-soft);max-width:120px;}
+  .mdot{position:absolute;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.6rem;font-weight:800;transform:translate(-50%,50%);box-shadow:0 2px 5px rgba(0,0,0,0.2);}
+  .axl{position:absolute;font-size:0.66rem;color:var(--ink-soft);}
+
+  /* dots / blank states */
+  .dots5{display:inline-flex;gap:6px;align-items:center;}
+  .dots5 .d{width:15px;height:15px;border-radius:50%;border:2px solid var(--line);}
+  .dots5 .d.g{background:var(--gold);border-color:var(--gold);} .dots5 .d.p{background:var(--reclaim);border-color:var(--reclaim);}
+  .ratecard{border:1.5px solid var(--line);border-radius:12px;padding:14px;background:var(--surface);margin-bottom:10px;}
+  .ratecard.miss{border-color:var(--waste);box-shadow:0 0 0 1px var(--waste);}
+  .needtag{font-size:0.68rem;font-weight:800;color:var(--waste);}
+
+  /* categories */
+  .catgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+  @media(max-width:640px){.catgrid{grid-template-columns:1fr;}}
+  .catcard{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;}
+  .catcard .e{font-size:1.5rem;}
+  .catcard h4{margin:0 0 2px;font-size:1rem;}
+  .catcard p{margin:0 0 4px;font-size:0.8rem;color:var(--ink-soft);}
+  .catcard .fix{font-size:0.74rem;font-weight:700;color:var(--reclaim);}
+
+  /* math */
+  .howbox{display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px;}
+  .howbox .big{font-family:'Fraunces',serif;font-weight:800;color:var(--reclaim);font-size:1.3rem;}
+  .mathline{background:var(--ink);color:#fff;font-size:0.86rem;border-radius:10px;padding:12px 16px;max-width:460px;margin-top:10px;}
+  .mathline b{color:var(--gold);}
+  .howpop{background:var(--ink);color:#fff;font-size:0.82rem;border-radius:10px;padding:10px 14px;max-width:340px;margin-top:10px;}
+  .howpop .row2{display:flex;justify-content:space-between;gap:14px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.12);}
+  .howpop .row2:last-child{border-bottom:none;font-weight:700;color:var(--gold);}
+
+  /* edge-case table + decided */
+  table.edge{border-collapse:collapse;width:100%;font-size:0.84rem;}
+  table.edge th,table.edge td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;}
+  table.edge th{font-size:0.7rem;text-transform:uppercase;color:var(--ink-soft);letter-spacing:0.03em;}
+  .decided{display:inline-flex;align-items:center;gap:8px;background:rgba(196,24,106,0.08);border:1.5px solid var(--reclaim);border-radius:12px;padding:10px 16px;font-weight:700;color:var(--reclaim);font-size:0.9rem;}
+  .removed{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:12px 16px;margin-bottom:10px;}
+  .removed .x{color:var(--waste);font-weight:800;font-size:1.1rem;}
+  .removed .meta2{font-size:0.78rem;color:var(--ink-soft);}
+  .rec-badge{position:absolute;top:9px;right:12px;font-size:0.6rem;font-weight:800;background:var(--reclaim);color:#fff;padding:2px 8px;border-radius:999px;}
+
+  /* ============ REVIEW NOTE SYSTEM (added) ============ */
+  .notebox{background:rgba(196,24,106,0.05);border-top:2px dashed var(--reclaim);padding:14px 18px;}
+  .notebox label{display:block;font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:var(--reclaim);margin-bottom:7px;}
+  .notebox textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;font-family:inherit;font-size:0.88rem;line-height:1.45;resize:vertical;min-height:52px;background:#fff;color:var(--ink);}
+  .notebox textarea::placeholder{color:#bcae9c;}
+  .notebox textarea:focus{outline:none;border-color:var(--reclaim);box-shadow:0 0 0 3px rgba(196,24,106,0.13);}
+  .notebox textarea.filled{border-color:var(--reclaim);background:#fffdf9;}
+
+  /* per-option note sits inside the option card, below its content */
+  .opt .notebox{margin-top:auto;border-top:1px dashed var(--line);background:rgba(196,24,106,0.035);padding:11px 13px;}
+  .opt .notebox textarea{min-height:42px;font-size:0.82rem;}
+
+  /* pick-one control */
+  .pickbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:16px;}
+  .pickbar .pk-q{font-size:0.78rem;font-weight:800;color:var(--ink);margin-right:4px;}
+  .pickbar label{display:inline-flex;align-items:center;gap:6px;font-size:0.8rem;font-weight:700;border:1.5px solid var(--line);border-radius:999px;padding:5px 14px;cursor:pointer;background:var(--surface);color:var(--ink-soft);user-select:none;transition:all .12s;}
+  .pickbar label:hover{border-color:var(--reclaim);}
+  .pickbar input{position:absolute;opacity:0;width:0;height:0;}
+  .pickbar label:has(input:checked){border-color:var(--reclaim);background:var(--reclaim);color:#fff;box-shadow:0 3px 10px rgba(196,24,106,0.3);}
+
+  /* floating export bar */
+  .exportbar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--ink);color:#fff;display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;padding:12px 18px;box-shadow:0 -6px 24px rgba(0,0,0,0.18);}
+  .exportbar .eb-status{font-size:0.78rem;color:#cdbfa8;min-width:120px;}
+  .exportbar button{font-family:inherit;font-weight:800;font-size:0.86rem;border:none;border-radius:10px;padding:10px 18px;cursor:pointer;}
+  .exportbar .eb-primary{background:var(--reclaim);color:#fff;box-shadow:0 4px 14px rgba(196,24,106,0.4);}
+  .exportbar .eb-ghost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,0.3);}
+  .exportbar .eb-count{background:var(--gold);color:var(--ink);border-radius:999px;font-size:0.74rem;font-weight:800;padding:2px 10px;}
+  .review-banner{background:rgba(196,24,106,0.08);border:1.5px solid var(--reclaim);border-radius:14px;padding:14px 18px;margin:0 0 24px;font-size:0.9rem;color:var(--ink);}
+  .review-banner b{color:var(--reclaim);}
+  @media print{.exportbar{display:none;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="title">FocusLab — Redesign Mockup v2 · <span style="color:var(--reclaim)">Review copy</span></p>
+  <p class="subt">All 24 feedback notes applied. Same mockup as before — now you can leave notes on every section <b>right here</b>.</p>
+
+  <div class="review-banner">
+    📝 <b>How to use this:</b> Type your notes in the pink boxes under each section. Sections with several options also have a <b>"Which one?"</b> picker and a note box <i>inside each option</i>. Everything <b>auto-saves in your browser</b> (close/reload safely). When you're done, hit <b>"Download my notes (.txt)"</b> at the bottom — it saves to your Downloads folder and I'll read it straight from there.
+  </div>
+
+  <!-- ===== REMOVED SECTIONS NOTICE ===== -->
+  <div class="scene">
+    <div class="scene-label"><span>0 · Removed from the homepage</span><span class="cmp">notes 1, 2 · archived, recoverable</span></div>
+    <div class="pad">
+      <div class="removed"><span class="x">✕</span><div><b>"Two tools. One mission."</b> — the Pareto / Focus Table cards.<div class="meta2">Removed from homepage · saved to <code>Feedback Log/saved-sections/ToolCards.tsx.saved</code> so you can bring it back anytime.</div></div></div>
+      <div class="removed"><span class="x">✕</span><div><b>"This isn't guesswork. 🔬"</b> — "benchmarks come from real research, not folklore."<div class="meta2">Removed — felt too AI, no value. Saved to <code>saved-sections/BenchmarkProof.tsx.saved</code>.</div></div></div>
+      <div class="pickbar" data-key="pick-removed" data-label="Removed sections verdict">
+        <span class="pk-q">Verdict on removals?</span>
+        <label><input type="radio" name="pick-removed" value="Keep both removed">Keep both removed ✓</label>
+        <label><input type="radio" name="pick-removed" value="Bring back 'Two tools'">Bring back #1</label>
+        <label><input type="radio" name="pick-removed" value="Bring back 'guesswork'">Bring back #2</label>
+        <label><input type="radio" name="pick-removed" value="Bring both back">Bring both back</label>
+      </div>
+    </div>
+    <div class="fixes"><b>Notes 1 &amp; 2:</b> both pulled from the live homepage and archived for reuse — nothing deleted for good.</div>
+    <div class="notebox"><label>📝 Notes on the removals</label><textarea data-key="note-s0" data-label="Scene 0 · Removals" placeholder="Happy these are gone? Want either back, or removed differently?"></textarea></div>
+  </div>
+
+  <!-- ===== SCENE 1: HERO — 3 OPTIONS ===== -->
+  <div class="scene">
+    <div class="scene-label"><span>1 · Landing hero — 3 options (all bold + animated)</span><span class="cmp">notes 4, 5, 6, 12 · particles · ring · beam</span></div>
+    <div class="pad">
+      <p class="picknote"><b>Pick one.</b> All keep the motion you wanted. Copy is broadened past "knowledge worker" (note 4) and the CTA no longer promises an exact 10 hours (note 12). The "10" in the ring is now framed as a stat — what the average person loses — not a personal guarantee.</p>
+      <div class="pickbar" data-key="pick-hero" data-label="Which hero?">
+        <span class="pk-q">Which hero?</span>
+        <label><input type="radio" name="pick-hero" value="A · The number hook">A · Number hook</label>
+        <label><input type="radio" name="pick-hero" value="B · The plain promise">B · Plain promise</label>
+        <label><input type="radio" name="pick-hero" value="C · The question hook">C · Question hook</label>
+        <label><input type="radio" name="pick-hero" value="Mix / none — see note">Mix / none</label>
+      </div>
+      <div class="opt-grid">
+
+        <!-- OPTION A -->
+        <div class="opt">
+          <div class="oh">Option A · "The number hook"</div>
+          <div class="ob hero" style="text-align:center">
+            <div class="particles"><i style="top:14%;left:10%"></i><i style="top:24%;left:82%"></i><i style="top:64%;left:8%"></i><i style="top:74%;left:86%"></i><i style="top:40%;left:48%"></i></div>
+            <div class="kick">A Klarecon tool · proven on thousands</div>
+            <div class="gauge-wrap">
+              <svg width="170" height="170" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="#e8dcc8" stroke-width="9"/><circle class="ring-fill" cx="50" cy="50" r="42" fill="none" stroke="#c4186a" stroke-width="9" stroke-linecap="round" transform="rotate(-90 50 50)"/></svg>
+              <div class="gauge-num"><span class="n">10</span><span class="u">hrs/wk the average person loses</span></div>
+            </div>
+            <h1>Find the hours your week keeps eating.</h1>
+            <p class="promise">The average working person loses <b>10+ hours a week</b> to work that feels productive but isn't — about 6 weeks a year. See yours in 3 minutes.</p>
+            <a class="cta" href="#">Find my hidden hours →</a>
+            <div class="cta-sub">⏱ About 3 minutes · nothing to install</div>
+          </div>
+          <div class="notebox"><label>📝 Note · Option A</label><textarea data-key="note-s1-A" data-label="Hero · Option A" placeholder="Thoughts on this one…"></textarea></div>
+        </div>
+
+        <!-- OPTION B -->
+        <div class="opt">
+          <div class="oh">Option B · "The plain promise"</div>
+          <div class="ob hero" style="text-align:center">
+            <div class="particles"><i style="top:12%;left:14%"></i><i style="top:28%;left:78%"></i><i style="top:60%;left:6%"></i><i style="top:80%;left:88%"></i><i style="top:46%;left:52%"></i></div>
+            <div class="kick">A Klarecon tool · proven on thousands</div>
+            <div class="gauge-wrap">
+              <svg width="170" height="170" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="#e8dcc8" stroke-width="9"/><circle class="ring-fill" cx="50" cy="50" r="42" fill="none" stroke="#c4186a" stroke-width="9" stroke-linecap="round" transform="rotate(-90 50 50)"/></svg>
+              <div class="gauge-num"><span class="n">~10</span><span class="u">typical hrs/wk reclaimed</span></div>
+            </div>
+            <h1>Get real hours of your week back.</h1>
+            <p class="promise"><b>No clocks. No time-tracking. No long forms.</b> Just your own knowledge, run through a method that's worked for thousands of people.</p>
+            <a class="cta" href="#">Free up my week →</a>
+            <div class="cta-sub">⏱ About 3 minutes · nothing to install</div>
+          </div>
+          <div class="notebox"><label>📝 Note · Option B</label><textarea data-key="note-s1-B" data-label="Hero · Option B" placeholder="Thoughts on this one…"></textarea></div>
+        </div>
+
+        <!-- OPTION C -->
+        <div class="opt">
+          <div class="oh">Option C · "The question hook"</div>
+          <div class="ob hero" style="text-align:center">
+            <div class="particles"><i style="top:16%;left:12%"></i><i style="top:22%;left:80%"></i><i style="top:62%;left:9%"></i><i style="top:78%;left:84%"></i><i style="top:42%;left:50%"></i></div>
+            <div class="kick">A Klarecon tool · proven on thousands</div>
+            <div class="gauge-wrap">
+              <svg width="170" height="170" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="#e8dcc8" stroke-width="9"/><circle class="ring-fill" cx="50" cy="50" r="42" fill="none" stroke="#c4186a" stroke-width="9" stroke-linecap="round" transform="rotate(-90 50 50)"/></svg>
+              <div class="gauge-num"><span class="n">10</span><span class="u">hrs/wk hiding in a normal week</span></div>
+            </div>
+            <h1>Where does your week actually go?</h1>
+            <p class="promise">Most people can't say — and quietly lose <b>~10 hours a week</b> to it. Find your real drains and a plan to fix them, in 3 minutes.</p>
+            <a class="cta" href="#">Show me my drains →</a>
+            <div class="cta-sub">⏱ About 3 minutes · nothing to install</div>
+          </div>
+          <div class="notebox"><label>📝 Note · Option C</label><textarea data-key="note-s1-C" data-label="Hero · Option C" placeholder="Thoughts on this one…"></textarea></div>
+        </div>
+      </div>
+
+      <!-- shared animated beam (note 6 fix) -->
+      <h4 style="font-size:0.95rem;margin:26px 0 4px">Shared strip under whichever hero you pick — with the "beach" line fixed (note 6):</h4>
+      <div class="diff" style="border-top:none;padding-top:8px">
+        <div class="node"><div class="dot">🧠</div><div class="t">Your knowledge</div><div class="s">no tracking needed</div></div>
+        <div class="beam"></div>
+        <div class="node"><div class="dot" style="border-color:var(--gold)">⚙️</div><div class="t">A proven method</div><div class="s">refined over 15+ years</div></div>
+        <div class="beam"></div>
+        <div class="node"><div class="dot" style="border-color:var(--reclaim)">🌅</div><div class="t">Your time back</div><div class="s">a half-day a week, yours to spend</div></div>
+      </div>
+      <div class="notebox" style="border-top:1px dashed var(--line);background:rgba(237,178,21,0.06);margin-top:14px;border-radius:10px"><label style="color:#7a5e0a">📝 Note · the shared strip below the hero</label><textarea data-key="note-s1-strip" data-label="Hero · shared strip" placeholder="The 3-node 'knowledge → method → time back' strip — working for you?"></textarea></div>
+    </div>
+    <div class="fixes"><b>Notes 4·5·6·12:</b> 3 bold/animated hero options to combine with the live hero · "knowledge worker" → "working person" · CTA drops the fixed-10 promise · "go to the beach" → "a half-day a week, yours to spend" (context, not a throwaway).</div>
+    <div class="notebox"><label>📝 Overall notes on the hero section</label><textarea data-key="note-s1" data-label="Scene 1 · Hero (overall)" placeholder="Anything across all three — tone, the animation, the Klarecon line, the '10 hrs' framing…"></textarea></div>
+  </div>
+
+  <!-- ===== SCENE 2: BELOW THE HERO ===== -->
+  <div class="scene">
+    <div class="scene-label"><span>2 · Landing — below the hero</span><span class="cmp">notes 10, 11 · removals applied</span></div>
+    <div class="pad">
+      <h3 style="text-align:center;font-size:1.5rem;margin:0 0 14px">How it works</h3>
+      <div class="steps3">
+        <div class="stepcard"><div class="no">1</div><div class="e">🧑‍🔧</div><h4>Pick your role</h4><p>We pull the time-drains common to your kind of work.</p></div>
+        <div class="stepcard"><div class="no">2</div><div class="e">😴</div><h4>Log your week</h4><p>Rough hours on the drains that hit you. 90 seconds.</p></div>
+        <div class="stepcard"><div class="no">3</div><div class="e">🎯</div><h4>Get your plan</h4><p>Ranked fixes, owners &amp; dates already filled in.</p></div>
+      </div>
+      <h3 style="text-align:center;font-size:1.3rem;margin:30px 0 4px">Why it's not another time-tracker</h3>
+      <div class="diffbento">
+        <div class="dcard"><div class="e">🚫</div><div class="t">No clocks</div><div class="s">Nothing to install or run</div></div>
+        <div class="dcard"><div class="e">🧠</div><div class="t">Your knowledge</div><div class="s">You already know your waste</div></div>
+        <div class="dcard"><div class="e">⚙️</div><div class="t">Proven method</div><div class="s">Refined 15+ years</div></div>
+        <div class="dcard"><div class="e">⚡</div><div class="t">3 minutes</div><div class="s">Not a 40-min exercise</div></div>
+      </div>
+      <p class="proofline">The same method that's freed time for <b>thousands</b> — now in 3 minutes.</p>
+      <div style="text-align:center;margin-top:18px"><a class="cta" href="#" style="animation:none">Free up my week →</a></div>
+    </div>
+    <div class="fixes"><b>Notes 10 &amp; 11:</b> removed "Three minutes. No tracking. No homework." and the "Backed by 130+ researched fixes" pill. Kept the clean "how it works" + differentiator.</div>
+    <div class="notebox"><label>📝 Notes on "below the hero"</label><textarea data-key="note-s2" data-label="Scene 2 · Below the hero" placeholder="How it works / why-not-a-time-tracker — clear? Anything to cut or add?"></textarea></div>
+  </div>
+
+  <!-- ===== SCENE 3: ONE INTAKE SCREEN ===== -->
+  <div class="scene">
+    <div class="scene-label"><span>3 · Log your week — ONE screen (role + drains together)</span><span class="cmp">notes 7, 13 · no duplicate</span></div>
+    <div class="pad">
+      <div class="bar"><i style="width:55%"></i></div>
+      <div class="steplbl"><span>Tell us about your week</span><span>your biggest drains only</span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center">
+        <span class="chip sug" style="font-size:0.8rem">🧑‍🔧 Marketing ✓</span>
+        <span class="chip" style="font-size:0.8rem">Manager / Team Lead ✓</span>
+        <span style="font-size:0.78rem;color:var(--ink-soft)">— changed your mind? edit right here, no going back a screen</span>
+      </div>
+      <div class="row sel"><span class="chk">✓</span><span class="em">😴</span><span class="lab">Meetings you didn't need to be in <span class="why">Invited "just in case", sat through it, added nothing.</span></span><span class="hrs"><input value="3"><span class="u">hrs/wk</span></span></div>
+      <div class="row sel"><span class="chk">✓</span><span class="em">🫠</span><span class="lab">Email &amp; chat pile-up <span class="why">Notifications, back-and-forth, "quick" replies that aren't.</span></span><span class="hrs"><input value="2"><span class="u">hrs/wk</span></span></div>
+      <div class="row"><span class="chk"></span><span class="em">💀</span><span class="lab">Admin busy work <span class="why">Forms, expenses, data entry, status updates.</span></span><span class="hrs"><span class="sugg">typical: 2.4 →</span></span></div>
+      <div class="addcat" style="margin-top:4px">＋ Add your own</div>
+      <div class="navrow"><button class="btn-back">← Back</button><button class="btn-next">See my plan →</button></div>
+    </div>
+    <div class="fixes"><b>Notes 7 &amp; 13:</b> the intake no longer repeats — role + drains live on <i>one</i> screen · "Add a drain we didn't list" → "Add your own" · role editable in place.</div>
+    <div class="notebox"><label>📝 Notes on the single intake screen</label><textarea data-key="note-s3" data-label="Scene 3 · Intake screen" placeholder="One screen for role + drains — does this flow feel right? The 'typical' suggestion, the editable role chips…"></textarea></div>
+  </div>
+
+  <!-- ===== SCENE 4: OVER-CAP — 2 OPTIONS ===== -->
+  <div class="scene">
+    <div class="scene-label"><span>4 · Logged more than your week? — 2 options</span><span class="cmp">note 19 · clearer</span></div>
+    <div class="pad">
+      <p class="picknote"><b>Pick one.</b> Same hard-stop, said two ways so a user gets it instantly.</p>
+      <div class="pickbar" data-key="pick-overcap" data-label="Which over-cap message?">
+        <span class="pk-q">Which one?</span>
+        <label><input type="radio" name="pick-overcap" value="A · plain & human">A · plain &amp; human</label>
+        <label><input type="radio" name="pick-overcap" value="B · do-it-for-me">B · do-it-for-me</label>
+        <label><input type="radio" name="pick-overcap" value="Both / neither — see note">Both / neither</label>
+      </div>
+      <div class="opt-grid two">
+        <div class="opt">
+          <div class="oh">Option A · plain &amp; human</div>
+          <div class="ob">
+            <div class="steplbl"><span>Your work week: <b>45 hrs</b></span><span class="warnpill">⚠ 46 hrs added</span></div>
+            <div class="row"><span class="em">😴</span><span class="lab">Meetings</span><span class="hrs"><input value="30"><span class="u">hrs/wk</span></span></div>
+            <div class="row"><span class="em">🫠</span><span class="lab">Email &amp; chat</span><span class="hrs"><input value="16" style="border-color:var(--waste)"><span class="u">hrs/wk</span></span></div>
+            <div class="block">You've added up to <b>46 hours</b>, but your week is <b>45</b>. Trim <b>1 hour</b> from any drain to keep going.<span class="fixin">Trim email →</span></div>
+            <div class="navrow"><button class="btn-back">← Back</button><button class="btn-disabled">See my plan →</button></div>
+          </div>
+          <div class="notebox"><label>📝 Note · Option A</label><textarea data-key="note-s4-A" data-label="Over-cap · Option A" placeholder="Thoughts on this one…"></textarea></div>
+        </div>
+        <div class="opt">
+          <div class="oh">Option B · do-it-for-me</div>
+          <div class="ob">
+            <div class="steplbl"><span>Your work week: <b>45 hrs</b></span><span class="warnpill">⚠ 1 hr over</span></div>
+            <div class="row"><span class="em">😴</span><span class="lab">Meetings</span><span class="hrs"><input value="30"><span class="u">hrs/wk</span></span></div>
+            <div class="row"><span class="em">🫠</span><span class="lab">Email &amp; chat</span><span class="hrs"><input value="16" style="border-color:var(--waste)"><span class="u">hrs/wk</span></span></div>
+            <div class="block" style="background:rgba(237,178,21,0.1);border-color:var(--gold);color:var(--ink)">You're <b style="color:var(--ink)">1 hour over</b> a 45-hr week. Want us to shave it off the smallest drain?<span class="fixin" style="background:var(--reclaim)">Trim 1 hr for me</span></div>
+            <div class="navrow"><button class="btn-back">← Back</button><button class="btn-disabled">See my plan →</button></div>
+          </div>
+          <div class="notebox"><label>📝 Note · Option B</label><textarea data-key="note-s4-B" data-label="Over-cap · Option B" placeholder="Thoughts on this one…"></textarea></div>
+        </div>
+      </div>
+    </div>
+    <div class="fixes"><b>Note 19:</b> over-cap still blocks "See my plan" (fixed in place), but the message is now instantly clear — option A explains, option B offers to fix it for you.</div>
+    <div class="notebox"><label>📝 Overall notes on the over-cap behaviour</label><textarea data-key="note-s4" data-label="Scene 4 · Over-cap (overall)" placeholder="Should it hard-block at all? Anything about the wording or the 'trim for me' idea…"></textarea></div>
+  </div>
+
+  <!-- ===== SCENE 5: PLAN HEADLINE + SUBTEXT OPTIONS ===== -->
+  <div class="scene">
+    <div class="scene-label"><span>5 · Your plan — headline &amp; subtext options</span><span class="cmp">notes 8, 9</span></div>
+    <div class="pad">
+      <div class="ap-head">
+        <div class="gw"><svg width="110" height="110" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="#e8dcc8" stroke-width="10"/><circle class="ring-fill" cx="50" cy="50" r="42" fill="none" stroke="#c4186a" stroke-width="10" stroke-linecap="round" transform="rotate(-90 50 50)"/></svg><div class="gn"><span class="n">6.1</span><span class="u">hrs/wk back</span></div></div>
+        <div><h2 style="font-size:1.5rem;margin:0 0 4px">[headline goes here — pick below]</h2><p style="margin:0;color:var(--ink-soft);font-size:0.92rem">[subtext goes here — pick below]</p></div>
+      </div>
+
+      <p class="picknote" style="margin-top:6px"><b>Headline options (note 8):</b></p>
+      <div class="pickbar" data-key="pick-headline" data-label="Which headline?">
+        <span class="pk-q">Which headline?</span>
+        <label><input type="radio" name="pick-headline" value="A · This is your week, rewritten.">A</label>
+        <label><input type="radio" name="pick-headline" value="B · Here's where your 6.1 hours come from.">B</label>
+        <label><input type="radio" name="pick-headline" value="C · Three changes. Six hours back.">C</label>
+        <label><input type="radio" name="pick-headline" value="None — see note">None</label>
+      </div>
+      <div class="opt-grid">
+        <div class="opt"><div class="oh">A</div><div class="ob"><h2 style="font-size:1.3rem;margin:0">This is your week, rewritten.</h2></div><div class="notebox"><label>📝 A</label><textarea data-key="note-s5-hlA" data-label="Headline A" placeholder="Note on headline A…"></textarea></div></div>
+        <div class="opt"><div class="oh">B</div><div class="ob"><h2 style="font-size:1.3rem;margin:0">Here's where your 6.1 hours come from.</h2></div><div class="notebox"><label>📝 B</label><textarea data-key="note-s5-hlB" data-label="Headline B" placeholder="Note on headline B…"></textarea></div></div>
+        <div class="opt"><div class="oh">C</div><div class="ob"><h2 style="font-size:1.3rem;margin:0">Three changes. Six hours back.</h2></div><div class="notebox"><label>📝 C</label><textarea data-key="note-s5-hlC" data-label="Headline C" placeholder="Note on headline C…"></textarea></div></div>
+      </div>
+
+      <p class="picknote" style="margin-top:16px"><b>Subtext options (note 9) — say plainly what the plan already did for them:</b></p>
+      <div class="pickbar" data-key="pick-subtext" data-label="Which subtext?">
+        <span class="pk-q">Which subtext?</span>
+        <label><input type="radio" name="pick-subtext" value="A · Your top 3 fixes, ranked by payoff…">A</label>
+        <label><input type="radio" name="pick-subtext" value="B · We turned your drains into 3 ready-to-go fixes…">B</label>
+        <label><input type="radio" name="pick-subtext" value="C · No blank to-do list…">C</label>
+        <label><input type="radio" name="pick-subtext" value="None — see note">None</label>
+      </div>
+      <div class="opt-grid">
+        <div class="opt"><div class="oh">A</div><div class="ob"><p style="margin:0;font-size:0.9rem">Your top 3 fixes, ranked by payoff. We've already suggested who does each and by when — change anything, or just start.</p></div><div class="notebox"><label>📝 A</label><textarea data-key="note-s5-subA" data-label="Subtext A" placeholder="Note on subtext A…"></textarea></div></div>
+        <div class="opt"><div class="oh">B</div><div class="ob"><p style="margin:0;font-size:0.9rem">We turned your drains into 3 ready-to-go fixes: what to do, who does it, and a date — all filled in. Tweak or go.</p></div><div class="notebox"><label>📝 B</label><textarea data-key="note-s5-subB" data-label="Subtext B" placeholder="Note on subtext B…"></textarea></div></div>
+        <div class="opt"><div class="oh">C</div><div class="ob"><p style="margin:0;font-size:0.9rem">No blank to-do list. Three fixes, each with an owner and a day already picked. Start with one click.</p></div><div class="notebox"><label>📝 C</label><textarea data-key="note-s5-subC" data-label="Subtext C" placeholder="Note on subtext C…"></textarea></div></div>
+      </div>
+
+      <div class="bento" style="margin-top:20px">
+        <div class="bcard wide"><span class="qb win">⚡ Quick win</span><h4>Prepare an agenda for every meeting</h4><p class="how">No agenda → no meeting. Send the 3 bullet points the day before; cancel anything that doesn't need a decision.</p><div class="meta"><span class="chip sug">👤 You <span style="color:var(--ink-soft)">(suggested)</span></span><span class="chip sug">📅 This Friday</span><span class="reclaim-tag">+3.0 hrs/wk</span></div></div>
+        <div class="bcard"><span class="qb fill">🌱 Easy</span><h4>Batch admin into one block</h4><p class="how">One 45-min Friday block for forms, expenses, status — not scattered all week.</p><div class="meta"><span class="chip sug">👤 You</span><span class="chip sug">📅 Mon</span></div><div class="meta" style="margin-top:8px"><span class="reclaim-tag">+1.8 hrs/wk</span></div></div>
+        <div class="bcard"><span class="qb win">⚡ Quick win</span><h4>Kill recurring status meetings</h4><p class="how">Replace with a 2-line async update. Keep one monthly live sync.</p><div class="meta"><span class="chip sug">👤 Team lead</span><span class="chip sug">📅 Next wk</span></div><div class="meta" style="margin-top:8px"><span class="reclaim-tag">+1.3 hrs/wk</span></div></div>
+      </div>
+      <div class="navrow"><button class="btn-back">← Back to drains</button><button class="btn-next">See the full payoff →</button></div>
+      <div class="notebox" style="border-top:1px dashed var(--line);background:rgba(237,178,21,0.06);margin-top:14px;border-radius:10px"><label style="color:#7a5e0a">📝 Note · the 3 fix cards (bento)</label><textarea data-key="note-s5-bento" data-label="Plan · fix cards" placeholder="The quick-win badges, suggested owners & dates, the +hrs tags — anything off?"></textarea></div>
+    </div>
+    <div class="fixes"><b>Notes 8 &amp; 9:</b> stronger headline options + plain-English subtext that finally explains what "owner-assigned with dates" means for the user.</div>
+    <div class="notebox"><label>📝 Overall notes on the plan screen</label><textarea data-key="note-s5" data-label="Scene 5 · Plan (overall)" placeholder="Anything across headline + subtext + cards…"></textarea></div>
+  </div>
+
+  <!-- ===== SCENE 6: PAYOFF — 2 OPTIONS, OVERFLOW FIXED ===== -->
+  <div class="scene">
+    <div class="scene-label"><span>6 · The payoff — reworked, 2 options</span><span class="cmp">note 16 · gauge overflow fixed</span></div>
+    <div class="pad">
+      <p class="picknote"><b>Pick one.</b> The "$/yr" no longer crams inside the ring — it sits below as its own chip.</p>
+      <div class="pickbar" data-key="pick-payoff" data-label="Which payoff?">
+        <span class="pk-q">Which payoff?</span>
+        <label><input type="radio" name="pick-payoff" value="A · gauge leads + spotlight">A · gauge + spotlight</label>
+        <label><input type="radio" name="pick-payoff" value="B · big stat-stack">B · big stat-stack</label>
+        <label><input type="radio" name="pick-payoff" value="Neither — see note">Neither</label>
+      </div>
+      <div class="opt-grid two">
+        <div class="opt">
+          <div class="oh">Option A · gauge leads + spotlight</div>
+          <div class="ob">
+            <div class="ap-head" style="margin-bottom:10px">
+              <div class="gw"><svg width="110" height="110" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="#e8dcc8" stroke-width="10"/><circle class="ring-fill" cx="50" cy="50" r="42" fill="none" stroke="#c4186a" stroke-width="10" stroke-linecap="round" transform="rotate(-90 50 50)"/></svg><div class="gn"><span class="n">6.1</span><span class="u">hrs/wk</span></div></div>
+              <div><h2 style="font-size:1.3rem;margin:0">You could reclaim this.</h2><div class="moneychip">≈ $18.9k a year</div></div>
+            </div>
+            <div class="spotlight2"><span class="e">🌅</span><div><div class="k">What you'd do with it</div><div class="b">A half-day a week for the work that actually moves things — instead of firefighting.</div></div></div>
+            <div class="split2"><div class="gain2"><div class="v">+6.1 hrs/wk</div><div class="l">if you fix it</div></div><div style="text-align:center;font-family:'Fraunces',serif;color:var(--ink-soft);font-weight:700">vs</div><div class="cost2"><div class="v">−293 hrs/yr</div><div class="l">if you don't</div></div></div>
+          </div>
+          <div class="notebox"><label>📝 Note · Option A</label><textarea data-key="note-s6-A" data-label="Payoff · Option A" placeholder="Thoughts on this one…"></textarea></div>
+        </div>
+        <div class="opt">
+          <div class="oh">Option B · big stat-stack</div>
+          <div class="ob" style="text-align:center">
+            <div style="font-family:'Fraunces',serif;font-size:3rem;font-weight:800;color:var(--reclaim);line-height:1">6.1 hrs</div>
+            <div style="font-size:0.8rem;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.05em;font-weight:700">back, every week</div>
+            <div class="moneychip" style="margin:10px 0">that's ≈ 293 hrs &amp; $18.9k a year</div>
+            <div class="spotlight2" style="text-align:left;margin-top:10px"><span class="e">🌅</span><div><div class="k">What you'd do with it</div><div class="b">Half a day a week back — for strategy, for rest, for whatever firefighting is stealing now.</div></div></div>
+            <a class="cta" href="#" style="animation:none;margin-top:12px">Start fixing →</a>
+          </div>
+          <div class="notebox"><label>📝 Note · Option B</label><textarea data-key="note-s6-B" data-label="Payoff · Option B" placeholder="Thoughts on this one…"></textarea></div>
+        </div>
+      </div>
+    </div>
+    <div class="fixes"><b>Note 16:</b> payoff reworked top-to-bottom · gauge label no longer overflows (money moved to a chip) · aspirational spotlight reads with context · gain-vs-cost keeps the stakes obvious.</div>
+    <div class="notebox"><label>📝 Overall notes on the payoff</label><textarea data-key="note-s6" data-label="Scene 6 · Payoff (overall)" placeholder="The $ figure, the 'if you don't' framing, the aspirational line…"></textarea></div>
+  </div>
+
+  <!-- ===== SCENE 7: EVI MATRIX — OVERLAP FIXED, LABELS KEPT ===== -->
+  <div class="scene">
+    <div class="scene-label"><span>7 · EVI Matrix — readable, no overlap</span><span class="cmp">notes 14, 23 · labels unchanged</span></div>
+    <div class="pad">
+      <div class="cmp2" style="margin-bottom:14px">
+        <div class="cmpbox"><div class="h" style="color:var(--waste)">Now — dots pile up</div><div class="blob"></div><p style="text-align:center;font-size:0.78rem;color:var(--ink-soft);margin:0">"Overlapping… you lose the audience."</p></div>
+        <div class="cmpbox"><div class="h" style="color:var(--reclaim)">After — spread, numbered, labelled</div>
+          <div class="matrix">
+            <span class="qlbl" style="top:6px;left:8px;color:var(--reclaim)">🤩 Pearls<span class="qsub">high impact, low effort</span></span>
+            <span class="qlbl" style="top:6px;right:8px;color:var(--gold);text-align:right">💪 Big Bets<span class="qsub">high impact, high effort</span></span>
+            <span class="qlbl" style="bottom:8px;left:8px;color:var(--ink-soft)">🫠 Easy Wins<span class="qsub">low impact, low effort</span></span>
+            <span class="qlbl" style="bottom:8px;right:8px;color:var(--waste);text-align:right">🐘 White Elephants<span class="qsub">low impact, high effort — skip these</span></span>
+            <span class="mdot" style="width:20px;height:20px;background:var(--reclaim);left:20%;bottom:72%">1</span>
+            <span class="mdot" style="width:18px;height:18px;background:var(--reclaim);left:33%;bottom:80%">2</span>
+            <span class="mdot" style="width:16px;height:16px;background:var(--gold);left:74%;bottom:68%">3</span>
+            <span class="mdot" style="width:15px;height:15px;background:var(--ink-soft);left:26%;bottom:22%">4</span>
+            <span class="axl" style="left:38%;bottom:-18px">Effort →</span>
+            <span class="axl" style="left:-14px;bottom:40%;transform:rotate(-90deg);transform-origin:left">Impact →</span>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:0.85rem;color:var(--ink-soft);margin:0">Dots are spaced (smart jitter + numbered, each keyed to a fix below) so nothing collides. The quadrant <b>names stay exactly as they were</b> — only the "White Elephants" sub-line changed.</p>
+    </div>
+    <div class="fixes"><b>Notes 14 &amp; 23:</b> overlap fixed everywhere (spread + numbered) · label names untouched (Pearls / Big Bets / Easy Wins / White Elephants) · "drop or <i>delegate</i>" → "skip these — low payoff, not worth the effort." No "delegate."</div>
+    <div class="notebox"><label>📝 Notes on the matrix</label><textarea data-key="note-s7" data-label="Scene 7 · EVI Matrix" placeholder="Spacing/numbering clear? Quadrant names & the 'skip these' line OK?"></textarea></div>
+  </div>
+
+  <!-- ===== SCENE 8: FOUR WASTE TYPES — HOW IT HELPS ===== -->
+  <div class="scene">
+    <div class="scene-label"><span>8 · The four waste types — now shows how it helps</span><span class="cmp">note 20</span></div>
+    <div class="pad">
+      <p style="margin:0 0 4px;font-size:0.95rem"><b>Why bother sorting your waste into types?</b></p>
+      <p style="margin:0 0 14px;color:var(--ink-soft);font-size:0.9rem">Because each type has a different escape hatch. Name the type, and you already know the kind of fix that works — no guessing.</p>
+      <div class="catgrid">
+        <div class="catcard"><span class="e">😴</span><div><h4>Doing things that don't need doing</h4><p>Meetings you weren't needed in, over-polishing, reports nobody reads.</p><span class="fix">→ Fix: cut it or shrink it.</span></div></div>
+        <div class="catcard"><span class="e">⏳</span><div><h4>Waiting &amp; getting blocked</h4><p>Stuck on approvals, handoffs, missing inputs or access.</p><span class="fix">→ Fix: unblock the bottleneck.</span></div></div>
+        <div class="catcard"><span class="e">🤦</span><div><h4>Redoing &amp; fixing</h4><p>Rework from unclear direction, errors, the same thing twice.</p><span class="fix">→ Fix: get it right the first time.</span></div></div>
+        <div class="catcard"><span class="e">🔀</span><div><h4>Switching &amp; chasing</h4><p>Tool-hopping, hunting for info, chasing people for status.</p><span class="fix">→ Fix: batch it, automate it, or ask once.</span></div></div>
+      </div>
+    </div>
+    <div class="fixes"><b>Note 20:</b> the four types now lead with "why this helps you" + each card shows the kind of fix it points to — so the categories feel useful, not academic.</div>
+    <div class="notebox"><label>📝 Notes on the four waste types</label><textarea data-key="note-s8" data-label="Scene 8 · Waste types" placeholder="Are these the right 4? Names, the '→ Fix:' lines, the framing…"></textarea></div>
+  </div>
+
+  <!-- ===== SCENE 9: SHOW THE MATH — 2 OPTIONS ===== -->
+  <div class="scene">
+    <div class="scene-label"><span>9 · "How did you get this?" — 2 options</span><span class="cmp">note 21</span></div>
+    <div class="pad">
+      <p class="picknote"><b>Pick one.</b> Same transparency, cleaner execution.</p>
+      <div class="pickbar" data-key="pick-math" data-label="Which 'show the math'?">
+        <span class="pk-q">Which one?</span>
+        <label><input type="radio" name="pick-math" value="A · one plain sentence">A · plain sentence</label>
+        <label><input type="radio" name="pick-math" value="B · tidy breakdown">B · tidy breakdown</label>
+        <label><input type="radio" name="pick-math" value="Neither — see note">Neither</label>
+      </div>
+      <div class="opt-grid two">
+        <div class="opt">
+          <div class="oh">Option A · one plain sentence</div>
+          <div class="ob">
+            <div class="howbox"><span class="big">+2.0 hrs/wk</span></div>
+            <div class="mathline">You logged <b>4 hrs/wk</b> on meetings. A high-impact fix usually cuts that <b>in half</b> — so you get back <b>≈ 2 hrs/wk</b>.</div>
+          </div>
+          <div class="notebox"><label>📝 Note · Option A</label><textarea data-key="note-s9-A" data-label="Math · Option A" placeholder="Thoughts on this one…"></textarea></div>
+        </div>
+        <div class="opt">
+          <div class="oh">Option B · tidy breakdown</div>
+          <div class="ob">
+            <div class="howbox"><span class="big">+2.0 hrs/wk</span><span style="font-size:0.76rem;color:var(--reclaim);font-weight:700;cursor:pointer">ⓘ how we got this</span></div>
+            <div class="howpop">
+              <div class="row2"><span>You logged on meetings</span><span>4.0 hrs/wk</span></div>
+              <div class="row2"><span>A high-impact fix typically cuts</span><span>~50%</span></div>
+              <div class="row2"><span>So you reclaim</span><span>≈ 2.0 hrs/wk</span></div>
+            </div>
+          </div>
+          <div class="notebox"><label>📝 Note · Option B</label><textarea data-key="note-s9-B" data-label="Math · Option B" placeholder="Thoughts on this one…"></textarea></div>
+        </div>
+      </div>
+    </div>
+    <div class="fixes"><b>Note 21:</b> kept the "no conjured numbers" idea, rebuilt it cleaner — a plain sentence (A) or a tidy three-row breakdown (B).</div>
+    <div class="notebox"><label>📝 Overall notes on "show the math"</label><textarea data-key="note-s9" data-label="Scene 9 · Show the math (overall)" placeholder="Is the 50% assumption right to surface? Anything on transparency…"></textarea></div>
+  </div>
+
+  <!-- ===== SCENE 10: BLANK STATES — CLEARER ===== -->
+  <div class="scene">
+    <div class="scene-label"><span>10 · Empty fields that explain themselves</span><span class="cmp">note 17 · rebuilt clearer</span></div>
+    <div class="pad">
+      <p style="margin:0 0 4px;font-size:0.95rem"><b>What this section is showing:</b></p>
+      <p style="margin:0 0 16px;color:var(--ink-soft);font-size:0.9rem">When a box is empty, it shouldn't look broken or pointless. Each empty field now tells you <b>what it's for and how to fill it</b> — so you're never staring at a blank wondering "do I need this?"</p>
+      <div class="cmp2">
+        <div class="cmpbox"><div class="h" style="color:var(--ink-soft)">Empty — but it tells you what to do</div>
+          <div style="display:flex;align-items:center;gap:10px;margin:12px 0"><span style="font-size:0.82rem;width:60px">Effort</span><div class="dots5"><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span></div><span style="font-size:0.72rem;color:var(--reclaim);font-weight:700">👈 tap to rate how hard it is</span></div>
+          <div style="display:flex;align-items:center;gap:10px"><span style="font-size:0.82rem;width:60px">Hours</span><span style="border-bottom:2px dashed var(--line);width:50px;display:inline-block"></span><span style="font-size:0.72rem;color:var(--reclaim);font-weight:700">👈 log your week to fill this</span></div>
+        </div>
+        <div class="cmpbox"><div class="h" style="color:var(--reclaim)">Filled — gold = effort, pink = impact</div>
+          <div style="display:flex;align-items:center;gap:10px;margin:12px 0"><span style="font-size:0.82rem;width:60px">Effort</span><div class="dots5"><span class="d g"></span><span class="d g"></span><span class="d"></span><span class="d"></span><span class="d"></span></div><span style="font-size:0.72rem;color:var(--ink-soft)">low effort</span></div>
+          <div style="display:flex;align-items:center;gap:10px"><span style="font-size:0.82rem;width:60px">Impact</span><div class="dots5"><span class="d p"></span><span class="d p"></span><span class="d p"></span><span class="d p"></span><span class="d"></span></div><span style="font-size:0.72rem;color:var(--ink-soft)">high impact</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="fixes"><b>Note 17:</b> rebuilt so the point is obvious — a header that states what the section demonstrates, plus plain "tap to rate / log to fill" prompts and a colour key (gold effort, pink impact).</div>
+    <div class="notebox"><label>📝 Notes on the empty-field states</label><textarea data-key="note-s10" data-label="Scene 10 · Blank states" placeholder="Is the empty→filled comparison clear? The gold/pink colour key…"></textarea></div>
+  </div>
+
+  <!-- ===== SCENE 11: BLANK-RATING BUG FIX (validation) ===== -->
+  <div class="scene">
+    <div class="scene-label"><span>11 · You can't skip a rating anymore</span><span class="cmp">note 22 · validation bug fixed</span></div>
+    <div class="pad">
+      <p style="margin:0 0 14px;color:var(--ink-soft);font-size:0.9rem">You found that leaving effort or impact blank still let you move forward. Now it blocks — and points at exactly what's missing.</p>
+      <div class="ratecard miss">
+        <div style="display:flex;justify-content:space-between;align-items:center"><h4 style="margin:0;font-size:1rem">Kill recurring status meetings</h4><span class="needtag">⚠ needs a rating</span></div>
+        <div style="display:flex;align-items:center;gap:10px;margin:10px 0 6px"><span style="font-size:0.82rem;width:60px">Effort</span><div class="dots5"><span class="d g"></span><span class="d g"></span><span class="d"></span><span class="d"></span><span class="d"></span></div><span style="font-size:0.72rem;color:var(--ink-soft)">✓ rated</span></div>
+        <div style="display:flex;align-items:center;gap:10px"><span style="font-size:0.82rem;width:60px">Impact</span><div class="dots5"><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span></div><span style="font-size:0.72rem;color:var(--waste);font-weight:700">👈 tap to rate impact</span></div>
+      </div>
+      <div class="block">Rate <b>effort and impact</b> on every fix before you continue — one is still blank.<span class="fixin" style="background:var(--reclaim)">Jump to it →</span></div>
+      <div class="navrow"><button class="btn-back">← Back</button><button class="btn-disabled">Continue →</button></div>
+    </div>
+    <div class="fixes"><b>Note 22:</b> blank effort/impact now hard-blocks "Continue" (greyed out), highlights the missing one, and jumps you to it. When ported, this gets a regression test so it can't come back.</div>
+    <div class="notebox"><label>📝 Notes on the rating-required block</label><textarea data-key="note-s11" data-label="Scene 11 · Rating validation" placeholder="Right behaviour? Wording of the warning…"></textarea></div>
+  </div>
+
+  <!-- ===== SCENE 12: PARETO NEEDS DENSITY ===== -->
+  <div class="scene">
+    <div class="scene-label"><span>12 · Pareto only fires with enough sources</span><span class="cmp">note 15</span></div>
+    <div class="pad">
+      <p style="margin:0 0 14px;color:var(--ink-soft);font-size:0.9rem">A Pareto chart with 3 bars proves nothing — the whole point is to see the <b>vital few</b> stand out from many. So with too few drains, we don't draw a misleading chart; we help you surface more first.</p>
+      <div class="opt-grid two">
+        <div class="opt">
+          <div class="oh">Too few — we coach, not chart</div>
+          <div class="ob">
+            <div class="block" style="background:rgba(237,178,21,0.1);border-color:var(--gold);color:var(--ink)">You've logged <b style="color:var(--ink)">3 drains</b>. Pareto needs a fuller picture to find your vital few — add a few more and the pattern appears.<span class="fixin" style="background:var(--reclaim)">+ Add more</span></div>
+            <div style="display:flex;gap:6px;align-items:flex-end;height:70px;margin-top:14px;opacity:0.4">
+              <div style="width:36px;height:60px;background:var(--reclaim);border-radius:4px 4px 0 0"></div>
+              <div style="width:36px;height:40px;background:var(--reclaim);border-radius:4px 4px 0 0"></div>
+              <div style="width:36px;height:24px;background:var(--reclaim);border-radius:4px 4px 0 0"></div>
+            </div>
+            <p style="font-size:0.72rem;color:var(--ink-soft);margin:6px 0 0">faint preview — not your result yet</p>
+          </div>
+        </div>
+        <div class="opt">
+          <div class="oh">Enough — the vital few pop</div>
+          <div class="ob">
+            <div style="display:flex;gap:5px;align-items:flex-end;height:90px;margin-top:6px">
+              <div style="width:26px;height:84px;background:var(--reclaim);border-radius:4px 4px 0 0"></div>
+              <div style="width:26px;height:66px;background:var(--reclaim);border-radius:4px 4px 0 0"></div>
+              <div style="width:26px;height:40px;background:var(--gold);border-radius:4px 4px 0 0"></div>
+              <div style="width:26px;height:28px;background:var(--gold);border-radius:4px 4px 0 0"></div>
+              <div style="width:26px;height:18px;background:var(--line);border-radius:4px 4px 0 0"></div>
+              <div style="width:26px;height:12px;background:var(--line);border-radius:4px 4px 0 0"></div>
+              <div style="width:26px;height:8px;background:var(--line);border-radius:4px 4px 0 0"></div>
+            </div>
+            <p style="font-size:0.74rem;color:var(--ink-soft);margin:8px 0 0"><b style="color:var(--reclaim)">The first 2 drains = 60% of your waste.</b> That's your vital few.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fixes"><b>Note 15:</b> below a minimum number of sources we coach the user to add more (faint preview, no fake result); once there are enough, the chart highlights the vital few. Engine + UX — ported with a guard test.</div>
+    <div class="notebox"><label>📝 Notes on the Pareto density rule</label><textarea data-key="note-s12" data-label="Scene 12 · Pareto density" placeholder="What's the right minimum number of drains? Is the 'coach instead of chart' the right call?"></textarea></div>
+  </div>
+
+  <!-- ===== SCENE 13: HOURS DECIDED ===== -->
+  <div class="scene">
+    <div class="scene-label"><span>13 · Hours vs % — decided</span><span class="cmp">note 18</span></div>
+    <div class="pad">
+      <div class="decided">✓ Decided: we use <b style="margin:0 4px">hours per week</b> everywhere. The % version is shelved.</div>
+      <p style="font-size:0.85rem;color:var(--ink-soft);margin:12px 0 0">Concrete time maps straight to "free up X hours," which is the whole promise. No percentage toggle to build or maintain.</p>
+    </div>
+    <div class="fixes"><b>Note 18:</b> your call — hours per week. The earlier "two options for Oren" screen is resolved, not pending.</div>
+    <div class="notebox"><label>📝 Notes on the hours-vs-% decision</label><textarea data-key="note-s13" data-label="Scene 13 · Hours decided" placeholder="Confirm hours per week is right, or reopen it…"></textarea></div>
+  </div>
+
+  <!-- ===== SCENE 14: "ANY WORKER" + EDGE CASES ===== -->
+  <div class="scene">
+    <div class="scene-label"><span>14 · Built for any worker + edge-case hunt</span><span class="cmp">notes 3, 24</span></div>
+    <div class="pad">
+      <p style="margin:0 0 6px;font-size:0.95rem"><b>Note 3 — past "knowledge work":</b></p>
+      <p style="margin:0 0 14px;color:var(--ink-soft);font-size:0.9rem">All copy is broadened to "working person / your kind of work." The bigger lift — adding real drains &amp; fixes for non-desk roles (nurses, drivers, retail, trades, etc.) — is a <b>database expansion</b> scoped as its own task once this UI is locked.</p>
+
+      <p style="margin:0 0 6px;font-size:0.95rem"><b>Note 24 — edge cases my agents went hunting for</b> (each gets a defined behaviour + a test when built):</p>
+      <table class="edge">
+        <tr><th>Edge case</th><th>What should happen</th><th>Status here</th></tr>
+        <tr><td>Effort or impact left blank</td><td>Block "Continue", highlight the missing one</td><td>Shown · scene 11</td></tr>
+        <tr><td>Logged more than your work-week</td><td>Hard-stop, trim in place</td><td>Shown · scene 4</td></tr>
+        <tr><td>Too few drains for Pareto</td><td>Coach to add more, no fake chart</td><td>Shown · scene 12</td></tr>
+        <tr><td>0 hours logged everywhere</td><td>Can't continue; nudge to log at least one real drain</td><td>To build</td></tr>
+        <tr><td>No role picked</td><td>Can't reach drains list; gentle prompt to pick a role</td><td>To build</td></tr>
+        <tr><td>Negative / decimal / huge hour values</td><td>Clamp to sane range (0–your week), allow .5 steps</td><td>To build</td></tr>
+      </table>
+    </div>
+    <div class="fixes"><b>Notes 3 &amp; 24:</b> copy broadened now; data expansion flagged as a follow-up · edge cases catalogued with intended behaviour so none slip through when we port to the app.</div>
+    <div class="notebox"><label>📝 Notes on "any worker" + edge cases</label><textarea data-key="note-s14" data-label="Scene 14 · Any worker + edge cases" placeholder="Any edge case missing? Priorities for the non-desk roles expansion…"></textarea></div>
+  </div>
+
+  <p class="subt" style="text-align:center;margin-top:30px">Plan: <b>2026-06-24-oren-redesign-plan.html</b> · Removed sections saved in <b>Feedback Log/saved-sections/</b> · Nothing in <code>src/</code> changed yet.</p>
+</div>
+
+<!-- ============ FLOATING EXPORT BAR ============ -->
+<div class="exportbar">
+  <span class="eb-status"><span class="eb-count" id="ebCount">0</span> notes saved</span>
+  <button class="eb-primary" onclick="downloadNotes()">⬇ Download my notes (.txt)</button>
+  <button class="eb-ghost" onclick="copyNotes()">📋 Copy instead</button>
+  <button class="eb-ghost" onclick="clearNotes()">Clear all</button>
+  <span class="eb-status" id="ebSaved" style="text-align:right">auto-saving on</span>
+</div>
+
+<script>
+(function(){
+  var STORE = 'focuslab-v2-review-notes';
+
+  function load(){
+    try { return JSON.parse(localStorage.getItem(STORE) || '{}'); }
+    catch(e){ return {}; }
+  }
+  function save(data){
+    localStorage.setItem(STORE, JSON.stringify(data));
+  }
+  var data = load();
+
+  // restore + wire textareas
+  document.querySelectorAll('textarea[data-key]').forEach(function(t){
+    if(data[t.dataset.key]){ t.value = data[t.dataset.key]; t.classList.add('filled'); }
+    t.addEventListener('input', function(){
+      data[t.dataset.key] = t.value;
+      t.classList.toggle('filled', !!t.value.trim());
+      save(data); flashSaved(); updateCount();
+    });
+  });
+
+  // restore + wire picks
+  document.querySelectorAll('.pickbar[data-key]').forEach(function(p){
+    var key = p.dataset.key;
+    if(data[key]){
+      var input = p.querySelector('input[value="'+ cssEsc(data[key]) +'"]');
+      if(input) input.checked = true;
+    }
+    p.querySelectorAll('input[type=radio]').forEach(function(r){
+      r.addEventListener('change', function(){
+        data[key] = r.value; save(data); flashSaved(); updateCount();
+      });
+    });
+  });
+
+  function cssEsc(s){ return (s||'').replace(/"/g,'\\"'); }
+
+  var savedTimer;
+  function flashSaved(){
+    var el = document.getElementById('ebSaved');
+    el.textContent = '✓ saved';
+    clearTimeout(savedTimer);
+    savedTimer = setTimeout(function(){ el.textContent = 'auto-saving on'; }, 1200);
+  }
+
+  function countFilled(){
+    var n = 0;
+    document.querySelectorAll('textarea[data-key]').forEach(function(t){ if(t.value.trim()) n++; });
+    document.querySelectorAll('.pickbar[data-key]').forEach(function(p){ if(data[p.dataset.key]) n++; });
+    return n;
+  }
+  function updateCount(){ document.getElementById('ebCount').textContent = countFilled(); }
+  updateCount();
+
+  // build the export text in scene order
+  function collect(){
+    var out = 'FocusLab v2 mockup — Mona\'s review notes\n';
+    out += '(generated from the inline review HTML)\n\n';
+    var any = false;
+    document.querySelectorAll('.scene').forEach(function(scene){
+      var title = (scene.querySelector('.scene-label span') || {}).textContent || 'Section';
+      title = title.trim();
+      var block = '';
+      // picks first
+      scene.querySelectorAll('.pickbar[data-key]').forEach(function(p){
+        var val = data[p.dataset.key];
+        if(val){ block += '  ▸ ' + (p.dataset.label || 'Pick') + ': ' + val + '\n'; }
+      });
+      // then notes
+      scene.querySelectorAll('textarea[data-key]').forEach(function(t){
+        if(t.value.trim()){
+          block += '  • ' + (t.dataset.label || 'Note') + ': ' + t.value.trim() + '\n';
+        }
+      });
+      if(block){ any = true; out += '## ' + title + '\n' + block + '\n'; }
+    });
+    if(!any){ out += '(no notes entered yet)\n'; }
+    return out;
+  }
+
+  window.copyNotes = function(){
+    var text = collect();
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){
+        toast('Copied ' + countFilled() + ' notes — paste them back to Claude');
+      }, function(){ fallbackCopy(text); });
+    } else { fallbackCopy(text); }
+  };
+  function fallbackCopy(text){
+    var ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); toast('Copied to clipboard'); }
+    catch(e){ window.prompt('Copy your notes:', text); }
+    document.body.removeChild(ta);
+  }
+
+  window.downloadNotes = function(){
+    var text = collect();
+    var blob = new Blob([text], {type:'text/plain'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'focuslab-v2-review-notes.txt';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  };
+
+  window.clearNotes = function(){
+    if(!confirm('Clear all your notes on this page? This cannot be undone.')) return;
+    data = {}; save(data);
+    document.querySelectorAll('textarea[data-key]').forEach(function(t){ t.value=''; t.classList.remove('filled'); });
+    document.querySelectorAll('.pickbar input:checked').forEach(function(r){ r.checked=false; });
+    updateCount();
+  };
+
+  function toast(msg){
+    var el = document.getElementById('ebSaved');
+    el.textContent = msg;
+    clearTimeout(savedTimer);
+    savedTimer = setTimeout(function(){ el.textContent = 'auto-saving on'; }, 2500);
+  }
+})();
+</script>
+</body>
+</html>

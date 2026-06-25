@@ -16,7 +16,7 @@ import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 
 /**
- * Merged "Log your week" step (Oren-redesign — Option C, "guided one-pass").
+ * Merged "Log your waste" step (Oren-redesign — Option C, "guided one-pass").
  * Collapses the old rough-estimate (IntakeStep) + drill-down (DrilldownStep)
  * into ONE screen: drains are grouped under the four waste types, you tap the
  * ones that hit you, and rough in the hours inline. Pareto runs straight off
@@ -111,10 +111,10 @@ export default function LogStep({ onNext, onBack }: LogStepProps) {
     if (activeSet.has(source.slug)) {
       removeSource(source.slug);
     } else {
+      // No seed hours (S21 #3): an auto-1.0 on every pick made everyone's data
+      // flat, so Pareto collapsed to 2 zones (no "middle"). Leave it blank — the
+      // user types the real number, real numbers vary, A/B/C populate naturally.
       addSource(source);
-      // Seed a starting hour so a picked drain counts toward the vital few;
-      // the user adjusts it right on the chip.
-      setEntry(source.slug, { hoursPerDay: 1, avoidablePct: 100, cadence: "weekly" });
     }
   };
 
@@ -147,7 +147,7 @@ export default function LogStep({ onNext, onBack }: LogStepProps) {
       emoji: "🔧",
     };
     addSource(src);
-    setEntry(slug, { hoursPerDay: 1, avoidablePct: 100, cadence: "weekly" });
+    // No seed hours (S21 #3) — user types the real number on the chip.
     setCustomText("");
     setTimeout(() => customRef.current?.focus(), 50);
   };
@@ -200,7 +200,7 @@ export default function LogStep({ onNext, onBack }: LogStepProps) {
           className="text-3xl sm:text-4xl font-bold mb-2"
           style={{ fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif" }}
         >
-          Log your week
+          Log your waste
         </h2>
         <p style={{ color: "var(--color-ink-soft)" }}>
           Tap what drains you, then rough in the hours. Takes about 90 seconds.
@@ -373,7 +373,7 @@ export default function LogStep({ onNext, onBack }: LogStepProps) {
         <div className="text-right">
           {!hasEnoughDrains && (
             <p className="text-xs mb-1" style={{ color: "var(--color-ink-soft)" }}>
-              You&apos;ve logged {drainsWithHours} {drainsWithHours === 1 ? "drain" : "drains"} so far. The pattern shows once you&apos;ve added at least {MIN_DRAINS}, so add a couple more and we&apos;ll map your vital few.
+              You&apos;ve put hours on {drainsWithHours} {drainsWithHours === 1 ? "drain" : "drains"}. Add real hours to at least {MIN_DRAINS} &mdash; the pattern only shows when the numbers vary, so we can map your vital few.
             </p>
           )}
           <ShimmerButton
