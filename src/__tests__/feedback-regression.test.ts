@@ -1097,6 +1097,40 @@ describe("Pareto minimum drains (Session 19, Note 15/scene 12&14)", () => {
     expect(lowerLed).toEqual([]);
   });
 
+  // S20-V4 — the big one: the two logging screens (IntakeStep rough estimate +
+  // DrilldownStep detail) merged into ONE screen, Option C ("guided one-pass").
+  it("[S20-V4-merge] analyzer flow uses the merged LogStep, not the two-pass", () => {
+    const wiz = readSrc("components/analyzer/AuditWizard.tsx");
+    expect(wiz).toContain("LogStep");
+    expect(wiz).toContain("<LogStep");
+    // The old two-pass steps are no longer mounted in the wizard.
+    expect(wiz).not.toContain("<IntakeStep");
+    expect(wiz).not.toContain("<DrilldownStep");
+  });
+
+  it("[S20-V4-merge] wizard is now 4 steps (Role · Context · Log · Results)", () => {
+    const stepper = readSrc("components/analyzer/Stepper.tsx");
+    expect(stepper).toContain("Log your week");
+    expect(stepper).not.toContain("Your Time");
+    expect(stepper).not.toContain('"Details"');
+  });
+
+  it("[S20-V4-merge] LogStep groups drains by the 4 waste types and computes Pareto", () => {
+    const log = readSrc("components/analyzer/LogStep.tsx");
+    expect(log).toContain("WASTE_TYPES");
+    expect(log).toContain("wasteTypeForMuda");
+    // Reuses the engine directly off entered hours — no rough-estimate pass.
+    expect(log).toContain("runAudit");
+    expect(log).toContain("setParetoResult");
+  });
+
+  it("[S20-V4-merge] type headers show the name only (no escape-hatch subcopy)", () => {
+    const log = readSrc("components/analyzer/LogStep.tsx");
+    // The header renders group.type.name but NOT the .hint subcopy (Mona's note).
+    expect(log).toContain("{group.type.name}");
+    expect(log).not.toContain("group.type.hint");
+  });
+
   // S20-V4 Scene 1: Oren-approved v4 hero — ring gauge + particles + verbatim
   // copy, old WeekCalendar hero archived for reuse.
   it("[S20-V4-#1] Hero is the v4 ring-gauge design with particles", () => {

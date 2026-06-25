@@ -6,8 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Stepper from "./Stepper";
 import RoleStep from "./RoleStep";
 import ContextStep from "./ContextStep";
-import IntakeStep from "./IntakeStep";
-import DrilldownStep from "./DrilldownStep";
+import LogStep from "./LogStep";
 import ResultsView from "./ResultsView";
 
 const stepVariants = {
@@ -33,10 +32,10 @@ function StepContent({
     case 1:
       return <ContextStep onNext={goNext} onBack={goBack} />;
     case 2:
-      return <IntakeStep onNext={goNext} onBack={goBack} />;
+      // Merged logging screen (Option C) — replaces the old IntakeStep +
+      // DrilldownStep two-pass with one screen.
+      return <LogStep onNext={goNext} onBack={goBack} />;
     case 3:
-      return <DrilldownStep onNext={goNext} onBack={goBack} />;
-    case 4:
       return <ResultsView onRestart={onRestart} />;
     default:
       return null;
@@ -54,8 +53,8 @@ export default function AuditWizard() {
   useEffect(() => {
     const jumpToResults = () => {
       const s = useAuditStore.getState();
-      if (s.paretoResult && s.step !== 4) {
-        s.setStep(4);
+      if (s.paretoResult && s.step !== 3) {
+        s.setStep(3);
       }
     };
     // Check after hydration
@@ -71,7 +70,7 @@ export default function AuditWizard() {
     window.scrollTo(0, 0);
   }, [step]);
 
-  const goNext = () => setStep(Math.min(step + 1, 4));
+  const goNext = () => setStep(Math.min(step + 1, 3));
   const goBack = () => setStep(Math.max(step - 1, 0));
   const handleRestart = () => {
     // Reset all data — persist middleware writes defaults to localStorage automatically

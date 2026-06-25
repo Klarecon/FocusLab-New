@@ -70,99 +70,45 @@ test.describe("Screenshot Capture — Full Wizard Flow", () => {
     await page.locator("button:has-text('Continue')").click();
     await page.waitForTimeout(500);
 
-    // ===== 4. INTAKE STEP =====
-    await snap(page, "05-intake-empty");
-    await expect(page.locator("text=Where does your time go")).toBeVisible();
+    // ===== 4. LOG STEP (merged — Option C) =====
+    await snap(page, "05-log-empty");
+    await expect(page.getByRole("heading", { name: "Log your week" })).toBeVisible();
 
-    // Fill category estimates — need at least 3 (MIN_CATEGORIES=3)
-    const categoryInputs = page.locator('input[type="number"]');
-    const catCount = await categoryInputs.count();
-    const catValues = [6, 4, 3, 2, 1.5, 1, 0.5];
-    for (let i = 0; i < Math.min(catCount, catValues.length); i++) {
-      const input = categoryInputs.nth(i);
-      if (await input.isVisible({ timeout: 1000 }).catch(() => false)) {
-        await input.fill(String(catValues[i]));
-        await page.waitForTimeout(150);
-      }
-    }
-    await snap(page, "06-intake-filled");
-
-    // Verify single sticky counter while scrolling
-    await page.evaluate(() => window.scrollTo(0, 400));
-    await page.waitForTimeout(400);
-    await snapViewport(page, "07-intake-sticky-counter");
-
-    // Click "See what's eating your week"
-    const seeWeekBtn = page.locator("button:has-text('See what')");
-    if (await seeWeekBtn.isEnabled({ timeout: 2000 })) {
-      await seeWeekBtn.click();
-      await page.waitForTimeout(800);
-    }
-
-    // ===== 5. DRILLDOWN STEP =====
-    await snap(page, "08-drilldown-empty");
-
-    // Groups are now collapsible — expand every group header first.
-    const headers = page.locator('button[aria-expanded]');
-    const headerCount = await headers.count();
-    for (let i = 0; i < headerCount; i++) {
-      const h = headers.nth(i);
-      if ((await h.getAttribute("aria-expanded")) === "false") {
-        await h.click({ force: true }).catch(() => {});
-        await page.waitForTimeout(120);
-      }
-    }
-
-    // Select drains by clicking their rows (the checkbox is now sr-only).
-    const drainRows = page.locator('label:has(input[type="checkbox"])');
-    const cbCount = await drainRows.count();
-    for (let i = 0; i < Math.min(cbCount, 5); i++) {
-      await drainRows.nth(i).click({ force: true }).catch(() => {});
+    // Tap ≥5 drain chips (each seeds 1 hr/wk on select, so the gate clears).
+    const chips = page.locator('[data-testid="drain-chip"]');
+    const chipCount = await chips.count();
+    for (let i = 0; i < Math.min(chipCount, 6); i++) {
+      await chips.nth(i).click({ force: true }).catch(() => {});
       await page.waitForTimeout(150);
     }
+    await snap(page, "06-log-filled");
 
+    // Refine a few hours on the selected chips.
     const hourInputs = page.locator('input[aria-label*="Hours per week"]');
     const hourCount = await hourInputs.count();
-    const hourValues = [2, 1.5, 1, 0.75, 0.5];
+    const hourValues = [3, 2, 1.5, 1, 1];
     for (let i = 0; i < Math.min(hourCount, hourValues.length); i++) {
       const input = hourInputs.nth(i);
       if (await input.isVisible({ timeout: 1000 }).catch(() => false)) {
         await input.fill(String(hourValues[i]));
-        await page.waitForTimeout(150);
+        await page.waitForTimeout(120);
       }
     }
-    await snap(page, "09-drilldown-filled");
+    await snap(page, "07-log-filled-hours");
 
-    // Verify single sticky counter
-    await page.evaluate(() => window.scrollTo(0, 400));
-    await page.waitForTimeout(400);
-    await snapViewport(page, "10-drilldown-sticky-counter");
+    // Sticky total while scrolling.
+    await page.evaluate(() => window.scrollTo(0, 300));
+    await page.waitForTimeout(300);
+    await snapViewport(page, "08-log-sticky-counter");
 
-    // Test overflow: set a value that exceeds category estimate
-    const firstHourInput = hourInputs.first();
-    if (await firstHourInput.isVisible({ timeout: 1000 }).catch(() => false)) {
-      await firstHourInput.fill("25");
-      await page.waitForTimeout(500);
-      await snap(page, "11-drilldown-overflow-warning");
-
-      // Scroll to bottom to show disabled button
-      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-      await page.waitForTimeout(300);
-      await snapViewport(page, "12-drilldown-overflow-button");
-
-      // Reset to valid value
-      await firstHourInput.fill("2");
-      await page.waitForTimeout(300);
-    }
-
-    // Click "Show me the damage"
+    // Compute → results.
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
     await page.waitForTimeout(300);
-    const damageBtn = page.locator("button:has-text('Show me the damage')");
+    const damageBtn = page.locator("button:has-text('See what')");
     if (await damageBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
       if (await damageBtn.isEnabled()) {
         await damageBtn.click();
-        await page.waitForTimeout(2000); // Extra time for chart to render
+        await page.waitForTimeout(2000); // chart render
       }
     }
 
