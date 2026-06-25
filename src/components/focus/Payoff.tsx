@@ -3,7 +3,7 @@
 import { useMemo, useEffect, useState, memo } from "react";
 import { motion, useMotionValue, animate } from "framer-motion";
 import { useAuditStore } from "@/stores/audit-store";
-import { computePayoff, isRated } from "@/lib/engine/solutions-logic";
+import { computePayoff, isRated, IMPACT_FRACTION, IMPACT_NAMES } from "@/lib/engine/solutions-logic";
 import type {
   ChosenSolution,
   WasteBucket,
@@ -11,6 +11,8 @@ import type {
 } from "@/lib/engine/types";
 import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
 import { Highlighter } from "@/components/ui/highlighter";
+import { SparklesText } from "@/components/ui/sparkles-text";
+import { Particles } from "@/components/ui/particles";
 import { useDrainLookup, type DrainInfo } from "./shared/useDrainLookup";
 import { getOpportunityFrame } from "@/lib/data/opportunity-frames";
 
@@ -87,6 +89,9 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign, variant = "
 
   const { drainBySlug } = useDrainLookup(vitalFew, usefulMany);
 
+  // "How we got this" — the per-fix math, hidden by default, opens on the ⓘ.
+  const [showMath, setShowMath] = useState(false);
+
   const effectiveRate = useMemo(() => {
     if (payMode === "hourly" && hourlyRate > 0) return hourlyRate;
     if (salary > 0 && workHoursPerWeek > 0) {
@@ -154,6 +159,37 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign, variant = "
 
   const quickWinCount = payoff.quickWinRowIds.length;
 
+  // Per-fix breakdown for the ⓘ "how we got this" disclosure: logged hours on
+  // the drain → impact-based cut → hours reclaimed. Only rated fixes that
+  // actually earn credit show up.
+  const mathRows = useMemo(() => {
+    return chosenSolutions
+      .map((sol) => {
+        const sc = solutionScores[sol.id] ?? { effort: 0, impact: 0 };
+        if (!isRated(sc.effort, sc.impact)) return null;
+        const credit = payoff.creditByRow[sol.id] ?? 0;
+        if (credit <= 0) return null;
+        let drain: DrainInfo | undefined;
+        for (const slug of sol.wasteSlugs) {
+          const d = drainBySlug.get(slug);
+          if (d) {
+            drain = d;
+            break;
+          }
+        }
+        const impact = Math.max(1, Math.min(5, sc.impact)) as Score;
+        return {
+          id: sol.id,
+          drainLabel: drain?.label ?? "this drain",
+          loggedHours: drain?.hoursPerWeek ?? 0,
+          pct: Math.round(IMPACT_FRACTION[impact] * 100),
+          impactName: IMPACT_NAMES[impact],
+          credit,
+        };
+      })
+      .filter((r): r is NonNullable<typeof r> => r !== null);
+  }, [chosenSolutions, solutionScores, payoff, drainBySlug]);
+
   if (chosenSolutions.length === 0) {
     return null;
   }
@@ -210,9 +246,20 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign, variant = "
     <div>
       {/* Big payoff numbers */}
       {showHero && (
-      <div className="surface-card p-5 sm:p-8 mb-6" style={{ borderTop: "4px solid var(--color-reclaim)" }}>
+      <div className="surface-card p-5 sm:p-8 mb-6 relative overflow-hidden" style={{ borderTop: "4px solid var(--color-reclaim)" }}>
+        {hasReclaimable && (
+          <Particles
+            className="absolute inset-0 pointer-events-none"
+            quantity={40}
+            ease={70}
+            color="#c4186a"
+            size={0.6}
+            staticity={60}
+            aria-hidden="true"
+          />
+        )}
         {hasReclaimable ? (
-          <>
+          <div className="relative z-10">
             {/* Full potential */}
             <div className="text-center mb-8">
               <div className="flex items-center justify-center gap-2 mb-2">
@@ -226,9 +273,9 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign, variant = "
                   </span>
                 </Highlighter>
               </div>
-              <div
-                className="text-3xl sm:text-5xl font-bold mb-1"
-                style={{ color: "var(--color-reclaim)" }}
+              <SparklesText
+                className="text-3xl sm:text-5xl font-bold mb-1 leading-none"
+                sparklesCount={7}
               >
                 <CountUp
                   to={reclaimableWeekly}
@@ -237,7 +284,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign, variant = "
                   className="text-3xl sm:text-5xl font-bold"
                   style={{ color: "var(--color-reclaim)" }}
                 />
-              </div>
+              </SparklesText>
             </div>
 
             {/* Yearly summary — compact */}
@@ -258,6 +305,61 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign, variant = "
               </div>
             </div>
 
+            {/* "How we got this" — math tucked behind the ⓘ, opens on tap. */}
+            {mathRows.length > 0 && (
+              <div className="mt-6 text-center">
+                <button
+                  type="button"
+                  onClick={() => setShowMath((v) => !v)}
+                  aria-expanded={showMath}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold cursor-pointer transition-opacity hover:opacity-70"
+                  style={{ color: "var(--color-reclaim)" }}
+                >
+                  <span
+                    className="inline-flex items-center justify-center w-4 h-4 rounded-full text-[10px] font-bold text-white"
+                    style={{ backgroundColor: "var(--color-reclaim)" }}
+                    aria-hidden="true"
+                  >
+                    i
+                  </span>
+                  {showMath ? "Hide the math" : "How we got this"}
+                </button>
+
+                {showMath && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    transition={{ duration: 0.25 }}
+                    className="mt-4 text-left space-y-3"
+                  >
+                    {mathRows.map((row) => (
+                      <div
+                        key={row.id}
+                        className="rounded-xl p-3 sm:p-4"
+                        style={{
+                          backgroundColor: "rgba(196, 24, 106, 0.04)",
+                          border: "1px solid rgba(196, 24, 106, 0.12)",
+                        }}
+                      >
+                        <div className="flex items-center justify-between gap-2 text-sm" style={{ color: "var(--color-ink-soft)" }}>
+                          <span>You logged on <span className="font-semibold" style={{ color: "var(--color-ink)" }}>{row.drainLabel}</span></span>
+                          <span className="font-bold font-figures" style={{ color: "var(--color-ink)" }}>{row.loggedHours.toFixed(1)} hrs/wk</span>
+                        </div>
+                        <div className="flex items-center justify-between gap-2 text-sm mt-1" style={{ color: "var(--color-ink-soft)" }}>
+                          <span>A {row.impactName.toLowerCase()}-impact fix typically cuts</span>
+                          <span className="font-bold font-figures" style={{ color: "var(--color-ink)" }}>~{row.pct}%</span>
+                        </div>
+                        <div className="flex items-center justify-between gap-2 text-sm mt-1 pt-2" style={{ borderTop: "1px dashed rgba(196,24,106,0.18)" }}>
+                          <span style={{ color: "var(--color-reclaim)" }}>So you reclaim</span>
+                          <span className="font-bold font-figures" style={{ color: "var(--color-reclaim)" }}>≈ {row.credit.toFixed(1)} hrs/wk</span>
+                        </div>
+                      </div>
+                    ))}
+                  </motion.div>
+                )}
+              </div>
+            )}
+
             {/* Low-reclaim guidance */}
             {reclaimableWeekly > 0 && reclaimableWeekly < totalWasteHoursWeekly * 0.15 && (
               <motion.div
@@ -275,30 +377,8 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign, variant = "
                     </p>
                     <p style={{ color: "var(--color-ink-soft)" }}>
                       Try adding more fixes, targeting your biggest drains, or raising impact scores on the Action Plan tab.
+                      {mathRows.length > 0 && " Tap “How we got this” above to see the per-fix math."}
                     </p>
-                    {/* Per-fix breakdown */}
-                    {chosenSolutions.length > 0 && (
-                      <div className="mt-3 space-y-1">
-                        {chosenSolutions.map((sol) => {
-                          const credit = payoff.creditByRow[sol.id] ?? 0;
-                          const scores = solutionScores[sol.id] ?? { effort: 0, impact: 0 };
-                          const rated = isRated(scores.effort, scores.impact);
-                          return (
-                            <div key={sol.id} className="flex items-center gap-2 text-xs">
-                              <span className="font-medium truncate flex-1" style={{ color: "var(--color-ink)" }}>
-                                {sol.title}
-                              </span>
-                              <span style={{ color: "var(--color-ink-soft)" }}>
-                                {rated ? `impact ${scores.impact}/5` : "not rated"}
-                              </span>
-                              <span className="font-bold font-figures" style={{ color: credit > 0 ? "var(--color-reclaim)" : "var(--color-ink-soft)" }}>
-                                {credit > 0 ? `+${credit.toFixed(1)} hrs` : "0 hrs"}
-                              </span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
                   </div>
                 </div>
               </motion.div>
@@ -340,7 +420,7 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign, variant = "
                 </motion.div>
               );
             })()}
-          </>
+          </div>
         ) : (
           <div className="text-center py-4">
             <AnimatedEmoji emoji="🤔" animation="shake" size="lg" />

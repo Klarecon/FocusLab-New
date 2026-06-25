@@ -996,10 +996,25 @@ describe("Quadrant emojis — literal match (Session 19)", () => {
 });
 
 describe("Landing — removed sections + new HowItWorks (Session 19, Notes 1 & 2)", () => {
-  it("[S19] page.tsx no longer renders ToolCards or BenchmarkProof", () => {
+  it("[S19] page.tsx no longer renders ToolCards", () => {
     const content = readSrc("app/page.tsx");
     expect(content).not.toContain("<ToolCards");
-    expect(content).not.toContain("<BenchmarkProof");
+  });
+
+  // S20 correction: Session 19 over-removed. Mona only wanted the COPY at the
+  // top of the stats section gone — not the stats. Section restored, copy removed.
+  it("[S20-#correction] page.tsx renders the BenchmarkProof stats section", () => {
+    expect(readSrc("app/page.tsx")).toContain("<BenchmarkProof");
+  });
+
+  it("[S20-#correction] BenchmarkProof keeps its stat numbers but drops the top copy", () => {
+    const content = readSrc("components/landing/BenchmarkProof.tsx");
+    // Stats grid still present
+    expect(content).toContain("25%");
+    expect(content).toContain("of a manager's week is meetings");
+    // Top copy removed
+    expect(content).not.toContain("This isn");
+    expect(content).not.toContain("not folklore");
   });
 
   it("[S19] page.tsx renders HowItWorks", () => {
@@ -1032,5 +1047,38 @@ describe("Pareto minimum drains (Session 19, Note 15/scene 12&14)", () => {
   it("[S19] DrilldownStep coaches toward 5 drains", () => {
     const content = readSrc("components/analyzer/DrilldownStep.tsx");
     expect(content).toContain("spot your vital few");
+  });
+
+  // S20 — Oren-redesign safe-polish batch (v3 review notes scenes 6, 9)
+
+  it("[S20-#9] Payoff math is tucked behind an ⓘ 'how we got this' toggle", () => {
+    const content = readSrc("components/focus/Payoff.tsx");
+    // Disclosure state + trigger copy
+    expect(content).toContain("showMath");
+    expect(content).toContain("How we got this");
+    // Toggle is a real button with expanded state for a11y
+    expect(content).toContain("aria-expanded={showMath}");
+  });
+
+  it("[S20-#9] Payoff math breakdown shows logged → cut% → reclaimed per fix", () => {
+    const content = readSrc("components/focus/Payoff.tsx");
+    expect(content).toContain("mathRows");
+    expect(content).toContain("You logged on");
+    expect(content).toContain("typically cuts");
+    expect(content).toContain("So you reclaim");
+  });
+
+  it("[S20-#9] Payoff no longer auto-renders the old per-fix breakdown list", () => {
+    const content = readSrc("components/focus/Payoff.tsx");
+    // The old inline breakdown printed "impact N/5" / "not rated" rows; gone now.
+    expect(content).not.toContain('? `impact ${scores.impact}/5` : "not rated"');
+  });
+
+  it("[S20-#6] Payoff hero uses Magic UI components (SparklesText + Particles)", () => {
+    const content = readSrc("components/focus/Payoff.tsx");
+    expect(content).toContain('from "@/components/ui/sparkles-text"');
+    expect(content).toContain('from "@/components/ui/particles"');
+    expect(content).toContain("<SparklesText");
+    expect(content).toContain("<Particles");
   });
 });

@@ -49,35 +49,12 @@ export default function BenchmarkProof() {
       style={{ backgroundColor: "var(--color-ink)", color: "var(--color-paper)" }}
     >
       <div className="max-w-5xl mx-auto">
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-4"
-          style={{
-            fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
-            color: "var(--color-waste)",
-          }}
-        >
-          This isn&apos;t guesswork. <AnimatedEmoji emoji="🔬" animation="pop" size="lg" />
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-          className="text-center text-lg mb-16 opacity-70"
-        >
-          Our benchmarks come from real research — not folklore.
-        </motion.p>
-
         <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
           {stats.map((stat, i) => (
             <motion.div
               key={stat.source}
               initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
               className="rounded-xl p-4 sm:p-6 relative overflow-hidden"
               style={{
