@@ -1,82 +1,83 @@
 # FocusLab Project State
 
-**Last updated:** 2026-06-24 by Claude via /handover (Session 19)
+**Last updated:** 2026-06-25 by Claude via /handover (Session 20)
 
 ## Quick orient
-- **Project:** FocusLab — productivity tool suite. `/analyzer` (find waste, a 5-step wizard) and `/focus` (fix waste — Focus Table + EVI Matrix + Payoff). The two routes are **SEPARATE, not a single flow.**
+- **Project:** FocusLab — productivity tool suite. `/analyzer` (find waste) and `/focus` (fix waste — Focus Table + EVI Matrix + Payoff). The two routes are **SEPARATE, not a single flow.**
 - **Repo:** https://github.com/Klarecon/FocusLab-New (PUBLIC)
 - **Production URL:** https://focuslab-omega.vercel.app
-- **Active branch:** main (origin/main was `ec4b497`; this session added 3 commits — newest local is `7b2f614`)
-- **Active work:** Porting the approved Oren-redesign mockups into the REAL app. Session 18 was mockup-only; **Session 19 started building into `src/` and shipping to production.** 3 batches shipped & live; more remain.
-- **Owner:** Mona Mehta (mona@klarecon.com) — non-technical product owner. Wants FAST autonomous execution. **Do NOT ask yes/no questions or for permission mid-task — build with sensible defaults, then report.** Deploy without asking. She reacts to finished artifacts. This session she explicitly said: stop making mockups, implement on the real tool, don't ask permissions "not even yes/no questions."
+- **Active branch:** main (origin/main == local == `5e5679a`, fully pushed)
+- **Active work:** Implementing Mona's **v4 mockup review** + a **fresh round of review notes** (2026-06-25). ALL of it is now shipped & live, including the big one — the analyzer two-screen → one-screen logging merge (Oren's biggest rejection).
+- **Owner:** Mona Mehta (mona@klarecon.com) — non-technical product owner. Wants FAST autonomous execution, NO permission/yes-no questions, deploy without asking, reacts to finished artifacts. **This session she said "you're not performing your best today, I expect better"** after I (a) kept deferring the hard analyzer merge as "risky," (b) put the Scene-5 guidance on the wrong screen, (c) left redundant Payoff sections. Lesson saved to memory [[feedback_solve_hard_problems]]: solve the hard thing, don't scope it down; put fixes where she'll look; don't declare done prematurely.
 
-## Branch state (3 new commits this session, all deployed to prod via Vercel; NOT yet `git push`ed)
-- `7b2f614` Redesign port (batch 2): Pareto minimum-5-drains guard
-- `ee47bc5` De-knowledge-work sweep: page metadata
-- `dbdcb38` Redesign port (batch 1): landing copy + matrix emojis
-- NOTE: these are committed locally + DEPLOYED to Vercel production, but **`git push` to GitHub origin has NOT been run** — run `git push` next session if you want GitHub in sync. (Deploy is via `npx vercel --prod --yes`, independent of git push.)
-- Working tree clean (tracked). Untracked: the mockup HTMLs in `Feedback Log/`, downloaded review `.txt` files, scratch docs — safe to leave.
+## Branch state (this session's commits, all deployed to prod + pushed to origin)
+- `5e5679a` Analyzer merge — two logging screens → one (Option C) **← the big one**
+- `ce3ee85` Payoff cleanups + Action-Sequence guidance + hero beam + bigger particles
+- `70ca7f6` Batch 7b: inline effort/impact scoring on the Assign step
+- `cb34d52` Batch 7a: all 100 solution titles → verb/action form
+- `c0fa727` Batch 6: Oren-approved ring-gauge hero (Scene 1)
+- `20c3b9d` Batch 5: pull Scene-8 hover, Scene-12 copy, Scene-4 whole-week heads-up
+- `d8b834f` Batch 4: four-waste-type framework (hover — later removed in batch 5)
+- `29f222c` Batch 3: restore stats section + Payoff math-ⓘ (later removed) + Magic UI
+- Deploy = `npx vercel --prod --yes` (auto-aliases to focuslab-omega). Each batch shipped green + live-verified. Tracked tree is clean.
 
-## What's done this session (Session 19, 2026-06-24)
-### Phase A — mockup iteration (in `Feedback Log/`, no code)
-- Built an **inline-notes review system**: each mockup version got a `-REVIEW.html` with a pink note box per section + per-option notes + "pick one" controls + a **Download my notes (.txt)** button (auto-saves to localStorage). Mona prefers downloading the `.txt` over pasting — Claude reads it from `~/Downloads`.
-- Iterated mockups **v2 → v3 → v4** applying her downloaded feedback each round. Latest full mockup: **`Feedback Log/2026-06-24-oren-redesign-mockup-v4.html`**.
-- Built a focused **`Feedback Log/2026-06-24-merged-logging-step.html`** — folds the "four waste types" into the logging step as slim group headers + a "why are these grouped?" affordance. **Mona's last mockup note: that affordance must be HOVER, not click.**
+## What's done this session (Session 20, 2026-06-25)
+### v4 mockup review (focuslab-v4-review-notes.txt) — all shipped
+- **Scene 1 Hero:** swapped in the v4 ring-gauge hero (counts up to ~10), framed as a card, verbatim copy, CTA "Find my hidden hours", sub "⏱ About 3 minutes · nothing to install". Old WeekCalendar hero archived at `Feedback Log/saved-sections/Hero.tsx.saved`.
+- **Scene 4 Over-cap:** "nearly your whole week marked as waste — double-check" heads-up at ≥90% of the work week (IntakeStep + DrilldownStep + the new LogStep).
+- **Scene 5 verb-form copy:** rewrote ALL ~100 solution titles in `solutions.ts` to lead with an action verb ("Kill agenda-less meetings", not "No agenda, no meeting"). No solution `id`s changed.
+- **Scene 5 inline scoring (batch 7b):** effort/impact dot-raters now appear on each chosen fix in the Assign step (`SolutionPicker.tsx` `InlineRating`), CTA → "See your payoff", routes to matrix.
+- **Scene 8:** removed the standalone waste-type hover (Mona: redundant). `WASTE_TYPES` taxonomy kept as internal data in `waste-sources.ts`.
+- **Scene 12:** ported approved Pareto-density copy, removed "only".
 
-### Phase B — REAL CODE shipped to production (the important part)
-All 3 batches: tsc clean + full vitest + `next build` + banned-color/window/emoji greps + Playwright screenshots read + pre-commit gate hook + deployed + live-verified.
-1. **Batch 1 (`dbdcb38`) — landing + matrix emojis:**
-   - `Hero.tsx`: eyebrow "knowledge workers" → "any kind of work"; headline → "Get real hours of your week back"; subcopy → Mona's exact "A working person loses about 10 hours a week to busywork…" line; CTA → "Find my hidden hours".
-   - `FinalCTA.tsx`: de-knowledge-work + CTA matched to "Find my hidden hours".
-   - `page.tsx`: removed `<ToolCards/>` + `<BenchmarkProof/>` (Notes 1 & 2). The `.tsx` files still exist in `src/components/landing/` (unused) so their old regression tests keep passing; archived copies also in `Feedback Log/saved-sections/`.
-   - **NEW** `src/components/landing/HowItWorks.tsx` — "How it works" 3 steps + "Why it's not another time-tracker" 4-card bento + proofline (approved scene-2 copy). Uses `animate` (NOT `whileInView`) so it renders even below the fold.
-   - **Matrix emojis now literal:** Pearls `💎`, Oysters `🦪`, Low-Hanging Fruit `🍒` (White Elephants `🐘` unchanged) — updated in `solutions-logic.ts` QUADRANT_META, `EviMatrix.tsx` count pills, `FocusTable.tsx` Pearl badge. White Elephants label "drop or delegate" → "skip these — low payoff" (Note 23).
-2. **Batch 1b (`ee47bc5`) — metadata:** `layout.tsx` + `analyzer/page.tsx` meta descriptions de-knowledge-work'd + dropped the inaccurate "upload your calendar" claim. Live homepage now has **0** "knowledge worker".
-3. **Batch 2 (`7b2f614`) — Pareto min-5 guard:** `DrilldownStep.tsx` now requires **≥5 drains with hours** before "Show me the damage" (was ≥1). Below 5 it coaches: "Log at least 5 drains so we can spot your vital few — you've got N." (Note 15 + mockup scenes 12 & 14; Mona: "needs minimum 5".)
-- **Tests: 293 → 306** (+13 ratchet). New tests live in `src/__tests__/feedback-regression.test.ts` under `[S19]`.
+### Fresh review notes (2026-06-25) — all shipped
+1. **THE MERGE (Oren's big rejection):** two analyzer logging screens → ONE. Built `src/components/analyzer/LogStep.tsx` as **Option C ("guided one-pass")** — drains grouped under the 4 waste-type headers (NAME ONLY, no escape-hatch subcopy per Mona), tapped as chips that reveal an inline hours field, running total, min-5 gate, whole-week heads-up, "+ add your own drain" with type picker. Pareto runs straight off entered hours (reuses `runAudit`). Wizard is now **4 steps** (Role → Context → Log your week → Results); `Stepper.tsx` updated; `AuditWizard.tsx` mounts LogStep at case 2, clamps to 3. Mona picked Option C from a 3-option mockup (`Feedback Log/2026-06-25-logging-merge-3-options.html`).
+2. Removed the Payoff "ⓘ How we got this" math disclosure.
+3. Moved the Scene-5 "when to start / how long" guidance onto the **Action Sequence** (EviMatrix `SEQUENCE_GUIDANCE` by quadrant), next to owner/due (was wrongly on the Assign cards).
+4. Removed the Payoff before/after "your week now → you get back" block.
+5. Removed the Payoff "what happens if you don't fix this" 12-month projection (kept the "go reclaim your week" closing line).
+6. Added a rotating **BorderBeam** to the hero (`src/components/ui/border-beam.tsx` + `border-beam` keyframe in `globals.css`).
+7. Made the hero particles bigger (size 0.7 → 2.2).
+
+- **Tests: 306 → 330** (+24 ratchet). All in `feedback-regression.test.ts` under `[S20-…]` / `[S20-V4-…]`.
 
 ## What's next (for the NEXT Claude session) — ordered
-**Safe polish (low risk, do first):**
-1. **Payoff "show the math"** → put the breakdown behind a HOVER tooltip (currently auto-shows when reclaim < 15%). File: `src/components/focus/Payoff.tsx` ~lines 279-301.
-2. **Blank-state Hours prompt:** remove the prompt on the Hours field (effort keeps "tap to rate"). File: `src/components/focus/FocusTable.tsx` (DotRating ~lines 37-78) / wherever the Hours blank prompt lives.
-3. **Payoff Magic-UI styling pass:** SparklesText / ShimmerButton / Particles / BorderBeam (components already in `src/components/ui/`). File: `Payoff.tsx`.
-4. **Over-cap copy** de-chunk if any chunky bolded messages remain (mostly fine already).
-
-**Big / architectural (do deliberately — these diverge from the real app; don't break the working Pareto funnel):**
-5. **Analyzer "four waste types" merge + HOVER tooltip** (the thing Mona spent the most energy on). REALITY: the real wizard groups drains by **17 activity-areas** (`group` field), and the store keys `categoryEstimates` + `vitalCategories` by `group` across a **two-pass Pareto funnel** (IntakeStep estimates by category → DrilldownStep details → ResultsView). The mockup wants grouping by **4 muda-types**. Merging means reconciling 17 groups → 4 types and reworking IntakeStep + the store + Pareto pass-1. Spec: `Feedback Log/2026-06-24-merged-logging-step.html` (tooltip = HOVER). Files: `src/components/analyzer/{IntakeStep,DrilldownStep}.tsx`, `src/stores/audit-store.ts`, `src/lib/data/waste-sources.ts` (has `muda` field for the mapping).
-6. **Focus inline-scoring merge:** mockup wants effort/impact rated inline on the plan (no separate screen). Multiple-fixes-per-drain already exists in `SolutionPicker.tsx`; rating currently lives in `FocusTable.tsx`/`EviMatrix.tsx`. Restructures ~3 components.
-7. **Hero visual reconcile:** the `Hero.tsx` `WeekCalendar` still shows a "50–70% waste" stamp, which sits oddly next to the new "about 10 hours" subcopy. Flagged to Mona, not yet resolved.
+1. **Mona's own walkthrough is the real test** — she was asked to hard-refresh `/analyzer` and walk Role → Context → merged Log screen → Results. Watch for her feedback on the merged screen's feel.
+2. **Cleanup: delete the now-unused `IntakeStep.tsx` + `DrilldownStep.tsx`** (no longer mounted in `AuditWizard`). They're kept only so their existing grep regression tests pass. To remove: delete the files, then update/remove the `[S19]`/`[S20-V4-#4]`/`[S20-V4-#12]` tests that read them, and the `focus`/phase tests that import them.
+3. **Possible: fold "+ New type"** (add your own waste *type*, not just drain) into LogStep — Scene 8 mentioned it; only "add your own drain" is built.
+4. Stale capture screenshots `08-drilldown-*`/`09-…`/`11-…`/`12-…` may remain in `e2e/screenshots/` from the old flow — harmless, the spec no longer generates them.
 
 ## Decisions made (non-obvious)
-- **Pearls emoji = 💎** — there is no literal "pearl" emoji in Unicode; 💎 (gem) is the stand-in. Claude offered ⚪ / 🤍 as alternatives in the v4 mockup; Mona did not object, so 💎 shipped. Easy to swap if she changes her mind.
-- **ToolCards/BenchmarkProof `.tsx` left in `src/`** (just removed from `page.tsx`) so their existing `[S7]` regression tests still pass. Don't delete them without updating those tests.
-- **Min-5 drains is a HARD gate**, not a soft nudge (Mona: "needs minimum 5").
-- **Hero kept the WeekCalendar visual** rather than swapping in the mockup's ring-gauge — the calendar is a strong working asset; only the copy changed. (Visual reconcile is item 7.)
-- **Incremental shipping:** each batch deployed to prod independently once green. The live site only moves forward.
-- **Stale `[S7]` tests were rewritten to `[S19]`** when copy changed (eyebrow, headline, subhead, CTAs) — the ratchet tracks current truth, not old copy.
+- **Option C, headers name-only:** Mona's downloaded pick (`Feedback Log/focuslab-merge-notes.txt`) = "C — Guided one-pass" + "remove the subcopy with the main headings." So LogStep type headers show `group.type.name` only, never the `.hint`.
+- **Merge is a SIMPLIFICATION, not a risk:** the engine (`runAudit`) only needs `entries` (drain→hours) + context; it never needed the two-pass `vitalCategories`/`categoryEstimates` artifacts. LogStep computes Pareto directly. ResultsView reads only `paretoResult`.
+- **Kept IntakeStep/DrilldownStep files** rather than delete-and-rewire-tests in the same pass (flagged as cleanup #2). Their whole-week heads-up + min-5 copy still live there too.
+- **Seed 1 hr on chip select** in LogStep so a picked drain counts toward the min-5 gate; user adjusts inline.
+- **Earlier in session I over-removed then corrected:** restored the BenchmarkProof stats section (Mona only wanted its top copy gone); removed the Scene-8 hover and the Payoff math-ⓘ that I'd added earlier once she called them redundant.
 
 ## Open questions waiting on user
-- None blocking. Mona said "continue tomorrow morning." Possible future calls: Pearls 💎 vs ⚪/🤍; how aggressive the analyzer type-regroup should be vs. keeping the 17-group structure; the hero 50–70%-vs-10hrs reconcile.
+- None blocking. Mona is reviewing the live merged analyzer. Possible follow-ups: the merged screen's UX feel, whether to add "+ New type", deleting the dead Intake/Drilldown files.
 
 ## Critical file paths
-- **Mockup spec:** `Feedback Log/2026-06-24-oren-redesign-mockup-v4.html` (full), `Feedback Log/2026-06-24-merged-logging-step.html` (logging merge, hover tooltip)
-- **Downloaded feedback:** `Feedback Log/focuslab-v3-review-notes.txt` and any `focuslab-v*-review-notes.txt`
-- **Shipped code:** `src/components/landing/{Hero,FinalCTA,HowItWorks}.tsx`, `src/app/{page,layout}.tsx`, `src/app/analyzer/page.tsx`, `src/components/focus/{EviMatrix,FocusTable}.tsx`, `src/lib/engine/solutions-logic.ts`, `src/components/analyzer/DrilldownStep.tsx`
-- **Next-up code:** `src/components/focus/{Payoff,SolutionPicker}.tsx`, `src/components/analyzer/{IntakeStep,DrilldownStep}.tsx`, `src/stores/audit-store.ts`
-- **Tests:** `src/__tests__/feedback-regression.test.ts` (306 tests; add `[S19]`/`[S20]` items here)
+- **Merged logging screen:** `src/components/analyzer/LogStep.tsx` (Option C) — the new heart of the analyzer
+- **Wizard wiring:** `src/components/analyzer/AuditWizard.tsx`, `src/components/analyzer/Stepper.tsx`
+- **Engine (unchanged):** `src/lib/engine/audit-logic.ts` (`runAudit`), `src/lib/engine/solutions-logic.ts`
+- **Waste data:** `src/lib/data/waste-sources.ts` (`WASTE_TYPES`, `wasteTypeForMuda`), `src/lib/data/solutions.ts` (verb-form titles)
+- **Focus:** `src/components/focus/{SolutionPicker,FocusTable,EviMatrix,Payoff}.tsx`
+- **Hero + Magic UI:** `src/components/landing/Hero.tsx`, `src/components/ui/border-beam.tsx`
+- **Tests:** `src/__tests__/feedback-regression.test.ts` (330 tests)
+- **Mockups/notes:** `Feedback Log/2026-06-25-logging-merge-3-options.html`, `Feedback Log/focuslab-merge-notes.txt`, `Feedback Log/focuslab-v4-review-notes.txt`, `Feedback Log/2026-06-25-v4-implementation-plan.html`
 
 ## Known gotchas
-- **Deploy = `npx vercel --prod --yes`, then verify** (it auto-aliases to focuslab-omega.vercel.app). `git push` alone does NOT deploy. `git push` to GitHub has NOT been done this session — run it if you want origin in sync.
-- **Edit tool + em-dash:** `solutions-logic.ts` verb lines contain an em-dash that the Edit tool couldn't match in a literal `old_string` — edit AROUND those lines or target single unique lines.
-- **`whileInView` renders blank in full-page Playwright screenshots** (below-fold elements never trigger). Use `animate` for content that must be screenshot-verifiable (fixed in HowItWorks).
-- **Pre-commit hook** `.claude/hooks/verify-done.sh` hard-blocks on tsc/test failures, banned colors, window hacks, Hanken, corporate emoji, green states, SCORE_FROM_LEVEL.
-- **Visual verify:** `npx playwright test e2e/capture-screens.spec.ts` → READ screenshots in `e2e/screenshots/` before declaring visual work done. The capture drives the full wizard, so it also proves the min-5 gate doesn't break the flow (it fills ≥5 drains).
-- 306 tests is the ratchet — never regress.
-- Banned: green for success, old palette hexes, Hanken Grotesk, corporate emoji (📊📋✅📈🚀💡). Pink `#c4186a` for all CTA/success/selected. Effort dots gold, impact pink. SCORE_FROM_LEVEL = 2/3/4.
+- **Deploy = `npx vercel --prod --yes` then verify** — `git push` alone does NOT deploy. (origin IS pushed this session.)
+- **Pre-commit hook** `.claude/hooks/verify-done.sh` hard-blocks on tsc/test fails, banned colors, window hacks, Hanken, corporate emoji, green states, SCORE_FROM_LEVEL. 11 checks.
+- **Playwright `text=` strict-mode:** "Log your week" now matches the Stepper label twice + the h2 — use `getByRole("heading", …)`.
+- **`whileInView` renders blank in full-page screenshots** — use `animate` for above-the-fold/screenshot-verifiable content.
+- **`solutions.ts` titles use literal `–`/`“` escapes** — but the Edit tool matched real en-dash/curly-quote chars fine this session.
+- Banned: green for success, old palette hexes, Hanken Grotesk, corporate emoji (📊📋✅📈🚀💡). Pink `#c4186a` for CTA/success/selected. SCORE_FROM_LEVEL = 2/3/4.
+- 330 tests is the ratchet — never regress.
 
 ## How to resume work
-1. Read this file top to bottom.
-2. `git status` + `git log --oneline -8` (newest local = `7b2f614`; consider `git push`).
-3. `npx vitest --run` should show **306 passed**; `npx tsc --noEmit` clean.
-4. Open `Feedback Log/2026-06-24-oren-redesign-mockup-v4.html` + `2026-06-24-merged-logging-step.html` as the spec.
-5. Continue the port — start with the **safe polish** items (Payoff math-hover, blank-state prompt, Payoff styling), then approach the **analyzer 4-type merge** and **focus scoring merge** deliberately. Build with defaults, ship each batch green, deploy, verify — do NOT ask Mona yes/no questions.
+1. Read this file top to bottom + the latest `Session Log/` entry + memory [[feedback_solve_hard_problems]].
+2. `git status` + `git log --oneline -8` (newest = `5e5679a`).
+3. `npx vitest --run` → **330 passed**; `npx tsc --noEmit` clean.
+4. Ask Mona how the live merged analyzer feels, then pick up the cleanup (#2) and any new feedback. Build the hard things head-on, ship each batch green, deploy, verify — do NOT ask yes/no questions or defer the difficult items.
