@@ -7,6 +7,7 @@ import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { Highlighter } from "@/components/ui/highlighter";
 import { Particles } from "@/components/ui/particles";
+import { BorderBeam } from "@/components/ui/border-beam";
 
 /**
  * v4 hero ring gauge (Oren-approved). A pink arc sweeps in and the centre
@@ -71,23 +72,34 @@ function RingGauge() {
 export default function Hero() {
   return (
     <section className="relative min-h-[70vh] sm:min-h-[85vh] flex flex-col items-center justify-center text-center px-4 sm:px-6 py-12 sm:py-16 overflow-hidden">
-      {/* Subtle particle field — the "make it lively" ask, on-brand pink. */}
-      <Particles
-        className="absolute inset-0 pointer-events-none"
-        quantity={70}
-        ease={70}
-        color="#c4186a"
-        size={0.7}
-        staticity={50}
-        aria-hidden="true"
-      />
-
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: "easeOut" }}
-        className="relative z-10 max-w-3xl flex flex-col items-center"
+        className="relative z-10 w-full max-w-2xl"
       >
+        <div
+          className="relative overflow-hidden rounded-[2rem] px-6 py-10 sm:px-12 sm:py-16 flex flex-col items-center text-center"
+          style={{
+            backgroundColor: "var(--color-surface)",
+            border: "1px solid var(--color-line)",
+            boxShadow: "0 16px 50px rgba(44,36,24,0.10)",
+          }}
+        >
+          {/* Bigger, visible particle field inside the framed hero (note 7) */}
+          <Particles
+            className="absolute inset-0 pointer-events-none"
+            quantity={48}
+            ease={60}
+            color="#c4186a"
+            size={2.2}
+            staticity={40}
+            aria-hidden="true"
+          />
+          {/* Rotating border beam — Magic UI (note 6) */}
+          <BorderBeam size={300} duration={9} borderWidth={2.5} />
+
+          <div className="relative z-10 flex flex-col items-center">
         {/* Eyebrow */}
         <motion.p
           initial={{ opacity: 0 }}
@@ -158,6 +170,8 @@ export default function Hero() {
             ⏱ About 3 minutes · nothing to install
           </span>
         </motion.div>
+          </div>
+        </div>
       </motion.div>
     </section>
   );

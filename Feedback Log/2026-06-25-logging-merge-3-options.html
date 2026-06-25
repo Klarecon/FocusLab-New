@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FocusLab — Logging merge: 3 options</title>
+<style>
+  :root{
+    --waste:#e03e12; --reclaim:#c4186a; --gold:#edb215; --neutral:#9a8c7a;
+    --ink:#2c2418; --ink-soft:#655b4d; --cream:#fdf6ec; --surface:#fffaf2; --line:#ece0d0;
+  }
+  *{box-sizing:border-box;}
+  body{font-family:'Plus Jakarta Sans',-apple-system,system-ui,sans-serif;background:#efe6d6;color:var(--ink);margin:0;padding:32px 18px 140px;line-height:1.5;}
+  .wrap{max-width:860px;margin:0 auto;}
+  h1{font-family:'Fraunces',Georgia,serif;font-size:1.9rem;margin:0 0 4px;}
+  .sub{color:var(--ink-soft);margin:0 0 8px;font-size:0.95rem;}
+  .why{background:rgba(224,62,18,0.06);border:1.5px solid var(--waste);border-radius:14px;padding:13px 16px;margin:14px 0 26px;font-size:0.9rem;}
+  .why b{color:var(--waste);}
+  .opt{background:var(--cream);border:1px solid var(--line);border-radius:20px;margin-bottom:26px;overflow:hidden;box-shadow:0 8px 30px rgba(44,36,24,0.07);}
+  .opt-head{background:var(--ink);color:var(--cream);padding:13px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+  .opt-head .tag{font-family:'Fraunces',serif;font-size:1.15rem;font-weight:700;}
+  .opt-head .tag .n{color:var(--gold);}
+  .opt-head .best{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;background:rgba(237,178,21,0.18);color:var(--gold);border-radius:999px;padding:4px 11px;}
+  .pad{padding:22px;}
+  .lede{font-size:0.9rem;color:var(--ink-soft);margin:0 0 16px;}
+  .lede b{color:var(--ink);}
+  /* shared screen chrome */
+  .screen{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;}
+  .scr-h{font-family:'Fraunces',serif;font-size:1.25rem;margin:0 0 2px;}
+  .scr-s{font-size:0.82rem;color:var(--ink-soft);margin:0 0 14px;}
+  .tally{display:inline-flex;align-items:center;gap:8px;background:#fff;border:2px solid var(--waste);border-radius:999px;padding:6px 16px;font-weight:800;color:var(--waste);font-family:'Fraunces',serif;margin-bottom:14px;}
+  .tally span{font-size:0.7rem;font-weight:700;color:var(--ink-soft);font-family:'Plus Jakarta Sans';}
+  /* type group header */
+  .grp{margin:14px 0 4px;}
+  .grphead{display:flex;align-items:center;gap:8px;padding:0 2px 6px;border-bottom:1.5px solid var(--line);cursor:pointer;}
+  .grphead .gname{font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;}
+  .grphead .ghint{font-size:0.7rem;color:var(--ink-soft);font-style:italic;margin-left:auto;}
+  .grphead .sub-est{font-size:0.7rem;font-weight:800;color:var(--reclaim);background:rgba(196,24,106,0.08);border-radius:7px;padding:2px 8px;margin-left:8px;}
+  .grphead .caret{margin-left:8px;color:var(--ink-soft);font-size:0.7rem;}
+  /* drain row */
+  .row{display:flex;align-items:center;gap:11px;border:1.5px solid var(--line);border-radius:12px;padding:9px 13px;margin-top:8px;background:#fff;cursor:pointer;}
+  .row.sel{border:2px solid var(--reclaim);background:rgba(196,24,106,0.05);}
+  .chk{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.65rem;font-weight:800;}
+  .row.sel .chk{background:var(--reclaim);border-color:var(--reclaim);}
+  .row .em{font-size:1.05rem;}
+  .row .lab{flex:1;font-weight:600;font-size:0.86rem;}
+  .row .lab small{display:block;font-weight:400;color:var(--ink-soft);font-size:0.72rem;margin-top:1px;}
+  .hrs{display:flex;align-items:center;gap:5px;white-space:nowrap;opacity:0.35;transition:opacity .15s;}
+  .row.sel .hrs{opacity:1;}
+  .hrs input{width:42px;text-align:right;border:none;border-bottom:2px solid var(--waste);background:transparent;font-weight:800;font-family:'Fraunces',serif;color:var(--ink);font-size:0.95rem;}
+  .hrs .u{font-size:0.66rem;color:var(--ink-soft);}
+  .collapsed .body{display:none;}
+  /* chips (option C) */
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px;}
+  .chip{border:1.5px solid var(--line);border-radius:999px;padding:7px 13px;font-size:0.8rem;font-weight:600;cursor:pointer;background:#fff;display:inline-flex;gap:6px;align-items:center;}
+  .chip.on{border-color:var(--reclaim);background:rgba(196,24,106,0.06);color:var(--reclaim);}
+  .chip .x{font-weight:800;}
+  .addrow{display:flex;gap:9px;align-items:center;margin-top:12px;}
+  .addcat{flex:1;border:1.5px dashed var(--reclaim);color:var(--reclaim);border-radius:12px;padding:9px 13px;font-weight:700;font-size:0.82rem;text-align:center;background:rgba(196,24,106,0.03);cursor:pointer;}
+  .next{display:block;width:100%;margin-top:16px;background:var(--reclaim);color:#fff;border:none;border-radius:12px;padding:12px;font-weight:800;font-size:0.95rem;cursor:pointer;}
+  /* how it works */
+  .how{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:560px){.how{grid-template-columns:1fr;}}
+  .how div{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:0.82rem;}
+  .how h4{margin:0 0 5px;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.04em;}
+  .how.good h4{color:#1f7a4d;} .how.cost h4{color:var(--waste);}
+  .how ul{margin:0;padding-left:16px;} .how li{margin:2px 0;color:var(--ink-soft);}
+  /* engine note */
+  .eng{margin-top:14px;background:rgba(237,178,21,0.08);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:10px 14px;font-size:0.8rem;color:var(--ink-soft);}
+  .eng b{color:#7a5e0a;}
+  /* pick + notes */
+  .pickbar{display:flex;align-items:center;gap:10px;margin-top:16px;flex-wrap:wrap;}
+  .pickbar label{display:inline-flex;align-items:center;gap:7px;font-weight:700;font-size:0.9rem;cursor:pointer;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:8px 14px;}
+  .pickbar input{accent-color:var(--reclaim);width:17px;height:17px;}
+  .notebox{margin-top:12px;}
+  .notebox label{display:block;font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:var(--reclaim);margin-bottom:6px;}
+  .notebox textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;font-family:inherit;font-size:0.88rem;line-height:1.45;resize:vertical;min-height:48px;background:#fff;color:var(--ink);}
+  .notebox textarea:focus{outline:none;border-color:var(--reclaim);box-shadow:0 0 0 3px rgba(196,24,106,0.13);}
+  .exportbar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--ink);color:#fff;display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;padding:12px 18px;box-shadow:0 -6px 24px rgba(0,0,0,0.18);}
+  .exportbar button{font-family:inherit;font-weight:800;font-size:0.86rem;border:none;border-radius:10px;padding:10px 18px;cursor:pointer;background:var(--reclaim);color:#fff;}
+  .exportbar .st{font-size:0.78rem;color:#cdbfa8;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Logging step — merge 2 screens into 1</h1>
+  <p class="sub">Three ways to collapse "Where does your time go?" (rough estimate) + "Let's zoom into the big ones" (detail) into a single screen, with the four waste-types folded in.</p>
+  <div class="why">
+    <b>Why this matters:</b> the two-screen logging flow was one of Oren's biggest rejections. Below are 3 distinct single-screen approaches — each is live (check rows, type hours, watch the total). Pick one at the bottom of each, leave notes, and hit <b>Download my notes</b>.
+  </div>
+
+  <!-- OPTION A -->
+  <div class="opt">
+    <div class="opt-head"><span class="tag"><span class="n">Option A</span> · Type accordion — estimate &amp; detail in one expand</span></div>
+    <div class="pad">
+      <p class="lede">The four <b>waste-types</b> are collapsible sections. Open one, tick the specific drains that apply, and type the hours <b>right there</b>. The type header keeps a running subtotal. No separate "rough estimate" page — your estimate <i>is</i> the sum of what you log.</p>
+      <div class="screen">
+        <div class="scr-h">Log your week</div>
+        <div class="scr-s">Tick what drains you and rough in the hours. Takes ~90 seconds.</div>
+        <div class="tally"><span>flagged</span> <em id="A-total">0.0</em> hrs/wk</div>
+
+        <div class="grp collapsed" data-acc>
+          <div class="grphead"><span class="gname" style="color:var(--ink)">Work that adds nothing</span><span class="ghint">→ cut it or shrink it</span><span class="sub-est" data-sub>0.0h</span><span class="caret">▼</span></div>
+          <div class="body">
+            <div class="row" data-row><span class="chk">✓</span><span class="em">😴</span><span class="lab">Meetings you weren't needed in<small>Invited "just in case", added nothing.</small></span><span class="hrs"><input type="number" min="0" step="0.5" data-h><span class="u">hrs/wk</span></span></div>
+            <div class="row" data-row><span class="chk">✓</span><span class="em">💀</span><span class="lab">Admin busy work<small>Forms, expenses, data entry, status updates.</small></span><span class="hrs"><input type="number" min="0" step="0.5" data-h><span class="u">hrs/wk</span></span></div>
+            <div class="addrow"><div class="addcat">＋ Add your own drain</div></div>
+          </div>
+        </div>
+
+        <div class="grp collapsed" data-acc>
+          <div class="grphead"><span class="gname" style="color:var(--ink)">Switching &amp; chasing</span><span class="ghint">→ batch it, automate it, or ask once</span><span class="sub-est" data-sub>0.0h</span><span class="caret">▼</span></div>
+          <div class="body">
+            <div class="row" data-row><span class="chk">✓</span><span class="em">🫠</span><span class="lab">Email &amp; chat pile-up<small>Back-and-forth, "quick" replies that aren't.</small></span><span class="hrs"><input type="number" min="0" step="0.5" data-h><span class="u">hrs/wk</span></span></div>
+            <div class="row" data-row><span class="chk">✓</span><span class="em">🧟</span><span class="lab">Chasing people for status<small>Pinging for where things stand.</small></span><span class="hrs"><input type="number" min="0" step="0.5" data-h><span class="u">hrs/wk</span></span></div>
+            <div class="addrow"><div class="addcat">＋ Add your own drain</div></div>
+          </div>
+        </div>
+
+        <div class="grp collapsed" data-acc>
+          <div class="grphead"><span class="gname" style="color:var(--ink)">Waiting &amp; getting blocked</span><span class="ghint">→ unblock the bottleneck</span><span class="sub-est" data-sub>0.0h</span><span class="caret">▼</span></div>
+          <div class="body">
+            <div class="row" data-row><span class="chk">✓</span><span class="em">😤</span><span class="lab">Waiting on an approval or sign-off<small>Idle until someone reviews or says yes.</small></span><span class="hrs"><input type="number" min="0" step="0.5" data-h><span class="u">hrs/wk</span></span></div>
+            <div class="addrow"><div class="addcat">＋ Add your own drain</div></div>
+          </div>
+        </div>
+
+        <div class="grp collapsed" data-acc>
+          <div class="grphead"><span class="gname" style="color:var(--ink)">Redoing &amp; manual grind</span><span class="ghint">→ get it right once, or automate it</span><span class="sub-est" data-sub>0.0h</span><span class="caret">▼</span></div>
+          <div class="body">
+            <div class="row" data-row><span class="chk">✓</span><span class="em">🤦</span><span class="lab">Redoing work from unclear direction<small>Built it, the goal shifted, built it again.</small></span><span class="hrs"><input type="number" min="0" step="0.5" data-h><span class="u">hrs/wk</span></span></div>
+            <div class="row" data-row><span class="chk">✓</span><span class="em">🥴</span><span class="lab">Manual, repetitive data entry<small>Copy-paste between tools, re-keying.</small></span><span class="hrs"><input type="number" min="0" step="0.5" data-h><span class="u">hrs/wk</span></span></div>
+            <div class="addrow"><div class="addcat">＋ Add your own drain</div></div>
+          </div>
+        </div>
+        <button class="next">See what's eating my week →</button>
+      </div>
+
+      <div class="how good"><h4>Why it works</h4><ul><li>Teaches the 4 types by scanning — name the type, know the fix.</li><li>Collapsed by default = not overwhelming; open only what applies to you.</li><li>One pass: tick + hours together, no rough-then-detail round trip.</li></ul></div>
+      <div class="how cost"><h4>Trade-offs</h4><ul><li>A click to expand each type (one extra tap per section).</li><li>Hours live inside accordions, so the full picture isn't all on screen at once.</li></ul></div>
+      <div class="eng"><b>Engine:</b> drop the rough-estimate pass entirely. Pareto ranks straight off the per-drain hours you enter (summed per type/category). Simpler than today's two-pass, not riskier.</div>
+      <div class="pickbar">
+        <label><input type="radio" name="pick" value="A — Type accordion"> Pick Option A</label>
+      </div>
+      <div class="notebox"><label>Notes on Option A</label><textarea data-note="Option A" placeholder="—"></textarea></div>
+    </div>
+  </div>
+
+  <!-- OPTION B -->
+  <div class="opt">
+    <div class="opt-head"><span class="tag"><span class="n">Option B</span> · Flat checklist — everything on one scroll</span></div>
+    <div class="pad">
+      <p class="lede">No accordions. Every drain is visible at once under its <b>waste-type header</b>. Tick what applies, type hours inline. Fastest for someone who knows their week; it's just a longer scroll.</p>
+      <div class="screen">
+        <div class="scr-h">Log your week</div>
+        <div class="scr-s">Everything's here — tick what drains you and rough in the hours.</div>
+        <div class="tally"><span>flagged</span> <em id="B-total">0.0</em> hrs/wk</div>
+
+        <div class="grp"><div class="grphead" style="cursor:default"><span class="gname" style="color:var(--ink)">Work that adds nothing</span><span class="ghint">→ cut it or shrink it</span></div>
+          <div class="body">
+            <div class="row" data-row><span class="chk">✓</span><span class="em">😴</span><span class="lab">Meetings you weren't needed in</span><span class="hrs"><input type="number" min="0" step="0.5" data-h><span class="u">hrs/wk</span></span></div>
+            <div class="row" data-row><span class="chk">✓</span><span class="em">💀</span><span class="lab">Admin busy work</span><span class="hrs"><input type="number" min="0" step="0.5" data-h><span class="u">hrs/wk</span></span></div>
+          </div></div>
+        <div class="grp"><div class="grphead" style="cursor:default"><span class="gname" style="color:var(--ink)">Switching &amp; chasing</span><span class="ghint">→ batch it, automate it, or ask once</span></div>
+          <div class="body">
+            <div class="row" data-row><span class="chk">✓</span><span class="em">🫠</span><span class="lab">Email &amp; chat pile-up</span><span class="hrs"><input type="number" min="0" step="0.5" data-h><span class="u">hrs/wk</span></span></div>
+            <div class="row" data-row><span class="chk">✓</span><span class="em">🤹</span><span class="lab">Hunting for info you already have</span><span class="hrs"><input type="number" min="0" step="0.5" data-h><span class="u">hrs/wk</span></span></div>
+          </div></div>
+        <div class="grp"><div class="grphead" style="cursor:default"><span class="gname" style="color:var(--ink)">Waiting &amp; getting blocked</span><span class="ghint">→ unblock the bottleneck</span></div>
+          <div class="body">
+            <div class="row" data-row><span class="chk">✓</span><span class="em">😤</span><span class="lab">Waiting on an approval or sign-off</span><span class="hrs"><input type="number" min="0" step="0.5" data-h><span class="u">hrs/wk</span></span></div>
+          </div></div>
+        <div class="grp"><div class="grphead" style="cursor:default"><span class="gname" style="color:var(--ink)">Redoing &amp; manual grind</span><span class="ghint">→ get it right once, or automate it</span></div>
+          <div class="body">
+            <div class="row" data-row><span class="chk">✓</span><span class="em">🤦</span><span class="lab">Redoing work from unclear direction</span><span class="hrs"><input type="number" min="0" step="0.5" data-h><span class="u">hrs/wk</span></span></div>
+          </div></div>
+        <div class="addrow"><div class="addcat">＋ Add your own drain</div></div>
+        <button class="next">See what's eating my week →</button>
+      </div>
+
+      <div class="how good"><h4>Why it works</h4><ul><li>Zero clicks to reveal — the whole picture is on one screen.</li><li>Dead simple mental model: scan, tick, type.</li></ul></div>
+      <div class="how cost"><h4>Trade-offs</h4><ul><li>Long scroll on mobile, especially with role-specific drains added.</li><li>Can feel like a lot at first glance (the firehose).</li></ul></div>
+      <div class="eng"><b>Engine:</b> same as A — no rough pass; rank off entered hours.</div>
+      <div class="pickbar"><label><input type="radio" name="pick" value="B — Flat checklist"> Pick Option B</label></div>
+      <div class="notebox"><label>Notes on Option B</label><textarea data-note="Option B" placeholder="—"></textarea></div>
+    </div>
+  </div>
+
+  <!-- OPTION C -->
+  <div class="opt">
+    <div class="opt-head"><span class="tag"><span class="n">Option C</span> · Guided one-pass — pick areas, then detail</span> <span class="best">my pick</span></div>
+    <div class="pad">
+      <p class="lede">Keeps the smart "narrow then detail" logic of the two screens, but on <b>one page</b>. First tap the areas that hit you (chips, grouped by type). Only those <b>expand inline</b> with their drains + hours — no second page, and you never face the full firehose.</p>
+      <div class="screen">
+        <div class="scr-h">Log your week</div>
+        <div class="scr-s">Step 1 — tap what drains you. Step 2 — rough in the hours, right below.</div>
+        <div class="tally"><span>flagged</span> <em id="C-total">0.0</em> hrs/wk</div>
+
+        <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-soft);margin:4px 0 2px;">Work that adds nothing <span style="font-weight:400;font-style:italic;text-transform:none;">→ cut it or shrink it</span></div>
+        <div class="chips">
+          <div class="chip" data-chip="c1"><span class="x">+</span> 😴 Meetings you weren't in</div>
+          <div class="chip" data-chip="c2"><span class="x">+</span> 💀 Admin busy work</div>
+        </div>
+        <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-soft);margin:8px 0 2px;">Switching &amp; chasing <span style="font-weight:400;font-style:italic;text-transform:none;">→ batch it, automate, ask once</span></div>
+        <div class="chips">
+          <div class="chip" data-chip="c3"><span class="x">+</span> 🫠 Email &amp; chat pile-up</div>
+          <div class="chip" data-chip="c4"><span class="x">+</span> 🤹 Hunting for info</div>
+        </div>
+        <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-soft);margin:8px 0 2px;">Waiting &amp; blocked · Redoing &amp; grind</div>
+        <div class="chips">
+          <div class="chip" data-chip="c5"><span class="x">+</span> 😤 Waiting on approvals</div>
+          <div class="chip" data-chip="c6"><span class="x">+</span> 🤦 Redoing unclear work</div>
+        </div>
+
+        <div id="C-detail" style="margin-top:14px;"></div>
+        <button class="next">See what's eating my week →</button>
+      </div>
+
+      <div class="how good"><h4>Why it works</h4><ul><li>Never shows the firehose — you only detail what you picked.</li><li>Preserves today's "narrow then detail" funnel, minus the page change.</li><li>Teaches the 4 types up front, then gets concrete.</li></ul></div>
+      <div class="how cost"><h4>Trade-offs</h4><ul><li>Two conceptual moments (pick → fill), though on one screen.</li><li>Slightly more build than A/B (chip-driven reveal).</li></ul></div>
+      <div class="eng"><b>Engine:</b> chips replace the rough-estimate pass as the "what's worth detailing" filter; ranking still runs off entered hours. Closest to today's funnel, so lowest behavioural risk.</div>
+      <div class="pickbar"><label><input type="radio" name="pick" value="C — Guided one-pass"> Pick Option C</label></div>
+      <div class="notebox"><label>Notes on Option C</label><textarea data-note="Option C" placeholder="—"></textarea></div>
+    </div>
+  </div>
+
+  <div class="notebox"><label>Anything else / a different idea?</label><textarea data-note="General" placeholder="—"></textarea></div>
+</div>
+
+<div class="exportbar">
+  <span class="st" id="st">Pick one + leave notes, then download.</span>
+  <button id="dl">⬇︎ Download my notes (.txt)</button>
+</div>
+
+<script>
+  // accordion (A)
+  document.querySelectorAll('[data-acc] .grphead').forEach(h=>{
+    h.addEventListener('click',()=>h.closest('[data-acc]').classList.toggle('collapsed'));
+  });
+  // row select + hours -> totals
+  function recalc(){
+    ['A','B','C'].forEach(id=>{
+      let sum=0;
+      document.querySelectorAll('#'+id+'-total')[0]?.closest('.screen')
+        ?.querySelectorAll('[data-row].sel [data-h]').forEach(inp=>{ sum += parseFloat(inp.value||0)||0; });
+      const t=document.getElementById(id+'-total'); if(t) t.textContent=sum.toFixed(1);
+    });
+    // A subtotals per type
+    document.querySelectorAll('[data-acc]').forEach(g=>{
+      let s=0; g.querySelectorAll('[data-row].sel [data-h]').forEach(i=>s+=parseFloat(i.value||0)||0);
+      const sub=g.querySelector('[data-sub]'); if(sub) sub.textContent=s.toFixed(1)+'h';
+    });
+  }
+  document.querySelectorAll('[data-row]').forEach(r=>{
+    r.addEventListener('click',e=>{
+      if(e.target.matches('[data-h]')) return;
+      r.classList.toggle('sel');
+      if(r.classList.contains('sel')){ const inp=r.querySelector('[data-h]'); if(inp&&!inp.value) inp.value='2'; }
+      recalc();
+    });
+  });
+  document.querySelectorAll('[data-h]').forEach(i=>i.addEventListener('input',recalc));
+  // Option C chip -> reveal a detail row
+  const CDATA={c1:['😴',"Meetings you weren't needed in"],c2:['💀','Admin busy work'],c3:['🫠','Email & chat pile-up'],c4:['🤹','Hunting for info you already have'],c5:['😤','Waiting on an approval or sign-off'],c6:['🤦','Redoing work from unclear direction']};
+  const cDetail=document.getElementById('C-detail');
+  function cRecalc(){let s=0;cDetail.querySelectorAll('[data-h]').forEach(i=>s+=parseFloat(i.value||0)||0);document.getElementById('C-total').textContent=s.toFixed(1);}
+  document.querySelectorAll('[data-chip]').forEach(c=>{
+    c.addEventListener('click',()=>{
+      const k=c.dataset.chip; c.classList.toggle('on');
+      const ex=cDetail.querySelector('[data-d="'+k+'"]');
+      if(c.classList.contains('on')){
+        c.querySelector('.x').textContent='✓';
+        const d=document.createElement('div'); d.className='row sel'; d.setAttribute('data-d',k);
+        d.innerHTML='<span class="chk">✓</span><span class="em">'+CDATA[k][0]+'</span><span class="lab">'+CDATA[k][1]+'</span><span class="hrs"><input type="number" min="0" step="0.5" data-h value="2"><span class="u">hrs/wk</span></span>';
+        cDetail.appendChild(d); d.querySelector('[data-h]').addEventListener('input',cRecalc);
+      } else { c.querySelector('.x').textContent='+'; if(ex) ex.remove(); }
+      cRecalc();
+    });
+  });
+  // notes persistence + download
+  const KEY='focuslab-merge-notes';
+  const saved=JSON.parse(localStorage.getItem(KEY)||'{}');
+  document.querySelectorAll('[data-note]').forEach(t=>{ if(saved[t.dataset.note])t.value=saved[t.dataset.note]; t.addEventListener('input',save); });
+  document.querySelectorAll('[name=pick]').forEach(r=>r.addEventListener('change',save));
+  function save(){
+    const o={}; document.querySelectorAll('[data-note]').forEach(t=>o[t.dataset.note]=t.value);
+    const p=document.querySelector('[name=pick]:checked'); o['__pick']=p?p.value:'';
+    localStorage.setItem(KEY,JSON.stringify(o));
+    document.getElementById('st').textContent = p ? ('Picked: '+p.value) : 'Pick one + leave notes, then download.';
+  }
+  document.getElementById('dl').addEventListener('click',()=>{
+    const p=document.querySelector('[name=pick]:checked');
+    let txt='FocusLab — Logging merge: my pick & notes\n\nPICKED: '+(p?p.value:'(none yet)')+'\n\n';
+    document.querySelectorAll('[data-note]').forEach(t=>{ if(t.value.trim()) txt+='## '+t.dataset.note+'\n'+t.value.trim()+'\n\n'; });
+    const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([txt],{type:'text/plain'}));
+    a.download='focuslab-merge-notes.txt'; a.click();
+  });
+</script>
+</body>
+</html>

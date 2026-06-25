@@ -100,6 +100,15 @@
   animation: cta-pulse 2s ease-in-out infinite;
 }
 
+/* Rotating border beam — a light travels around a card's border. */
+@keyframes border-beam {
+  to { offset-distance: 100%; }
+}
+
+.animate-border-beam {
+  animation: border-beam calc(var(--duration) * 1s) infinite linear;
+}
+
 /* ---- Base styles ---- */
 
 html {

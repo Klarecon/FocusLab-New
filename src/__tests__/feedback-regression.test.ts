@@ -1113,6 +1113,28 @@ describe("Pareto minimum drains (Session 19, Note 15/scene 12&14)", () => {
     expect(readSrc("components/landing/Hero.tsx")).toContain("nothing to install");
   });
 
+  // S20-V4 note 3: start/time guidance now lives on the Action Sequence
+  // (EviMatrix), next to owner + due — where execution is planned.
+  it("[S20-V4-#3] Action Sequence shows per-task start/time guidance", () => {
+    const content = readSrc("components/focus/EviMatrix.tsx");
+    expect(content).toContain("SEQUENCE_GUIDANCE");
+    expect(content).toContain("Start this week");
+    expect(content).toContain("SEQUENCE_GUIDANCE[d.quadrantLabel]");
+  });
+
+  // S20-V4 notes 6 & 7: rotating BorderBeam on the hero + bigger particles.
+  it("[S20-V4-#6] hero has a rotating BorderBeam", () => {
+    const content = readSrc("components/landing/Hero.tsx");
+    expect(content).toContain('from "@/components/ui/border-beam"');
+    expect(content).toContain("<BorderBeam");
+  });
+
+  it("[S20-V4-#7] hero particles are sized up for visibility", () => {
+    const content = readSrc("components/landing/Hero.tsx");
+    // bumped from 0.7 to a clearly-visible size
+    expect(content).toContain("size={2.2}");
+  });
+
   it("[S20-V4-#1] old WeekCalendar hero is archived for reuse", () => {
     // Saved outside src/ so it doesn't ship but can be reused elsewhere.
     const saved = fs.readFileSync(
@@ -1136,27 +1158,24 @@ describe("Pareto minimum drains (Session 19, Note 15/scene 12&14)", () => {
 
   // S20 — Oren-redesign safe-polish batch (v3 review notes scenes 6, 9)
 
-  it("[S20-#9] Payoff math is tucked behind an ⓘ 'how we got this' toggle", () => {
+  // S20-V4 note 2: the "How we got this" ⓘ math disclosure was removed (Mona:
+  // redundant). Replaces the earlier S20-#9 tests that asserted it existed.
+  it("[S20-V4-#2] Payoff no longer has the 'How we got this' math disclosure", () => {
     const content = readSrc("components/focus/Payoff.tsx");
-    // Disclosure state + trigger copy
-    expect(content).toContain("showMath");
-    expect(content).toContain("How we got this");
-    // Toggle is a real button with expanded state for a11y
-    expect(content).toContain("aria-expanded={showMath}");
+    expect(content).not.toContain("How we got this");
+    expect(content).not.toContain("showMath");
+    expect(content).not.toContain("mathRows");
   });
 
-  it("[S20-#9] Payoff math breakdown shows logged → cut% → reclaimed per fix", () => {
+  // S20-V4 notes 4 & 5: before/after contrast + 12-month "don't fix this"
+  // projection removed; the closing line is kept.
+  it("[S20-V4-#4-5] Payoff drops the before/after block and the projection", () => {
     const content = readSrc("components/focus/Payoff.tsx");
-    expect(content).toContain("mathRows");
-    expect(content).toContain("You logged on");
-    expect(content).toContain("typically cuts");
-    expect(content).toContain("So you reclaim");
-  });
-
-  it("[S20-#9] Payoff no longer auto-renders the old per-fix breakdown list", () => {
-    const content = readSrc("components/focus/Payoff.tsx");
-    // The old inline breakdown printed "impact N/5" / "not rated" rows; gone now.
-    expect(content).not.toContain('? `impact ${scores.impact}/5` : "not rated"');
+    expect(content).not.toContain("Your week now");
+    expect(content).not.toContain("You get back");
+    expect(content).not.toContain("What happens if you don");
+    expect(content).not.toContain("doNothing");
+    expect(content).toContain("Now go reclaim your week");
   });
 
   it("[S20-#6] Payoff hero uses Magic UI components (SparklesText + Particles)", () => {

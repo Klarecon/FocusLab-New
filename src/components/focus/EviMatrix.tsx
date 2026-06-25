@@ -69,6 +69,18 @@ const QUADRANT_BG: Record<QuadrantLabel, string> = {
   thankless: "rgba(224, 62, 18, 0.06)",
 };
 
+/**
+ * "When to start + how long" guidance per quadrant (Scene 5). Shown on each
+ * task in the Action Sequence — right where owner + due date live — so the
+ * user gets execution guidance where they plan, in one short line.
+ */
+const SEQUENCE_GUIDANCE: Record<QuadrantLabel, string> = {
+  "quick-win": "Start this week · ~30–60 min",
+  "major-project": "Plan it in · block ~half a day",
+  "fill-in": "Squeeze in when you’ve got a gap",
+  thankless: "Skip unless it’s quick — low payoff",
+};
+
 const QUADRANT_LABEL_COLOR: Record<QuadrantLabel, string> = {
   "quick-win": "#c4186a",
   "major-project": "#edb215",
@@ -334,6 +346,12 @@ function PriorityTable({ dotData }: { dotData: DotData[] }) {
                     </td>
                     <td className="py-3 pr-2 align-middle font-semibold" style={{ color: "var(--color-ink)" }}>
                       {d.title}
+                      <span
+                        className="block text-[11px] font-medium mt-0.5"
+                        style={{ color: "var(--color-reclaim)" }}
+                      >
+                        {SEQUENCE_GUIDANCE[d.quadrantLabel]}
+                      </span>
                     </td>
                     <td className="py-3 pr-2 align-middle">
                       <select

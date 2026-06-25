@@ -3,7 +3,7 @@
 import { useMemo, useEffect, useState, memo } from "react";
 import { motion, useMotionValue, animate } from "framer-motion";
 import { useAuditStore } from "@/stores/audit-store";
-import { computePayoff, isRated, IMPACT_FRACTION, IMPACT_NAMES } from "@/lib/engine/solutions-logic";
+import { computePayoff, isRated } from "@/lib/engine/solutions-logic";
 import type {
   ChosenSolution,
   WasteBucket,
@@ -25,7 +25,7 @@ interface PayoffProps {
    * hiding at the bottom:
    *  - "full"  (default) — the whole thing, unchanged
    *  - "hero"  — just the "You could reclaim" number + spotlight (above matrix)
-   *  - "rest"  — before/after + "what happens if you don't" (below matrix)
+   *  - "rest"  — the closing "go reclaim your week" statement (below matrix)
    *  - "strip" — a slim reclaim banner for the Action Plan tab
    */
   variant?: "full" | "hero" | "rest" | "strip";
@@ -89,9 +89,6 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign, variant = "
 
   const { drainBySlug } = useDrainLookup(vitalFew, usefulMany);
 
-  // "How we got this" — the per-fix math, hidden by default, opens on the ⓘ.
-  const [showMath, setShowMath] = useState(false);
-
   const effectiveRate = useMemo(() => {
     if (payMode === "hourly" && hourlyRate > 0) return hourlyRate;
     if (salary > 0 && workHoursPerWeek > 0) {
@@ -149,46 +146,11 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign, variant = "
   const totalWasteHoursWeekly = payoff.totalWasteHours;
   const reclaimableWeekly = payoff.fullPotentialHours;
   const quickWinWeekly = payoff.quickWinHours;
-  const afterWasteWeekly = Math.max(0, totalWasteHoursWeekly - reclaimableWeekly);
   const reclaimableYearly = reclaimableWeekly * 48;
   const reclaimableDollarsYearly = payoff.fullPotentialDollarsPerYear;
   const quickWinDollarsYearly = payoff.quickWinDollarsPerYear;
-  const doNothingHoursYear = totalWasteHoursWeekly * 48;
-  const doNothingWeeks = doNothingHoursYear / 40;
-  const doNothingDollars = totalWasteHoursWeekly * 48 * effectiveRate;
 
   const quickWinCount = payoff.quickWinRowIds.length;
-
-  // Per-fix breakdown for the ⓘ "how we got this" disclosure: logged hours on
-  // the drain → impact-based cut → hours reclaimed. Only rated fixes that
-  // actually earn credit show up.
-  const mathRows = useMemo(() => {
-    return chosenSolutions
-      .map((sol) => {
-        const sc = solutionScores[sol.id] ?? { effort: 0, impact: 0 };
-        if (!isRated(sc.effort, sc.impact)) return null;
-        const credit = payoff.creditByRow[sol.id] ?? 0;
-        if (credit <= 0) return null;
-        let drain: DrainInfo | undefined;
-        for (const slug of sol.wasteSlugs) {
-          const d = drainBySlug.get(slug);
-          if (d) {
-            drain = d;
-            break;
-          }
-        }
-        const impact = Math.max(1, Math.min(5, sc.impact)) as Score;
-        return {
-          id: sol.id,
-          drainLabel: drain?.label ?? "this drain",
-          loggedHours: drain?.hoursPerWeek ?? 0,
-          pct: Math.round(IMPACT_FRACTION[impact] * 100),
-          impactName: IMPACT_NAMES[impact],
-          credit,
-        };
-      })
-      .filter((r): r is NonNullable<typeof r> => r !== null);
-  }, [chosenSolutions, solutionScores, payoff, drainBySlug]);
 
   if (chosenSolutions.length === 0) {
     return null;
@@ -305,61 +267,6 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign, variant = "
               </div>
             </div>
 
-            {/* "How we got this" — math tucked behind the ⓘ, opens on tap. */}
-            {mathRows.length > 0 && (
-              <div className="mt-6 text-center">
-                <button
-                  type="button"
-                  onClick={() => setShowMath((v) => !v)}
-                  aria-expanded={showMath}
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold cursor-pointer transition-opacity hover:opacity-70"
-                  style={{ color: "var(--color-reclaim)" }}
-                >
-                  <span
-                    className="inline-flex items-center justify-center w-4 h-4 rounded-full text-[10px] font-bold text-white"
-                    style={{ backgroundColor: "var(--color-reclaim)" }}
-                    aria-hidden="true"
-                  >
-                    i
-                  </span>
-                  {showMath ? "Hide the math" : "How we got this"}
-                </button>
-
-                {showMath && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    transition={{ duration: 0.25 }}
-                    className="mt-4 text-left space-y-3"
-                  >
-                    {mathRows.map((row) => (
-                      <div
-                        key={row.id}
-                        className="rounded-xl p-3 sm:p-4"
-                        style={{
-                          backgroundColor: "rgba(196, 24, 106, 0.04)",
-                          border: "1px solid rgba(196, 24, 106, 0.12)",
-                        }}
-                      >
-                        <div className="flex items-center justify-between gap-2 text-sm" style={{ color: "var(--color-ink-soft)" }}>
-                          <span>You logged on <span className="font-semibold" style={{ color: "var(--color-ink)" }}>{row.drainLabel}</span></span>
-                          <span className="font-bold font-figures" style={{ color: "var(--color-ink)" }}>{row.loggedHours.toFixed(1)} hrs/wk</span>
-                        </div>
-                        <div className="flex items-center justify-between gap-2 text-sm mt-1" style={{ color: "var(--color-ink-soft)" }}>
-                          <span>A {row.impactName.toLowerCase()}-impact fix typically cuts</span>
-                          <span className="font-bold font-figures" style={{ color: "var(--color-ink)" }}>~{row.pct}%</span>
-                        </div>
-                        <div className="flex items-center justify-between gap-2 text-sm mt-1 pt-2" style={{ borderTop: "1px dashed rgba(196,24,106,0.18)" }}>
-                          <span style={{ color: "var(--color-reclaim)" }}>So you reclaim</span>
-                          <span className="font-bold font-figures" style={{ color: "var(--color-reclaim)" }}>≈ {row.credit.toFixed(1)} hrs/wk</span>
-                        </div>
-                      </div>
-                    ))}
-                  </motion.div>
-                )}
-              </div>
-            )}
-
             {/* Low-reclaim guidance */}
             {reclaimableWeekly > 0 && reclaimableWeekly < totalWasteHoursWeekly * 0.15 && (
               <motion.div
@@ -377,7 +284,6 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign, variant = "
                     </p>
                     <p style={{ color: "var(--color-ink-soft)" }}>
                       Try adding more fixes, targeting your biggest drains, or raising impact scores on the Action Plan tab.
-                      {mathRows.length > 0 && " Tap “How we got this” above to see the per-fix math."}
                     </p>
                   </div>
                 </div>
@@ -445,181 +351,27 @@ export default function Payoff({ vitalFew, usefulMany, onGoToAssign, variant = "
       </div>
       )}
 
-      {/* Before / After Emotional Contrast */}
-      {showRest && hasReclaimable && hasAnyWaste && (
-        <div className="surface-card p-4 sm:p-6 mb-6 max-w-2xl mx-auto">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            {/* Before */}
-            <motion.div
-              className="text-center p-3 sm:p-4 rounded-xl flex-1 min-w-0 sm:min-w-[180px]"
-              style={{ backgroundColor: "rgba(224, 62, 18, 0.06)" }}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-            >
-              <div className="text-3xl mb-2" aria-hidden="true">😩</div>
-              <div
-                className="text-xs uppercase tracking-wider mb-1"
-                style={{ color: "var(--color-ink-soft)" }}
-              >
-                Your week now
-              </div>
-              <CountUp
-                to={totalWasteHoursWeekly}
-                decimals={1}
-                suffix=" hrs"
-                className="text-2xl font-bold"
-                style={{ color: "var(--color-waste)" }}
-              />
-              <div
-                className="text-xs mt-1"
-                style={{ color: "var(--color-ink-soft)" }}
-              >
-                wasted every week
-              </div>
-            </motion.div>
-
-            {/* Arrow */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.5, type: "spring", stiffness: 300 }}
-              className="text-2xl"
-              style={{ color: "var(--color-reclaim)" }}
-            >
-              &rarr;
-            </motion.div>
-
-            {/* After — framed positively */}
-            <motion.div
-              className="text-center p-3 sm:p-4 rounded-xl flex-1 min-w-0 sm:min-w-[180px]"
-              style={{ backgroundColor: "rgba(196, 24, 106, 0.06)" }}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.4 }}
-            >
-              <div className="text-3xl mb-2" aria-hidden="true">😎</div>
-              <div
-                className="text-xs uppercase tracking-wider mb-1"
-                style={{ color: "var(--color-ink-soft)" }}
-              >
-                You get back
-              </div>
-              <CountUp
-                to={reclaimableWeekly}
-                decimals={1}
-                suffix=" hrs"
-                className="text-2xl font-bold"
-                style={{ color: "var(--color-reclaim)" }}
-              />
-              <div
-                className="text-xs mt-1"
-                style={{ color: "var(--color-ink-soft)" }}
-              >
-                every week
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      )}
-
-      {/* Cost of Doing Nothing */}
-      {showRest && hasAnyWaste && (
-        <div
-          className="rounded-xl p-5 sm:p-8 mb-6"
-          style={{
-            backgroundColor: "rgba(224, 62, 18, 0.04)",
-            borderTop: "4px solid var(--color-waste)",
-          }}
+      {/* Closing statement */}
+      {showRest && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="text-center py-8"
         >
-          <div className="text-center mb-6">
-            <AnimatedEmoji emoji="😬" animation="shake" size="md" />
-            <h3
-              className="text-xl font-bold mt-2"
-              style={{
-                fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
-                color: "var(--color-waste)",
-              }}
-            >
-              What happens if you don&apos;t fix this
-            </h3>
-            <p className="text-sm mt-1" style={{ color: "var(--color-ink-soft)" }}>
-              In the next 12 months, without any changes:
-            </p>
-          </div>
-
-          <div className="space-y-4 max-w-md mx-auto mb-8">
-            <motion.div
-              initial={{ opacity: 0, x: -12 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
-              className="flex items-center gap-3 p-3 rounded-lg"
-              style={{ backgroundColor: "rgba(224, 62, 18, 0.06)" }}
-            >
-              <span className="text-2xl flex-shrink-0" aria-hidden="true">💸</span>
-              <span className="text-sm">
-                <CountUp
-                  to={doNothingHoursYear}
-                  decimals={0}
-                  className="font-bold text-base"
-                  style={{ color: "var(--color-waste)" }}
-                />{" "}
-                hours lost &mdash;{" "}
-                <CountUp
-                  to={doNothingWeeks}
-                  decimals={1}
-                  className="font-bold text-base"
-                  style={{ color: "var(--color-waste)" }}
-                />{" "}
-                full work weeks gone
-              </span>
-            </motion.div>
-
-            {hasPayInfo && (
-              <motion.div
-                initial={{ opacity: 0, x: -12 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5 }}
-                className="flex items-center gap-3 p-3 rounded-lg"
-                style={{ backgroundColor: "rgba(224, 62, 18, 0.06)" }}
-              >
-                <span className="text-2xl flex-shrink-0" aria-hidden="true">🔥</span>
-                <span className="text-sm">
-                  <CountUp
-                    to={doNothingDollars}
-                    decimals={0}
-                    prefix="$"
-                    className="font-bold text-base"
-                    style={{ color: "var(--color-waste)" }}
-                  />{" "}
-                  of your time burned
-                </span>
-              </motion.div>
-            )}
-          </div>
-
-          {/* Closing statement */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
-            className="text-center pt-6"
-            style={{ borderTop: "1px solid rgba(224, 62, 18, 0.12)" }}
+          <h3
+            className="text-2xl font-bold mb-2"
+            style={{
+              fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
+              color: "var(--color-ink)",
+            }}
           >
-            <h3
-              className="text-2xl font-bold mb-2"
-              style={{
-                fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
-                color: "var(--color-ink)",
-              }}
-            >
-              You&apos;ve got a plan. Now go reclaim your week.
-            </h3>
-            <p className="text-xs" style={{ color: "var(--color-ink-soft)" }}>
-              Your plan lives here whenever you need it.
-            </p>
-          </motion.div>
-        </div>
+            You&apos;ve got a plan. Now go reclaim your week.
+          </h3>
+          <p className="text-xs" style={{ color: "var(--color-ink-soft)" }}>
+            Your plan lives here whenever you need it.
+          </p>
+        </motion.div>
       )}
     </div>
   );
