@@ -1081,4 +1081,50 @@ describe("Pareto minimum drains (Session 19, Note 15/scene 12&14)", () => {
     expect(content).toContain("<SparklesText");
     expect(content).toContain("<Particles");
   });
+
+  // S20-#8 — four-waste-type framework folded into the Drilldown via a HOVER
+  // explainer (Oren redesign Scene 8; Mona's note: hover, NOT click).
+
+  it("[S20-#8] waste-sources defines exactly the four redesign waste types", () => {
+    const content = readSrc("lib/data/waste-sources.ts");
+    expect(content).toContain('name: "Work that adds nothing"');
+    expect(content).toContain('name: "Switching & chasing"');
+    expect(content).toContain('name: "Waiting & getting blocked"');
+    expect(content).toContain('name: "Redoing & manual grind"');
+  });
+
+  it("[S20-#8] each waste type carries its escape-hatch fix hint", () => {
+    const content = readSrc("lib/data/waste-sources.ts");
+    expect(content).toContain("cut it or shrink it");
+    expect(content).toContain("batch it, automate it, or ask once");
+    expect(content).toContain("unblock the bottleneck");
+    expect(content).toContain("get it right once, or automate it");
+  });
+
+  it("[S20-#8] every Muda class maps to a waste type via wasteTypeForMuda", () => {
+    const content = readSrc("lib/data/waste-sources.ts");
+    // All 8 internal muda classes must appear in the WASTE_TYPES muda arrays.
+    for (const m of [
+      "over-processing",
+      "overproduction",
+      "switching-searching",
+      "handoffs",
+      "pile-ups",
+      "waiting",
+      "rework",
+      "underused-skill",
+    ]) {
+      expect(content).toContain(`"${m}"`);
+    }
+    expect(content).toContain("export function wasteTypeForMuda");
+  });
+
+  it("[S20-#8] DrilldownStep teaches the grouping via a HOVER affordance, not click", () => {
+    const content = readSrc("components/analyzer/DrilldownStep.tsx");
+    expect(content).toContain("WhyGroupedHover");
+    expect(content).toContain("why are these grouped?");
+    // Hover-driven: opens on mouse enter / focus, not on a click handler.
+    expect(content).toContain("onMouseEnter");
+    expect(content).toContain("cursor-help");
+  });
 });

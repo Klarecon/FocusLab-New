@@ -56,6 +56,62 @@ export const GROUP_ORDER = [
   "Leading vs doing",
 ] as const;
 
+/**
+ * The four plain-English waste *types* (Oren-redesign Scene 8). The 8 internal
+ * Muda classes fold into these four so the user learns the framework by
+ * scanning — name the type and you already know the kind of fix that works.
+ * The `hint` is the 3-word "escape hatch" shown on the right of each type.
+ */
+export interface WasteTypeMeta {
+  /** Stable key for the type. */
+  key: "adds-nothing" | "switching-chasing" | "waiting-blocked" | "redo-grind";
+  /** Display name (UPPERCASE in UI). */
+  name: string;
+  /** Escape-hatch fix hint — the kind of fix that works for this type. */
+  hint: string;
+  /** Which internal Muda classes belong to this type. */
+  muda: MudaType[];
+}
+
+export const WASTE_TYPES: WasteTypeMeta[] = [
+  {
+    key: "adds-nothing",
+    name: "Work that adds nothing",
+    hint: "cut it or shrink it",
+    muda: ["over-processing", "overproduction"],
+  },
+  {
+    key: "switching-chasing",
+    name: "Switching & chasing",
+    hint: "batch it, automate it, or ask once",
+    muda: ["switching-searching", "handoffs", "pile-ups"],
+  },
+  {
+    key: "waiting-blocked",
+    name: "Waiting & getting blocked",
+    hint: "unblock the bottleneck",
+    muda: ["waiting"],
+  },
+  {
+    key: "redo-grind",
+    name: "Redoing & manual grind",
+    hint: "get it right once, or automate it",
+    muda: ["rework", "underused-skill"],
+  },
+];
+
+/** Plain-words rationale shown in the "why are these grouped?" hover. */
+export const WASTE_TYPES_RATIONALE =
+  "Each group is a type of waste. Name the type and you already know the kind of fix that works — that’s the hint on the right of each group.";
+
+/** Which of the four waste types a given Muda class belongs to. */
+export function wasteTypeForMuda(muda: MudaType): WasteTypeMeta {
+  return (
+    WASTE_TYPES.find((t) => t.muda.includes(muda)) ??
+    WASTE_TYPES[0]
+  );
+}
+
 /** Map group names to emoji for display. */
 const GROUP_EMOJI: Record<string, string> = {
   "Meetings": "\u{1F634}",             // 😴
