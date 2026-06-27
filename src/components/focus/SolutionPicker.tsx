@@ -4,8 +4,7 @@ import { useState, useMemo, useCallback, memo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuditStore } from "@/stores/audit-store";
 import { solutionsForWaste, isQuickWin, type Solution as SolutionType } from "@/lib/data/solutions";
-import { SCORE_FROM_LEVEL, quadrant, isRated } from "@/lib/engine/solutions-logic";
-import type { Score, QuadrantLabel } from "@/lib/engine/types";
+import { SCORE_FROM_LEVEL } from "@/lib/engine/solutions-logic";
 import type { Solution } from "@/lib/data/solutions";
 import { wasteSourceBySlug } from "@/lib/data/waste-sources";
 import AnimatedEmoji from "@/components/ui/AnimatedEmoji";
@@ -65,17 +64,6 @@ function Badge({
   );
 }
 
-/**
- * Plain-words "when to start + how long" hint per quadrant (Scene 5, E2).
- * Appears once a fix is rated, so guidance shows up right where you decide.
- */
-const START_GUIDANCE: Record<QuadrantLabel, string> = {
-  "quick-win": "Start this week · ~30–60 min",
-  "major-project": "Plan it in · block ~half a day",
-  "fill-in": "Squeeze in when you’ve got a gap",
-  thankless: "Only if it’s quick — low payoff",
-};
-
 /** Compact 5-dot rater (gold = effort, pink = impact), matches the Action Plan. */
 function MiniDots({
   value,
@@ -123,10 +111,6 @@ function MiniDots({
 function InlineRating({ solutionId }: { solutionId: string }) {
   const scores = useAuditStore((s) => s.solutionScores[solutionId]) ?? { effort: 0, impact: 0 };
   const setSolutionScore = useAuditStore((s) => s.setSolutionScore);
-  const rated = isRated(scores.effort, scores.impact);
-  const guidance = rated
-    ? START_GUIDANCE[quadrant(scores.effort as Score, scores.impact as Score)]
-    : null;
 
   return (
     <div
@@ -155,15 +139,6 @@ function InlineRating({ solutionId }: { solutionId: string }) {
           label="Impact rating"
         />
       </div>
-      {guidance && (
-        <div
-          className="col-span-2 text-xs font-semibold flex items-center gap-1.5"
-          style={{ color: "var(--color-reclaim)" }}
-        >
-          <span aria-hidden="true">🗓️</span>
-          {guidance}
-        </div>
-      )}
     </div>
   );
 }

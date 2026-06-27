@@ -188,6 +188,22 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
     };
   }, []);
 
+  // Chart data from the engine result. Declared BEFORE the early return so the
+  // hook count stays constant across renders — when reset() nulls paretoResult
+  // (the "Start over" path), an early return placed above this useMemo dropped a
+  // hook and crashed React with "Rendered fewer hooks than expected."
+  const chartData = useMemo(() => {
+    if (!paretoResult) return [];
+    const zoneBySlug = new Map(paretoResult.categories.map((c) => [c.categorySlug, c.zone]));
+    return paretoResult.chart.map((pt) => ({
+      name: abbreviate(pt.label ?? pt.categorySlug),
+      hours: pt.hours,
+      cumulative: pt.cumulativePercent,
+      zone: zoneBySlug.get(pt.categorySlug) ?? "C",
+      slug: pt.categorySlug,
+    }));
+  }, [paretoResult]);
+
   if (!paretoResult) {
     return (
       <div className="text-center py-20">
@@ -212,18 +228,6 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
   );
   const isEvenlySpread =
     paretoResult.categories.length >= 3 && distinctHours.size === 1;
-
-  // Chart data from the engine result
-  const chartData = useMemo(() => {
-    const zoneBySlug = new Map(paretoResult.categories.map((c) => [c.categorySlug, c.zone]));
-    return paretoResult.chart.map((pt) => ({
-      name: abbreviate(pt.label ?? pt.categorySlug),
-      hours: pt.hours,
-      cumulative: pt.cumulativePercent,
-      zone: zoneBySlug.get(pt.categorySlug) ?? "C",
-      slug: pt.categorySlug,
-    }));
-  }, [paretoResult]);
 
   return (
     <div className="relative">
@@ -697,9 +701,14 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
           <button
             type="button"
             onClick={onRestart}
-            className="text-sm font-medium underline transition-colors duration-150"
-            style={{ color: "var(--color-ink-soft)" }}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-150 hover:opacity-80 cursor-pointer"
+            style={{
+              color: "var(--color-reclaim)",
+              border: "1.5px solid var(--color-reclaim)",
+              backgroundColor: "transparent",
+            }}
           >
+            <span aria-hidden="true">↺</span>
             Start over with a fresh audit
           </button>
         </div>

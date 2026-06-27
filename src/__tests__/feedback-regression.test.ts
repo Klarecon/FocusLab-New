@@ -305,9 +305,15 @@ describe("Focus tool copy (Sessions 7 & 8)", () => {
     const content = readSrc("components/focus/SolutionPicker.tsx");
     expect(content).toContain("InlineRating");
     expect(content).toContain("setSolutionScore");
-    // Start/time guidance keyed by quadrant
-    expect(content).toContain("START_GUIDANCE");
-    expect(content).toContain("Start this week");
+  });
+
+  // S23: Mona reversed the start/time guidance — the pink scheduling line under
+  // the effort/impact dots is removed (she asked for it gone twice). Was S20-V4-#5.
+  it("[S23-#1] SolutionPicker has NO pink start/time guidance under the dots", () => {
+    const content = readSrc("components/focus/SolutionPicker.tsx");
+    expect(content).not.toContain("START_GUIDANCE");
+    expect(content).not.toContain("Plan it in");
+    expect(content).not.toContain("Only if it");
   });
 
   it("[S8] SolutionPicker Pearl badge (not Quick Win)", () => {
@@ -1110,13 +1116,12 @@ describe("Pareto minimum drains (Session 19, Note 15/scene 12&14)", () => {
     expect(readSrc("components/landing/Hero.tsx")).toContain("nothing to install");
   });
 
-  // S20-V4 note 3: start/time guidance now lives on the Action Sequence
-  // (EviMatrix), next to owner + due — where execution is planned.
-  it("[S20-V4-#3] Action Sequence shows per-task start/time guidance", () => {
+  // S23: Mona reversed S20-V4-#3 — the per-task pink scheduling line under each
+  // Action Sequence task is removed. The task title stands alone.
+  it("[S23-#2] Action Sequence has NO per-task start/time guidance line", () => {
     const content = readSrc("components/focus/EviMatrix.tsx");
-    expect(content).toContain("SEQUENCE_GUIDANCE");
-    expect(content).toContain("Start this week");
-    expect(content).toContain("SEQUENCE_GUIDANCE[d.quadrantLabel]");
+    expect(content).not.toContain("SEQUENCE_GUIDANCE");
+    expect(content).not.toContain("Plan it in");
   });
 
   // S20-V4 note 7: bigger particles. (Note 6's BorderBeam was rejected in S21.)
@@ -1285,5 +1290,31 @@ describe("Session 22 — smart resume (keep finished audits, discard drafts)", (
     const rs = readSrc("components/analyzer/RoleStep.tsx");
     expect(rs).not.toContain("Start fresh");
     expect(rs).not.toContain("hasSavedState");
+  });
+});
+
+describe("Session 23 — Start-over crash fix + visibility", () => {
+  // The "Start over" link nulls paretoResult while ResultsView is still mounted.
+  // The chartData useMemo must sit ABOVE the `if (!paretoResult)` early return,
+  // otherwise React drops a hook on that render and crashes the page with
+  // "Rendered fewer hooks than expected."
+  it("[S23-#4] ResultsView declares chartData useMemo before the null-result early return", () => {
+    const content = readSrc("components/analyzer/ResultsView.tsx");
+    const memoIdx = content.indexOf("const chartData = useMemo");
+    const guardIdx = content.indexOf("if (!paretoResult)");
+    expect(memoIdx).toBeGreaterThan(-1);
+    expect(guardIdx).toBeGreaterThan(-1);
+    expect(memoIdx).toBeLessThan(guardIdx);
+    // The memo must tolerate a null result (the reset path).
+    expect(content).toMatch(/const chartData = useMemo\(\(\) => \{\s*if \(!paretoResult\) return \[\];/);
+  });
+
+  it("[S23-#5] Start-over control is a visible bordered button, not a faint gray link", () => {
+    const content = readSrc("components/analyzer/ResultsView.tsx");
+    expect(content).toContain("Start over with a fresh audit");
+    // No longer a low-contrast ink-soft underline.
+    expect(content).not.toMatch(/Start over[\s\S]{0,400}underline/);
+    // Now reclaim-pink outlined and clearly interactive.
+    expect(content).toMatch(/border: "1\.5px solid var\(--color-reclaim\)"/);
   });
 });
