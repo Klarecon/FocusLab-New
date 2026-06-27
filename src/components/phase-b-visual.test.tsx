@@ -36,11 +36,12 @@ function readAllTsx(dir: string): { file: string; content: string }[] {
 // Source file paths (relative to src/)
 // ---------------------------------------------------------------------------
 
+// Live wizard steps after the Option C merge: Role · Context · Log.
+// (IntakeStep/DrilldownStep were merged into LogStep; WeighStep is no longer mounted.)
 const WIZARD_STEPS = [
   "components/analyzer/RoleStep.tsx",
   "components/analyzer/ContextStep.tsx",
-  "components/analyzer/IntakeStep.tsx",
-  "components/analyzer/WeighStep.tsx",
+  "components/analyzer/LogStep.tsx",
 ];
 
 const EVI_MATRIX = "components/focus/EviMatrix.tsx";

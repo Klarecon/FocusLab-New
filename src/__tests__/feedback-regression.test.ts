@@ -578,18 +578,15 @@ describe("Session 9 — Oren's feedback", () => {
     expect(content).toContain("abbreviate");
   });
 
-  it("[S9-O10] IntakeStep deduplicates across pain prompts", () => {
-    const content = readSrc("components/analyzer/IntakeStep.tsx");
-    expect(content).toMatch(/seenSlugs|renderedSlugs|slugOwnership|groupOwnership/);
+  it("[S9-O10→S20] LogStep dedupes drains across merged role pools", () => {
+    const content = readSrc("components/analyzer/LogStep.tsx");
+    expect(content).toMatch(/const seen = new Set|seen\.has/);
   });
 
   it("[S9-O1] no avoidable percentage question in the wizard", () => {
-    // WeighStep is no longer used (replaced by DrilldownStep), but check it doesn't exist in IntakeStep either
+    // The merged LogStep must not ask the old "% you could cut" question.
     expect(
-      fileContains("components/analyzer/IntakeStep.tsx", "how much could you actually cut")
-    ).toBe(false);
-    expect(
-      fileContains("components/analyzer/DrilldownStep.tsx", "how much could you actually cut")
+      fileContains("components/analyzer/LogStep.tsx", "how much could you actually cut")
     ).toBe(false);
   });
 
@@ -609,12 +606,6 @@ describe("Session 9 — Oren's feedback", () => {
     expect(content).toContain("engineering");
     expect(content).toContain("ceo-founder");
     expect(content).toContain("minHours");
-  });
-
-  it("[S9-O3] DrilldownStep exists and shows vital categories", () => {
-    const content = readSrc("components/analyzer/DrilldownStep.tsx");
-    expect(content).toContain("vitalCategories");
-    expect(content).toContain("zoom into the big ones");
   });
 
   it("[S9-O3] audit-store has categoryEstimates and vitalCategories", () => {
@@ -726,11 +717,6 @@ describe("Session 11 — Mona\u2019s feedback", () => {
     expect(content).toContain("Tiny time wins feel pointless");
   });
 
-  it("[S11-#2] DrilldownStep shows per-category totals", () => {
-    expect(
-      fileContains("components/analyzer/DrilldownStep.tsx", "categoryTotals")
-    ).toBe(true);
-  });
 });
 
 // ---------------------------------------------------------------------------
@@ -791,33 +777,13 @@ describe("Banned patterns (permanent)", () => {
 
   // --- Session 12 fixes ---
 
-  it("[S12-#1] IntakeStep has NO inline counter — only sticky counter", () => {
-    const content = readSrc("components/analyzer/IntakeStep.tsx");
-    // Must have sticky counter
+  it("[S12-#1→S20] LogStep has ONE sticky counter, no duplicate inline counter", () => {
+    const content = readSrc("components/analyzer/LogStep.tsx");
+    // Must have the single sticky running total
     expect(content).toContain("sticky top-4");
-    // Must NOT have inline counter (the motion.div with mt-4 inline-flex that was duplicating)
-    const inlineCounterPattern = /mt-4 inline-flex[\s\S]*hrs\/week of waste flagged/;
+    // Must NOT reintroduce a second inline counter (the old double-counter bug)
+    const inlineCounterPattern = /mt-4 inline-flex[\s\S]*hrs\/week/;
     expect(content).not.toMatch(inlineCounterPattern);
-  });
-
-  it("[S12-#2] DrilldownStep has NO inline counter — only sticky counter", () => {
-    const content = readSrc("components/analyzer/DrilldownStep.tsx");
-    // Must have sticky counter
-    expect(content).toContain("sticky top-4");
-    // Must NOT have inline counter
-    const inlineCounterPattern = /mt-4 inline-flex[\s\S]*hrs\/week of waste spotted/;
-    expect(content).not.toMatch(inlineCounterPattern);
-  });
-
-  it("[S12-#3] DrilldownStep blocks 'Show me the damage' when category hours exceed estimate", () => {
-    const content = readSrc("components/analyzer/DrilldownStep.tsx");
-    expect(content).toContain("hasOverflowCategory");
-    expect(content).toContain("disabled={!hasEnoughDrains || hasOverflowCategory}");
-  });
-
-  it("[S12-#4] MIN_CATEGORIES is 3, not 2", () => {
-    const content = readSrc("components/analyzer/IntakeStep.tsx");
-    expect(content).toMatch(/MIN_CATEGORIES\s*=\s*3/);
   });
 
   // === Session 13 regression tests ===
@@ -909,24 +875,15 @@ describe("Session 14 — Dev-friend feedback + blank dots", () => {
     expect(readSrc("components/focus/Payoff.tsx")).toContain("isRated");
   });
 
-  // --- #4 Unified selection state: Drilldown no longer uses orange native checkbox ---
-  it("[S14-#4] Drilldown rows use the unified pink selector, not orange checkbox", () => {
-    const content = readSrc("components/analyzer/DrilldownStep.tsx");
+  // --- #4 Unified selection state: pink selector, no orange native checkbox ---
+  it("[S14-#4→S20] LogStep uses the unified pink selector, not orange checkbox", () => {
+    const content = readSrc("components/analyzer/LogStep.tsx");
     expect(content).not.toContain("accent-[var(--color-waste)]");
-    expect(content).toContain("sr-only");
+    expect(content).toContain("var(--color-reclaim)");
   });
-  it("[S14-#4b] Role and Intake cards show the unified pink check indicator", () => {
+  it("[S14-#4b→S20] Role and Log cards show the unified pink check indicator", () => {
     expect(readSrc("components/analyzer/RoleStep.tsx")).toContain("var(--color-reclaim)");
-    expect(readSrc("components/analyzer/IntakeStep.tsx")).toContain("rgba(196, 24, 106, 0.05)");
-  });
-
-  // --- #5 Condensed Drilldown: collapsible groups ---
-  it("[S14-#5] Drilldown groups are collapsible (accordion)", () => {
-    const content = readSrc("components/analyzer/DrilldownStep.tsx");
-    expect(content).toContain("expandedGroups");
-    expect(content).toContain("toggleGroup");
-    expect(content).toContain("aria-expanded");
-    expect(content).toContain("picked"); // "N picked" pill on collapsed header
+    expect(readSrc("components/analyzer/LogStep.tsx")).toContain("var(--color-reclaim)");
   });
 });
 
@@ -1053,23 +1010,23 @@ describe("Landing — removed sections + new HowItWorks (Session 19, Notes 1 & 2
 });
 
 describe("Pareto minimum drains (Session 19, Note 15/scene 12&14)", () => {
-  it("[S19] DrilldownStep requires at least 5 drains before continuing", () => {
-    const content = readSrc("components/analyzer/DrilldownStep.tsx");
+  it("[S19→S20] LogStep requires at least 5 drains before continuing", () => {
+    const content = readSrc("components/analyzer/LogStep.tsx");
     expect(content).toContain("MIN_DRAINS = 5");
     expect(content).toContain("hasEnoughDrains");
-    // The continue button is gated on the minimum, not just one entry.
-    expect(content).toContain("disabled={!hasEnoughDrains || hasOverflowCategory}");
+    // The continue button is gated on the minimum.
+    expect(content).toContain("disabled={!hasEnoughDrains}");
   });
 
-  it("[S19] DrilldownStep coaches toward 5 drains", () => {
-    const content = readSrc("components/analyzer/DrilldownStep.tsx");
+  it("[S19→S20] LogStep coaches toward 5 drains", () => {
+    const content = readSrc("components/analyzer/LogStep.tsx");
     expect(content).toContain("map your vital few");
   });
 
-  // S20-V4 Scene 12: approved density copy ported, with "only" removed.
-  it("[S20-V4-#12] min-5 message uses approved copy and drops the word 'only'", () => {
-    const content = readSrc("components/analyzer/DrilldownStep.tsx");
-    expect(content).toContain("The pattern shows once you");
+  // S20-V4 Scene 12: approved density copy — "only" stays removed (carried into LogStep).
+  it("[S20-V4-#12→S20] min-5 message keeps approved copy and drops the word 'only'", () => {
+    const content = readSrc("components/analyzer/LogStep.tsx");
+    expect(content).toContain("the pattern shows once you");
     expect(content).not.toContain("pattern only shows");
   });
 
@@ -1185,15 +1142,12 @@ describe("Pareto minimum drains (Session 19, Note 15/scene 12&14)", () => {
   });
 
   // S20-V4 Scene 4: heads-up when ~the whole week is marked as waste.
-  it("[S20-V4-#4] intake + drilldown warn when nearly the whole week is waste", () => {
-    const intake = readSrc("components/analyzer/IntakeStep.tsx");
-    const drill = readSrc("components/analyzer/DrilldownStep.tsx");
-    // 90% threshold guard present in both
-    expect(intake).toContain("workHoursPerWeek * 0.9");
-    expect(drill).toContain("workHoursPerWeek * 0.9");
+  it("[S20-V4-#4→S20] LogStep warns when nearly the whole week is waste", () => {
+    const log = readSrc("components/analyzer/LogStep.tsx");
+    // 90% threshold guard present
+    expect(log).toContain("workHoursPerWeek * 0.9");
     // Recheck heads-up copy present
-    expect(intake).toContain("nearly your whole week");
-    expect(drill).toContain("nearly your whole week");
+    expect(log).toContain("nearly your whole week");
   });
 
   // S20 — Oren-redesign safe-polish batch (v3 review notes scenes 6, 9)
@@ -1266,8 +1220,8 @@ describe("Pareto minimum drains (Session 19, Note 15/scene 12&14)", () => {
   // S20-V4: Mona's v4 review — Scene 8 ("four waste types shouldn't be a
   // separate section, it's redundant"). The Drilldown hover explainer was
   // removed; the WASTE_TYPES taxonomy stays as an internal-only classification.
-  it("[S20-V4-#8] DrilldownStep no longer surfaces the waste-type explainer", () => {
-    const content = readSrc("components/analyzer/DrilldownStep.tsx");
+  it("[S20-V4-#8→S20] LogStep doesn't surface the waste-type explainer", () => {
+    const content = readSrc("components/analyzer/LogStep.tsx");
     expect(content).not.toContain("WhyGroupedHover");
     expect(content).not.toContain("why are these grouped?");
   });

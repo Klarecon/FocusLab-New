@@ -373,7 +373,7 @@ export default function LogStep({ onNext, onBack }: LogStepProps) {
         <div className="text-right">
           {!hasEnoughDrains && (
             <p className="text-xs mb-1" style={{ color: "var(--color-ink-soft)" }}>
-              You&apos;ve put hours on {drainsWithHours} {drainsWithHours === 1 ? "drain" : "drains"}. Add real hours to at least {MIN_DRAINS} &mdash; the pattern only shows when the numbers vary, so we can map your vital few.
+              You&apos;ve put hours on {drainsWithHours} {drainsWithHours === 1 ? "drain" : "drains"}. Add real hours to at least {MIN_DRAINS} &mdash; the pattern shows once you vary the numbers, so we can map your vital few.
             </p>
           )}
           <ShimmerButton
