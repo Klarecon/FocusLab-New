@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FocusLab — Card-Fan Concept</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f4edde; --ink:#2c2418; --ink-soft:#655b4d; --waste:#e03e12;
+    --reclaim:#c4186a; --gold:#edb215; --line:#ddd4c0; --card:#faf6ec;
+    --serif:'Fraunces',Georgia,serif; --sans:'Plus Jakarta Sans',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:
+      radial-gradient(900px 480px at 50% -8%, rgba(196,24,106,.10), transparent),
+      radial-gradient(700px 420px at 12% 18%, rgba(237,178,21,.10), transparent),
+      var(--paper);
+    color:var(--ink);font-family:var(--sans);min-height:100vh;
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;max-width:1120px;margin:0 auto;padding:22px 28px}
+  .logo{font-family:var(--serif);font-weight:800;font-size:22px}
+  .logo .b{color:var(--waste)}
+  .nav .links{display:flex;gap:26px;color:var(--ink-soft);font-weight:600;font-size:15px}
+
+  .section{max-width:1120px;margin:0 auto;padding:30px 28px 70px;text-align:center}
+  .eyebrow{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--reclaim)}
+  h1{font-family:var(--serif);font-size:clamp(34px,5vw,56px);font-weight:800;line-height:1.05;margin:12px 0 10px}
+  h1 .hl{position:relative;white-space:nowrap}
+  h1 .hl::after{content:"";position:absolute;left:-4px;right:-4px;bottom:6px;height:36%;background:rgba(237,178,21,.45);z-index:-1;border-radius:3px}
+  .lede{color:var(--ink-soft);font-size:18px;max-width:560px;margin:0 auto}
+
+  /* ---- card fan ---- */
+  .fanwrap{position:relative;height:460px;margin:34px auto 8px;max-width:920px}
+  .fan{position:absolute;left:0;right:0;bottom:0;height:340px}
+  .dcard{
+    position:absolute;left:50%;bottom:0;width:206px;height:300px;margin-left:-103px;
+    border-radius:22px;padding:20px 18px;color:#fff;
+    transform-origin:50% 560px;
+    box-shadow:0 18px 40px rgba(44,36,24,.22);
+    border:3px solid rgba(255,255,255,.55);
+    display:flex;flex-direction:column;
+    transition:transform .25s ease;
+  }
+  .dcard .zone{align-self:flex-start;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;background:rgba(255,255,255,.22);padding:4px 9px;border-radius:999px}
+  .dcard .emoji{font-size:46px;margin:auto 0 0}
+  .dcard .label{font-family:var(--serif);font-weight:700;font-size:19px;line-height:1.15;margin-top:10px}
+  .dcard .hrs{margin-top:10px;font-weight:800;font-size:15px;font-variant-numeric:tabular-nums;opacity:.95}
+  .dcard.center{box-shadow:0 26px 60px rgba(196,24,106,.40);border-color:#fff}
+
+  .fan .badge{position:absolute;left:50%;transform:translateX(-50%);bottom:308px;z-index:50;
+    background:var(--ink);color:var(--paper);font-size:12px;font-weight:700;padding:6px 13px;border-radius:999px;white-space:nowrap}
+
+  .controls{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:6px}
+  .arrow{width:46px;height:46px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 3px 10px rgba(44,36,24,.08)}
+  .dots{display:flex;gap:8px}
+  .dots i{width:8px;height:8px;border-radius:999px;background:var(--line)}
+  .dots i.on{background:var(--reclaim);width:22px}
+
+  .cta{margin-top:34px}
+  .cta a{display:inline-flex;align-items:center;gap:9px;background:var(--reclaim);color:#fff;font-weight:800;font-size:17px;padding:15px 34px;border-radius:14px;text-decoration:none;box-shadow:0 10px 26px rgba(196,24,106,.30)}
+  .cta .micro{display:block;margin-top:12px;color:var(--ink-soft);font-size:13px}
+</style>
+</head>
+<body>
+  <div class="nav">
+    <div class="logo">Focus<span class="b">Lab</span></div>
+    <div class="links"><span>Analyzer</span><span>Focus Table</span></div>
+  </div>
+
+  <div class="section">
+    <div class="eyebrow">The usual suspects</div>
+    <h1>This is where your week<br>quietly <span class="hl">disappears.</span></h1>
+    <p class="lede">Flip through the drains we see most. Spot yours — then find the ones hiding in your own week.</p>
+
+    <div class="fanwrap">
+      <div class="fan">
+        <span class="badge">😵‍💫 Most people lose ~13 hrs a week to these</span>
+        <!-- 7 fanned cards; center = featured (pink) -->
+        <div class="dcard"            style="transform:rotate(-24deg);z-index:1;background:linear-gradient(160deg,#f0772e,#e03e12)">
+          <span class="zone">Zone B</span><span class="emoji">📧</span><span class="label">Email &amp; chat triage</span><span class="hrs">2.0 hrs / week</span>
+        </div>
+        <div class="dcard"            style="transform:rotate(-16deg);z-index:2;background:linear-gradient(160deg,#f0b73a,#d39a18)">
+          <span class="zone">Zone B</span><span class="emoji">😵</span><span class="label">Over-polishing &amp; gold-plating</span><span class="hrs">1.0 hr / week</span>
+        </div>
+        <div class="dcard"            style="transform:rotate(-8deg);z-index:3;background:linear-gradient(160deg,#ef5f1c,#e03e12)">
+          <span class="zone">Zone A</span><span class="emoji">🔁</span><span class="label">Redoing work after late feedback</span><span class="hrs">3.0 hrs / week</span>
+        </div>
+        <div class="dcard center"     style="transform:rotate(0deg) scale(1.07);z-index:10;background:linear-gradient(160deg,#d83b86,#c4186a)">
+          <span class="zone">Zone A · your #1</span><span class="emoji">🤯</span><span class="label">The context-switching tax</span><span class="hrs">4.0 hrs / week</span>
+        </div>
+        <div class="dcard"            style="transform:rotate(8deg);z-index:3;background:linear-gradient(160deg,#f0772e,#e03e12)">
+          <span class="zone">Zone A</span><span class="emoji">😴</span><span class="label">Dead-weight meetings</span><span class="hrs">5.0 hrs / week</span>
+        </div>
+        <div class="dcard"            style="transform:rotate(16deg);z-index:2;background:linear-gradient(160deg,#f0b73a,#d39a18)">
+          <span class="zone">Zone B</span><span class="emoji">🫠</span><span class="label">Status updates nobody reads</span><span class="hrs">2.0 hrs / week</span>
+        </div>
+        <div class="dcard"            style="transform:rotate(24deg);z-index:1;background:linear-gradient(160deg,#ef5f1c,#e03e12)">
+          <span class="zone">Zone B</span><span class="emoji">🙄</span><span class="label">Reply-all chains</span><span class="hrs">1.5 hrs / week</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="arrow" aria-label="Previous">‹</button>
+      <div class="dots"><i></i><i></i><i></i><i class="on"></i><i></i><i></i><i></i></div>
+      <button class="arrow" aria-label="Next">›</button>
+    </div>
+
+    <div class="cta">
+      <a href="#">Find what's eating my week <span aria-hidden="true">→</span></a>
+      <span class="micro">90 seconds · no signup · nothing to install</span>
+    </div>
+  </div>
+</body>
+</html>
