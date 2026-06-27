@@ -1267,16 +1267,23 @@ describe("Session 21 — merged-analyzer walkthrough fixes", () => {
   });
 });
 
-describe("Session 22 — saved-state 'Start fresh' on Role step", () => {
-  it("[S22-#1] RoleStep offers a Start fresh control wired to reset()", () => {
-    const rs = readSrc("components/analyzer/RoleStep.tsx");
-    expect(rs).toContain("Start fresh");
-    expect(rs).toContain("s.reset");
-    // only shown when there's saved state to clear
-    expect(rs).toContain("hasSavedState");
+describe("Session 22 — smart resume (keep finished audits, discard drafts)", () => {
+  it("[S22] AuditWizard resumes a finished audit straight to results", () => {
+    const wiz = readSrc("components/analyzer/AuditWizard.tsx");
+    expect(wiz).toContain("paretoResult");
+    expect(wiz).toContain("setStep(3)");
   });
 
-  it("[S22-#1] Start fresh confirms before wiping a planned audit", () => {
-    expect(readSrc("components/analyzer/RoleStep.tsx")).toContain("window.confirm");
+  it("[S22] AuditWizard discards a half-finished draft on reopen", () => {
+    const wiz = readSrc("components/analyzer/AuditWizard.tsx");
+    // No computed result + a partial draft -> wipe for a fresh start.
+    expect(wiz).toContain("s.reset()");
+    expect(wiz).toMatch(/s\.roleSlug \|\| s\.activeSources\.length/);
+  });
+
+  it("[S22] the redundant Role-step 'Start fresh' button was removed", () => {
+    const rs = readSrc("components/analyzer/RoleStep.tsx");
+    expect(rs).not.toContain("Start fresh");
+    expect(rs).not.toContain("hasSavedState");
   });
 });

@@ -48,19 +48,24 @@ export default function AuditWizard() {
   const reset = useAuditStore((s) => s.reset);
   const paretoResult = useAuditStore((s) => s.paretoResult);
 
-  // If user navigates to /analyzer and already has results, show them
-  // instead of wiping everything. The "Start over" button handles reset.
+  // Smart resume on reopen: KEEP a finished audit (jump straight to its results,
+  // where "Start over" lives), but DISCARD a half-finished draft (role/drains with
+  // no computed result) so returning users get a clean start instead of confusing
+  // leftover picks. A re-run takes ~90s; only completed work is worth restoring.
   useEffect(() => {
-    const jumpToResults = () => {
+    const resumeOrReset = () => {
       const s = useAuditStore.getState();
-      if (s.paretoResult && s.step !== 3) {
-        s.setStep(3);
+      if (s.paretoResult) {
+        if (s.step !== 3) s.setStep(3);
+      } else if (s.roleSlug || s.activeSources.length > 0) {
+        // Partial draft, never computed — wipe it for a fresh start.
+        s.reset();
       }
     };
     // Check after hydration
-    const unsub = useAuditStore.persist.onFinishHydration(() => jumpToResults());
+    const unsub = useAuditStore.persist.onFinishHydration(() => resumeOrReset());
     // Also check immediately in case hydration already happened
-    jumpToResults();
+    resumeOrReset();
     return unsub;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

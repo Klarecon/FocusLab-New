@@ -35,15 +35,6 @@ export default function RoleStep({ onNext }: RoleStepProps) {
   const setRole = useAuditStore((s) => s.setRole);
   const secondaryRoles = useAuditStore((s) => s.secondaryRoles);
   const setSecondaryRoles = useAuditStore((s) => s.setSecondaryRoles);
-  const reset = useAuditStore((s) => s.reset);
-
-  // Returning users land here with persisted picks — give them a way to wipe and start clean.
-  const hasSavedState = Boolean(roleSlug);
-  const handleStartFresh = () => {
-    if (window.confirm("Start fresh? This clears your saved audit and any fixes you've planned.")) {
-      reset();
-    }
-  };
 
   // Derive current level from secondary roles
   const currentLevel: LevelId | null = secondaryRoles.includes("executive" as RoleSlug)
@@ -87,16 +78,6 @@ export default function RoleStep({ onNext }: RoleStepProps) {
         <p style={{ color: "var(--color-ink-soft)" }}>
           Pick your function, then your level.
         </p>
-        {hasSavedState && (
-          <button
-            type="button"
-            onClick={handleStartFresh}
-            className="mt-3 text-sm font-semibold underline underline-offset-4 transition-opacity hover:opacity-70"
-            style={{ color: "var(--color-reclaim)" }}
-          >
-            Start fresh ↺
-          </button>
-        )}
       </div>
 
       {/* Function grid */}
