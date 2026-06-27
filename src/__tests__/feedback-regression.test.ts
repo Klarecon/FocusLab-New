@@ -1312,3 +1312,17 @@ describe("Session 21 — merged-analyzer walkthrough fixes", () => {
     expect(p).toContain("know anyone drowning in busywork");
   });
 });
+
+describe("Session 22 — saved-state 'Start fresh' on Role step", () => {
+  it("[S22-#1] RoleStep offers a Start fresh control wired to reset()", () => {
+    const rs = readSrc("components/analyzer/RoleStep.tsx");
+    expect(rs).toContain("Start fresh");
+    expect(rs).toContain("s.reset");
+    // only shown when there's saved state to clear
+    expect(rs).toContain("hasSavedState");
+  });
+
+  it("[S22-#1] Start fresh confirms before wiping a planned audit", () => {
+    expect(readSrc("components/analyzer/RoleStep.tsx")).toContain("window.confirm");
+  });
+});
