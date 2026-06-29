@@ -403,6 +403,10 @@ function DrainSection({
                 &times;
               </button>
             </div>
+
+            {/* Custom fixes are rated inline too (S25) — otherwise they never
+                get effort/impact scores and can't land on the matrix. */}
+            <InlineRating solutionId={sol.id} />
           </motion.div>
         ))}
 

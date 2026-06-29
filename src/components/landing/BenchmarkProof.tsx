@@ -49,6 +49,20 @@ export default function BenchmarkProof() {
       style={{ backgroundColor: "var(--color-ink)", color: "var(--color-paper)" }}
     >
       <div className="max-w-5xl mx-auto">
+        <div className="text-center mb-10 sm:mb-14">
+          <h2
+            className="text-3xl sm:text-4xl font-bold"
+            style={{
+              fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif",
+              color: "var(--color-paper)",
+            }}
+          >
+            You&apos;re not imagining it. The data agrees.
+          </h2>
+          <p className="mt-3 text-base sm:text-lg opacity-70">
+            Where everyone&apos;s week quietly leaks away.
+          </p>
+        </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
           {stats.map((stat, i) => (
             <motion.div

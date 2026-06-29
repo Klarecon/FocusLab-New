@@ -37,7 +37,7 @@ const serif = { fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif" };
 
 export default function HowItWorks() {
   return (
-    <section className="px-4 sm:px-6 py-16 sm:py-24 max-w-5xl mx-auto">
+    <section className="px-4 sm:px-6 pt-16 sm:pt-24 pb-10 sm:pb-12 max-w-5xl mx-auto">
       {/* How it works */}
       <h2
         className="text-center text-2xl sm:text-3xl font-bold mb-10"

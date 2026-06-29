@@ -210,10 +210,11 @@ describe("Solution coverage (Session 8-#1)", () => {
 // ---------------------------------------------------------------------------
 
 describe("Landing page copy (Session 7)", () => {
-  it("[S19] Hero eyebrow broadened past knowledge work", () => {
+  it("[S19→S25] Hero eyebrow is just 'A waste-reduction tool' (no 'for any kind of work')", () => {
+    expect(fileContains("components/landing/Hero.tsx", "A waste-reduction tool")).toBe(true);
     expect(
       fileContains("components/landing/Hero.tsx", "A waste-reduction tool for any kind of work")
-    ).toBe(true);
+    ).toBe(false);
   });
 
   it("[S19] Hero headline: real hours of your week back", () => {
@@ -789,10 +790,10 @@ describe("Banned patterns (permanent)", () => {
 
   // --- Session 12 fixes ---
 
-  it("[S12-#1→S20] LogStep has ONE sticky counter, no duplicate inline counter", () => {
+  it("[S12-#1→S25] LogStep has ONE sticky budget bar, no duplicate inline counter", () => {
     const content = readSrc("components/analyzer/LogStep.tsx");
-    // Must have the single sticky running total
-    expect(content).toContain("sticky top-4");
+    // Must have the single sticky budget bar (S25: clears the nav at top-[72px]).
+    expect(content).toContain("sticky top-[72px]");
     // Must NOT reintroduce a second inline counter (the old double-counter bug)
     const inlineCounterPattern = /mt-4 inline-flex[\s\S]*hrs\/week/;
     expect(content).not.toMatch(inlineCounterPattern);
@@ -1347,9 +1348,9 @@ describe("Session 24 — Waste Log W1+W3 + Action Sequence A2 redesign", () => {
     expect(cardCode).not.toContain('type="number"');
   });
 
-  it("[S24-#2] LogStep keeps the single sticky budget bar (no double counter)", () => {
+  it("[S24-#2→S25] LogStep keeps the single sticky budget bar (clears the nav)", () => {
     const content = readSrc("components/analyzer/LogStep.tsx");
-    expect(content).toContain("sticky top-4");
+    expect(content).toContain("sticky top-[72px]");
   });
 
   it("[S24-#3] Action Sequence renders board cards in tinted quadrant lanes", () => {
@@ -1377,5 +1378,44 @@ describe("Session 24 — Waste Log W1+W3 + Action Sequence A2 redesign", () => {
   it("[S24-#4] CSV export carries the import-friendly columns", () => {
     const content = readSrc("components/focus/EviMatrix.tsx");
     expect(content).toContain('["Priority", "Task Name", "Owner", "Due Date", "Status", "Notes"]');
+  });
+});
+
+describe("Session 25 — landing polish + per-section drains + custom-fix rating", () => {
+  it("[S25-#2] BenchmarkProof stats section has a heading", () => {
+    const content = readSrc("components/landing/BenchmarkProof.tsx");
+    expect(content).toContain("You&apos;re not imagining it. The data agrees.");
+    expect(content).toMatch(/<h2/);
+  });
+
+  it("[S25-#3] FinalCTA top padding tightened (smaller gap above 'A working person')", () => {
+    const content = readSrc("components/landing/FinalCTA.tsx");
+    // No longer the big symmetric py-28; top padding is cut.
+    expect(content).not.toContain("py-28 text-center");
+    expect(content).toContain("pt-12");
+  });
+
+  it("[S25-#4] Budget bar sticks below the nav so it stays fully visible", () => {
+    const content = readSrc("components/analyzer/LogStep.tsx");
+    expect(content).toContain("sticky top-[72px]");
+    expect(content).not.toContain("sticky top-4");
+  });
+
+  it("[S25-#5] 'Add your own drain' appears per section, not just at the end", () => {
+    const content = readSrc("components/analyzer/LogStep.tsx");
+    // A reusable per-section row, rendered inside the type-group map.
+    expect(content).toContain("function AddDrainRow");
+    expect(content).toContain("addCustomDrain(label, group.type.key)");
+    // The old single bottom box (with the type <select>) is gone.
+    expect(content).not.toContain("Waste type for your custom drain");
+  });
+
+  it("[S25-#6] Custom fixes get inline effort/impact rating so they can be mapped", () => {
+    const content = readSrc("components/focus/SolutionPicker.tsx");
+    // Inside the custom-fix render block, an InlineRating must follow the "Your fix" badge.
+    const idx = content.indexOf("Your fix");
+    expect(idx).toBeGreaterThan(-1);
+    const after = content.slice(idx);
+    expect(after).toContain("<InlineRating solutionId={sol.id} />");
   });
 });

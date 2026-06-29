@@ -9,7 +9,7 @@ import { Highlighter } from "@/components/ui/highlighter";
 export default function FinalCTA() {
   return (
     <section
-      className="px-5 py-28 text-center relative overflow-hidden"
+      className="px-5 pt-12 pb-24 sm:pt-16 sm:pb-28 text-center relative overflow-hidden"
       style={{
         background: "linear-gradient(180deg, var(--color-paper) 0%, var(--color-card) 40%, rgba(237, 178, 21, 0.06) 100%)",
       }}

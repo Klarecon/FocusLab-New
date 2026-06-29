@@ -104,7 +104,7 @@ export default function Hero() {
           className="text-sm font-medium tracking-widest uppercase mb-6"
           style={{ color: "var(--color-ink-soft)" }}
         >
-          A waste-reduction tool for any kind of work
+          A waste-reduction tool
         </motion.p>
 
         {/* Ring gauge */}

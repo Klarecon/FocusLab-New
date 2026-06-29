@@ -59,6 +59,45 @@ interface LogStepProps {
 
 const MIN_DRAINS = 5;
 
+/** Inline "add your own drain" row, one per waste-type section (S25). */
+function AddDrainRow({ onAdd }: { onAdd: (label: string) => void }) {
+  const [text, setText] = useState("");
+  const ref = useRef<HTMLInputElement>(null);
+  const submit = () => {
+    const t = text.trim();
+    if (!t) return;
+    onAdd(t);
+    setText("");
+    setTimeout(() => ref.current?.focus(), 50);
+  };
+  return (
+    <div
+      className="flex items-center gap-2 mt-3 p-2.5 rounded-xl"
+      style={{ border: "1.5px dashed var(--color-reclaim)", backgroundColor: "rgba(196, 24, 106, 0.03)" }}
+    >
+      <input
+        ref={ref}
+        type="text"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && submit()}
+        placeholder="Add your own to this section…"
+        className="flex-1 min-w-0 text-sm bg-transparent border-b-2 focus:outline-none px-1 py-1"
+        style={{ borderColor: "var(--color-line)", color: "var(--color-ink)" }}
+        aria-label="Add your own drain to this section"
+      />
+      <button
+        onClick={submit}
+        disabled={!text.trim()}
+        className="px-3 py-1.5 rounded-md text-xs font-bold transition-all disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed flex-shrink-0"
+        style={{ backgroundColor: "var(--color-reclaim)", color: "#fff" }}
+      >
+        + Add
+      </button>
+    </div>
+  );
+}
+
 export default function LogStep({ onNext, onBack }: LogStepProps) {
   const roleSlug = useAuditStore((s) => s.roleSlug);
   const secondaryRoles = useAuditStore((s) => s.secondaryRoles);
@@ -152,28 +191,23 @@ export default function LogStep({ onNext, onBack }: LogStepProps) {
     [activeSources, entries],
   );
 
-  // Add-your-own drain (Scene 8 ask). Lands under a chosen type.
-  const [customText, setCustomText] = useState("");
-  const [customTypeKey, setCustomTypeKey] = useState(WASTE_TYPES[0].key);
-  const customRef = useRef<HTMLInputElement>(null);
-  const addCustom = () => {
-    const label = customText.trim();
-    if (!label) return;
-    const typeMeta = WASTE_TYPES.find((t) => t.key === customTypeKey) ?? WASTE_TYPES[0];
-    const slug = `custom-${Date.now()}-${label.toLowerCase().replace(/\s+/g, "-").slice(0, 24)}`;
+  // Add-your-own drain — now offered inside EACH section (S25), pre-targeted to
+  // that section's waste type. Lands under that type with no seed hours (S21 #3).
+  const addCustomDrain = (label: string, typeKey: string) => {
+    const trimmed = label.trim();
+    if (!trimmed) return;
+    const typeMeta = WASTE_TYPES.find((t) => t.key === typeKey) ?? WASTE_TYPES[0];
+    const slug = `custom-${Date.now()}-${trimmed.toLowerCase().replace(/\s+/g, "-").slice(0, 24)}`;
     const src: WasteSource = {
       slug,
       group: typeMeta.name,
-      label,
+      label: trimmed,
       muda: typeMeta.muda[0],
       whatCounts: "Custom drain added by you",
       scope: "universal",
       emoji: "🔧",
     };
     addSource(src);
-    // No seed hours (S21 #3) — user types the real number on the chip.
-    setCustomText("");
-    setTimeout(() => customRef.current?.focus(), 50);
   };
 
   const handleCompute = () => {
@@ -234,7 +268,7 @@ export default function LogStep({ onNext, onBack }: LogStepProps) {
       {/* W3 budget bar — your week, getting eaten. Sticky so it tracks as you tap. */}
       {activeSources.length > 0 && (
         <div
-          className="sticky top-4 z-40 p-4 rounded-2xl shadow-md mb-7"
+          className="sticky top-[72px] z-40 p-4 rounded-2xl shadow-md mb-7"
           style={{
             backgroundColor: "var(--color-card)",
             border: "2px solid var(--color-waste)",
@@ -358,45 +392,11 @@ export default function LogStep({ onNext, onBack }: LogStepProps) {
                 );
               })}
             </div>
+
+            {/* Per-section add-your-own (S25) — pre-targeted to this type. */}
+            <AddDrainRow onAdd={(label) => addCustomDrain(label, group.type.key)} />
           </motion.div>
         ))}
-      </div>
-
-      {/* Add your own drain */}
-      <div
-        className="flex flex-wrap items-center gap-2 p-3 rounded-xl mb-6"
-        style={{ border: "1.5px dashed var(--color-reclaim)", backgroundColor: "rgba(196, 24, 106, 0.03)" }}
-      >
-        <input
-          ref={customRef}
-          type="text"
-          value={customText}
-          onChange={(e) => setCustomText(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && addCustom()}
-          placeholder="Add your own drain…"
-          className="flex-1 min-w-[160px] text-sm bg-transparent border-b-2 focus:outline-none px-1 py-1"
-          style={{ borderColor: "var(--color-line)", color: "var(--color-ink)" }}
-          aria-label="Add your own drain"
-        />
-        <select
-          value={customTypeKey}
-          onChange={(e) => setCustomTypeKey(e.target.value as typeof customTypeKey)}
-          className="text-xs px-2 py-1.5 rounded border"
-          style={{ borderColor: "var(--color-line)", backgroundColor: "var(--color-paper)", color: "var(--color-ink)" }}
-          aria-label="Waste type for your custom drain"
-        >
-          {WASTE_TYPES.map((t) => (
-            <option key={t.key} value={t.key}>{t.name}</option>
-          ))}
-        </select>
-        <button
-          onClick={addCustom}
-          disabled={!customText.trim()}
-          className="px-3 py-1.5 rounded-md text-xs font-bold transition-all disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
-          style={{ backgroundColor: "var(--color-reclaim)", color: "#fff" }}
-        >
-          + Add
-        </button>
       </div>
 
       {/* Whole-week heads-up */}
