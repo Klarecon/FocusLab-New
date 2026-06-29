@@ -1419,3 +1419,32 @@ describe("Session 25 — landing polish + per-section drains + custom-fix rating
     expect(after).toContain("<InlineRating solutionId={sol.id} />");
   });
 });
+
+describe("Session 26 — results message order/space, top Back, custom-drain render", () => {
+  it("[S26-#1] 'evenly spread' message renders before the Pareto chart", () => {
+    const content = readSrc("components/analyzer/ResultsView.tsx");
+    const msgIdx = content.indexOf("Your time&apos;s spread");
+    const chartIdx = content.indexOf("Where your time goes");
+    expect(msgIdx).toBeGreaterThan(-1);
+    expect(chartIdx).toBeGreaterThan(-1);
+    expect(msgIdx).toBeLessThan(chartIdx);
+  });
+
+  it("[S26-#2] explicit space between 'evenly' and 'across'", () => {
+    const content = readSrc("components/analyzer/ResultsView.tsx");
+    expect(content).toContain('<strong>evenly</strong>{" "}across');
+  });
+
+  it("[S26-#3] wizard shows a Back control at the top of mid steps", () => {
+    const content = readSrc("components/analyzer/AuditWizard.tsx");
+    expect(content).toContain("step > 0 && step < 3");
+    expect(content).toContain("&larr; Back");
+  });
+
+  it("[S26-#4] LogStep renders user-added custom drains (no longer disappears)", () => {
+    const content = readSrc("components/analyzer/LogStep.tsx");
+    expect(content).toContain('src.slug.startsWith("custom-") && !seen.has(src.slug)');
+    // activeSources must be a dependency so newly-added drains re-render.
+    expect(content).toContain("[roleSlug, secondaryRoles, activeSources]");
+  });
+});

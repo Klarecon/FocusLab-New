@@ -408,7 +408,7 @@ export default function ResultsView({ onRestart }: ResultsViewProps) {
           >
             <span className="text-2xl flex-shrink-0" aria-hidden="true">🫠</span>
             <p className="text-sm" style={{ color: "var(--color-ink)" }}>
-              Your time&apos;s spread <strong>evenly</strong> across these drains — there&apos;s no single &ldquo;vital few&rdquo; to attack. Trim a little from each rather than chasing one. (If that doesn&apos;t feel right, go back and give each drain its real hours — they&apos;re rarely all the same.)
+              Your time&apos;s spread <strong>evenly</strong>{" "}across these drains — there&apos;s no single &ldquo;vital few&rdquo; to attack. Trim a little from each rather than chasing one. (If that doesn&apos;t feel right, go back and give each drain its real hours — they&apos;re rarely all the same.)
             </p>
           </div>
         )}

@@ -86,6 +86,19 @@ export default function AuditWizard() {
     <div>
       <Stepper currentStep={step} onStepClick={setStep} />
 
+      {/* Top-of-step Back, mirroring the one at the bottom — so you can go back
+          without scrolling to the end of a long step (S26). */}
+      {step > 0 && step < 3 && (
+        <button
+          type="button"
+          onClick={goBack}
+          className="mb-5 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer"
+          style={{ color: "var(--color-ink-soft)", border: "1.5px solid var(--color-line)" }}
+        >
+          &larr; Back
+        </button>
+      )}
+
       <AnimatePresence mode="wait">
         <motion.div
           key={step}

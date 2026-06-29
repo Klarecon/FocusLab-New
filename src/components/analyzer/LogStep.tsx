@@ -113,11 +113,13 @@ export default function LogStep({ onNext, onBack }: LogStepProps) {
   const hourlyRate = useAuditStore((s) => s.hourlyRate);
   const setParetoResult = useAuditStore((s) => s.setParetoResult);
 
-  // All drains for the role(s), de-duped by slug.
+  // All drains for the role(s), de-duped by slug — PLUS any custom drains the
+  // user added (those live in activeSources, not the role pool). Without the
+  // custom pass, a freshly-added drain was stored but never rendered as a card,
+  // so it looked like it "disappeared" on Add (S26 fix).
   const allSources = useMemo(() => {
     if (!roleSlug) return [];
     const primary = wasteSourcesForRole(roleSlug as RoleSlug);
-    if (secondaryRoles.length === 0) return primary;
     const seen = new Set(primary.map((s) => s.slug));
     const merged = [...primary];
     for (const sr of secondaryRoles) {
@@ -128,8 +130,14 @@ export default function LogStep({ onNext, onBack }: LogStepProps) {
         }
       }
     }
+    for (const src of activeSources) {
+      if (src.slug.startsWith("custom-") && !seen.has(src.slug)) {
+        seen.add(src.slug);
+        merged.push(src);
+      }
+    }
     return merged;
-  }, [roleSlug, secondaryRoles]);
+  }, [roleSlug, secondaryRoles, activeSources]);
 
   // Group drains under the four user-facing waste types.
   const byType = useMemo(
