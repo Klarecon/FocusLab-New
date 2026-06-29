@@ -1364,4 +1364,18 @@ describe("Session 24 — Waste Log W1+W3 + Action Sequence A2 redesign", () => {
     expect(content).toMatch(/<select[\s\S]*?Owner for/);
     expect(content).toContain('type="date"');
   });
+
+  it("[S24-#4] Action Sequence has a CSV export button (ClickUp / Monday)", () => {
+    const content = readSrc("components/focus/EviMatrix.tsx");
+    expect(content).toContain("exportCSV");
+    expect(content).toContain("Export to ClickUp / Monday");
+    // Downloads a real CSV file, no backend.
+    expect(content).toContain('a.download = "focuslab-action-plan.csv"');
+    expect(content).toContain('type: "text/csv;charset=utf-8;"');
+  });
+
+  it("[S24-#4] CSV export carries the import-friendly columns", () => {
+    const content = readSrc("components/focus/EviMatrix.tsx");
+    expect(content).toContain('["Priority", "Task Name", "Owner", "Due Date", "Status", "Notes"]');
+  });
 });

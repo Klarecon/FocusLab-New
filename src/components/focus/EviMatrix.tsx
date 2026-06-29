@@ -255,6 +255,8 @@ function PriorityTable({ dotData }: { dotData: DotData[] }) {
     { key: "manager", label: "My manager" },
     { key: "team", label: "My team" },
   ];
+  const ownerLabel = (key: string) =>
+    OWNER_OPTIONS.find((o) => o.key === key)?.label ?? "Me";
 
   const prioritized = useMemo(() => {
     const sorted = [...dotData].sort((a, b) => {
@@ -265,6 +267,37 @@ function PriorityTable({ dotData }: { dotData: DotData[] }) {
     });
     return sorted.map((d, i) => ({ ...d, priority: i + 1 }));
   }, [dotData]);
+
+  // CSV export — one row per action item, in priority order. Columns chosen to
+  // map cleanly onto ClickUp / Monday / Asana / Notion / Excel imports.
+  const exportCSV = () => {
+    const headers = ["Priority", "Task Name", "Owner", "Due Date", "Status", "Notes"];
+    const escape = (v: string) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+    const rows = prioritized.map((d) => {
+      const sol = chosenSolutions.find((s) => s.id === d.id);
+      const owner = sol ? (ownerOverrides[sol.id] ?? sol.owner) : "self";
+      return [
+        String(d.priority),
+        d.title,
+        ownerLabel(owner),
+        dueDates[d.id] ?? "",
+        QUADRANT_META[d.quadrantLabel].name,
+        d.reclaimHint || d.sourceName || "",
+      ];
+    });
+    const csv =
+      "﻿" +
+      [headers, ...rows].map((r) => r.map(escape).join(",")).join("\r\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "focuslab-action-plan.csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   if (prioritized.length === 0) return null;
 
@@ -281,15 +314,30 @@ function PriorityTable({ dotData }: { dotData: DotData[] }) {
       className="mt-6 surface-card p-3 sm:p-6 overflow-x-auto"
       style={{ borderTop: "4px solid", borderImage: "linear-gradient(to right, #c4186a, #edb215) 1" }}
     >
-      <h3
-        className="text-2xl font-bold mb-1"
-        style={{ fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif" }}
-      >
-        Your Action Sequence
-      </h3>
-      <p className="text-sm mb-6" style={{ color: "var(--color-ink-soft)" }}>
-        Pearls first. Then the rest, in order.
-      </p>
+      <div className="flex items-start justify-between gap-4 mb-6">
+        <div>
+          <h3
+            className="text-2xl font-bold mb-1"
+            style={{ fontFamily: "var(--font-fraunces), ui-serif, Georgia, serif" }}
+          >
+            Your Action Sequence
+          </h3>
+          <p className="text-sm" style={{ color: "var(--color-ink-soft)" }}>
+            Pearls first. Then the rest, in order.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={exportCSV}
+          className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold cursor-pointer transition-colors"
+          style={{ border: "1.5px solid var(--color-reclaim)", color: "var(--color-reclaim)" }}
+          title="Download a CSV you can import into ClickUp, Monday, Asana, Notion or Excel"
+          aria-label="Export your action plan to a CSV file"
+        >
+          <span aria-hidden="true">⬇</span>
+          Export to ClickUp / Monday
+        </button>
+      </div>
 
       {/* A2 — priority lanes. Each quadrant is a tinted lane of board cards;
           owner + due ride as quiet chips on each card (no table grid). */}
