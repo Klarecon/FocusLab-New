@@ -291,105 +291,109 @@ function PriorityTable({ dotData }: { dotData: DotData[] }) {
         Pearls first. Then the rest, in order.
       </p>
 
-      {groups.map((g) => (
-        <div key={g.quadrant} className="mb-6 last:mb-0">
+      {/* A2 — priority lanes. Each quadrant is a tinted lane of board cards;
+          owner + due ride as quiet chips on each card (no table grid). */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {groups.map((g) => (
           <div
-            className="text-xs font-medium uppercase tracking-wider mb-3 flex items-center gap-2"
-            style={{ color: QUADRANT_LABEL_COLOR[g.quadrant] }}
+            key={g.quadrant}
+            className="rounded-2xl p-4"
+            style={{ backgroundColor: QUADRANT_BG[g.quadrant], border: "1.5px solid var(--color-line)" }}
           >
-            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: QUADRANT_DOT_COLORS[g.quadrant] }} />
-            {QUADRANT_SECTION_LABELS[g.quadrant]}
-          </div>
-          <table className="w-full border-collapse text-sm">
-            <thead>
-              <tr
-                className="text-[10px] font-medium uppercase tracking-wider"
-                style={{ color: "var(--color-ink-soft)", borderBottom: "1px solid var(--color-line)" }}
-              >
-                <th className="text-left pb-2 pr-2 w-8">#</th>
-                <th className="text-left pb-2 pr-2">Task</th>
-                <th className="text-left pb-2 pr-2 w-28">Owner</th>
-                <th className="text-left pb-2 pr-2 w-32">Due</th>
-                <th className="pb-2 w-8"></th>
-              </tr>
-            </thead>
-            <tbody>
+            <div
+              className="text-xs font-extrabold uppercase tracking-wider mb-3 flex items-center gap-2"
+              style={{ color: QUADRANT_LABEL_COLOR[g.quadrant] }}
+            >
+              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: QUADRANT_DOT_COLORS[g.quadrant] }} />
+              {QUADRANT_SECTION_LABELS[g.quadrant]}
+            </div>
+
+            <div className="space-y-3">
               {g.items.map((d) => {
                 const sol = chosenSolutions.find((s) => s.id === d.id);
                 const owner = sol ? (ownerOverrides[sol.id] ?? sol.owner) : "self";
 
                 return (
-                  <tr
+                  <div
                     key={d.id}
-                    className="border-b"
-                    style={{ borderColor: "var(--color-line)" }}
+                    data-testid="action-card"
+                    className="rounded-xl p-3.5"
+                    style={{
+                      backgroundColor: "var(--color-card)",
+                      border: "1px solid var(--color-line)",
+                      borderLeft: `4px solid ${QUADRANT_DOT_COLORS[d.quadrantLabel]}`,
+                    }}
                   >
-                    <td className="py-3 pr-2 align-middle">
+                    <div className="flex items-start gap-2.5 mb-3">
                       <span
-                        className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                        className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-0.5"
                         style={{ backgroundColor: QUADRANT_DOT_COLORS[d.quadrantLabel] }}
                       >
                         {d.priority}
                       </span>
-                    </td>
-                    <td className="py-3 pr-2 align-middle font-semibold" style={{ color: "var(--color-ink)" }}>
-                      {d.title}
-                    </td>
-                    <td className="py-3 pr-2 align-middle">
-                      <select
-                        value={owner}
-                        onChange={(e) => setOwnerOverride(d.id, e.target.value)}
-                        className="text-xs px-2 py-1.5 rounded border w-full"
-                        style={{
-                          borderColor: "var(--color-line)",
-                          backgroundColor: "var(--color-paper)",
-                          color: "var(--color-ink)",
-                        }}
-                        aria-label={`Owner for ${d.title}`}
-                      >
-                        {OWNER_OPTIONS.map((o) => (
-                          <option key={o.key} value={o.key}>{o.label}</option>
-                        ))}
-                      </select>
-                    </td>
-                    <td className="py-3 pr-2 align-middle">
-                      <input
-                        type="date"
-                        value={dueDates[d.id] ?? ""}
-                        min={new Date().toISOString().split("T")[0]}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          const today = new Date().toISOString().split("T")[0];
-                          if (val && val < today) return; // block past dates (mobile Safari ignores min)
-                          setDueDate(d.id, val);
-                        }}
-                        className="text-xs px-2 py-1.5 rounded border w-full"
-                        style={{
-                          borderColor: "var(--color-line)",
-                          backgroundColor: "var(--color-paper)",
-                          color: dueDates[d.id] ? "var(--color-ink)" : "var(--color-ink-soft)",
-                        }}
-                        aria-label={`Due date for ${d.title}`}
-                      />
-                    </td>
-                    <td className="py-3 align-middle text-center">
+                      <span className="font-bold text-sm flex-1 leading-snug" style={{ color: "var(--color-ink)" }}>
+                        {d.title}
+                      </span>
                       <button
                         onClick={() => removeSolution(d.id)}
-                        className="text-sm cursor-pointer transition-opacity hover:opacity-70 px-1"
+                        className="text-sm cursor-pointer transition-opacity hover:opacity-70 px-1 flex-shrink-0"
                         style={{ color: "var(--color-ink-soft)" }}
                         aria-label={`Remove ${d.title} from plan`}
                         title="Remove from plan"
                       >
                         &times;
                       </button>
-                    </td>
-                  </tr>
+                    </div>
+
+                    <div className="flex items-center gap-2 flex-wrap pl-8">
+                      <span
+                        className="inline-flex items-center gap-1 rounded-full text-xs font-semibold"
+                        style={{ border: "1px solid var(--color-line)", backgroundColor: "var(--color-paper)" }}
+                      >
+                        <span className="pl-2.5" aria-hidden="true">👤</span>
+                        <select
+                          value={owner}
+                          onChange={(e) => setOwnerOverride(d.id, e.target.value)}
+                          className="bg-transparent text-xs font-semibold py-1.5 pr-2 cursor-pointer focus:outline-none"
+                          style={{ color: "var(--color-ink)" }}
+                          aria-label={`Owner for ${d.title}`}
+                        >
+                          {OWNER_OPTIONS.map((o) => (
+                            <option key={o.key} value={o.key}>{o.label}</option>
+                          ))}
+                        </select>
+                      </span>
+                      <span
+                        className="inline-flex items-center gap-1 rounded-full text-xs font-semibold px-2.5 py-1.5"
+                        style={{
+                          border: dueDates[d.id] ? "1px solid var(--color-line)" : "1px dashed var(--color-line)",
+                          backgroundColor: "var(--color-paper)",
+                        }}
+                      >
+                        <span aria-hidden="true">🗓</span>
+                        <input
+                          type="date"
+                          value={dueDates[d.id] ?? ""}
+                          min={new Date().toISOString().split("T")[0]}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            const today = new Date().toISOString().split("T")[0];
+                            if (val && val < today) return; // block past dates (mobile Safari ignores min)
+                            setDueDate(d.id, val);
+                          }}
+                          className="bg-transparent text-xs font-semibold cursor-pointer focus:outline-none"
+                          style={{ color: dueDates[d.id] ? "var(--color-ink)" : "var(--color-ink-soft)" }}
+                          aria-label={`Due date for ${d.title}`}
+                        />
+                      </span>
+                    </div>
+                  </div>
                 );
               })}
-            </tbody>
-          </table>
-        </div>
-      ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

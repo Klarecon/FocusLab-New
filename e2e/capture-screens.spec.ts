@@ -85,15 +85,17 @@ test.describe("Screenshot Capture — Full Wizard Flow", () => {
     await snap(page, "06-log-filled");
 
     // Enter a VARIED spread of hours so the Pareto shows real A/B/C zones.
-    const hourInputs = page.locator('input[aria-label*="Hours per week"]');
-    const hourCount = await hourInputs.count();
+    // (S24: hours are set with a −/+ stepper now, not a typed field. Each "+"
+    // adds 0.5h, so click it value/0.5 times per card.)
+    const plusBtns = page.locator('button[aria-label^="More time on"]');
+    const plusCount = await plusBtns.count();
     const hourValues = [5, 3, 2, 1.5, 1, 0.5];
-    for (let i = 0; i < Math.min(hourCount, hourValues.length); i++) {
-      const input = hourInputs.nth(i);
-      if (await input.isVisible({ timeout: 1000 }).catch(() => false)) {
-        await input.fill(String(hourValues[i]));
-        await page.waitForTimeout(120);
+    for (let i = 0; i < Math.min(plusCount, hourValues.length); i++) {
+      const clicks = Math.round(hourValues[i] / 0.5);
+      for (let c = 0; c < clicks; c++) {
+        await plusBtns.nth(i).click({ force: true }).catch(() => {});
       }
+      await page.waitForTimeout(60);
     }
     await snap(page, "07-log-filled-hours");
 

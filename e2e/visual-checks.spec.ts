@@ -112,7 +112,7 @@ test.describe("Focus Tool — EVI Matrix tab", () => {
     }
   });
 
-  test("Action Sequence uses proper table elements", async ({ page }) => {
+  test("Action Sequence renders board cards (A2 lanes)", async ({ page }) => {
     await page.goto("/focus");
     const eviTab = page.locator('role=tab[name*="EVI"]');
     if (await eviTab.isVisible()) {
@@ -121,9 +121,9 @@ test.describe("Focus Tool — EVI Matrix tab", () => {
 
       const actionSequence = page.locator("text=Your Action Sequence");
       if (await actionSequence.isVisible()) {
-        // Verify table elements exist nearby
-        const tables = page.locator("table");
-        expect(await tables.count()).toBeGreaterThan(0);
+        // S24: the table became board-card lanes.
+        const cards = page.locator('[data-testid="action-card"]');
+        expect(await cards.count()).toBeGreaterThan(0);
       }
     }
   });

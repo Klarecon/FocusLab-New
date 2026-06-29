@@ -128,6 +128,30 @@ export default function LogStep({ onNext, onBack }: LogStepProps) {
   ).length;
   const hasEnoughDrains = drainsWithHours >= MIN_DRAINS;
 
+  // Hours are nudged with a −/+ stepper now (W1) — never typed into a field.
+  // 0.5h steps, clamped to [0, the user's work week]. No seed on toggle (S21 #3).
+  const stepHours = (src: WasteSource, delta: number) => {
+    const cur = entries[src.slug]?.hoursPerDay ?? 0;
+    const next = Math.max(0, Math.min(workHoursPerWeek, Math.round((cur + delta) * 2) / 2));
+    setEntry(src.slug, { hoursPerDay: next, avoidablePct: 100, cadence: "weekly" });
+  };
+
+  // W3 budget bar: each sized drain becomes a colored block in a "your week" meter.
+  const SEG_COLORS = ["#e03e12", "#e8631f", "#edb215", "#d39a18"];
+  const meterSegments = useMemo(
+    () =>
+      activeSources
+        .map((src) => ({
+          slug: src.slug,
+          label: src.label,
+          emoji: src.emoji,
+          hours: entries[src.slug]?.hoursPerDay ?? 0,
+        }))
+        .filter((s) => s.hours > 0)
+        .sort((a, b) => b.hours - a.hours),
+    [activeSources, entries],
+  );
+
   // Add-your-own drain (Scene 8 ask). Lands under a chosen type.
   const [customText, setCustomText] = useState("");
   const [customTypeKey, setCustomTypeKey] = useState(WASTE_TYPES[0].key);
@@ -207,22 +231,45 @@ export default function LogStep({ onNext, onBack }: LogStepProps) {
         </p>
       </div>
 
-      {/* Sticky running total */}
-      {total > 0 && (
+      {/* W3 budget bar — your week, getting eaten. Sticky so it tracks as you tap. */}
+      {activeSources.length > 0 && (
         <div
-          className="sticky top-4 z-40 flex items-center justify-center gap-2 px-5 py-2.5 rounded-full shadow-md mx-auto w-fit mb-6"
+          className="sticky top-4 z-40 p-4 rounded-2xl shadow-md mb-7"
           style={{
             backgroundColor: "var(--color-card)",
             border: "2px solid var(--color-waste)",
             boxShadow: "0 4px 16px rgba(224, 62, 18, 0.12)",
           }}
         >
-          <span className="font-figures font-bold text-2xl" style={{ color: "var(--color-waste)" }}>
-            {total.toFixed(1)}
-          </span>
-          <span className="text-sm font-semibold" style={{ color: "var(--color-waste)" }}>
-            hrs/week flagged
-          </span>
+          <div
+            className="h-11 rounded-xl overflow-hidden flex"
+            style={{
+              border: "1px solid var(--color-line)",
+              background:
+                "repeating-linear-gradient(45deg, var(--color-paper), var(--color-paper) 10px, var(--color-card) 10px, var(--color-card) 20px)",
+            }}
+          >
+            {meterSegments.map((seg, i) => {
+              const pct = Math.min(100, (seg.hours / workHoursPerWeek) * 100);
+              return (
+                <div
+                  key={seg.slug}
+                  className="flex items-center justify-center text-white text-xs font-bold font-figures overflow-hidden transition-all duration-200"
+                  style={{ width: `${pct}%`, backgroundColor: SEG_COLORS[i % SEG_COLORS.length] }}
+                  title={`${seg.label}: ${seg.hours.toFixed(1)}h`}
+                >
+                  {pct > 6 ? seg.hours.toFixed(1) : ""}
+                </div>
+              );
+            })}
+          </div>
+          <div className="flex justify-between mt-2 text-[11px] font-figures" style={{ color: "var(--color-ink-soft)" }}>
+            <span>0h</span>
+            <span className="font-bold" style={{ color: "var(--color-waste)" }}>
+              {total.toFixed(1)}h flagged of {workHoursPerWeek}h
+            </span>
+            <span>{workHoursPerWeek}h</span>
+          </div>
         </div>
       )}
 
@@ -242,23 +289,25 @@ export default function LogStep({ onNext, onBack }: LogStepProps) {
               {group.type.name}
             </h3>
 
-            <div className="flex flex-wrap gap-2">
+            {/* W1 tactile cards — tap to pick, −/+ stepper to size. No typing. */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {group.sources.map((src) => {
                 const isOn = activeSet.has(src.slug);
+                const hrs = entries[src.slug]?.hoursPerDay ?? 0;
                 return (
                   <div
                     key={src.slug}
                     data-testid="drain-chip"
                     onClick={() => toggleSource(src)}
-                    className="inline-flex items-center gap-2 rounded-xl border transition-all duration-150 cursor-pointer px-3 py-2"
+                    className="flex items-center gap-3 rounded-2xl border transition-all duration-150 cursor-pointer px-4 py-3.5"
                     style={{
                       borderColor: isOn ? "var(--color-reclaim)" : "var(--color-line)",
-                      backgroundColor: isOn ? "rgba(196, 24, 106, 0.06)" : "var(--color-card)",
+                      backgroundColor: isOn ? "rgba(196, 24, 106, 0.05)" : "var(--color-card)",
                       borderWidth: isOn ? "2px" : "1.5px",
                     }}
                   >
                     <span
-                      className="w-5 h-5 rounded-full inline-flex items-center justify-center flex-shrink-0 text-xs font-bold"
+                      className="w-6 h-6 rounded-full inline-flex items-center justify-center flex-shrink-0 text-xs font-bold"
                       style={{
                         backgroundColor: isOn ? "var(--color-reclaim)" : "transparent",
                         border: isOn ? "none" : "2px solid var(--color-line)",
@@ -268,38 +317,41 @@ export default function LogStep({ onNext, onBack }: LogStepProps) {
                     >
                       {isOn ? "✓" : "+"}
                     </span>
-                    <span aria-hidden="true">{src.emoji}</span>
-                    <span className="text-sm font-semibold" style={{ color: "var(--color-ink)" }}>
+                    <span className="text-xl" aria-hidden="true">{src.emoji}</span>
+                    <span className="text-sm font-semibold flex-1" style={{ color: "var(--color-ink)" }}>
                       {src.label}
                     </span>
                     {isOn && (
                       <span
-                        className="inline-flex items-center gap-1 ml-1 pl-2"
-                        style={{ borderLeft: "1px solid var(--color-line)" }}
+                        className="inline-flex items-center rounded-xl overflow-hidden flex-shrink-0"
+                        style={{ border: "1.5px solid var(--color-reclaim)" }}
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <input
-                          type="number"
-                          min={0}
-                          max={workHoursPerWeek}
-                          step={0.5}
-                          value={entries[src.slug]?.hoursPerDay || ""}
-                          placeholder="0"
-                          onChange={(e) => {
-                            const v = e.target.value === "" ? 0 : Number(e.target.value);
-                            setEntry(src.slug, {
-                              hoursPerDay: Math.max(0, Math.min(workHoursPerWeek, v)),
-                              avoidablePct: 100,
-                              cadence: "weekly",
-                            });
-                          }}
-                          className="w-12 text-right text-sm font-bold font-figures bg-transparent border-b-2 focus:outline-none"
-                          style={{ borderColor: "var(--color-waste)", color: "var(--color-ink)" }}
+                        <button
+                          type="button"
+                          onClick={() => stepHours(src, -0.5)}
+                          className="w-8 h-8 text-lg font-bold cursor-pointer leading-none"
+                          style={{ backgroundColor: "rgba(196, 24, 106, 0.08)", color: "var(--color-reclaim)" }}
+                          aria-label={`Less time on ${src.label}`}
+                        >
+                          −
+                        </button>
+                        <span
+                          className="min-w-[3.25rem] text-center text-sm font-bold font-figures"
+                          style={{ color: "var(--color-ink)" }}
                           aria-label={`Hours per week for ${src.label}`}
-                        />
-                        <span className="text-[11px]" style={{ color: "var(--color-ink-soft)" }}>
-                          hrs/wk
+                        >
+                          {hrs.toFixed(1)}h
                         </span>
+                        <button
+                          type="button"
+                          onClick={() => stepHours(src, 0.5)}
+                          className="w-8 h-8 text-lg font-bold cursor-pointer leading-none"
+                          style={{ backgroundColor: "rgba(196, 24, 106, 0.08)", color: "var(--color-reclaim)" }}
+                          aria-label={`More time on ${src.label}`}
+                        >
+                          +
+                        </button>
                       </span>
                     )}
                   </div>

@@ -596,9 +596,12 @@ describe("Session 9 — Oren's feedback", () => {
     ).toBe(false);
   });
 
-  it("[S9-#10] PriorityTable has column headers", () => {
+  it("[S9-#10→S24] PriorityTable cards carry owner + due controls (A2 board redesign)", () => {
+    // S24: the table became board-card lanes (A2). Each card still exposes an
+    // editable owner and a due date — just as chips, not column headers.
     const content = readSrc("components/focus/EviMatrix.tsx");
-    expect(content).toMatch(/Task|Owner.*Due/);
+    expect(content).toContain("setOwnerOverride");
+    expect(content).toContain("setDueDate");
   });
 
   it("[S9-O9→S11] Payoff shows role-specific opportunity frame", () => {
@@ -685,13 +688,16 @@ describe("Session 11 — Mona\u2019s feedback", () => {
     ).toBe(true);
   });
 
-  it("[S11-#14] PriorityTable uses semantic <table> elements", () => {
+  it("[S11-#14→S24] Action Sequence is board-card lanes, not a table (A2 redesign)", () => {
+    // S24 reversal: Mona picked the A2 "priority lanes" direction — the table
+    // grid is gone, replaced by tinted lanes of board cards.
     const content = readSrc("components/focus/EviMatrix.tsx");
-    expect(content).toContain("<table");
-    expect(content).toContain("<thead>");
-    expect(content).toContain("<tbody>");
-    expect(content).toContain("<tr");
-    expect(content).toContain("<td");
+    const start = content.indexOf("function PriorityTable");
+    const end = content.indexOf("function EviMatrix", start);
+    const code = content.slice(start, end > 0 ? end : undefined);
+    expect(code).not.toContain("<table");
+    expect(code).not.toContain("<thead>");
+    expect(code).toContain('data-testid="action-card"');
   });
 
   it("[S11-#14] PriorityTable Owner is an editable <select>", () => {
@@ -1316,5 +1322,46 @@ describe("Session 23 — Start-over crash fix + visibility", () => {
     expect(content).not.toMatch(/Start over[\s\S]{0,400}underline/);
     // Now reclaim-pink outlined and clearly interactive.
     expect(content).toMatch(/border: "1\.5px solid var\(--color-reclaim\)"/);
+  });
+});
+
+describe("Session 24 — Waste Log W1+W3 + Action Sequence A2 redesign", () => {
+  // Mona's picks: Waste Log = tactile stepper-cards (W1) under a "your week"
+  // budget bar (W3); Action Sequence = A2 priority lanes (board cards).
+
+  it("[S24-#1] LogStep shows a budget bar — your week of N hours, getting eaten", () => {
+    const content = readSrc("components/analyzer/LogStep.tsx");
+    expect(content).toContain("meterSegments");
+    expect(content).toContain("flagged of");
+    // The meter sizes each block against the user's work week.
+    expect(content).toContain("seg.hours / workHoursPerWeek");
+  });
+
+  it("[S24-#2] LogStep sizes hours with a −/+ stepper, not a typed number field", () => {
+    const content = readSrc("components/analyzer/LogStep.tsx");
+    expect(content).toContain("stepHours");
+    // The old per-card <input type="number"> is gone.
+    const start = content.indexOf("byType.map");
+    const end = content.indexOf("Add your own", start);
+    const cardCode = content.slice(start, end > 0 ? end : undefined);
+    expect(cardCode).not.toContain('type="number"');
+  });
+
+  it("[S24-#2] LogStep keeps the single sticky budget bar (no double counter)", () => {
+    const content = readSrc("components/analyzer/LogStep.tsx");
+    expect(content).toContain("sticky top-4");
+  });
+
+  it("[S24-#3] Action Sequence renders board cards in tinted quadrant lanes", () => {
+    const content = readSrc("components/focus/EviMatrix.tsx");
+    expect(content).toContain('data-testid="action-card"');
+    // Lanes are tinted with each quadrant's background.
+    expect(content).toContain("QUADRANT_BG[g.quadrant]");
+  });
+
+  it("[S24-#3] Action Sequence cards keep owner select + due date controls", () => {
+    const content = readSrc("components/focus/EviMatrix.tsx");
+    expect(content).toMatch(/<select[\s\S]*?Owner for/);
+    expect(content).toContain('type="date"');
   });
 });
