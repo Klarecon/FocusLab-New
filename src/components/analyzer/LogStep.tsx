@@ -175,6 +175,18 @@ export default function LogStep({ onNext, onBack }: LogStepProps) {
   ).length;
   const hasEnoughDrains = drainsWithHours >= MIN_DRAINS;
 
+  // Flat-data nudge, caught HERE (before computing) instead of only on results
+  // (S26): if every sized drain has the same hours there's no "vital few" to
+  // find, so prompt the user to vary the numbers while they can still fix it.
+  // Mirrors ResultsView's isEvenlySpread (rounded to 0.1h, distinct === 1).
+  const isFlatData = useMemo(() => {
+    const nonzero = activeSources
+      .map((src) => entries[src.slug]?.hoursPerDay ?? 0)
+      .filter((h) => h > 0)
+      .map((h) => Math.round(h * 10) / 10);
+    return nonzero.length >= MIN_DRAINS && new Set(nonzero).size === 1;
+  }, [activeSources, entries]);
+
   // Hours are nudged with a −/+ stepper now (W1) — never typed into a field.
   // 0.5h steps, clamped to [0, the user's work week]. No seed on toggle (S21 #3).
   const stepHours = (src: WasteSource, delta: number) => {
@@ -406,6 +418,20 @@ export default function LogStep({ onNext, onBack }: LogStepProps) {
           </motion.div>
         ))}
       </div>
+
+      {/* Flat-data heads-up — catch it here, before computing (S26) */}
+      {isFlatData && (
+        <div
+          role="alert"
+          className="surface-card p-4 mb-6 flex items-start gap-3"
+          style={{ borderLeft: "4px solid var(--color-gold)", backgroundColor: "rgba(237, 178, 21, 0.07)" }}
+        >
+          <span className="text-xl flex-shrink-0" aria-hidden="true">🫠</span>
+          <p className="text-sm" style={{ color: "var(--color-ink)" }}>
+            Every drain&apos;s coming out at the same hours &mdash; so there&apos;s no clear &ldquo;vital few&rdquo; to attack. Real weeks are lopsided: give each drain its honest hours so we can find the 20% doing the real damage.
+          </p>
+        </div>
+      )}
 
       {/* Whole-week heads-up */}
       {nearWholeWeek && (

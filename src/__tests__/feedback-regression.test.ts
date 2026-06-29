@@ -1447,4 +1447,12 @@ describe("Session 26 — results message order/space, top Back, custom-drain ren
     // activeSources must be a dependency so newly-added drains re-render.
     expect(content).toContain("[roleSlug, secondaryRoles, activeSources]");
   });
+
+  it("[S26-#1b] LogStep warns about flat data BEFORE computing (not only on results)", () => {
+    const content = readSrc("components/analyzer/LogStep.tsx");
+    expect(content).toContain("isFlatData");
+    // Same detection as ResultsView: distinct rounded hours collapse to one.
+    expect(content).toMatch(/new Set\(nonzero\)\.size === 1/);
+    expect(content).toContain("no clear &ldquo;vital few&rdquo; to attack");
+  });
 });
