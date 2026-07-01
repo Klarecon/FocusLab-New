@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Oren Feedback — Plan (30 Jun 2026)</title>
+<style>
+  :root{
+    --cream:#f6efe2; --card:#fffaf0; --ink:#2b2118; --ink-soft:#6b5f51;
+    --line:#e6dcc8; --waste:#e03e12; --pink:#c4186a; --gold:#edb215;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--cream);color:var(--ink);
+    font-family:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    line-height:1.55;padding:48px 20px}
+  .wrap{max-width:880px;margin:0 auto}
+  h1,h2,h3{font-family:"Fraunces",Georgia,serif;line-height:1.15}
+  h1{font-size:2.5rem;margin:0 0 6px}
+  .sub{color:var(--ink-soft);margin:0 0 32px;font-size:1.05rem}
+  .item{background:var(--card);border:1.5px solid var(--line);border-radius:18px;
+    padding:22px 24px;margin-bottom:18px;border-left:5px solid var(--pink)}
+  .item h2{font-size:1.35rem;margin:0 0 4px}
+  .tag{display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.06em;
+    text-transform:uppercase;padding:3px 10px;border-radius:999px;vertical-align:middle;
+    margin-left:8px}
+  .t-ship{background:rgba(196,24,106,.12);color:var(--pink)}
+  .t-pick{background:rgba(237,178,21,.18);color:#9a7400}
+  .quote{color:var(--waste);font-weight:600;font-style:italic;margin:.2rem 0 .6rem}
+  .row{margin:.55rem 0}
+  .row b{display:block;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--ink-soft);margin-bottom:2px}
+  .file{font-family:ui-monospace,Menlo,monospace;font-size:.82rem;background:#0000000a;
+    padding:1px 6px;border-radius:6px}
+  ul{margin:.3rem 0 .3rem 1.1rem;padding:0}
+  li{margin:.18rem 0}
+  .pick li{margin:.3rem 0}
+  .rec{color:var(--pink);font-weight:700}
+  .ask{background:rgba(237,178,21,.1);border:1.5px dashed var(--gold);border-radius:12px;
+    padding:14px 18px;margin-top:6px}
+  .foot{margin-top:34px;padding-top:18px;border-top:2px solid var(--line);color:var(--ink-soft)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Oren feedback — the plan 🛠️</h1>
+  <p class="sub">30 Jun 2026 · 6 items · nothing gets executed until you confirm. <span class="rec">Pink = my recommendation.</span> <span class="t-pick tag">needs a pick</span> = I need Oren's / your call before building.</p>
+
+  <!-- 1 -->
+  <div class="item">
+    <h2>1 · "A working person" phrasing <span class="tag t-pick">needs a pick</span></h2>
+    <p class="quote">"I still don't like this phrasing."</p>
+    <div class="row"><b>Where</b><span class="file">Hero.tsx:140</span> &middot; <span class="file">FinalCTA.tsx:35</span> — "A working person loses about 10 hours a week…"</div>
+    <div class="row"><b>My read</b> "A working person" is vague and slightly off — it sounds like a category, not <em>you</em>. The line is strong; the subject is the weak part.</div>
+    <div class="row pick"><b>Options (Oren picks one)</b>
+      <ul>
+        <li class="rec">A &nbsp;— "<strong>You probably lose about 10 hours a week</strong> to work that adds nothing." <span class="rec">(direct, second person — recommended)</span></li>
+        <li>B &nbsp;— "<strong>Most people lose about 10 hours a week</strong> to work that adds nothing."</li>
+        <li>C &nbsp;— "<strong>The average week hides about 10 hours</strong> of work that adds nothing."</li>
+      </ul>
+    </div>
+    <div class="row"><b>Cost</b> Copy-only. Safe — the S25 regression test checks padding, not the phrase.</div>
+  </div>
+
+  <!-- 2 -->
+  <div class="item">
+    <h2>2 · "Redefining waste" + the missing explanation <span class="tag t-pick">needs a pick</span></h2>
+    <p class="quote">"You're redefining waste… eyebrow-raising." · "This is not waste" (investor prep) · "We discussed adding explanation for the unsure — none are visible."</p>
+    <div class="row"><b>Root cause</b> The data file's own rule is: every label = <em>clockable activity + avoidable cut</em>. Some labels skipped the cut — "Prep and follow-up for investor updates" names a <em>valuable activity</em> with no cut, so under the heading "WORK THAT ADDS NOTHING" it reads as "all investor prep is waste." That's the over-claim.</div>
+    <div class="row"><b>Where</b><span class="file">lib/data/waste-sources.ts</span> (labels + <span class="file">whatCounts</span>, which is written but never rendered) &middot; <span class="file">LogStep.tsx:374</span> (the cards)</div>
+    <div class="row pick"><b>Fix — three moves</b>
+      <ul>
+        <li class="rec"><strong>a. Surface the explanation.</strong> Render each card's <span class="file">whatCounts</span> as a one-line "what counts" under the label (the unsure-helper we promised). This is the core fix and it's additive.</li>
+        <li class="rec"><strong>b. Re-word the no-cut labels</strong> so the avoidable slice is in the label itself — e.g. "Prep and follow-up for investor updates" → "<strong>Over-prepping investor updates</strong>"; "Low-stakes approvals routed through you" stays (already has the cut); "Being the bottleneck for every decision" → "<strong>Decisions that bottleneck on you</strong>". I'll audit all items under this group for a missing cut.</li>
+        <li><strong>c. (Pick) Soften the heading?</strong> Keep "WORK THAT ADDS NOTHING", or → "WORK THAT OFTEN ADDS NOTHING" / "LOW-VALUE OR OVERDONE WORK". <span class="rec">My rec: keep the punchy heading but rely on (a)+(b) to carry the nuance.</span></li>
+      </ul>
+    </div>
+    <div class="ask">Need from you / Oren: (1) OK to reword labels to include the avoidable cut? (2) heading — keep punchy, or soften? I'll send the full reworded label list for sign-off before touching code.</div>
+  </div>
+
+  <!-- 3 -->
+  <div class="item">
+    <h2>3 · "Log your waste" is too long <span class="tag t-pick">needs a pick</span></h2>
+    <p class="quote">"This is a very long page, I don't like it."</p>
+    <div class="row"><b>Where</b><span class="file">LogStep.tsx</span> — 4 type-groups, every item shown expanded, one long scroll.</div>
+    <div class="row pick"><b>Options</b>
+      <ul>
+        <li class="rec">A &nbsp;— <strong>Collapse the 4 groups into accordions</strong>; first open, rest one tap to expand. Page is short by default, full list still reachable. <span class="rec">(recommended)</span></li>
+        <li>B &nbsp;— Trim the per-role list to the top ~5 items per group, "show more" for the rest.</li>
+        <li>C &nbsp;— Two-column denser grid + tighter spacing (smallest change, still long-ish).</li>
+      </ul>
+    </div>
+    <div class="row"><b>Cost</b> Interaction change → UI/UX + a behaviour test. Want your pick before I build.</div>
+  </div>
+
+  <!-- 4 -->
+  <div class="item">
+    <h2>4 · "You need to see this" should lead the number <span class="tag t-ship">ready to ship</span></h2>
+    <p class="quote">"'You need to see this' comes before the number."</p>
+    <div class="row"><b>Where</b><span class="file">ResultsView.tsx:354–374</span> — currently emoji → big $ number → "You need to see this" underneath.</div>
+    <div class="row"><b>Fix</b> Reorder: lead-in line ("You need to see this 💀🤯") <em>above</em>, then the big <span style="color:var(--waste);font-weight:700">$114,678/year</span> drops as the payoff. Builds anticipation instead of explaining after the fact.</div>
+    <div class="row"><b>Cost</b> Low-risk reorder. Re-shoot the results screenshot to confirm the reveal still lands.</div>
+  </div>
+
+  <!-- 5 -->
+  <div class="item">
+    <h2>5 · "Your Biggest Drains" — add value, lead with the money <span class="tag t-ship">ready to ship</span></h2>
+    <p class="quote">"This is a place where you add value, not repeat yourself. The money loss? Possibly the biggest thing, and it appears last."</p>
+    <div class="row"><b>Where</b><span class="file">ResultsView.tsx:560–578</span> — line reads "You spend 10 hrs/week… that's 480 hours/year <em>($45,871)</em>" — money buried in parens, last.</div>
+    <div class="row pick"><b>Fix</b>
+      <ul>
+        <li class="rec"><strong>Lead with the money.</strong> Make the $ the headline metric of each card: "<strong style="color:var(--waste)">$45,871/year</strong> — 480 hrs, 10 hrs/week." Hours become support, not the headline.</li>
+        <li class="rec"><strong>Add, don't repeat.</strong> Give each drain a one-line "so what" the total didn't say — e.g. its share of your total loss, or what it equals (≈ X work-weeks). Turns a restatement into an insight.</li>
+      </ul>
+    </div>
+    <div class="row"><b>Cost</b> Copy + layout. UI/UX + screenshot verify.</div>
+  </div>
+
+  <!-- 6 -->
+  <div class="item">
+    <h2>6 · Proven fixes need references <span class="tag t-ship">ready to ship</span></h2>
+    <p class="quote">"Good! Needs referencing, or a comment that explains the sources."</p>
+    <div class="row"><b>Good news</b> The data is already there — <strong>100/100 fixes carry a <span class="file">source: {name, url}</span></strong>. It's just never rendered.</div>
+    <div class="row"><b>Where</b><span class="file">lib/data/solutions.ts</span> (sources) &middot; <span class="file">components/focus/</span> (SolutionPicker / fix cards — add the render)</div>
+    <div class="row"><b>Fix</b> Show a small "Source: <em>Visible.vc</em> ↗" link under each fix, plus a one-line "Where these come from" note at the top of the fixes list. Additive, low-risk.</div>
+  </div>
+
+  <div class="foot">
+    <strong>Sequence I'd run (on your go):</strong> ship the 3 low-risk wins first (#4, #6, #5) → then the picks (#1 phrasing, #2 labels+explanation, #3 page length) once Oren signs off the wording.
+    Each phase: labelled specialist · new regression test · screenshot-verified · deploy via <span class="file">vercel --prod</span> + alias check. Tests stay green (353 → up).
+    <br><br><strong>Waiting on you:</strong> #1 option (A/B/C) · #2 reword-labels yes/no + heading keep-or-soften · #3 option (A/B/C). The rest I can start immediately.
+  </div>
+</div>
+</body>
+</html>

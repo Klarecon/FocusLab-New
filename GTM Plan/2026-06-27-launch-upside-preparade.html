@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FocusLab — What Could Go Right</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+:root{
+  --waste-orange:#e03e12;
+  --reclaim-pink:#c4186a;
+  --gold:#edb215;
+  --cream:#fdf6ee;
+  --dark:#1a1714;
+  --mid:#4a443d;
+  --soft:#6b6358;
+  --border:#e8e0d4;
+  --white:#ffffff;
+  --highlight:#fef9f0;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.65;}
+.hero{background:linear-gradient(135deg,#3a1029 0%,var(--reclaim-pink) 130%);color:#fff;padding:54px 40px 44px;text-align:center;}
+.hero .badge{display:inline-block;background:var(--gold);color:var(--dark);padding:5px 15px;border-radius:16px;font-size:.72rem;font-weight:700;letter-spacing:.04em;margin-bottom:16px;text-transform:uppercase;}
+.hero h1{font-family:'Fraunces',serif;font-size:2.5rem;font-weight:700;color:var(--gold);margin-bottom:10px;line-height:1.1;}
+.hero .subtitle{font-size:1.05rem;color:rgba(255,255,255,.82);max-width:640px;margin:0 auto;}
+.hero .meta{font-size:.78rem;color:rgba(255,255,255,.55);margin-top:18px;}
+.container{max-width:920px;margin:0 auto;padding:34px 22px 60px;}
+.card{background:var(--white);border-radius:14px;padding:30px 34px;margin-bottom:24px;box-shadow:0 2px 12px rgba(0,0,0,.05);}
+.card h2{font-family:'Fraunces',serif;font-size:1.55rem;color:var(--dark);margin-bottom:16px;display:flex;align-items:center;gap:12px;line-height:1.2;}
+.card h2 .num{background:var(--reclaim-pink);color:#fff;font-size:.72rem;font-weight:700;padding:4px 11px;border-radius:14px;font-family:'Plus Jakarta Sans',sans-serif;flex-shrink:0;}
+.card h3{font-family:'Fraunces',serif;font-size:1.12rem;color:var(--dark);margin:22px 0 8px;}
+.card p,.card li{font-size:.92rem;color:var(--mid);}
+.card ul{padding-left:20px;margin:8px 0;}
+.card li{padding:3px 0;}
+.lead{font-size:1rem;color:var(--mid);}
+.frame{background:var(--highlight);border-left:4px solid var(--reclaim-pink);padding:16px 20px;border-radius:0 10px 10px 0;margin:16px 0;font-size:.92rem;color:var(--mid);}
+.frame strong{color:var(--dark);}
+
+.scenarios{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:18px 0 4px;}
+@media(max-width:760px){.scenarios{grid-template-columns:1fr;}}
+.scn{border:2px solid var(--border);border-radius:12px;padding:18px;background:#fff;}
+.scn .tag{display:inline-block;font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:3px 9px;border-radius:10px;color:#fff;margin-bottom:10px;}
+.scn.a .tag{background:var(--reclaim-pink);}
+.scn.b .tag{background:var(--gold);color:var(--dark);}
+.scn.c .tag{background:var(--waste-orange);}
+.scn h4{font-family:'Fraunces',serif;font-size:1.02rem;margin-bottom:6px;color:var(--dark);}
+.scn p{font-size:.84rem;color:var(--soft);}
+
+.asset{border:1px solid var(--border);border-radius:12px;padding:0;margin:16px 0;overflow:hidden;}
+.asset .head{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--highlight);border-bottom:1px solid var(--border);}
+.asset .badge2{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:4px 9px;border-radius:9px;color:#fff;flex-shrink:0;background:var(--reclaim-pink);}
+.asset .badge2.have{background:var(--gold);color:var(--dark);}
+.asset .badge2.build{background:var(--soft);}
+.asset .title{font-weight:700;font-size:.98rem;color:var(--dark);}
+.asset .body{padding:14px 18px;}
+.asset .body p{font-size:.88rem;margin-bottom:8px;}
+.asset .row{display:grid;grid-template-columns:120px 1fr;gap:10px;font-size:.86rem;padding:5px 0;border-top:1px dashed var(--border);}
+.asset .row:first-of-type{border-top:none;}
+.asset .row .lbl{font-weight:700;color:var(--dark);font-size:.74rem;text-transform:uppercase;letter-spacing:.03em;padding-top:2px;}
+.asset .row .val{color:var(--mid);}
+
+.cat-label{font-family:'Plus Jakarta Sans',sans-serif;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--reclaim-pink);margin:26px 0 2px;}
+
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.86rem;}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+th{font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--soft);font-weight:700;}
+td{color:var(--mid);}
+td b{color:var(--dark);}
+
+.ladder{counter-reset:step;list-style:none;padding-left:0;}
+.ladder li{position:relative;padding:14px 0 14px 52px;border-bottom:1px solid var(--border);font-size:.9rem;}
+.ladder li:before{counter-increment:step;content:counter(step);position:absolute;left:0;top:12px;width:34px;height:34px;background:var(--reclaim-pink);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:'Fraunces',serif;}
+.ladder li b{color:var(--dark);}
+.foot{text-align:center;font-size:.78rem;color:var(--soft);padding:10px 0 0;}
+.pill{display:inline-block;background:var(--reclaim-pink);color:#fff;font-size:.6rem;font-weight:700;padding:2px 7px;border-radius:8px;margin-left:6px;text-transform:uppercase;letter-spacing:.04em;vertical-align:middle;}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="badge">GTM · Upside Pre-Parade</div>
+  <h1>What could go right with FocusLab</h1>
+  <p class="subtitle">The mirror of the pre-mortem. It's six months from now and FocusLab worked. Here's the honest list of <em>why</em> — the real assets you already hold and the scenarios where they compound.</p>
+  <p class="meta">Prepared 27 June 2026 · Companion to the Launch Risk Pre-Mortem · same rigor, pointed at the upside</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <h2><span class="num">00</span> How to read this</h2>
+    <p class="lead">A pre-parade is the opposite exercise to the pre-mortem: assume you <em>won</em>, then name the causes. The discipline is the same — no cheerleading. Every asset below is something you can point at today, and every scenario is a plausible chain, not a fantasy.</p>
+    <div class="frame"><strong>The honest frame:</strong> you start with two things most pre-revenue founders don't have — <strong>a real, working product that's already live</strong>, and <strong>genuine domain authority (Oren's methodology + network).</strong> Most startups die before they have either. You're past that line. The whole game now is converting those two assets into a money path before momentum fades.</div>
+  </div>
+
+  <!-- THREE WAYS IT WINS -->
+  <div class="card">
+    <h2><span class="num">01</span> The three ways it wins</h2>
+    <p class="lead">Each mirrors one of the three deaths from the pre-mortem — the same fork, walked the good way.</p>
+    <div class="scenarios">
+      <div class="scn a">
+        <span class="tag">Win A — Resonance</span>
+        <h4>The aha-moment travels</h4>
+        <p>"You waste 14 hours a week" is screenshot-able. One Reddit thread or one creator's video where the diagnosis <em>lands emotionally</em> does what no ad budget can — people share the feeling, not the feature. The free tool becomes its own distribution.</p>
+      </div>
+      <div class="scn b">
+        <span class="tag">Win B — Conversion</span>
+        <h4>The fix is worth paying for</h4>
+        <p>The free diagnosis makes the problem <em>felt</em>; the paid plan offers relief from a pain you just created. When the gate is placed right, paying isn't a leap — it's the obvious next step. The two halves work as one funnel.</p>
+      </div>
+      <div class="scn c">
+        <span class="tag">Win C — Compounding</span>
+        <h4>Coaches turn you into a system</h4>
+        <p>One coach who adopts FocusLab brings a roster of clients and recurring usage. Seven of them = $1K MRR with no ad spend. Their authority teaches the category for you, and their clients become your individual users.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ASSETS -->
+  <div class="card">
+    <h2><span class="num">02</span> The assets you actually hold</h2>
+    <p class="lead">What's genuinely in your favor — tagged <span class="pill" style="background:var(--gold);color:var(--dark)">have now</span> (real today) vs <span class="pill" style="background:var(--soft)">to build</span> (a lever you can pull). No vanity items.</p>
+
+    <div class="cat-label">A · Product &amp; positioning</div>
+
+    <div class="asset">
+      <div class="head"><span class="badge2 have">Have now</span><span class="title">A finished, working product — not a deck</span></div>
+      <div class="body">
+        <p>The analyzer, Focus Table, EVI Matrix and Payoff are built, tested (336 passing), and live. You can put a real thing in front of a real person today. That collapses the riskiest phase most founders are stuck in.</p>
+        <div class="row"><span class="lbl">Why it's an edge</span><span class="val">You can validate with usage, not promises. Every conversation is a demo, not a pitch.</span></div>
+        <div class="row"><span class="lbl">How to press it</span><span class="val">Get it in front of 10 real managers this month and watch them use it. Live product → live feedback loop is your unfair advantage.</span></div>
+      </div>
+    </div>
+
+    <div class="asset">
+      <div class="head"><span class="badge2 have">Have now</span><span class="title">A sharp, defensible position</span></div>
+      <div class="body">
+        <p>"Not a tracker, not a quiz — a diagnosis with a ranked fix, in 15 minutes not 4 weeks." Your own competitor map confirms there's <em>no exact twin</em>. The closest matches are thin lead-magnet quizzes. That's a real opening, not a crowded fight.</p>
+        <div class="row"><span class="lbl">Why it's an edge</span><span class="val">A one-line frame an investor or a stranger can repeat is rare. You have it.</span></div>
+        <div class="row"><span class="lbl">How to press it</span><span class="val">Say it the same way every time, everywhere. Repetition is what makes a category yours.</span></div>
+      </div>
+    </div>
+
+    <div class="asset">
+      <div class="head"><span class="badge2 have">Have now</span><span class="title">A free hook with a genuine emotional payload</span></div>
+      <div class="body">
+        <p>Most "free tiers" are watered-down trials. Yours delivers the single most shareable moment — the gut-punch number — for $0, on a static site that costs almost nothing to run. The best salesperson you could build, working 24/7 at near-zero marginal cost.</p>
+        <div class="row"><span class="lbl">Why it's an edge</span><span class="val">Low cost-to-serve means you can give the hook away forever and still have healthy margins on Pro.</span></div>
+        <div class="row"><span class="lbl">How to press it</span><span class="val">Make the result <em>more</em> shareable — a clean result card someone wants to post. Turn the aha into a referral engine.</span></div>
+      </div>
+    </div>
+
+    <div class="cat-label">B · Distribution &amp; credibility</div>
+
+    <div class="asset">
+      <div class="head"><span class="badge2 have">Have now</span><span class="title">Oren — methodology authority + a warm coach channel</span></div>
+      <div class="body">
+        <p>The Pareto/Focus methodology isn't generic productivity advice — it's an expert's system, which answers the "why should I trust this?" question for free. And his network is a <em>warm</em> door into the exact segment (coaches) that converts fastest: 7 coaches = $1K MRR.</p>
+        <div class="row"><span class="lbl">Why it's an edge</span><span class="val">Credibility and distribution in one relationship. Most founders have to manufacture both from cold.</span></div>
+        <div class="row"><span class="lbl">How to press it</span><span class="val">Get 3 coaches to <em>prepay</em> (your own bar). Three real commitments turn the coach track from a hope into a channel.</span></div>
+      </div>
+    </div>
+
+    <div class="asset">
+      <div class="head"><span class="badge2 have">Have now</span><span class="title">Evidence the pain is real — in users' own words</span></div>
+      <div class="body">
+        <p>The reddit-pain-miner work means you're not guessing whether managers feel this — you have their language. That's gold for landing-page copy, ad hooks, and knowing which thread to show up in helpfully.</p>
+        <div class="row"><span class="lbl">Why it's an edge</span><span class="val">Demand validation + ready-made copy in the customer's own voice. Most teams pay for this research.</span></div>
+        <div class="row"><span class="lbl">How to press it</span><span class="val">Mirror their exact phrasing on the landing page. The closer your headline is to what they already say, the higher it converts.</span></div>
+      </div>
+    </div>
+
+    <div class="cat-label">C · Economics &amp; moat (the compounding kind)</div>
+
+    <div class="asset">
+      <div class="head"><span class="badge2 build">To build</span><span class="title">A moat that grows while you sleep</span></div>
+      <div class="body">
+        <p>Three compounding assets, each stronger with scale: (1) accumulated waste-pattern data across roles/industries — a clone can copy the UI but not the dataset; (2) coach network effects; (3) switching costs from saved plans &amp; progress history. None exist on day one — all are byproducts of usage.</p>
+        <div class="row"><span class="lbl">Why it's an edge</span><span class="val">The longer you run, the harder you are to displace — the opposite of a feature that's easy to bolt on.</span></div>
+        <div class="row"><span class="lbl">How to press it</span><span class="val">Build the account/data layer (the pre-mortem's #1 blocker) — it's <em>also</em> what turns usage into a moat. Same investment, two payoffs.</span></div>
+      </div>
+    </div>
+
+    <div class="asset">
+      <div class="head"><span class="badge2 have">Have now</span><span class="title">Cheap to run, capital-efficient by design</span></div>
+      <div class="body">
+        <p>Static site, no infra bills, built by one person with AI leverage. Your burn is basically your time. That means you can take the slow, real path (let the category teach itself, let coaches compound) without a clock forcing a premature scale-up.</p>
+        <div class="row"><span class="lbl">Why it's an edge</span><span class="val">Patience is a strategy you can actually afford. Even modest MRR is real profit, not a runway extension.</span></div>
+        <div class="row"><span class="lbl">How to press it</span><span class="val">Don't spend into paid ads until unit economics close. Let free channels + coaches carry you — you have the luxury of waiting.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPOUNDING LADDER -->
+  <div class="card">
+    <h2><span class="num">03</span> What "going right" looks like, step by step</h2>
+    <p class="lead">The realistic compounding path — not a hockey stick, a staircase. Each step funds and de-risks the next.</p>
+    <ol class="ladder">
+      <li><b>Money path closes.</b> A stranger can pay and keep their plan. Now every visitor is a potential customer, not a dead end. <em>(This is the unlock everything else waits on.)</em></li>
+      <li><b>First 10 paying individuals.</b> New managers who hit the aha-moment and want the fix. Proof the funnel converts at all — and your first case studies.</li>
+      <li><b>Three coaches prepay.</b> The coach track flips from hope to channel. Each brings recurring usage and borrows you their authority.</li>
+      <li><b>Retention loop bites.</b> Monthly re-assessment + progress tracking make month-2 a renewal, not a goodbye. MRR stops leaking and starts stacking.</li>
+      <li><b>The dataset starts talking.</b> Enough audits to show "managers in your role typically waste X on Y" — turning your benchmarks from static to <em>earned</em>, deepening the moat.</li>
+      <li><b>$1K MRR, then a fork.</b> Either lean into coaches (network effects) or individuals (referral + content) — chosen on data, funded by revenue, on your timeline.</li>
+    </ol>
+  </div>
+
+  <!-- LEADING INDICATORS OF GOOD -->
+  <div class="card">
+    <h2><span class="num">04</span> Early signs it's working</h2>
+    <p class="lead">The green-light mirror of the pre-mortem's warning dashboard. See two or three of these early and you're on the staircase.</p>
+    <table>
+      <thead><tr><th>Signal</th><th>What it tells you</th></tr></thead>
+      <tbody>
+        <tr><td><b>People share the result unprompted</b></td><td>Win A is live — the aha travels on its own. Strongest possible early signal.</td></tr>
+        <tr><td><b>Someone describes you back correctly</b></td><td>"It's not a tracker, it finds your waste" — your positioning is sticking; category teaching is working.</td></tr>
+        <tr><td><b>A user returns without a nudge</b></td><td>The tool is more than one-and-done. Death C is being beaten.</td></tr>
+        <tr><td><b>First coach asks "can I use this with clients?"</b></td><td>Pull, not push. The channel wants you. Push hard here.</td></tr>
+        <tr><td><b>Free→Pro clears 3%</b></td><td>The two-halves funnel works; the fix is worth paying for.</td></tr>
+        <tr><td><b>Inbound questions about teams/pricing</b></td><td>Demand is running ahead of the product — the best problem to have.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- THE WEDGE -->
+  <div class="card">
+    <h2><span class="num">05</span> If you press only one advantage</h2>
+    <div class="frame"><strong>Lead with the coaches.</strong> Of everything you hold, the Oren coach channel is the one asset competitors can't copy and ads can't buy: warm relationships + borrowed authority + the segment that converts fastest and churns least. Seven coaches reaches $1K MRR with zero awareness-building. Individuals are the bigger long-term market, but coaches are the <em>fastest, cheapest, most defensible</em> first win — and each one quietly recruits individual users for you.</div>
+    <p style="margin-top:14px;font-size:.88rem;">The pre-mortem's one fix (close the money path) and this doc's one advantage (press the coaches) are the same play from two sides: <strong>build the smallest thing a coach can pay for and put their clients into — then let Oren open three doors.</strong></p>
+  </div>
+
+  <p class="foot">FocusLab · Launch Upside Pre-Parade · 27 June 2026 · companion to the Risk Pre-Mortem · <code>/GTM Plan/</code></p>
+
+</div>
+</body>
+</html>

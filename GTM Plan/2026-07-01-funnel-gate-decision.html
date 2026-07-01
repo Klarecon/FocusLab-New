@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FocusLab — Where the Gate Goes: Funnel Decision</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+:root{
+  --waste-orange:#e03e12;
+  --reclaim-pink:#c4186a;
+  --gold:#edb215;
+  --green:#1f8a4c;
+  --cream:#fdf6ee;
+  --dark:#1a1714;
+  --mid:#4a443d;
+  --soft:#6b6358;
+  --border:#e8e0d4;
+  --white:#ffffff;
+  --highlight:#fef9f0;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.65;}
+.hero{background:linear-gradient(135deg,#3a1029 0%,var(--reclaim-pink) 130%);color:#fff;padding:54px 40px 44px;text-align:center;}
+.hero .badge{display:inline-block;background:var(--gold);color:var(--dark);padding:5px 15px;border-radius:16px;font-size:.72rem;font-weight:700;letter-spacing:.04em;margin-bottom:16px;text-transform:uppercase;}
+.hero h1{font-family:'Fraunces',serif;font-size:2.5rem;font-weight:700;color:var(--gold);margin-bottom:10px;line-height:1.1;}
+.hero .subtitle{font-size:1.05rem;color:rgba(255,255,255,.82);max-width:660px;margin:0 auto;}
+.hero .meta{font-size:.78rem;color:rgba(255,255,255,.55);margin-top:18px;}
+.container{max-width:940px;margin:0 auto;padding:34px 22px 60px;}
+.card{background:var(--white);border-radius:14px;padding:30px 34px;margin-bottom:24px;box-shadow:0 2px 12px rgba(0,0,0,.05);}
+.card h2{font-family:'Fraunces',serif;font-size:1.55rem;color:var(--dark);margin-bottom:16px;display:flex;align-items:center;gap:12px;line-height:1.2;}
+.card h2 .num{background:var(--reclaim-pink);color:#fff;font-size:.72rem;font-weight:700;padding:4px 11px;border-radius:14px;font-family:'Plus Jakarta Sans',sans-serif;flex-shrink:0;}
+.card h3{font-family:'Fraunces',serif;font-size:1.12rem;color:var(--dark);margin:22px 0 8px;}
+.card p,.card li{font-size:.92rem;color:var(--mid);}
+.card ul{padding-left:20px;margin:8px 0;}
+.card li{padding:3px 0;}
+.lead{font-size:1rem;color:var(--mid);}
+.frame{background:var(--highlight);border-left:4px solid var(--reclaim-pink);padding:16px 20px;border-radius:0 10px 10px 0;margin:16px 0;font-size:.96rem;color:var(--mid);}
+.frame strong{color:var(--dark);}
+.frame.north{border-left-color:var(--gold);background:#fffaf0;font-family:'Fraunces',serif;font-size:1.08rem;color:var(--dark);line-height:1.5;}
+.frame.green{border-left-color:var(--green);background:#f1f8f3;}
+.frame.kill{border-left-color:var(--waste-orange);background:#fdf0ec;}
+
+.verdict{background:linear-gradient(135deg,var(--reclaim-pink),#8a1550);color:#fff;border-radius:14px;padding:24px 30px;margin-bottom:24px;}
+.verdict .k{font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.verdict h2{font-family:'Fraunces',serif;font-size:1.6rem;line-height:1.2;color:#fff;margin-bottom:8px;}
+.verdict p{font-size:.96rem;color:rgba(255,255,255,.9);}
+.verdict strong{color:var(--gold);}
+
+.cols{display:flex;gap:18px;margin:20px 0;}
+.col{flex:1;border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.col .top{padding:14px 18px;color:#fff;}
+.col.a .top{background:linear-gradient(90deg,var(--reclaim-pink),#a01458);}
+.col.b .top{background:linear-gradient(90deg,#6b3d1a,var(--gold));}
+.col .top .tag{font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;opacity:.85;}
+.col .top .name{font-family:'Fraunces',serif;font-size:1.15rem;font-weight:700;line-height:1.2;margin-top:2px;}
+.col .steps{padding:8px 0;}
+.col .s{display:flex;gap:11px;align-items:flex-start;padding:10px 18px;position:relative;}
+.col .s:not(:last-child)::after{content:"";position:absolute;left:29px;top:32px;bottom:-4px;width:2px;background:var(--border);}
+.col .dot{flex:0 0 22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;color:#fff;background:var(--soft);z-index:1;font-family:'Fraunces',serif;}
+.col .dot.free{background:var(--green);}
+.col .dot.email{background:var(--gold);color:var(--dark);}
+.col .dot.pay{background:var(--reclaim-pink);}
+.col .txt{font-size:.86rem;color:var(--mid);padding-top:1px;}
+.col .txt b{color:var(--dark);display:block;font-size:.9rem;}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin:6px 0 2px;font-size:.8rem;color:var(--soft);}
+.legend span{display:flex;align-items:center;gap:6px;}
+.legend i{width:13px;height:13px;border-radius:50%;display:inline-block;}
+.i-free{background:var(--green);}
+.i-email{background:var(--gold);}
+.i-pay{background:var(--reclaim-pink);}
+
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.88rem;}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--border);color:var(--mid);vertical-align:top;}
+th{font-family:'Plus Jakarta Sans',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--reclaim-pink);font-weight:700;}
+td b{color:var(--dark);}
+
+.agree{border:1px solid var(--border);border-radius:10px;padding:4px 0;margin:14px 0;}
+.agree .row{display:flex;gap:12px;padding:11px 18px;align-items:flex-start;}
+.agree .row:not(:last-child){border-bottom:1px solid var(--border);}
+.agree .chk{flex:0 0 auto;color:var(--reclaim-pink);font-weight:700;font-size:1.05rem;line-height:1.3;}
+.agree .row div{font-size:.9rem;color:var(--mid);}
+.agree .row b{color:var(--dark);}
+
+.who{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px;}
+.who .p{flex:1;min-width:200px;border:1px solid var(--border);border-radius:10px;padding:14px 16px;background:var(--highlight);}
+.who .p .r{font-family:'Fraunces',serif;font-weight:700;font-size:.98rem;color:var(--dark);margin-bottom:4px;}
+.who .p .v{font-size:.85rem;color:var(--mid);}
+.who .p .v b{color:var(--reclaim-pink);}
+
+.footer{text-align:center;font-size:.78rem;color:var(--soft);margin-top:30px;}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="badge">Funnel Decision · GTM</div>
+  <h1>Where the Gate Goes</h1>
+  <p class="subtitle">Deciding what's free, what asks for an email, and what asks for money — before we build the money path. Three specialist agents weighed in. Here's the call.</p>
+  <p class="meta">FocusLab · 2026-07-01 · decision-first, no code written</p>
+</div>
+
+<div class="container">
+
+  <div class="verdict">
+    <div class="k">The one-line answer</div>
+    <h2>The mid-funnel gate is an <em>email</em>, never a payment. Money only ever lands on the Focus Table.</h2>
+    <p>Your instinct to A/B test is right — but the axis to test is <strong>where the email ask sits</strong>, not "email vs payment." Payment-gating a half-finished diagnosis to cold ad traffic is the one option all three agents would kill before it burns a dollar.</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">1</span> The question you asked</h2>
+    <p class="lead">When we split ad traffic to test funnels, Variant A shows only a <b>partial Pareto</b> as a lead magnet and gates the rest. The open question was: in Variant A, is that mid-gate an <b>email capture</b> or a <b>payment</b>? And is partial-Pareto even a good idea versus giving the full Pareto free (Variant B)?</p>
+    <div class="frame kill"><strong>Killed first:</strong> "partial results → pay $29 to see the rest." To a stranger who clicked an ad 90 seconds ago, that reads as a bait-and-switch. It spikes bounce, and Meta/Google <b>penalise</b> a bad post-click experience with higher costs — so it literally <b>raises your cost per customer</b>. First-session cash conversion for a $29 tool from cold traffic is ~0.2–1%. You don't win on click one.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">2</span> What all three agents agreed on</h2>
+    <div class="agree">
+      <div class="row"><span class="chk">✓</span><div><b>The gate is an email, not a payment.</b> The only thing a cold visitor should be asked for mid-funnel is a cheap "yes" that costs them nothing and lets you keep selling after they leave.</div></div>
+      <div class="row"><span class="chk">✓</span><div><b>Payment belongs on the Focus Table</b> — the <i>cure</i>, not the <i>diagnosis</i>. Free tells you where the waste is; paid fixes it. That's an honest line a cold user can feel.</div></div>
+      <div class="row"><span class="chk">✓</span><div><b>The aha must land before you ask for anything.</b> Even in Variant A you never gate the raw "I'm losing 9 hrs/week" number — you give that free, then gate the depth.</div></div>
+      <div class="row"><span class="chk">✓</span><div><b>One email, captured once, reused everywhere.</b> The same email is the magic-link account <i>and</i> the Lemon Squeezy checkout. Ask three times and you lose on friction alone.</div></div>
+      <div class="row"><span class="chk">✓</span><div><b>Judge on 30-day blended conversion + CAC</b> — not day-1 checkout rate, which would falsely flatter the "more free" variant and hide the email list's value.</div></div>
+    </div>
+    <div class="who">
+      <div class="p"><div class="r">🟢 Product Manager</div><div class="v">Email, decisively. Run A — but only the version that gives the aha <i>headline</i> free and email-gates the <b>depth</b>. That's A's whole edge: a retargeting asset B builds later.</div></div>
+      <div class="p"><div class="r">🟡 Growth / Acquisition</div><div class="v">Email, never payment. Expects <b>B</b> to win revenue-per-click: full aha builds trust, email-to-save still captures the lead, paywall the fix.</div></div>
+      <div class="p"><div class="r">🟢 Value-Perception</div><div class="v">A half-diagnosis <b>aborts the aha</b> and poisons reciprocity. Bet on B. If you must gate A, email only — and note that concedes the Pareto is a lead magnet.</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">3</span> The two funnels, side by side</h2>
+    <p class="lead">The disagreement is narrower than it looks. Both variants gate on <b>email</b>. Both paywall the <b>Focus Table</b>. The <em>only</em> thing your A/B test actually measures is whether the email ask sits <b>before</b> or <b>after</b> the full diagnosis.</p>
+    <div class="legend">
+      <span><i class="i-free"></i> Free — no ask</span>
+      <span><i class="i-email"></i> Email gate</span>
+      <span><i class="i-pay"></i> Payment gate</span>
+    </div>
+    <div class="cols">
+      <div class="col a">
+        <div class="top"><div class="tag">Variant A · gate the depth</div><div class="name">Headline free, email for the full breakdown</div></div>
+        <div class="steps">
+          <div class="s"><div class="dot free">1</div><div class="txt"><b>Ad → straight into the Analyzer</b>No login. Let them invest the 5 steps first.</div></div>
+          <div class="s"><div class="dot free">2</div><div class="txt"><b>Show the aha headline — free</b>#1 waste source + "you're losing X hrs/week." The reciprocity hit lands.</div></div>
+          <div class="s"><div class="dot email">@</div><div class="txt"><b>Email to unlock the full ranked Pareto</b>Framed "get your full breakdown," not "unlock to continue."</div></div>
+          <div class="s"><div class="dot free">3</div><div class="txt"><b>Full Pareto delivered</b>The complete vital-few ranking.</div></div>
+          <div class="s"><div class="dot pay">$</div><div class="txt"><b>Paywall the Focus Table</b>$29/mo · $199/yr. Email pre-filled at checkout.</div></div>
+        </div>
+      </div>
+      <div class="col b">
+        <div class="top"><div class="tag">Variant B · gate the fix</div><div class="name">Full Pareto free, email to save</div></div>
+        <div class="steps">
+          <div class="s"><div class="dot free">1</div><div class="txt"><b>Ad → straight into the Analyzer</b>No login. Same frictionless start.</div></div>
+          <div class="s"><div class="dot free">2</div><div class="txt"><b>Show the full Pareto — free</b>The complete diagnosis. Full aha, maximum trust.</div></div>
+          <div class="s"><div class="dot email">@</div><div class="txt"><b>Email as a "save / email me my report" ask</b>A value-framed save, not a wall on the results.</div></div>
+          <div class="s"><div class="dot pay">$</div><div class="txt"><b>Paywall the Focus Table</b>$29/mo · $199/yr. Same paid boundary, same plumbing.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="frame"><strong>Why this doesn't slow the build:</strong> both variants ride identical machinery — auth + Lemon Squeezy + a <b>movable gate</b>. We build it once; your ads pick the winner. You do <b>not</b> have to choose A or B before we start.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">4</span> How to judge the test</h2>
+    <table>
+      <tr><th>Metric</th><th>Why it's the one that matters</th></tr>
+      <tr><td><b>30-day blended visitor→paid</b></td><td>The decision metric. Counts day-0 buyers <i>and</i> nurtured email conversions, so A's delayed payoff is measured fairly.</td></tr>
+      <tr><td><b>CAC + payback period</b></td><td>Normalises for spend and traffic quality — tells you which funnel is actually buyable at scale. Watch whether gating inflates CPC via ad-quality penalties.</td></tr>
+      <tr><td><b>Email capture rate × email→paid</b></td><td>Quantifies the list asset. If a variant wins <i>because</i> of the nurture list, that's the thesis confirmed.</td></tr>
+    </table>
+    <div class="frame kill"><strong>The trap:</strong> don't judge on first-session checkout rate. It flatters the "more free" variant and throws away the entire value of the email list — which is how you recoup ad spend on cold traffic.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">5</span> Recommendation</h2>
+    <div class="frame north">Drop "payment after partial" from the test entirely. Run the A/B as <strong>email-gate placement</strong> — Variant A gates the depth of the Pareto, Variant B gives the full Pareto and gates the Focus Table. Payment only ever lands on the Focus Table. Build the movable gate once; let the ads decide.</div>
+    <h3>What this unblocks for the build</h3>
+    <ul>
+      <li>Workstream A1/A2 can proceed <b>without</b> picking A or B first — the paywall is a config line, not two separate builds.</li>
+      <li>The one plumbing rule to get right: <b>one email</b>, captured once, threaded through magic-link auth <i>and</i> Lemon Squeezy checkout. Get that wrong and you'll hand one variant an unfair win on friction.</li>
+      <li>Analytics (funnel tracking, already on the A4 list) is now a <b>launch requirement</b>, not a nice-to-have — the A/B test is worthless without it.</li>
+    </ul>
+  </div>
+
+  <p class="footer">Synthesised from three specialist agents — Product Manager, Growth/Acquisition, Value-Perception · FocusLab GTM · 2026-07-01</p>
+
+</div>
+</body>
+</html>

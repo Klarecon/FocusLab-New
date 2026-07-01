@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FocusLab — Launch Task Breakdown (ClickUp)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+:root{
+  --waste-orange:#e03e12; --reclaim-pink:#c4186a; --gold:#edb215; --green:#1f8a4c;
+  --cream:#fdf6ee; --dark:#1a1714; --mid:#4a443d; --soft:#6b6358; --border:#e8e0d4;
+  --white:#ffffff; --highlight:#fef9f0;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.6;}
+.hero{background:linear-gradient(135deg,#3a1029 0%,var(--reclaim-pink) 130%);color:#fff;padding:54px 40px 44px;text-align:center;}
+.hero .badge{display:inline-block;background:var(--gold);color:var(--dark);padding:5px 15px;border-radius:16px;font-size:.72rem;font-weight:700;letter-spacing:.04em;margin-bottom:16px;text-transform:uppercase;}
+.hero h1{font-family:'Fraunces',serif;font-size:2.5rem;font-weight:700;color:var(--gold);margin-bottom:10px;line-height:1.1;}
+.hero .subtitle{font-size:1.05rem;color:rgba(255,255,255,.82);max-width:680px;margin:0 auto;}
+.hero .meta{font-size:.78rem;color:rgba(255,255,255,.55);margin-top:18px;}
+.container{max-width:960px;margin:0 auto;padding:34px 22px 60px;}
+.card{background:var(--white);border-radius:14px;padding:28px 32px;margin-bottom:24px;box-shadow:0 2px 12px rgba(0,0,0,.05);}
+.card h2{font-family:'Fraunces',serif;font-size:1.5rem;color:var(--dark);margin-bottom:14px;display:flex;align-items:center;gap:12px;line-height:1.2;}
+.card h2 .num{background:var(--reclaim-pink);color:#fff;font-size:.72rem;font-weight:700;padding:4px 11px;border-radius:14px;font-family:'Plus Jakarta Sans',sans-serif;flex-shrink:0;}
+.card p,.card li{font-size:.9rem;color:var(--mid);}
+.lead{font-size:1rem;color:var(--mid);}
+.frame{background:var(--highlight);border-left:4px solid var(--reclaim-pink);padding:14px 18px;border-radius:0 10px 10px 0;margin:14px 0;font-size:.9rem;color:var(--mid);}
+.frame strong{color:var(--dark);}
+.frame.green{border-left-color:var(--green);background:#f1f8f3;}
+.frame.gold{border-left-color:var(--gold);background:#fffaf0;}
+
+.wsband{border-radius:12px 12px 0 0;padding:16px 22px;color:#fff;margin-top:8px;}
+.wsband.a{background:linear-gradient(120deg,#3a1029,var(--reclaim-pink));}
+.wsband.b{background:linear-gradient(120deg,#7a2a12,var(--waste-orange));}
+.wsband.l{background:linear-gradient(120deg,#6b3d1a,var(--gold));}
+.wsband .k{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.9;}
+.wsband h3{font-family:'Fraunces',serif;font-size:1.25rem;color:#fff;line-height:1.2;margin-top:2px;}
+
+.task{border:1px solid var(--border);border-top:none;padding:0;overflow:hidden;}
+.task:last-of-type{border-radius:0 0 12px 12px;}
+.task .th{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 18px;background:var(--highlight);border-bottom:1px solid var(--border);}
+.task .id{font-family:'Fraunces',serif;font-weight:700;font-size:.82rem;color:#fff;background:var(--reclaim-pink);padding:3px 10px;border-radius:8px;flex-shrink:0;}
+.task .tt{font-weight:700;font-size:.95rem;color:var(--dark);flex:1;min-width:200px;}
+.task .meta{display:flex;gap:6px;flex-wrap:wrap;}
+.tag{font-size:.66rem;font-weight:700;padding:2px 9px;border-radius:8px;letter-spacing:.02em;white-space:nowrap;}
+.tag.owner{background:#eee6d8;color:var(--mid);}
+.tag.eff{background:#e6ecf0;color:#3a5566;}
+.tag.block{background:var(--waste-orange);color:#fff;}
+.tag.noblock{background:#e3ede5;color:var(--green);}
+.tag.dep{background:#f0e3ee;color:var(--reclaim-pink);}
+.task .body{padding:12px 18px;}
+.task .desc{font-size:.88rem;color:var(--mid);margin-bottom:8px;font-style:italic;}
+.chk{list-style:none;padding:0;margin:0;}
+.chk li{position:relative;padding:4px 0 4px 26px;font-size:.87rem;color:var(--mid);}
+.chk li::before{content:"";position:absolute;left:0;top:6px;width:15px;height:15px;border:2px solid var(--reclaim-pink);border-radius:4px;}
+.dm{background:var(--dark);color:#eee;border-radius:12px;padding:18px 22px;margin:16px 0;font-size:.82rem;font-family:'Plus Jakarta Sans',sans-serif;white-space:pre;overflow-x:auto;line-height:1.5;}
+.dm b{color:var(--gold);}
+
+.gl{list-style:none;padding:0;margin:8px 0;}
+.gl li{position:relative;padding:8px 0 8px 30px;font-size:.9rem;color:var(--mid);border-bottom:1px solid var(--border);}
+.gl li:last-child{border-bottom:none;}
+.gl li::before{content:"";position:absolute;left:0;top:9px;width:17px;height:17px;border:2px solid var(--reclaim-pink);border-radius:4px;}
+.gl li b{color:var(--dark);}
+
+table{width:100%;border-collapse:collapse;font-size:.85rem;margin:10px 0;}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);color:var(--mid);vertical-align:top;}
+th{font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;color:var(--reclaim-pink);font-weight:700;}
+td b{color:var(--dark);}
+.footer{text-align:center;font-size:.78rem;color:var(--soft);margin-top:30px;}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px;font-size:.78rem;color:var(--soft);}
+.legend span{display:flex;align-items:center;gap:6px;}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="badge">Execution · ClickUp Task Breakdown</div>
+  <h1>Launch Tasks &amp; Checklists</h1>
+  <p class="subtitle">Every phase broken into tasks you can drop into ClickUp — each with an owner, effort, dependencies, and a checklist you can tick off. Built so you can track progress and report to Oren without hunting.</p>
+  <p class="meta">FocusLab · companion to the Q3 OKR Plan · 2026-07-01</p>
+</div>
+
+<div class="container">
+
+  <!-- HOW TO SET UP -->
+  <div class="card">
+    <h2><span class="num">0</span> How to load this into ClickUp</h2>
+    <p class="lead">Mirror the structure below. Each <b>List</b> = a workstream/phase, each <b>Task</b> = one deliverable, and the ticked items become the task's <b>Checklist</b>. That way a task is only "done" when every checkbox is ticked — and Oren's report is just a filter view.</p>
+    <div class="dm"><b>Space:</b>  FocusLab Launch — Q3 2026
+ <b>Lists</b> (each becomes a phase):
+   ├─ A · Money Path — Accounts &amp; Persistence   (A1)
+   ├─ A · Money Path — Billing &amp; Paywall        (A2)
+   ├─ A · Money Path — Return Loop               (A3)
+   ├─ A · Money Path — Trust &amp; Polish            (A4)
+   ├─ B · Launch Prep — Content &amp; Community
+   ├─ Launch Week
+   └─ Post-Launch Growth (Aug–Sep)</div>
+    <table>
+      <tr><th>ClickUp field</th><th>Set it to</th></tr>
+      <tr><td><b>Status</b></td><td>To Do · In Progress · Blocked · In Review · Done</td></tr>
+      <tr><td><b>Custom field: Owner</b></td><td>Mona (Founder+AI) · Content team · Oren</td></tr>
+      <tr><td><b>Custom field: Blocks green-light?</b></td><td>Yes / No — filter on "Yes" to see the launch-critical path</td></tr>
+      <tr><td><b>Priority</b></td><td>Urgent for blockers on the critical path, Normal otherwise</td></tr>
+      <tr><td><b>Due date</b></td><td>Per the 13-week plan in the OKR doc</td></tr>
+    </table>
+    <div class="legend">
+      <span>🔴 <b>BLOCKS</b> = launch can't happen until done</span>
+      <span>🟢 <b>No-block</b> = can slip past green-light</span>
+      <span>👤 Owner</span>
+      <span>⏱ Effort</span>
+      <span>🔗 Depends on</span>
+    </div>
+    <div class="frame gold"><strong>Reconcile CLAUDE.md first (½ day, Mona).</strong> The Option B plan introduces a backend, which CLAUDE.md §6/§13 currently bans ("no Supabase / no backend for v1"). Update those sections to allow it <b>before</b> writing A1 code, so the pre-commit hook and the rules don't block the build. This is the true W1 first task.</div>
+  </div>
+
+  <!-- WORKSTREAM A1 -->
+  <div class="card" style="padding-bottom:8px;">
+    <h2><span class="num">A1</span> Accounts &amp; Persistence</h2>
+    <p class="lead" style="margin-bottom:6px;">Goal: paid plans live in the user's Supabase account, survive a browser clear / device switch, and anonymous users can claim their local plan on signup.</p>
+  </div>
+  <div style="margin:-16px 0 24px;">
+    <div class="wsband a"><div class="k">Workstream A1</div><h3>Accounts &amp; Persistence</h3></div>
+
+    <div class="task">
+      <div class="th"><span class="id">A1-T1</span><span class="tt">Stand up Supabase project + schema</span><span class="meta"><span class="tag owner">👤 Mona</span><span class="tag eff">⏱ ½ day</span><span class="tag block">🔴 BLOCKS</span></span></div>
+      <div class="body"><div class="desc">Create the Supabase project and the tables that hold users, plans, and entitlements.</div>
+      <ul class="chk">
+        <li>Create Supabase project; save URL + anon key + service-role key to <code>.env.local</code> and Vercel env (never commit)</li>
+        <li>Add key names to <code>.env.example</code> as empty placeholders (documented, not valued)</li>
+        <li>Create <code>profiles</code> table (id → auth.users, email, created_at)</li>
+        <li>Create <code>plans</code> table (id, user_id FK, payload JSONB = full ParetoResult + Focus Table state, updated_at)</li>
+        <li>Create <code>entitlements</code> table (user_id FK, tier free|monthly|yearly, status, current_period_end)</li>
+        <li>Enable Row Level Security; policies so a user only reads/writes their own rows</li>
+        <li>Commit <code>docs/supabase-schema.sql</code> snapshot (schema only, no secrets)</li>
+      </ul></div>
+    </div>
+
+    <div class="task">
+      <div class="th"><span class="id">A1-T2</span><span class="tt">Auth: magic-link (+ optional Google)</span><span class="meta"><span class="tag owner">👤 Mona</span><span class="tag eff">⏱ 1 day</span><span class="tag block">🔴 BLOCKS</span><span class="tag dep">🔗 A1-T1</span></span></div>
+      <div class="body"><div class="desc">Wire Supabase Auth so a user signs in with a magic-link email (Google optional).</div>
+      <ul class="chk">
+        <li>Install <code>@supabase/supabase-js</code> + <code>@supabase/ssr</code>; create browser + server client helpers</li>
+        <li>Build sign-in screen (email + "send magic link") — pink #c4186a CTA, Fraunces header, Jakarta body</li>
+        <li>Add magic-link callback route that establishes the session cookie</li>
+        <li>Add Google OAuth provider + button (optional; behind a config flag if time-boxed)</li>
+        <li>Add <code>useUser()</code> hook / session context; show signed-in email + sign-out in header</li>
+        <li>Tests: signed-out vs signed-in render states; callback sets session</li>
+        <li>Verify: <code>tsc --noEmit</code> + <code>vitest --run</code> green (no regression on 353)</li>
+      </ul></div>
+    </div>
+
+    <div class="task">
+      <div class="th"><span class="id">A1-T3</span><span class="tt">Persist plans to Supabase (replace localStorage as source of truth)</span><span class="meta"><span class="tag owner">👤 Mona</span><span class="tag eff">⏱ 1 day</span><span class="tag block">🔴 BLOCKS</span><span class="tag dep">🔗 A1-T2</span></span></div>
+      <div class="body"><div class="desc">Save/load the Focus Table + Analyzer result to the logged-in user's Supabase row instead of Zustand-persist.</div>
+      <ul class="chk">
+        <li>Add store actions <code>savePlanToCloud()</code> / <code>loadPlanFromCloud()</code></li>
+        <li>Debounced autosave on Focus Table edits — Zustand as in-memory cache, Supabase as truth</li>
+        <li>On login, hydrate store from cloud plan if one exists</li>
+        <li>Keep <code>window.__*</code> OUT (hook check #4) — state through the store only</li>
+        <li>Handle offline/error: retry + non-blocking toast, never lose local edits</li>
+        <li>Tests: save writes correct JSONB shape; load rehydrates ParetoResult identically (round-trip)</li>
+        <li>Verify round-trip: edit → clear browser storage → reload → plan restored from cloud</li>
+      </ul></div>
+    </div>
+
+    <div class="task">
+      <div class="th"><span class="id">A1-T4</span><span class="tt">"Claim your saved plan" migration for anonymous users</span><span class="meta"><span class="tag owner">👤 Mona</span><span class="tag eff">⏱ ½ day</span><span class="tag block">🔴 BLOCKS</span><span class="tag dep">🔗 A1-T3</span></span></div>
+      <div class="body"><div class="desc">On first signup, migrate the existing local plan into the new account.</div>
+      <ul class="chk">
+        <li>Detect local plan present + user just authenticated with no cloud plan</li>
+        <li>Show "We found your saved plan — claim it?" prompt (pink CTA)</li>
+        <li>On confirm, upload local payload to <code>plans</code>, mark local as migrated (no re-prompt loop)</li>
+        <li>Conflict rule: if cloud plan exists, keep cloud, offer "replace with local" as explicit choice</li>
+        <li>Tests: migration maps local → cloud identically; no double-migration; conflict path covered</li>
+        <li>Manual QA: anonymous run → build plan → sign up → plan claimed intact</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- WORKSTREAM A2 -->
+  <div style="margin:0 0 24px;">
+    <div class="wsband a"><div class="k">Workstream A2</div><h3>Billing &amp; Paywall (sandbox first)</h3></div>
+
+    <div class="task">
+      <div class="th"><span class="id">A2-T1</span><span class="tt">Lemon Squeezy sandbox setup + products</span><span class="meta"><span class="tag owner">👤 Mona (Oren advises pricing)</span><span class="tag eff">⏱ ½ day</span><span class="tag block">🔴 BLOCKS</span></span></div>
+      <div class="body"><div class="desc">Create the sandbox store and three products (Free / $29-mo / $199-yr).</div>
+      <ul class="chk">
+        <li>Create LS sandbox store; add API key + store ID to <code>.env.local</code> + Vercel env</li>
+        <li>Create variants: Free, Monthly $29, Yearly $199; note variant IDs in config</li>
+        <li>Generate webhook signing secret; store in env</li>
+        <li>Document env var names in <code>.env.example</code></li>
+        <li>Confirm test-card flow works in sandbox checkout manually (no code yet)</li>
+      </ul></div>
+    </div>
+
+    <div class="task">
+      <div class="th"><span class="id">A2-T2</span><span class="tt">Checkout: single-email hosted checkout</span><span class="meta"><span class="tag owner">👤 Mona</span><span class="tag eff">⏱ ½ day</span><span class="tag block">🔴 BLOCKS</span><span class="tag dep">🔗 A2-T1 · A4-T3 · A1-T2</span></span></div>
+      <div class="body"><div class="desc">Launch LS checkout prefilled with the already-captured email — do NOT ask for email again.</div>
+      <ul class="chk">
+        <li>Read the one captured email from session/store; prefill LS <code>checkout[email]</code></li>
+        <li>Pass <code>custom</code> data = Supabase user_id so the webhook can map payment → user</li>
+        <li>Build plan selector (Monthly/Yearly toggle) → open hosted checkout — pink CTAs</li>
+        <li>Assert one email source, never re-prompted</li>
+        <li>Tests: checkout URL contains prefilled email + user_id custom field</li>
+        <li>Manual: click buy → LS opens with email prefilled</li>
+      </ul></div>
+    </div>
+
+    <div class="task">
+      <div class="th"><span class="id">A2-T3</span><span class="tt">Webhook: payment succeeded → unlock user</span><span class="meta"><span class="tag owner">👤 Mona</span><span class="tag eff">⏱ 1 day</span><span class="tag block">🔴 BLOCKS</span><span class="tag dep">🔗 A2-T1 · A1-T1</span></span></div>
+      <div class="body"><div class="desc">A verified LS webhook flips the user's entitlement to paid.</div>
+      <ul class="chk">
+        <li>Add <code>/api/webhooks/lemonsqueezy</code>; verify HMAC signature against the webhook secret</li>
+        <li>Handle order/subscription created + payment success → upsert <code>entitlements</code> (tier, active, period_end)</li>
+        <li>Handle cancelled / expired → downgrade to free</li>
+        <li>Idempotency: dedupe by LS event/order id (no double-unlock)</li>
+        <li>Map payment → user via <code>custom.user_id</code>; fallback match by email</li>
+        <li>Tests: signed payload unlocks; bad signature 401; duplicate no-ops; cancel downgrades</li>
+        <li>Verify: sandbox purchase → entitlement goes active within seconds</li>
+      </ul></div>
+    </div>
+
+    <div class="task">
+      <div class="th"><span class="id">A2-T4</span><span class="tt">Paywall gate on the Focus Table</span><span class="meta"><span class="tag owner">👤 Mona</span><span class="tag eff">⏱ ½ day</span><span class="tag block">🔴 BLOCKS</span><span class="tag dep">🔗 A2-T3 · A1-T2</span></span></div>
+      <div class="body"><div class="desc">Gate /focus behind entitlement; free users see the paywall, paid users pass. Paywall ONLY here — never on /analyzer.</div>
+      <ul class="chk">
+        <li>Server-check entitlement before rendering /focus; unpaid → paywall screen</li>
+        <li>Paywall screen: value recap + Monthly/Yearly buttons (→ A2-T2), pink CTA, human emoji</li>
+        <li>Paid user reaching /focus renders the table immediately</li>
+        <li>Real-time/poll unlock so the just-paid user advances without manual refresh</li>
+        <li>Tests: unpaid blocked, paid allowed, entitlement flip re-renders access</li>
+        <li>Verify: pre-commit hook passes all 11 checks</li>
+      </ul></div>
+    </div>
+
+    <div class="task">
+      <div class="th"><span class="id">A2-T5</span><span class="tt">End-to-end sandbox proof + live-swap runbook</span><span class="meta"><span class="tag owner">👤 Mona (exec) · Oren (live acct)</span><span class="tag eff">⏱ ½ day</span><span class="tag block">🔴 BLOCKS</span><span class="tag dep">🔗 A2-T2/T3/T4 · A1-T3</span></span></div>
+      <div class="body"><div class="desc">Prove stranger → pay → unlock end-to-end, and write the 30-min live-account swap steps. This is KR 1.1.</div>
+      <ul class="chk">
+        <li>Full run on deployed preview: fresh browser → analyzer → email gate → checkout (test card) → webhook → /focus unlocked</li>
+        <li>Confirm plan persists to that account (A1) after payment</li>
+        <li>Screen-record the passing run (evidence for KR 1.1)</li>
+        <li>Write <code>docs/go-live-lemonsqueezy.md</code>: swap sandbox→live keys, live webhook URL, live variant IDs, verify one real transaction</li>
+        <li>Add Playwright coverage of the gate transition where feasible (mock webhook unlock)</li>
+        <li><b>Oren:</b> provide live LS store + API key/webhook secret at launch (30-min plug-in, final step)</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- WORKSTREAM A3 -->
+  <div style="margin:0 0 24px;">
+    <div class="wsband a"><div class="k">Workstream A3</div><h3>Return Loop (minimal)</h3></div>
+
+    <div class="task">
+      <div class="th"><span class="id">A3-T1</span><span class="tt">Snapshot on plan completion</span><span class="meta"><span class="tag owner">👤 Mona</span><span class="tag eff">⏱ ½ day</span><span class="tag noblock">🟢 No-block</span><span class="tag dep">🔗 A1-T3</span></span></div>
+      <div class="body"><div class="desc">Store a timestamped snapshot of key metrics each time a plan/assessment is completed.</div>
+      <ul class="chk">
+        <li>Add <code>snapshots</code> table (user_id, taken_at, metrics JSONB: total waste hrs, top sources, reclaimable hrs)</li>
+        <li>Write a snapshot on Analyzer completion + on plan save</li>
+        <li>Tests: snapshot row shape + values match ParetoResult</li>
+        <li>Verify snapshots accumulate across runs (no overwrite)</li>
+      </ul></div>
+    </div>
+
+    <div class="task">
+      <div class="th"><span class="id">A3-T2</span><span class="tt">Monthly re-assessment prompt</span><span class="meta"><span class="tag owner">👤 Mona · Content (copy)</span><span class="tag eff">⏱ ½ day</span><span class="tag noblock">🟢 No-block</span><span class="tag dep">🔗 A3-T1</span></span></div>
+      <div class="body"><div class="desc">Invite the user to re-run the Analyzer ~monthly to measure progress.</div>
+      <ul class="chk">
+        <li>Compute "due for re-assessment" from last snapshot date (default 30d, config)</li>
+        <li>Show dashboard nudge / re-run CTA (pink) when due</li>
+        <li>Re-run reuses account; produces a new snapshot</li>
+        <li>Content: re-assessment nudge copy (warm/direct, no "free")</li>
+        <li>Tests: due-date logic true after interval, false before</li>
+      </ul></div>
+    </div>
+
+    <div class="task">
+      <div class="th"><span class="id">A3-T3</span><span class="tt">Before/after progress view (minimal)</span><span class="meta"><span class="tag owner">👤 Mona · Content (labels)</span><span class="tag eff">⏱ 1 day</span><span class="tag noblock">🟢 No-block</span><span class="tag dep">🔗 A3-T1</span></span></div>
+      <div class="body"><div class="desc">Show first vs latest snapshot — hours reclaimed and top-source movement.</div>
+      <ul class="chk">
+        <li>Build before/after component: baseline vs latest (waste hrs, reclaimed hrs, deltas)</li>
+        <li>Positive deltas in pink #c4186a (never green)</li>
+        <li>Empty state for users with a single snapshot ("come back after you act")</li>
+        <li>Content: before/after headline + label copy</li>
+        <li>Tests: delta math correct; single-snapshot empty state; pink-not-green grep test</li>
+        <li>Screenshot verify via Playwright and READ the images</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- WORKSTREAM A4 -->
+  <div style="margin:0 0 24px;">
+    <div class="wsband a"><div class="k">Workstream A4</div><h3>Trust &amp; Launch Polish</h3></div>
+
+    <div class="task">
+      <div class="th"><span class="id">A4-T3</span><span class="tt">Email gate with movable-position config flag</span><span class="meta"><span class="tag owner">👤 Mona · Content (copy)</span><span class="tag eff">⏱ ½ day</span><span class="tag block">🔴 BLOCKS</span><span class="tag dep">🔗 A1-T2</span></span></div>
+      <div class="body"><div class="desc">One email capture, position-configurable, feeding BOTH magic-link auth and LS checkout. This is what makes the A/B test one build.</div>
+      <ul class="chk">
+        <li>Build email-gate component with <code>EMAIL_GATE_POSITION</code> config flag (serves A/B variants from one build)</li>
+        <li>Captured email persists to store/session — single source for auth + checkout (no 2nd/3rd ask)</li>
+        <li>Paywall stays ONLY on Focus Table regardless of gate position</li>
+        <li>Content: email-gate headline + subcopy (warm/direct, no "free")</li>
+        <li>Tests: flag moves gate position; same email reused downstream; consent required (ties to A4-T1)</li>
+        <li>Verify both variant positions render correctly</li>
+      </ul></div>
+    </div>
+
+    <div class="task">
+      <div class="th"><span class="id">A4-T1</span><span class="tt">Privacy policy + terms + consent notice</span><span class="meta"><span class="tag owner">Content (draft) · Mona (integrate)</span><span class="tag eff">⏱ ½ day</span><span class="tag block">🔴 BLOCKS</span><span class="tag dep">🔗 ship with A4-T3</span></span></div>
+      <div class="body"><div class="desc">Publish privacy/terms and a consent notice, shipped in the SAME release as email capture.</div>
+      <ul class="chk">
+        <li>Content: privacy + terms copy (covers Supabase storage, LS payments, email use, analytics)</li>
+        <li>Build /privacy + /terms pages (Fraunces/Jakarta, on-palette)</li>
+        <li>Consent checkbox/notice at the email gate linking both pages</li>
+        <li>Footer links to privacy + terms site-wide</li>
+        <li>Tests: routes render; email gate blocks until consent given</li>
+        <li>Verify pages live on deployed URL</li>
+      </ul></div>
+    </div>
+
+    <div class="task">
+      <div class="th"><span class="id">A4-T4</span><span class="tt">Funnel analytics (visit→start→complete→email→pay)</span><span class="meta"><span class="tag owner">👤 Mona</span><span class="tag eff">⏱ ½ day</span><span class="tag block">🔴 BLOCKS</span><span class="tag dep">🔗 A4-T3 · A2-T2</span></span></div>
+      <div class="body"><div class="desc">Instrument the five funnel events and confirm they fire on the deployed site. Without this the A/B test is worthless.</div>
+      <ul class="chk">
+        <li>Add analytics (Vercel Analytics / Plausible / PostHog — pick one, keys in env)</li>
+        <li>Fire events: visit · analyzer_start · analyzer_complete · email_captured · payment_success</li>
+        <li>payment_success fired from webhook/return, deduped</li>
+        <li>Privacy page mentions analytics (ties to A4-T1)</li>
+        <li>Tests: event helper called at each funnel step (mock)</li>
+        <li>Verify on deployed site: all 5 events appear in the dashboard</li>
+      </ul></div>
+    </div>
+
+    <div class="task">
+      <div class="th"><span class="id">A4-T5</span><span class="tt">Custom domain</span><span class="meta"><span class="tag owner">👤 Mona (Oren if he owns DNS)</span><span class="tag eff">⏱ ½ day</span><span class="tag block">🔴 BLOCKS</span><span class="tag dep">🔗 all above stable on Vercel</span></span></div>
+      <div class="body"><div class="desc">Connect the production custom domain to the Vercel project.</div>
+      <ul class="chk">
+        <li>Add domain in Vercel; configure DNS (A/CNAME)</li>
+        <li>Verify SSL issued + HTTPS forced</li>
+        <li>Update LS return URLs + Supabase auth redirect + magic-link callback to the custom domain</li>
+        <li>Update webhook URL to custom domain in LS</li>
+        <li>Smoke test the full flow on the custom domain</li>
+      </ul></div>
+    </div>
+
+    <div class="task">
+      <div class="th"><span class="id">A4-T2</span><span class="tt">Benchmark "source of truth" one-pager</span><span class="meta"><span class="tag owner">Content (Mona reviews)</span><span class="tag eff">⏱ ½ day</span><span class="tag noblock">🟢 No-block (recommended)</span></span></div>
+      <div class="body"><div class="desc">A public one-pager documenting where the Analyzer's benchmark numbers come from.</div>
+      <ul class="chk">
+        <li>Content: compile benchmark sources/citations for each waste-source figure</li>
+        <li>Build /methodology page or linked doc</li>
+        <li>Cross-check page figures against the static TS benchmark data (no mismatch)</li>
+        <li>Link from Analyzer results ("where these numbers come from")</li>
+        <li>Tests: page renders; a spot-check figure matches the code constant</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- WORKSTREAM B -->
+  <div class="card" style="padding-bottom:8px;">
+    <h2><span class="num">B</span> Launch Prep — Content &amp; Community</h2>
+    <p class="lead" style="margin-bottom:6px;">Runs in <b>parallel</b> with the build so Mona's hours stay on the money path. Owned by the content team; Mona approves.</p>
+  </div>
+  <div style="margin:-16px 0 24px;">
+    <div class="wsband b"><div class="k">Workstream B</div><h3>Content &amp; Community (parallel to build)</h3></div>
+
+    <div class="task">
+      <div class="th"><span class="id">B-T1</span><span class="tt">Product Hunt launch kit</span><span class="meta"><span class="tag owner">Content · Mona approves</span><span class="tag eff">⏱ 2 days</span><span class="tag block">🔴 BLOCKS launch</span></span></div>
+      <div class="body"><div class="desc">Everything needed to launch on PH the same week as Reddit.</div>
+      <ul class="chk">
+        <li>Tagline + description (warm/direct, no "free", consistent time claims)</li>
+        <li>Gallery images / aha-moment screenshots (on-palette, real UI)</li>
+        <li>Maker's first comment (the story + the ask)</li>
+        <li>Line up a hunter (or self-hunt) + notify supporters list</li>
+        <li>Demo GIF/video of the analyzer → aha moment</li>
+        <li>Mona review + sign-off before scheduling</li>
+      </ul></div>
+    </div>
+
+    <div class="task">
+      <div class="th"><span class="id">B-T2</span><span class="tt">Reddit drafts (value-first, using real user language)</span><span class="meta"><span class="tag owner">Content · Mona approves</span><span class="tag eff">⏱ 1.5 days</span><span class="tag block">🔴 BLOCKS launch</span></span></div>
+      <div class="body"><div class="desc">Non-spammy posts that lead with value, tailored per subreddit.</div>
+      <ul class="chk">
+        <li>Identify 3–4 target subreddits + read each one's self-promo rules</li>
+        <li>Draft a value-first post per subreddit (use the reddit-pain-miner research for real phrasing)</li>
+        <li>No hard sell — lead with the insight, link second</li>
+        <li>Prepare responses to likely objections/questions</li>
+        <li>Mona review + sign-off</li>
+      </ul></div>
+    </div>
+
+    <div class="task">
+      <div class="th"><span class="id">B-T3</span><span class="tt">Nurture email sequence (non-buyers)</span><span class="meta"><span class="tag owner">Content · Mona approves</span><span class="tag eff">⏱ 1.5 days</span><span class="tag noblock">🟢 No-block (needed early Aug)</span><span class="tag dep">🔗 A4-T3 email capture</span></span></div>
+      <div class="body"><div class="desc">5–7 emails over 14 days that re-sell the Focus Table to captured-but-unpaid leads. This is how cold traffic converts.</div>
+      <ul class="chk">
+        <li>Map the 5–7 email arc (reinforce their waste → show the fix → annual anchor vs cost of waste)</li>
+        <li>Write each email (warm/direct, no "free")</li>
+        <li>Wire into the email tool (triggered on email_captured, stops on payment)</li>
+        <li>Annual-plan anchor framed against the hours they saw wasted</li>
+        <li>Mona review + sign-off</li>
+      </ul></div>
+    </div>
+
+    <div class="task">
+      <div class="th"><span class="id">B-T4</span><span class="tt">"Share your result" loop asset</span><span class="meta"><span class="tag owner">Content · Mona (light build)</span><span class="tag eff">⏱ 1 day</span><span class="tag noblock">🟢 No-block (amplifies launch)</span></span></div>
+      <div class="body"><div class="desc">A shareable result so launch traffic recruits more traffic — directly de-risks the 1,500-visitor assumption.</div>
+      <ul class="chk">
+        <li>Design a shareable result card (on-palette, the aha number front and center)</li>
+        <li>Add a "share your result" CTA on the results screen</li>
+        <li>Copy for the share prompt (warm/direct)</li>
+        <li>Mona review + sign-off</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- LAUNCH WEEK -->
+  <div style="margin:0 0 24px;">
+    <div class="wsband l"><div class="k">Week 5 · Jul 28 – Aug 3</div><h3>Launch Week</h3></div>
+
+    <div class="task">
+      <div class="th"><span class="id">L-T1</span><span class="tt">Go-live: plug in Oren's account + final smoke test</span><span class="meta"><span class="tag owner">Oren + Mona</span><span class="tag eff">⏱ 1 hr</span><span class="tag block">🔴 BLOCKS</span><span class="tag dep">🔗 green-light checklist</span></span></div>
+      <div class="body"><div class="desc">The final 30-min swap. This is KR 1.3.</div>
+      <ul class="chk">
+        <li>Follow <code>docs/go-live-lemonsqueezy.md</code>: swap sandbox → Oren's live LS keys</li>
+        <li>Update live webhook URL + variant IDs</li>
+        <li>Run one real transaction → confirm unlock → refund it</li>
+        <li>Final smoke test of the whole flow on the custom domain</li>
+      </ul></div>
+    </div>
+
+    <div class="task">
+      <div class="th"><span class="id">L-T2</span><span class="tt">Launch: Product Hunt + Reddit same week</span><span class="meta"><span class="tag owner">Mona + Content</span><span class="tag eff">⏱ launch day</span><span class="tag block">🔴 KR 1.5</span></span></div>
+      <div class="body"><div class="desc">Execute the launch runbook.</div>
+      <ul class="chk">
+        <li>Schedule PH post (12:01am PT); post maker's first comment</li>
+        <li>Publish Reddit posts per subreddit (staggered, not all at once)</li>
+        <li>Notify supporters list to engage early</li>
+        <li>Respond to every comment/question within the hour, all day</li>
+        <li>Share your own network / channels</li>
+      </ul></div>
+    </div>
+
+    <div class="task">
+      <div class="th"><span class="id">L-T3</span><span class="tt">Launch-week war room: monitor &amp; kill P0s</span><span class="meta"><span class="tag owner">Mona</span><span class="tag eff">⏱ ongoing</span><span class="tag block">🔴 KR 1.6</span></span></div>
+      <div class="body"><div class="desc">No checkout-blocking or data-loss bug open more than 4 hours.</div>
+      <ul class="chk">
+        <li>Watch error logs + payment webhook success rate live</li>
+        <li>Watch the funnel dashboard (visit→start→complete→email→pay)</li>
+        <li>Triage any P0 immediately; hotfix + redeploy via <code>vercel --prod</code> + verify alias</li>
+        <li>Log every customer question/objection for the feedback log</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- POST-LAUNCH -->
+  <div style="margin:0 0 24px;">
+    <div class="wsband l"><div class="k">Aug – Sep</div><h3>Post-Launch Growth</h3></div>
+
+    <div class="task">
+      <div class="th"><span class="id">G-T1</span><span class="tt">August: acquire &amp; nurture toward first-dollar OKRs</span><span class="meta"><span class="tag owner">Mona + Content</span><span class="tag eff">⏱ Aug</span><span class="tag dep">🔗 Objective 2</span></span></div>
+      <div class="body"><div class="desc">Turn launch attention into paying customers (KRs 2.1–2.5).</div>
+      <ul class="chk">
+        <li>Run the nurture sequence; watch email→paid climb toward 3%</li>
+        <li>Second Reddit/community wave to top up traffic</li>
+        <li>Fix the biggest funnel drop-off from real data</li>
+        <li>Ship the return-loop nudges (A3) to the first cohort</li>
+        <li>Aug 31: tally customers, MRR, capture &amp; conversion — score Objective 2</li>
+      </ul></div>
+    </div>
+
+    <div class="task">
+      <div class="th"><span class="id">G-T2</span><span class="tt">September: build, launch &amp; read the paid A/B test</span><span class="meta"><span class="tag owner">Mona</span><span class="tag eff">⏱ Sep</span><span class="tag dep">🔗 Objective 3</span></span></div>
+      <div class="body"><div class="desc">The email-gate A/B test on cold paid ads (KRs 3.1–3.5).</div>
+      <ul class="chk">
+        <li>Build 2 ad campaigns → 2 links (?v=a / ?v=b) → one build, movable email gate</li>
+        <li>Finalize ad creative + confirm tracking end-to-end</li>
+        <li>Go live Sep 8; verify instrumentation; watch spend + CAC</li>
+        <li>Directional read on visitor→email per variant</li>
+        <li>Sep 30: write the scale / iterate / pause decision doc (confirmed verdict ~Oct 15)</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- GREEN LIGHT -->
+  <div class="card">
+    <h2><span class="num">✓</span> Green-Light Checklist</h2>
+    <p class="lead">All of these must be <b>TRUE</b> before launch. This is the go/no-go gate — make it a pinned task in ClickUp.</p>
+    <ul class="gl">
+      <li><b>Stranger pays in sandbox → Focus Table unlocks instantly</b> (A2-T5 verified end-to-end on deployed preview, screen-recorded)</li>
+      <li>Paywall gates <b>ONLY</b> the Focus Table; free users blocked, paid users pass</li>
+      <li>Webhook signature-verified, idempotent, maps payment→correct user, downgrades on cancel</li>
+      <li>Email captured <b>ONCE</b>, reused for magic-link auth AND checkout; gate-position flag works for both A/B variants</li>
+      <li>Paid plan persists to Supabase — survives browser clear + device switch (A1-T3 round-trip verified)</li>
+      <li>Anonymous "claim your saved plan" migration works with no data loss (A1-T4)</li>
+      <li>Privacy + terms + consent LIVE, shipped in the same release as email capture</li>
+      <li>Funnel analytics firing on the deployed site: visit→start→complete→email→pay (all 5 confirmed)</li>
+      <li>Custom domain live with SSL; all redirect/return/webhook/callback URLs updated to it</li>
+      <li><b>Live Lemon Squeezy account plugged in</b> per the runbook (Oren) + one real transaction verified</li>
+      <li>No secrets committed (keys only in Vercel env / <code>.env.local</code>; <code>.env.example</code> documents names)</li>
+      <li><code>tsc --noEmit</code> clean · <code>vitest --run</code> green (≥353, no regression) · new features have tests</li>
+      <li>Pre-commit hook passes all 11 checks (banned colors/green, fonts, window globals, SCORE_FROM_LEVEL 2/3/4)</li>
+      <li>Deployed via <code>npx vercel --prod --yes</code> and the production alias verified on the correct commit</li>
+    </ul>
+    <div class="frame green"><strong>Effort roll-up:</strong> A1 ~3 days · A2 ~3 days · A3 ~2 days (non-blocking) · A4 ~2.5 days. Blocking-only critical path ≈ <b>8–9 founder-days (~2 weeks at 5 hrs/day)</b>, plus Content in parallel on B and Oren's ~30-min live-LS swap as the final step. That lines up with the mid-to-late-July green-light target.</div>
+  </div>
+
+  <p class="footer">ClickUp Task Breakdown · synthesised from an engineering build breakdown + GTM plan · companion to the Q3 OKR doc · FocusLab · 2026-07-01</p>
+
+</div>
+</body>
+</html>

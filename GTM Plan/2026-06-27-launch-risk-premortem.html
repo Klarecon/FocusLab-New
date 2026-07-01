@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FocusLab — Launch Risk Pre-Mortem</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+:root{
+  --waste-orange:#e03e12;
+  --reclaim-pink:#c4186a;
+  --gold:#edb215;
+  --cream:#fdf6ee;
+  --dark:#1a1714;
+  --mid:#4a443d;
+  --soft:#6b6358;
+  --border:#e8e0d4;
+  --white:#ffffff;
+  --highlight:#fef9f0;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.65;}
+.hero{background:linear-gradient(135deg,var(--dark) 0%,#2d261f 100%);color:#fff;padding:54px 40px 44px;text-align:center;}
+.hero .badge{display:inline-block;background:var(--reclaim-pink);color:#fff;padding:5px 15px;border-radius:16px;font-size:.72rem;font-weight:700;letter-spacing:.04em;margin-bottom:16px;text-transform:uppercase;}
+.hero h1{font-family:'Fraunces',serif;font-size:2.5rem;font-weight:700;color:var(--gold);margin-bottom:10px;line-height:1.1;}
+.hero .subtitle{font-size:1.05rem;color:rgba(255,255,255,.72);max-width:620px;margin:0 auto;}
+.hero .meta{font-size:.78rem;color:rgba(255,255,255,.45);margin-top:18px;}
+.container{max-width:920px;margin:0 auto;padding:34px 22px 60px;}
+.card{background:var(--white);border-radius:14px;padding:30px 34px;margin-bottom:24px;box-shadow:0 2px 12px rgba(0,0,0,.05);}
+.card h2{font-family:'Fraunces',serif;font-size:1.55rem;color:var(--dark);margin-bottom:16px;display:flex;align-items:center;gap:12px;line-height:1.2;}
+.card h2 .num{background:var(--reclaim-pink);color:#fff;font-size:.72rem;font-weight:700;padding:4px 11px;border-radius:14px;font-family:'Plus Jakarta Sans',sans-serif;flex-shrink:0;}
+.card h3{font-family:'Fraunces',serif;font-size:1.12rem;color:var(--dark);margin:22px 0 8px;}
+.card p,.card li{font-size:.92rem;color:var(--mid);}
+.card ul{padding-left:20px;margin:8px 0;}
+.card li{padding:3px 0;}
+.lead{font-size:1rem;color:var(--mid);}
+.frame{background:var(--highlight);border-left:4px solid var(--gold);padding:16px 20px;border-radius:0 10px 10px 0;margin:16px 0;font-size:.92rem;color:var(--mid);}
+.frame strong{color:var(--dark);}
+
+/* Severity scenario cards */
+.scenarios{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:18px 0 4px;}
+@media(max-width:760px){.scenarios{grid-template-columns:1fr;}}
+.scn{border:2px solid var(--border);border-radius:12px;padding:18px;background:#fff;}
+.scn .tag{display:inline-block;font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:3px 9px;border-radius:10px;color:#fff;margin-bottom:10px;}
+.scn.k .tag{background:var(--waste-orange);}
+.scn.q .tag{background:var(--reclaim-pink);}
+.scn.s .tag{background:var(--gold);color:var(--dark);}
+.scn h4{font-family:'Fraunces',serif;font-size:1.02rem;margin-bottom:6px;color:var(--dark);}
+.scn p{font-size:.84rem;color:var(--soft);}
+
+/* Risk register */
+.risk{border:1px solid var(--border);border-radius:12px;padding:0;margin:16px 0;overflow:hidden;}
+.risk .head{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--highlight);border-bottom:1px solid var(--border);}
+.risk .sev{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:4px 9px;border-radius:9px;color:#fff;flex-shrink:0;}
+.sev.high{background:var(--waste-orange);}
+.sev.med{background:var(--gold);color:var(--dark);}
+.sev.low{background:var(--soft);}
+.risk .title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:.98rem;color:var(--dark);}
+.risk .body{padding:14px 18px;}
+.risk .body p{font-size:.88rem;margin-bottom:8px;}
+.risk .row{display:grid;grid-template-columns:108px 1fr;gap:10px;font-size:.86rem;padding:5px 0;border-top:1px dashed var(--border);}
+.risk .row:first-of-type{border-top:none;}
+.risk .row .lbl{font-weight:700;color:var(--dark);font-size:.74rem;text-transform:uppercase;letter-spacing:.03em;padding-top:2px;}
+.risk .row .val{color:var(--mid);}
+.new{display:inline-block;background:var(--reclaim-pink);color:#fff;font-size:.6rem;font-weight:700;padding:2px 7px;border-radius:8px;margin-left:6px;text-transform:uppercase;letter-spacing:.04em;vertical-align:middle;}
+
+.cat-label{font-family:'Plus Jakarta Sans',sans-serif;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--reclaim-pink);margin:26px 0 2px;}
+
+/* checklist */
+.check{list-style:none;padding-left:0;}
+.check li{padding:8px 0 8px 30px;position:relative;border-bottom:1px solid var(--border);font-size:.9rem;}
+.check li:before{content:"☐";position:absolute;left:4px;top:7px;color:var(--reclaim-pink);font-size:1.1rem;}
+.check li b{color:var(--dark);}
+.tagk{font-size:.62rem;font-weight:700;color:var(--waste-orange);text-transform:uppercase;letter-spacing:.04em;}
+
+/* indicators table */
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.86rem;}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+th{font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--soft);font-weight:700;}
+td{color:var(--mid);}
+td b{color:var(--dark);}
+.foot{text-align:center;font-size:.78rem;color:var(--soft);padding:10px 0 0;}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="badge">GTM · Risk Pre-Mortem</div>
+  <h1>What could kill FocusLab at launch</h1>
+  <p class="subtitle">A pre-mortem: it's six months from now and FocusLab failed. Here is every plausible reason why — ranked, with early-warning signs and what to do before launch day.</p>
+  <p class="meta">Prepared 27 June 2026 · Builds on the 9 risks in the GTM Brief — adds the product &amp; legal risks that brief doesn't cover</p>
+</div>
+
+<div class="container">
+
+  <!-- HOW TO READ -->
+  <div class="card">
+    <h2><span class="num">00</span> How to read this</h2>
+    <p class="lead">A pre-mortem is the opposite of a pitch. The pitch asks "how do we win?" — this asks "assume we lost; what was the cause?" Naming the cause now, while it's cheap, is the whole point.</p>
+    <div class="frame">
+      <strong>The honest starting position (from your own brief):</strong> FocusLab is live, with <strong>zero monetization and zero awareness.</strong> That means the two biggest risks aren't competitors — they're <strong>(1) nobody shows up</strong> and <strong>(2) the people who do show up can't actually pay you</strong>, because today the app is a static site with no accounts and no payment. Most of what follows ladders up to those two.
+    </div>
+    <p>Each risk below has a <b>severity</b>, a note on <b>why it bites <em>FocusLab specifically</em></b> (not generic startup advice), an <b>early-warning sign</b> so you catch it before it's fatal, and a <b>move</b>. Risks marked <span class="new">new</span> are <em>not</em> in your current GTM brief and are the ones I'd most want you to see.</p>
+  </div>
+
+  <!-- THREE WAYS IT DIES -->
+  <div class="card">
+    <h2><span class="num">01</span> The three ways it most likely dies</h2>
+    <p class="lead">If FocusLab fails, it almost certainly fails one of these three deaths. Everything in the register is a contributing cause of one of them.</p>
+    <div class="scenarios">
+      <div class="scn k">
+        <span class="tag">Death A — Silence</span>
+        <h4>Nobody comes</h4>
+        <p>The product is good but invisible. Product Hunt is a one-day blip, Reddit removes your posts as self-promo, the YouTube video gets 40 views. Traffic never reaches the few hundred visitors the funnel math needs. You're refining a tool no one is using.</p>
+      </div>
+      <div class="scn q">
+        <span class="tag">Death B — Leak</span>
+        <h4>They come, love it, leave — and can't pay</h4>
+        <p>People finish the analyzer, get the "you waste 14 hours" hit… and bounce. No email, no payment, no return. Even the ones who <em>want</em> to pay hit a wall: there's no account and no checkout to take their money.</p>
+      </div>
+      <div class="scn s">
+        <span class="tag">Death C — Shrug</span>
+        <h4>One-and-done</h4>
+        <p>They pay once, use it once, and churn in month two because it felt like a one-time quiz, not a tool. Or they clear their browser and lose the plan they paid for. MRR never compounds.</p>
+      </div>
+    </div>
+    <div class="frame">The rest of this document is the autopsy in advance — the specific, fixable causes behind A, B, and C.</div>
+  </div>
+
+  <!-- ============ REGISTER ============ -->
+  <div class="card">
+    <h2><span class="num">02</span> The full risk register</h2>
+    <p class="lead">Grouped by category. Severity reflects <em>likelihood × damage at your stage</em> — a "low" here can still be real, it just won't kill you first.</p>
+
+    <!-- PRODUCT / TECH -->
+    <div class="cat-label">A · Product &amp; technical foundation — the gaps unique to a static, account-less app</div>
+
+    <div class="risk">
+      <div class="head"><span class="sev high">High</span><span class="title">You literally cannot charge anyone yet <span class="new">new</span></span></div>
+      <div class="body">
+        <p>There is no auth, no login, no Stripe, no backend anywhere in the codebase — it's a static site with localStorage. A "Pro" tier means gating the Focus Table behind a payment, but <strong>there is no way to lock a feature to a paying user without accounts.</strong> A Stripe Payment Link takes money but can't unlock anything per-person.</p>
+        <div class="row"><span class="lbl">Why it bites</span><span class="val">Your whole revenue model (free Analyzer → paid Focus Table) assumes a paywall that doesn't exist. This is the #1 thing standing between you and your first dollar.</span></div>
+        <div class="row"><span class="lbl">Warning sign</span><span class="val">You're "ready to launch paid" but the only mechanism is "I'll email you a link." That's not a business, that's a favor.</span></div>
+        <div class="row"><span class="lbl">Move</span><span class="val">Decide the auth path <em>before</em> the paid launch: cheapest is a hosted auth+billing layer (e.g. Clerk/Auth.js + Stripe, or an all-in-one like Outseta/Lemon Squeezy) gating the <code>/focus</code> route. Don't launch Pro until a stranger can pay and get access with zero manual steps from you.</span></div>
+      </div>
+    </div>
+
+    <div class="risk">
+      <div class="head"><span class="sev high">High</span><span class="title">Users lose their work — no accounts, localStorage only <span class="new">new</span></span></div>
+      <div class="body">
+        <p>The audit result and action plan live in <code>localStorage</code> under one browser. Clear cookies, switch from phone to laptop, use incognito, or get a new machine → <strong>the plan is gone.</strong> The "before/after dashboard" and "progress tracking" you're counting on for retention all depend on data that can vanish silently.</p>
+        <div class="row"><span class="lbl">Why it bites</span><span class="val">The thing that makes someone <em>stay</em> subscribed (their saved plan, their progress) is exactly the thing that's most fragile. A paying user who loses their plan doesn't just churn — they feel cheated.</span></div>
+        <div class="row"><span class="lbl">Warning sign</span><span class="val">Early testers say "wait, where did my plan go?" or can't open it on a second device.</span></div>
+        <div class="row"><span class="lbl">Move</span><span class="val">Same fix as above — accounts + server-side save are the real answer. Interim: a visible "your plan is saved only in this browser — email yourself a copy" export, so the data loss is at least honest and recoverable.</span></div>
+      </div>
+    </div>
+
+    <div class="risk">
+      <div class="head"><span class="sev med">Med</span><span class="title">The "aha number" feels invented <span class="new">new</span></span></div>
+      <div class="body">
+        <p>The hook is "you waste ~14 hours a week." But that number is computed from the user's own self-reported sliders against static benchmarks. A skeptical manager can reverse-engineer that they basically <em>told the tool</em> the answer — which makes the headline feel like a horoscope, not a diagnosis.</p>
+        <div class="row"><span class="lbl">Why it bites</span><span class="val">Your category claim is "real diagnosis, not a vibes quiz." If the flagship number feels arbitrary, you become the exact thing you're positioning against.</span></div>
+        <div class="row"><span class="lbl">Warning sign</span><span class="val">Comments like "isn't this just telling me what I put in?" or wildly different numbers from tiny input changes.</span></div>
+        <div class="row"><span class="lbl">Move</span><span class="val">Show your work: surface the benchmark each input is compared against ("managers in your role average X; you said Y"). Cite where benchmarks come from. Make the number feel <em>earned</em>, not generated.</span></div>
+      </div>
+    </div>
+
+    <!-- ACTIVATION -->
+    <div class="cat-label">B · Awareness &amp; activation — Death A and the top of the funnel</div>
+
+    <div class="risk">
+      <div class="head"><span class="sev high">High</span><span class="title">The free channels quietly don't work</span></div>
+      <div class="body">
+        <p>The plan leans on Product Hunt + Reddit + YouTube + podcasts doing "the heavy lifting at $0." Each has a specific failure mode: PH is a single-day spike that fades; Reddit auto-removes promo and bans you for it; YouTube/podcast audiences take <em>months</em> to compound. "Free" is not the same as "reliable."</p>
+        <div class="row"><span class="lbl">Why it bites</span><span class="val">With zero awareness and a thin paid budget ($300–500/mo), if the free channels underperform there's no fallback engine — the funnel starves at the top and every downstream metric looks broken for the wrong reason.</span></div>
+        <div class="row"><span class="lbl">Warning sign</span><span class="val">&lt;300 monthly visitors by week 4; Reddit posts removed; PH day generates a spike then flatlines to near-zero.</span></div>
+        <div class="row"><span class="lbl">Move</span><span class="val">Treat channels as experiments with a kill date, not a list to "do." Give value in Reddit/communities <em>before</em> linking (you already have the reddit-pain-miner work — use it to <em>contribute</em>, not just to post). Have one paid channel warm so you're never fully dependent on going viral.</span></div>
+      </div>
+    </div>
+
+    <div class="risk">
+      <div class="head"><span class="sev high">High</span><span class="title">You have to teach the category before you can sell it</span></div>
+      <div class="body">
+        <p>Your own competitor analysis says it: "Green field — but we'll have to teach the category." There is no search demand for "Pareto waste diagnostic." People search "time tracker" and "where does my time go" — terms that pattern-match you to RescueTime/Reclaim, exactly the box you're trying to escape.</p>
+        <div class="row"><span class="lbl">Why it bites</span><span class="val">Category creation is the most expensive kind of marketing. A solo, under-funded launch is the worst-resourced way to attempt it. You can be <em>right</em> about the category and still run out of runway teaching it.</span></div>
+        <div class="row"><span class="lbl">Warning sign</span><span class="val">People describe you back to you wrong ("oh, it's a time tracker"); high bounce from search traffic that wanted tracking.</span></div>
+        <div class="row"><span class="lbl">Move</span><span class="val">Don't fight for new search terms early — ride existing demand and reframe on arrival ("not a tracker — your fix in 15 min, not 4 weeks"). Borrow Oren's authority and any coach's audience to teach the category for you.</span></div>
+      </div>
+    </div>
+
+    <!-- CONVERSION / RETENTION -->
+    <div class="cat-label">C · Conversion &amp; retention — Death B and Death C</div>
+
+    <div class="risk">
+      <div class="head"><span class="sev high">High</span><span class="title">Churn after month 1 (the brief's own #1)</span></div>
+      <div class="body">
+        <p>FocusLab is shaped like a one-time event: take audit → get plan → done. The retention hooks (monthly re-assessment, progress tracking, before/after) are <strong>listed as features but not yet built</strong> — and they depend on the account/data layer that also doesn't exist yet.</p>
+        <div class="row"><span class="lbl">Why it bites</span><span class="val">A $29/mo product that delivers its full value in one sitting has no honest reason to bill a second month. Annual plans hide churn; they don't fix it.</span></div>
+        <div class="row"><span class="lbl">Warning sign</span><span class="val">Logins drop to near-zero after day 1; month-2 retention &lt;40%; refund requests citing "I already got what I needed."</span></div>
+        <div class="row"><span class="lbl">Move</span><span class="val">Build at least one recurring-value loop <em>before</em> charging monthly. If you can't yet, lead with the <strong>annual</strong> plan (one decision, value-led) rather than monthly (re-decided every 30 days against a flat usage curve).</span></div>
+      </div>
+    </div>
+
+    <div class="risk">
+      <div class="head"><span class="sev med">Med</span><span class="title">Conversion lands under 2%</span></div>
+      <div class="body">
+        <p>The model needs 3–5% of completers to pay. But you're giving away the emotionally powerful half (the diagnosis) and charging for the less-dramatic half (the fix plan). Many users will feel "done" at the free aha-moment and never feel the pull to pay.</p>
+        <div class="row"><span class="lbl">Why it bites</span><span class="val">The free tier is so satisfying it may cannibalize the paid one. The peak emotion is in the free product; the paid product is "work."</span></div>
+        <div class="row"><span class="lbl">Warning sign</span><span class="val">High completion + high email capture but &lt;2% pay; heatmaps show people leaving right at the paywall.</span></div>
+        <div class="row"><span class="lbl">Move</span><span class="val">Test the gate placement (show a <em>teaser</em> of the fix plan so the value is visible before the wall), and test price ($19 vs $29). Make the paid side feel like relief from the problem you just made them feel, not extra homework.</span></div>
+      </div>
+    </div>
+
+    <!-- DEPENDENCY -->
+    <div class="cat-label">D · Founder &amp; dependency risk — single points of failure</div>
+
+    <div class="risk">
+      <div class="head"><span class="sev med">Med</span><span class="title">The coach track is one person's network <span class="new">new</span></span></div>
+      <div class="body">
+        <p>The entire coach channel — your fastest path to $1K MRR (7 coaches = $1K) — runs through Oren's relationships and Oren's validation. If Oren gets busy, loses interest, or his network doesn't bite, that whole track evaporates and there's no second door into coaches.</p>
+        <div class="row"><span class="lbl">Why it bites</span><span class="val">It's also a methodology dependency: the Pareto/Focus methodology that <em>is</em> the product is Oren's. Key-person risk on both distribution <em>and</em> credibility.</span></div>
+        <div class="row"><span class="lbl">Warning sign</span><span class="val">Coach conversations keep slipping; "verbal yeses," no prepays; you're waiting on one person to unblock the channel.</span></div>
+        <div class="row"><span class="lbl">Move</span><span class="val">You already raised the bar correctly (3+ <em>prepay</em>, not verbal). Keep the individual track fully independent of Oren so no single person's availability can stall revenue. Start building a second coach-sourcing path (a community, a directory) in parallel.</span></div>
+      </div>
+    </div>
+
+    <div class="risk">
+      <div class="head"><span class="sev med">Med</span><span class="title">You're the only builder, and the build list is growing <span class="new">new</span></span></div>
+      <div class="body">
+        <p>Auth, billing, accounts, retention loops, a landing page, <em>and</em> a marketing launch — all on one non-technical founder working through an AI assistant. The pre-launch must-build list (below) is genuinely large. The risk isn't any one item; it's that launch keeps sliding while the list grows.</p>
+        <div class="row"><span class="lbl">Why it bites</span><span class="val">Momentum and morale are real assets at zero awareness. A launch that's "two weeks away" for three months is its own failure mode.</span></div>
+        <div class="row"><span class="lbl">Warning sign</span><span class="val">The "before launch" list keeps getting longer, not shorter; new features get added before the paywall ships.</span></div>
+        <div class="row"><span class="lbl">Move</span><span class="val">Ruthless sequencing: ship the smallest thing a stranger can <em>pay for and keep</em> (account + paywall + save), then launch. Everything else is post-launch. Resist polishing the free tool while the money path is still missing.</span></div>
+      </div>
+    </div>
+
+    <!-- LEGAL -->
+    <div class="cat-label">E · Legal, privacy &amp; trust — the quiet ones that bite later</div>
+
+    <div class="risk">
+      <div class="head"><span class="sev med">Med</span><span class="title">Collecting emails with no privacy policy / terms <span class="new">new</span></span></div>
+      <div class="body">
+        <p>Your timeline lists "privacy policy + terms (before collecting emails)" — good that it's there, but it's a <em>blocker</em>, not a nice-to-have. The moment you capture an email you're processing personal data. With EU/UK visitors that means GDPR (lawful basis, consent, a way to delete). Once you take payment, you also need refund terms and tax handling.</p>
+        <div class="row"><span class="lbl">Why it bites</span><span class="val">A productivity tool for managers will get international traffic from day one (Product Hunt is global). "We'll add the policy later" means you were non-compliant for every signup in between.</span></div>
+        <div class="row"><span class="lbl">Warning sign</span><span class="val">Email capture is live but the footer has no privacy link; no cookie/consent notice; no documented way to delete a user.</span></div>
+        <div class="row"><span class="lbl">Move</span><span class="val">Ship privacy policy + terms + a basic consent notice <em>in the same release</em> as email capture, not after. A billing provider like Lemon Squeezy/Paddle can also act as merchant-of-record and absorb the sales-tax/VAT complexity.</span></div>
+      </div>
+    </div>
+
+    <div class="risk">
+      <div class="head"><span class="sev low">Low</span><span class="title">Claims &amp; benchmark substantiation <span class="new">new</span></span></div>
+      <div class="body">
+        <p>Marketing copy that promises "reclaim X hours a week" is a results claim. If the benchmarks behind it aren't sourced and defensible, it's both a credibility risk (see "aha number") and, at scale, an advertising-claims risk.</p>
+        <div class="row"><span class="lbl">Why it bites</span><span class="val">Low now (small audience), but it compounds: the bigger your reach, the more a soft claim attracts skeptics and screenshots.</span></div>
+        <div class="row"><span class="lbl">Warning sign</span><span class="val">You can't answer "where does the 14 hours come from?" in one sentence with a source.</span></div>
+        <div class="row"><span class="lbl">Move</span><span class="val">Keep a one-page source-of-truth for every benchmark. Phrase claims as "based on your inputs vs. role benchmarks" rather than absolute guarantees.</span></div>
+      </div>
+    </div>
+
+    <!-- COMPETITIVE -->
+    <div class="cat-label">F · Competitive &amp; market — slower-moving, watch don't panic</div>
+
+    <div class="risk">
+      <div class="head"><span class="sev low">Low</span><span class="title">An incumbent bolts on a "15-min diagnostic"</span></div>
+      <div class="body">
+        <p>Your competitor analysis names this directly: Reclaim, Motion, or ClickUp could add a diagnostic to existing distribution and erase your one-liner overnight. They have the audience you'd be spending a year building.</p>
+        <div class="row"><span class="lbl">Why it bites</span><span class="val">Distribution beats features. They don't need a better engine, just a "good enough" version in front of users who already trust them.</span></div>
+        <div class="row"><span class="lbl">Warning sign</span><span class="val">An incumbent ships a "productivity assessment" or "time audit" quiz.</span></div>
+        <div class="row"><span class="lbl">Move</span><span class="val">Your defense is depth-of-methodology (Oren) + the accumulating waste-pattern dataset, not the feature itself. Lean into the things a bolt-on can't copy: the ranked, role-specific fix plan and the coach relationship.</span></div>
+      </div>
+    </div>
+
+    <div class="risk">
+      <div class="head"><span class="sev low">Low</span><span class="title">Paid ad CAC runs hotter than $29 LTV</span></div>
+      <div class="body">
+        <p>B2B CPCs of $2–3 + a sub-3% conversion + month-1 churn can easily push customer-acquisition cost above what a $29/mo (often single-month) customer is worth. The brief's $75 CAC kill-switch is good — the risk is not honoring it.</p>
+        <div class="row"><span class="lbl">Why it bites</span><span class="val">Unit economics that don't close mean every paid dollar loses money — you'd be buying churn.</span></div>
+        <div class="row"><span class="lbl">Warning sign</span><span class="val">CAC &gt; $75 after 4 weeks (your own gate), or LTV unknown because churn isn't measured yet.</span></div>
+        <div class="row"><span class="lbl">Move</span><span class="val">Honor the kill-switch. Don't scale paid until annual-plan take-rate or retention proves LTV &gt; ~3× CAC. Until then, free channels only.</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PRE-LAUNCH MUST-FIX -->
+  <div class="card">
+    <h2><span class="num">03</span> Fix-before-launch checklist</h2>
+    <p class="lead">The subset of the above that must be true <em>before</em> you take a single dollar. If one of these is unchecked, you're not launch-ready — you're collecting IOUs.</p>
+    <ul class="check">
+      <li><span class="tagk">blocker</span> &nbsp;<b>A stranger can pay and instantly get access</b> — accounts + checkout + paywall on <code>/focus</code>, zero manual steps from you.</li>
+      <li><span class="tagk">blocker</span> &nbsp;<b>A paid user's plan survives a browser clear and a device switch</b> — server-side save, or at minimum an honest export + warning.</li>
+      <li><span class="tagk">blocker</span> &nbsp;<b>Privacy policy + terms + consent notice live in the same release as email capture.</b></li>
+      <li><b>The "aha number" shows its sources</b> — benchmark each input is compared against is visible, so it reads as diagnosis not horoscope.</li>
+      <li><b>At least one recurring-value loop exists</b> (re-assessment or progress nudge) before charging <em>monthly</em> — or lead with annual.</li>
+      <li><b>The paywall shows a teaser of the fix plan</b> so value is visible before the wall.</li>
+      <li><b>Every channel has a kill-date and a success number</b>, not just a "do it" checkbox.</li>
+      <li><b>The individual track works with zero involvement from Oren</b> — no single-person dependency on revenue.</li>
+      <li><b>You can answer "where does the 14 hours come from?" in one sourced sentence.</b></li>
+      <li><b>The $75 CAC kill-switch is written down with who watches it and when.</b></li>
+    </ul>
+  </div>
+
+  <!-- LEADING INDICATORS -->
+  <div class="card">
+    <h2><span class="num">04</span> Your early-warning dashboard</h2>
+    <p class="lead">Lagging metrics (MRR) tell you you've already failed. These leading metrics tell you <em>which death is coming</em> while you can still steer. Check weekly.</p>
+    <table>
+      <thead><tr><th>Signal</th><th>Healthy</th><th>Trouble = which death</th></tr></thead>
+      <tbody>
+        <tr><td><b>Weekly unique visitors</b></td><td>climbing toward 300–500</td><td>flat &lt;200 → <b>Death A (silence)</b></td></tr>
+        <tr><td><b>Analyzer start rate</b></td><td>≥40% of visitors</td><td>&lt;25% → landing page isn't selling the click</td></tr>
+        <tr><td><b>Completion rate</b></td><td>≥50% of starts</td><td>&lt;35% → the audit is too long / confusing</td></tr>
+        <tr><td><b>Email capture</b></td><td>≥30% of completers</td><td>low → no reason to leave an email = <b>Death B (leak)</b></td></tr>
+        <tr><td><b>Free → Pro</b></td><td>3–5% of completers</td><td>&lt;2% → paywall / value-gap = <b>Death B</b></td></tr>
+        <tr><td><b>Month-2 retention</b></td><td>&gt;60%</td><td>&lt;40% → one-and-done = <b>Death C (shrug)</b></td></tr>
+        <tr><td><b>"Where did my plan go?" reports</b></td><td>zero</td><td>any → data-loss is actively churning payers</td></tr>
+        <tr><td><b>CAC (if running paid)</b></td><td>&lt; ⅓ of LTV</td><td>&gt;$75 → unit economics broken, pause paid</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- THE ONE THING -->
+  <div class="card">
+    <h2><span class="num">05</span> If you fix only one thing</h2>
+    <div class="frame">
+      <strong>Close the money path before you open the traffic taps.</strong> Right now, even a perfect launch can't make revenue — there's no account, no checkout, no paywall, and a paying user's plan can vanish when they clear their browser. Driving traffic at that is pouring water into a bucket with no bottom. Build the smallest version of <em>"a stranger pays and keeps what they paid for"</em> first. Then — and only then — go make noise.
+    </div>
+    <p style="margin-top:14px;font-size:.88rem;">Everything else in this document is real, but sequenced behind that. Death A (silence) is loud and scary, so it gets all the attention — but Death B (leak) is the one you can fix this week with code, and it's the one quietly guaranteed by today's architecture.</p>
+  </div>
+
+  <p class="foot">FocusLab · Launch Risk Pre-Mortem · 27 June 2026 · lives in <code>/GTM Plan/</code></p>
+
+</div>
+</body>
+</html>

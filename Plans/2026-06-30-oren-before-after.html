@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FocusLab — Before / After (Oren feedback)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#f6efe2; --card:#fffaf0; --ink:#2b2118; --ink-soft:#6b5f51;
+    --line:#e6dcc8; --waste:#e03e12; --pink:#c4186a; --gold:#edb215;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#efe7d6;color:var(--ink);
+    font-family:"Plus Jakarta Sans",sans-serif;line-height:1.5;padding:44px 18px 80px}
+  .wrap{max-width:1080px;margin:0 auto}
+  .serif{font-family:"Fraunces",Georgia,serif}
+  h1{font-family:"Fraunces",Georgia,serif;font-size:2.6rem;margin:0 0 6px;font-weight:900}
+  .lede{color:var(--ink-soft);margin:0 0 14px;font-size:1.06rem;max-width:760px}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:36px;font-size:.82rem;font-weight:700}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+
+  .block{margin-bottom:46px}
+  .block > h2{font-family:"Fraunces",Georgia,serif;font-size:1.45rem;margin:0 0 3px}
+  .block > .why{color:var(--ink-soft);font-size:.95rem;margin:0 0 16px;max-width:880px}
+  .quote{color:var(--waste);font-weight:600;font-style:italic}
+
+  .ba{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media(max-width:760px){.ba{grid-template-columns:1fr}}
+  .pane{border-radius:18px;overflow:hidden;border:1.5px solid var(--line);background:var(--card);
+    display:flex;flex-direction:column}
+  .pane .hdr{font-size:.72rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+    padding:8px 16px;color:#fff}
+  .pane.before .hdr{background:#9a8f7d}
+  .pane.after  .hdr{background:var(--pink)}
+  .stage{padding:26px 22px;flex:1;background:var(--cream);display:flex;flex-direction:column;justify-content:center}
+  .note{font-size:.82rem;color:var(--ink-soft);padding:10px 16px;border-top:1px dashed var(--line);background:var(--card)}
+  .note b{color:var(--pink)}
+
+  /* ---- app-faithful bits ---- */
+  .center{text-align:center}
+  .big-num{font-family:"Fraunces",Georgia,serif;font-weight:900;color:var(--waste);
+    font-size:2.6rem;line-height:1;display:inline-block}
+  .circled{border:2.5px solid var(--waste);border-radius:50%/60%;padding:6px 20px}
+  .need{font-size:1.05rem;font-weight:600;color:var(--ink-soft)}
+  .emojis{font-size:1.9rem;margin-bottom:8px}
+  .sub-muted{font-size:.86rem;color:var(--ink-soft);margin-top:8px}
+
+  .grouphead{font-size:.74rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink);border-bottom:1.5px solid var(--line);padding-bottom:7px;margin:0 0 12px}
+  .chip{display:flex;align-items:center;gap:11px;border:1.5px solid var(--line);background:var(--card);
+    border-radius:15px;padding:11px 14px;margin-bottom:9px}
+  .chip .pe{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);flex:0 0 auto;
+    display:inline-flex;align-items:center;justify-content:center;color:#bbb;font-weight:700;font-size:.8rem}
+  .chip .em{font-size:1.15rem}
+  .chip .lbl{font-weight:700;font-size:.92rem}
+  .chip .wc{font-size:.78rem;color:var(--ink-soft);font-weight:500;margin-top:2px}
+  .chip .txtwrap{flex:1}
+
+  .drain-card{border:1.5px solid var(--line);border-left:4px solid var(--waste);background:var(--card);
+    border-radius:14px;padding:16px 18px}
+  .drain-card h4{font-family:"Fraunces",Georgia,serif;margin:0 0 6px;font-size:1.12rem;color:var(--ink)}
+  .drain-line{font-size:.9rem;color:var(--ink-soft)}
+  .drain-line .w{color:var(--waste);font-weight:700}
+  .money-lead{font-family:"Fraunces",Georgia,serif;font-weight:900;color:var(--waste);font-size:1.7rem;line-height:1}
+  .sowhat{font-size:.82rem;color:var(--pink);font-weight:700;margin-top:7px}
+
+  .fix-row{border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:11px 14px;margin-bottom:8px}
+  .fix-row .ft{font-weight:600;font-size:.9rem}
+  .fix-src{font-size:.74rem;color:var(--pink);font-weight:700;margin-top:4px}
+  .src-note{font-size:.78rem;color:var(--ink-soft);margin-bottom:10px;font-style:italic}
+
+  .scrollbox{max-height:230px;overflow:hidden;position:relative;border:1.5px solid var(--line);
+    border-radius:12px;background:var(--card);padding:14px}
+  .scrollbox.tall::after{content:"⋯ and it keeps scrolling";position:absolute;left:0;right:0;bottom:0;
+    text-align:center;font-size:.78rem;color:var(--ink-soft);font-weight:700;
+    padding:18px 0 8px;background:linear-gradient(to bottom,rgba(255,250,240,0),var(--card) 60%)}
+  .acc{border:1.5px solid var(--line);border-radius:12px;background:var(--card);margin-bottom:8px}
+  .acc .ah{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;font-weight:700;font-size:.86rem}
+  .acc .ah .chev{color:var(--ink-soft);font-weight:800}
+  .acc.open .ah{border-bottom:1px solid var(--line)}
+  .acc .body{padding:10px 14px}
+
+  .hero-line{font-size:1.12rem;color:var(--ink-soft);max-width:420px}
+  .hero-line .u{color:var(--waste);font-weight:800;border-bottom:2px solid var(--waste)}
+  .strike{text-decoration:line-through;text-decoration-color:var(--waste);opacity:.65}
+  .ins{color:var(--pink);font-weight:800}
+  .pill{display:inline-block;background:var(--waste);color:#fff;font-size:.66rem;font-weight:800;
+    border-radius:999px;padding:2px 9px;letter-spacing:.04em;vertical-align:middle;margin-left:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>FocusLab — before &amp; after 🛠️</h1>
+  <p class="lede">Every change is in response to your notes. <strong>Nothing is live yet</strong> — this is the proposal. Left = how it looks today, right = how it'll look. Your call on each before we build it.</p>
+  <div class="legend">
+    <span><span class="dot" style="background:#9a8f7d"></span> Now</span>
+    <span><span class="dot" style="background:var(--pink)"></span> Proposed</span>
+  </div>
+
+  <!-- 4 — number reveal (lead with most visual) -->
+  <div class="block">
+    <h2>1 · "You need to see this" should lead the number</h2>
+    <p class="why"><span class="quote">"'You need to see this' comes before the number."</span> &nbsp;Today the line explains <em>after</em> the reveal. Moving it above builds the anticipation, then the number lands.</p>
+    <div class="ba">
+      <div class="pane before"><div class="hdr">Now</div>
+        <div class="stage center">
+          <div class="emojis">💀 🤯</div>
+          <div class="circled"><span class="big-num">$114,678/year</span></div>
+          <div class="need" style="margin-top:14px">You need to see this</div>
+        </div>
+      </div>
+      <div class="pane after"><div class="hdr">Proposed</div>
+        <div class="stage center">
+          <div class="need" style="margin-bottom:14px">You need to see this&nbsp; 💀🤯</div>
+          <div class="circled"><span class="big-num">$114,678/year</span></div>
+          <div class="sub-muted">23 hrs/week of avoidable waste · 58% of your week</div>
+        </div>
+        <div class="note"><b>Change:</b> lead-in line moves above; the dollar figure is the payoff drop.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 — biggest drains -->
+  <div class="block">
+    <h2>2 · "Your Biggest Drains" — lead with the money</h2>
+    <p class="why"><span class="quote">"This is a place where you add value, not repeat yourself. The money loss is possibly the biggest thing — and it appears last."</span></p>
+    <div class="ba">
+      <div class="pane before"><div class="hdr">Now</div>
+        <div class="stage">
+          <div class="drain-card">
+            <h4>😮‍💨 Blocked on a handoff from someone else</h4>
+            <div class="drain-line">You spend <span class="w">10.0 hrs/week</span> on this — that's <strong>480 hours/year</strong> (<span class="w">$45,871</span>).</div>
+          </div>
+        </div>
+      </div>
+      <div class="pane after"><div class="hdr">Proposed</div>
+        <div class="stage">
+          <div class="drain-card">
+            <h4>😮‍💨 Blocked on a handoff from someone else</h4>
+            <div class="money-lead">$45,871/year</div>
+            <div class="drain-line" style="margin-top:4px">480 hrs a year · <strong>10 hrs/week</strong></div>
+            <div class="sowhat">≈ 40% of your total loss — your single biggest drain.</div>
+          </div>
+        </div>
+        <div class="note"><b>Change:</b> dollar figure becomes the headline; hours support it; a one-line "so what" adds insight instead of restating the total.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 — proven fixes references -->
+  <div class="block">
+    <h2>3 · Proven fixes — now referenced</h2>
+    <p class="why"><span class="quote">"Good! Needs referencing, or a comment that explains the sources."</span> &nbsp;Good news: every fix already carries a source in the data — we just weren't showing it.</p>
+    <div class="ba">
+      <div class="pane before"><div class="hdr">Now</div>
+        <div class="stage">
+          <div style="font-size:.8rem;font-weight:700;color:var(--ink-soft);margin-bottom:10px">Proven fixes for this:</div>
+          <div class="fix-row"><div class="ft">Raise approval thresholds / pre-authorize</div></div>
+          <div class="fix-row"><div class="ft">Set response-time SLAs on approvals</div></div>
+          <div class="fix-row"><div class="ft">Limit work-in-progress (WIP)</div></div>
+        </div>
+      </div>
+      <div class="pane after"><div class="hdr">Proposed</div>
+        <div class="stage">
+          <div class="src-note">Fixes are drawn from operations &amp; lean-management sources — linked on each.</div>
+          <div class="fix-row"><div class="ft">Raise approval thresholds / pre-authorize</div><div class="fix-src">Source: Atlassian Work Management ↗</div></div>
+          <div class="fix-row"><div class="ft">Set response-time SLAs on approvals</div><div class="fix-src">Source: Asana Resources ↗</div></div>
+          <div class="fix-row"><div class="ft">Limit work-in-progress (WIP)</div><div class="fix-src">Source: Kanban — David J. Anderson ↗</div></div>
+        </div>
+        <div class="note"><b>Change:</b> each fix shows its source link + a "where these come from" note. Data already exists for all 100 fixes.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1 — hero phrasing -->
+  <div class="block">
+    <h2>4 · "A working person" phrasing</h2>
+    <p class="why"><span class="quote">"I still don't like this phrasing."</span> &nbsp;Making it direct — <em>you</em>, not "a working person." (Option shown is my recommendation; two alternates in the note.)</p>
+    <div class="ba">
+      <div class="pane before"><div class="hdr">Now</div>
+        <div class="stage">
+          <p class="hero-line"><span class="strike">A working person</span> loses about <span class="u">10 hours a week</span> to busywork. Find your drains and a plan to free up your hours, in 3 minutes.</p>
+        </div>
+      </div>
+      <div class="pane after"><div class="hdr">Proposed</div>
+        <div class="stage">
+          <p class="hero-line"><span class="ins">You probably</span> lose about <span class="u">10 hours a week</span> to busywork. Find your drains and a plan to free up your hours, in 3 minutes.</p>
+        </div>
+        <div class="note"><b>Pick one:</b> A — "You probably lose…" (shown) · B — "Most people lose…" · C — "The average week hides about 10 hours of work that adds nothing."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 — redefining waste + explanations -->
+  <div class="block">
+    <h2>5 · "Redefining waste" + the missing explanations <span class="pill">biggest change</span></h2>
+    <p class="why"><span class="quote">"You're redefining waste… eyebrow-raising." · "This is not waste" (investor prep) · "We discussed adding an explanation for the unsure — none are visible."</span><br>
+    Fix = two moves: (a) show the one-line "what counts" under every item (the explanation we promised), and (b) reword the items that named a <em>valuable activity</em> with no avoidable cut, so the label itself says what's wasteful.</p>
+    <div class="ba">
+      <div class="pane before"><div class="hdr">Now</div>
+        <div class="stage">
+          <p class="grouphead">Work that adds nothing</p>
+          <div class="chip"><span class="pe">+</span><span class="em">😴</span><div class="txtwrap"><div class="lbl">Meetings you weren't needed in</div></div></div>
+          <div class="chip"><span class="pe">+</span><span class="em">😴</span><div class="txtwrap"><div class="lbl">Recurring status update meetings</div></div></div>
+          <div class="chip"><span class="pe">+</span><span class="em">🤯</span><div class="txtwrap"><div class="lbl">Prep and follow-up for investor updates</div></div></div>
+          <div class="chip"><span class="pe">+</span><span class="em">👎</span><div class="txtwrap"><div class="lbl">Low-stakes approvals routed through you</div></div></div>
+        </div>
+      </div>
+      <div class="pane after"><div class="hdr">Proposed</div>
+        <div class="stage">
+          <p class="grouphead">Work that adds nothing</p>
+          <div class="chip"><span class="pe">+</span><span class="em">😴</span><div class="txtwrap"><div class="lbl">Meetings you weren't needed in</div><div class="wc">Invited "just in case", sat through it, added nothing.</div></div></div>
+          <div class="chip"><span class="pe">+</span><span class="em">😴</span><div class="txtwrap"><div class="lbl">Recurring status update meetings</div><div class="wc">Round-the-room updates with no decision made.</div></div></div>
+          <div class="chip"><span class="pe">+</span><span class="em">🤯</span><div class="txtwrap"><div class="lbl"><span class="ins">Over-prepping</span> investor updates</div><div class="wc">Polishing decks and re-cutting metrics past what investors read.</div></div></div>
+          <div class="chip"><span class="pe">+</span><span class="em">👎</span><div class="txtwrap"><div class="lbl">Low-stakes approvals routed through you</div><div class="wc">Sign-offs you never really gate.</div></div></div>
+        </div>
+        <div class="note"><b>Change:</b> "what counts" line now visible under each item. "Prep and follow-up for investor updates" → "<b>Over-prepping investor updates</b>" so it names the avoidable slice, not the whole valuable activity. (I'll send the full reworded label list for sign-off.)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 — long page -->
+  <div class="block">
+    <h2>6 · "Log your waste" is too long</h2>
+    <p class="why"><span class="quote">"This is a very long page, I don't like it."</span> &nbsp;Collapse the four groups into accordions — short by default, full list one tap away.</p>
+    <div class="ba">
+      <div class="pane before"><div class="hdr">Now</div>
+        <div class="stage">
+          <div class="scrollbox tall">
+            <p class="grouphead">Work that adds nothing</p>
+            <div class="chip"><span class="pe">+</span><span class="em">😴</span><div class="txtwrap"><div class="lbl">Meetings you weren't needed in</div></div></div>
+            <div class="chip"><span class="pe">+</span><span class="em">😴</span><div class="txtwrap"><div class="lbl">Recurring status update meetings</div></div></div>
+            <div class="chip"><span class="pe">+</span><span class="em">😴</span><div class="txtwrap"><div class="lbl">Standing meetings that outlived their purpose</div></div></div>
+            <div class="chip"><span class="pe">+</span><span class="em">😴</span><div class="txtwrap"><div class="lbl">Meetings that run longer than needed</div></div></div>
+            <p class="grouphead" style="margin-top:14px">Switching &amp; chasing</p>
+            <div class="chip"><span class="pe">+</span><span class="em">🤯</span><div class="txtwrap"><div class="lbl">Switching between too many tools</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="pane after"><div class="hdr">Proposed</div>
+        <div class="stage">
+          <div class="acc open">
+            <div class="ah"><span>Work that adds nothing</span><span class="chev">▾</span></div>
+            <div class="body">
+              <div class="chip"><span class="pe">+</span><span class="em">😴</span><div class="txtwrap"><div class="lbl">Meetings you weren't needed in</div></div></div>
+              <div class="chip" style="margin-bottom:0"><span class="pe">+</span><span class="em">😴</span><div class="txtwrap"><div class="lbl">Recurring status update meetings</div></div></div>
+            </div>
+          </div>
+          <div class="acc"><div class="ah"><span>Switching &amp; chasing</span><span class="chev">▸</span></div></div>
+          <div class="acc"><div class="ah"><span>Waiting &amp; getting blocked</span><span class="chev">▸</span></div></div>
+          <div class="acc"><div class="ah"><span>Redoing &amp; manual grind</span><span class="chev">▸</span></div></div>
+        </div>
+        <div class="note"><b>Change:</b> 4 collapsible groups, first open. Page fits one screen; tap to expand any group.</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="lede" style="margin-top:10px">Once you approve, I'll build them, keep all tests green, and deploy. Anything you want worded differently, just say.</p>
+</div>
+</body>
+</html>

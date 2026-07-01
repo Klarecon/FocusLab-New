@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Workstream B — Product Hunt + Reddit launch assets</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--cream:#f6efe2;--card:#fffaf0;--ink:#2b2118;--ink-soft:#6b5f51;
+    --line:#e6dcc8;--waste:#e03e12;--pink:#c4186a;--gold:#edb215;}
+  *{box-sizing:border-box}
+  body{margin:0;background:#efe7d6;color:var(--ink);
+    font-family:"Plus Jakarta Sans",sans-serif;line-height:1.55;padding:44px 18px 90px}
+  .wrap{max-width:920px;margin:0 auto}
+  h1{font-family:"Fraunces",Georgia,serif;font-size:2.5rem;margin:0 0 6px;font-weight:900}
+  h2{font-family:"Fraunces",Georgia,serif;font-size:1.7rem;margin:42px 0 6px;
+    padding-bottom:8px;border-bottom:3px solid var(--pink)}
+  h3{font-family:"Fraunces",Georgia,serif;font-size:1.2rem;margin:26px 0 8px;color:var(--ink)}
+  .lede{color:var(--ink-soft);margin:0 0 6px;font-size:1.05rem;max-width:780px}
+  .card{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:18px 22px;margin:12px 0}
+  .card.pink{border-left:5px solid var(--pink)}
+  .card.gold{border-left:5px solid var(--gold)}
+  .label{font-size:.7rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px}
+  .copy{font-size:1.02rem}
+  .copy.big{font-size:1.15rem;font-weight:700}
+  .alt{color:var(--ink-soft);font-size:.92rem;margin-top:6px}
+  .alt b{color:var(--pink)}
+  .meta{font-size:.78rem;color:var(--ink-soft)}
+  .post{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:16px 18px;margin:10px 0;
+    font-size:.96rem;white-space:pre-wrap;line-height:1.6}
+  .post .t{font-weight:800;color:var(--ink);font-size:1.02rem;display:block;margin-bottom:8px}
+  .sub{display:inline-block;background:rgba(196,24,106,.12);color:var(--pink);font-weight:800;
+    font-size:.74rem;padding:3px 10px;border-radius:999px;margin-bottom:8px}
+  ul{margin:.4rem 0 .4rem 1.1rem;padding:0}
+  li{margin:.28rem 0}
+  .do{color:#137a4b;font-weight:800}
+  .dont{color:var(--waste);font-weight:800}
+  .gallery{counter-reset:slide}
+  .slide{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:16px 20px;margin:10px 0;position:relative}
+  .slide::before{counter-increment:slide;content:"Slide " counter(slide);font-size:.7rem;font-weight:800;
+    letter-spacing:.06em;text-transform:uppercase;color:var(--pink)}
+  .slide .head{font-family:"Fraunces",Georgia,serif;font-size:1.25rem;font-weight:800;margin:4px 0 3px}
+  .slide .visual{font-size:.84rem;color:var(--ink-soft);font-style:italic}
+  .warn{background:rgba(237,178,21,.12);border:1.5px dashed var(--gold);border-radius:12px;padding:12px 16px;margin:14px 0;font-size:.92rem}
+  code{background:#0000000d;padding:1px 6px;border-radius:5px;font-size:.88em}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Workstream B — launch assets 🚀</h1>
+  <p class="lede">Drafts for the Product Hunt + Reddit launch, built on the locked PLG strategy. Voice: honest, founder-to-peer, "I built this to solve my own problem." All copy ready for the content team / your edit. <strong>Nothing posted — these are drafts.</strong></p>
+  <p class="meta">ICP: new managers · overwhelmed team leads · ops people &nbsp;·&nbsp; Hook: ~10 hrs/week lost to busywork &nbsp;·&nbsp; URL: <code>focuslab-omega.vercel.app</code> (swap for custom domain once connected)</p>
+
+  <!-- ============ PRODUCT HUNT ============ -->
+  <h2>Product Hunt launch kit</h2>
+
+  <h3>Name &amp; tagline</h3>
+  <div class="card pink">
+    <div class="label">Name</div>
+    <div class="copy big">FocusLab</div>
+    <div class="label" style="margin-top:12px">Tagline (≤60 chars — pick one)</div>
+    <div class="copy">A · <strong>Find the 10 hours a week you're losing to busywork</strong></div>
+    <div class="alt">B · See where your work week leaks — and get the fix<br>C · Your 3-minute time-waste audit, in plain numbers</div>
+    <div class="meta" style="margin-top:6px"><b>Rec:</b> A — leads with the number, which is the whole hook.</div>
+  </div>
+
+  <h3>Description (≤260 chars)</h3>
+  <div class="card">
+    <div class="copy">FocusLab finds the work that's quietly eating your week. Answer a few quick questions, see your biggest time drains in hours <em>and</em> dollars, then get a prioritized plan to fix them. No signup, no install — about 3 minutes start to finish.</div>
+  </div>
+
+  <h3>Topics</h3>
+  <div class="card"><div class="copy" style="font-size:.96rem">Productivity · Time tracking · Task management · Work · SaaS</div></div>
+
+  <h3>Maker's first comment (post this the second you go live)</h3>
+  <div class="card gold">
+<div class="post" style="border:none;background:transparent;padding:0;margin:0">Hey Product Hunt 👋
+
+I'm Mona. I built FocusLab because I had the same problem on loop: I'd end the day exhausted, having been "busy" every single hour — and still feel like I'd moved nothing real forward.
+
+When I actually looked at where the time went, it wasn't the hard work draining me. It was the quiet stuff: meetings I didn't need to be in, chasing people for status, re-doing things, switching between ten tools. Death by a thousand small cuts.
+
+So I built the thing I wanted: you answer a few questions about your week, and it shows you — in hours and in dollars — exactly what's eating your time, ranked worst-first. Then it hands you a plan to fix the top few, sorted by what's a quick win vs. a slog.
+
+It takes about 3 minutes. No signup to see your results.
+
+I'd genuinely love your brutal feedback — what's missing, what felt off, what made you go "oh, that's me." 🙏
+
+— Mona</div>
+  </div>
+
+  <h3>Gallery — the aha-moment slides (6)</h3>
+  <p class="lede" style="font-size:.95rem">Each slide = one screen of the product + a one-line caption. These are the visuals the UI/UX agent turns into images. Built to walk a stranger from "ouch" → "I want the fix."</p>
+  <div class="gallery">
+    <div class="slide"><div class="head">You're probably losing ~10 hours a week to work that adds nothing.</div><div class="visual">Visual: the landing hook — big number, warm cream, the emoji.</div></div>
+    <div class="slide"><div class="head">See it in dollars, not vibes.</div><div class="visual">Visual: the $114,678/year reveal screen (💀🤯, circled number).</div></div>
+    <div class="slide"><div class="head">Your biggest drains, ranked worst-first.</div><div class="visual">Visual: "Your Biggest Drains" cards — money-led, hours below.</div></div>
+    <div class="slide"><div class="head">Pick the fixes that actually fit your life.</div><div class="visual">Visual: Focus Table "Assign Fixes" — proven fixes + sources.</div></div>
+    <div class="slide"><div class="head">Quick win or slog? See it before you commit.</div><div class="visual">Visual: the EVI / Impact Matrix — effort vs. impact quadrants.</div></div>
+    <div class="slide"><div class="head">3 minutes. No signup. Find your hours.</div><div class="visual">Visual: clean CTA card + URL. (Avoid the word "free" per brand.)</div></div>
+  </div>
+
+  <div class="warn"><strong>Launch-day mechanics:</strong> line up a hunter with reach (or self-hunt) · go live 12:01am PT Tue–Thu · post the maker's comment immediately · rally your list/network to comment (not just upvote — comments rank you) · reply to every comment within the hour · have the team on standby for the first 4 hrs.</div>
+
+  <!-- ============ REDDIT ============ -->
+  <h2>Reddit launch kit</h2>
+  <p class="lede">Three posts for the subs where target users actually hang out. <strong>Story first, tool second.</strong> Strategy rule: target-user subs, never dev/builder subs — those test UX, not willingness to pay.</p>
+
+  <div class="warn"><strong>Reddit etiquette (read before posting):</strong> <span class="dont">Don't</span> drop a link in the body of a first post in most of these subs — it reads as spam and can get auto-removed. <span class="do">Do</span> tell the story, then put the link in a top comment or reply "happy to share if useful." Post from an account with some history. Space the three posts across different days. Reply to everyone.</div>
+
+  <h3>r/productivity</h3>
+  <div class="post">
+<span class="sub">r/productivity</span>
+<span class="t">I was "busy" every hour and still got nothing real done — so I mapped where my time actually went</span>For months I'd finish the day wrecked, having been busy nonstop, and still feel like nothing important moved. It bugged me enough that I sat down and actually audited my week instead of guessing.
+
+Turns out the hard, real work wasn't the problem. It was the quiet stuff stacking up: meetings I didn't need to be in, chasing people for updates, redoing things from unclear direction, hopping between a dozen tools. None of it felt like waste in the moment. Added up, it was most of my week.
+
+I ended up building a little tool to do the audit for me — answer a few questions, it shows you your biggest time drains in hours (and what that's worth), then suggests fixes ranked by what's a quick win. Takes about 3 minutes.
+
+Curious how others here find their drains — do you track time, or just gut-feel it? And if anyone wants to try the thing I built, happy to drop a link in the comments.</div>
+
+  <h3>r/managers</h3>
+  <div class="post">
+<span class="sub">r/managers</span>
+<span class="t">The problems pile up faster than I can catch them. I finally tried to find what was actually eating my week.</span>Newish to managing a team and some days it feels like too many balls rolling off the table to catch — a gazillion threads across a gazillion Slack channels, and even the simple stuff turns into a mountain. I'd call it a day with nothing left in the tank.
+
+I got tired of feeling that way without knowing why, so I forced myself to look at where the hours actually go. The eye-opener: most of the drain wasn't the management work that matters — it was low-stakes approvals routed through me, status meetings with no decision, and being the bottleneck for every little call.
+
+I built a small tool to map this for anyone (answer a few questions → see your biggest drains → get fixes sorted by effort vs. payoff). But honestly I'm also just curious how other managers here claw back time. What did you cut that actually helped?</div>
+
+  <h3>r/careerguidance</h3>
+  <div class="post">
+<span class="sub">r/careerguidance</span>
+<span class="t">How do you figure out where your work time actually goes? I couldn't, so I built something to find my own time drains.</span>I kept hitting the same wall: I'm working hard, I'm tired, but I can't point to where the week went or what's actually holding my career back. "Just be more productive" advice never told me <em>what</em> to stop doing.
+
+So I tried to make it concrete — I mapped my week into specific drains (chasing, redoing, meetings, tool-switching) and put rough hours on each. Seeing the worst offenders ranked, with the hours and cost attached, was the first time it felt fixable instead of vague.
+
+For anyone stuck in the same "busy but going nowhere" spot — how do you diagnose it? I turned my version into a 3-minute tool; glad to share it if it's useful, but mostly want to hear how you all approach it.</div>
+
+  <h3>Comment-reply templates (for when people ask "what's the tool?")</h3>
+  <div class="card">
+    <div class="label">The share reply</div>
+    <div class="copy" style="font-size:.95rem">"It's called FocusLab — here's the link: focuslab-omega.vercel.app. No signup to see your results. Would love to know if your biggest drain surprises you, mine did. 🙂"</div>
+    <div class="label" style="margin-top:14px">The "is this an ad" reply</div>
+    <div class="copy" style="font-size:.95rem">"Fair question — I made it, so yes I'm biased. But there's no signup wall and I'm genuinely after feedback more than users right now. Happy to hear it's rubbish if it is."</div>
+  </div>
+
+  <!-- ============ NOTES ============ -->
+  <h2>Notes for you &amp; the team</h2>
+  <div class="card">
+    <ul>
+      <li><strong>Number consistency:</strong> I used "<strong>~10 hours a week</strong>" everywhere to match the live landing page. The old strategy doc says 14 — pick one and keep it identical across PH, Reddit, and the site.</li>
+      <li><strong>"Free" is intentionally absent</strong> (brand rule). I used "no signup / no install / 3 minutes" instead.</li>
+      <li><strong>Maker comment is written in your voice (Mona).</strong> If Oren fronts the launch instead, say the word and I'll reframe.</li>
+      <li><strong>The r/managers post borrows real pain language</strong> ("balls rolling off the table", "gazillion Slack threads") from the Reddit pain miner — verbatim-adjacent for resonance, not lifted from one person.</li>
+      <li><strong>Sequencing:</strong> the strategy says validate with 10–15 target users <em>before</em> a public Reddit/PH push. These assets are ready for that moment — or for the soft validation DMs now.</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

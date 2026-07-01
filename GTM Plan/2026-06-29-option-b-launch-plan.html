@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FocusLab — Option B Launch Plan</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+:root{
+  --waste-orange:#e03e12;
+  --reclaim-pink:#c4186a;
+  --gold:#edb215;
+  --green:#1f8a4c;
+  --cream:#fdf6ee;
+  --dark:#1a1714;
+  --mid:#4a443d;
+  --soft:#6b6358;
+  --border:#e8e0d4;
+  --white:#ffffff;
+  --highlight:#fef9f0;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.65;}
+.hero{background:linear-gradient(135deg,#3a1029 0%,var(--reclaim-pink) 130%);color:#fff;padding:54px 40px 44px;text-align:center;}
+.hero .badge{display:inline-block;background:var(--gold);color:var(--dark);padding:5px 15px;border-radius:16px;font-size:.72rem;font-weight:700;letter-spacing:.04em;margin-bottom:16px;text-transform:uppercase;}
+.hero h1{font-family:'Fraunces',serif;font-size:2.5rem;font-weight:700;color:var(--gold);margin-bottom:10px;line-height:1.1;}
+.hero .subtitle{font-size:1.05rem;color:rgba(255,255,255,.82);max-width:640px;margin:0 auto;}
+.hero .meta{font-size:.78rem;color:rgba(255,255,255,.55);margin-top:18px;}
+.container{max-width:920px;margin:0 auto;padding:34px 22px 60px;}
+.card{background:var(--white);border-radius:14px;padding:30px 34px;margin-bottom:24px;box-shadow:0 2px 12px rgba(0,0,0,.05);}
+.card h2{font-family:'Fraunces',serif;font-size:1.55rem;color:var(--dark);margin-bottom:16px;display:flex;align-items:center;gap:12px;line-height:1.2;}
+.card h2 .num{background:var(--reclaim-pink);color:#fff;font-size:.72rem;font-weight:700;padding:4px 11px;border-radius:14px;font-family:'Plus Jakarta Sans',sans-serif;flex-shrink:0;}
+.card h3{font-family:'Fraunces',serif;font-size:1.12rem;color:var(--dark);margin:22px 0 8px;}
+.card p,.card li{font-size:.92rem;color:var(--mid);}
+.card ul{padding-left:20px;margin:8px 0;}
+.card li{padding:3px 0;}
+.lead{font-size:1rem;color:var(--mid);}
+.frame{background:var(--highlight);border-left:4px solid var(--reclaim-pink);padding:16px 20px;border-radius:0 10px 10px 0;margin:16px 0;font-size:.96rem;color:var(--mid);}
+.frame strong{color:var(--dark);}
+.frame.north{border-left-color:var(--gold);background:#fffaf0;font-family:'Fraunces',serif;font-size:1.08rem;color:var(--dark);line-height:1.5;}
+.frame.green{border-left-color:var(--green);background:#f1f8f3;}
+
+.flow{background:var(--dark);color:#fff;border-radius:12px;padding:22px 26px;margin:18px 0;font-family:'Plus Jakarta Sans',sans-serif;}
+.flow .row{display:flex;align-items:center;gap:14px;padding:7px 0;font-size:.9rem;}
+.flow .lbl{flex:0 0 250px;font-weight:700;}
+.flow .bar{flex:1;height:14px;border-radius:7px;background:repeating-linear-gradient(45deg,#444,#444 6px,#333 6px,#333 12px);position:relative;}
+.flow .bar.a{background:linear-gradient(90deg,var(--reclaim-pink),var(--gold));}
+.flow .bar.b{background:repeating-linear-gradient(45deg,#5a5048,#5a5048 6px,#4a423b 6px,#4a423b 12px);}
+.flow .tag{flex:0 0 auto;font-size:.72rem;color:var(--gold);font-weight:700;}
+.flow .gate{text-align:center;margin-top:12px;font-size:.84rem;color:var(--gold);font-weight:700;letter-spacing:.03em;}
+
+.cat-label{font-family:'Plus Jakarta Sans',sans-serif;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--reclaim-pink);margin:26px 0 2px;}
+
+.step{border:1px solid var(--border);border-radius:12px;padding:0;margin:16px 0;overflow:hidden;}
+.step .head{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--highlight);border-bottom:1px solid var(--border);}
+.step .badge2{font-size:.66rem;font-weight:700;letter-spacing:.04em;padding:5px 11px;border-radius:9px;color:#fff;flex-shrink:0;background:var(--reclaim-pink);font-family:'Fraunces',serif;}
+.step .title{font-weight:700;font-size:1rem;color:var(--dark);}
+.step .sub{font-size:.8rem;color:var(--soft);font-style:italic;}
+.step .body{padding:14px 20px;}
+.step .body li{font-size:.9rem;padding:4px 0;}
+
+.scenarios{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0 4px;}
+@media(max-width:760px){.scenarios{grid-template-columns:1fr;}.flow .lbl{flex:0 0 150px;}}
+.scn{border:2px solid var(--border);border-radius:12px;padding:18px;background:#fff;}
+.scn .tag{display:inline-block;font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:3px 9px;border-radius:10px;color:#fff;margin-bottom:10px;}
+.scn.ph .tag{background:var(--waste-orange);}
+.scn.rd .tag{background:var(--reclaim-pink);}
+.scn h4{font-family:'Fraunces',serif;font-size:1.08rem;margin-bottom:8px;color:var(--dark);}
+.scn ul{padding-left:18px;margin:6px 0;}
+.scn li{font-size:.86rem;color:var(--mid);padding:3px 0;}
+
+.check{list-style:none;padding-left:0;}
+.check li{position:relative;padding:8px 0 8px 32px;font-size:.92rem;color:var(--mid);border-bottom:1px solid var(--border);}
+.check li:before{content:"✓";position:absolute;left:0;top:7px;width:21px;height:21px;background:var(--green);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;}
+
+.decisions{counter-reset:dec;list-style:none;padding-left:0;}
+.decisions li{position:relative;padding:14px 0 14px 52px;border-bottom:1px solid var(--border);font-size:.92rem;color:var(--mid);}
+.decisions li:before{counter-increment:dec;content:counter(dec);position:absolute;left:0;top:12px;width:34px;height:34px;background:var(--gold);color:var(--dark);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:'Fraunces',serif;}
+.decisions li b{color:var(--dark);}
+
+.foot{text-align:center;font-size:.78rem;color:var(--soft);padding:14px 0 0;}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="badge">GTM · Launch Plan</div>
+  <h1>Option B: Close the Money Path, Then Launch into Momentum</h1>
+  <div class="subtitle">Build the smallest complete money path, prep Product Hunt &amp; Reddit in parallel, and launch the week it all goes green.</div>
+  <div class="meta">FocusLab · June 29, 2026 · Decisions locked — ready to build</div>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <h2><span class="num">★</span> North Star</h2>
+    <p class="lead">From your pre-parade's compounding ladder — every step makes the next one easier. The launch sets up the first rungs:</p>
+    <div class="frame north">
+      Every visitor who falls in love with the aha-moment can become a paying customer in one click — and keep their plan so it compounds month over month.
+    </div>
+    <p>When that's wired and humming, you flip on Product Hunt + Reddit and the free tool becomes its own distribution engine. We get there fast by building the smallest <em>complete</em> money path — <strong>account + paywall + saved data + a reason to return</strong> — and launching the moment it's live.</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">2</span> Two workstreams, in parallel</h2>
+    <div class="flow">
+      <div class="row"><span class="lbl">A — Build the money path</span><span class="bar a"></span><span class="tag">green-light</span></div>
+      <div class="row"><span class="lbl">B — Prep PH + Reddit</span><span class="bar b"></span><span class="tag">ready to fire</span></div>
+      <div class="gate">▼ both ready ▼ &nbsp; → &nbsp; flip on the traffic</div>
+    </div>
+    <p>B is built <em>while</em> A comes together, so the day the money path goes green, you launch that same week with everything already in hand.</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">A</span> The Money Path</h2>
+    <div class="frame"><strong>Sequencing rule:</strong> anything that needs Oren's input is scheduled <em>last</em>, so the build never stalls on him. The one Oren handoff on the critical path is connecting his <strong>live payment account</strong> (A2) — built and tested in sandbox throughout, his account plugged in as the final pre-launch step. Worth giving him a heads-up early so it's ready when we reach it.</div>
+
+    <div class="step">
+      <div class="head"><span class="badge2">A1</span><span class="title">Accounts + saved plans</span><span class="sub">the foundation everything compounds on</span></div>
+      <div class="body"><ul>
+        <li>Add sign-in (magic-link or Google) via a managed provider — Clerk or Supabase Auth — so you're not building auth from scratch.</li>
+        <li>Move saved plans from the browser to the user's account. <strong>This makes someone's plan theirs forever</strong> — it survives any device, any day — which is what justifies a subscription and builds the switching cost in your moat.</li>
+      </ul></div>
+    </div>
+
+    <div class="step">
+      <div class="head"><span class="badge2">A2</span><span class="title">Billing + paywall</span><span class="sub">turn love into revenue in one click</span></div>
+      <div class="body"><ul>
+        <li>Use a merchant-of-record — <strong>Lemon Squeezy or Paddle</strong> — so taking payment and handling worldwide tax happen in one move. PH brings global traffic on day one; this welcomes it cleanly without a tax project.</li>
+        <li><strong>The live payment account is Oren's</strong> (it's his account / business entity that receives the money). So I build and fully test the entire flow against a <strong>sandbox / test account</strong> — the build never waits on him. Plugging in Oren's live account is a 30-minute final step, done right before green-light.</li>
+        <li>Wire Free / $29-mo / $199-yr. (Coach $149 stays ready to switch on when Oren lands his first prepays.)</li>
+        <li>Place the paywall <strong>after Results, before the Focus Table</strong> — the spot you already designed, right where the value is most felt.</li>
+        <li>The one test that means you're ready: a stranger pays and <em>instantly</em> unlocks their Focus Table. That's your green-light.</li>
+      </ul></div>
+    </div>
+
+    <div class="step">
+      <div class="head"><span class="badge2">A3</span><span class="title">The return loop</span><span class="sub">what makes it compound</span></div>
+      <div class="body"><ul>
+        <li>Ship one genuine reason to come back: a <strong>monthly re-assessment + a before/after progress view.</strong> This is the rung where retention starts working <em>for</em> you — each month a paying user re-runs it, the product proves its value again.</li>
+        <li>Minimal version is enough to launch; it can grow into the fuller dashboard later.</li>
+      </ul></div>
+    </div>
+
+    <div class="step">
+      <div class="head"><span class="badge2">A4</span><span class="title">Trust + polish that ships with launch</span><span class="sub">land on a real product</span></div>
+      <div class="body"><ul>
+        <li><strong>Privacy policy + terms + a friendly consent notice</strong>, live the same day email capture is — so every international signup is handled right from the first one (the MoR provider covers the tax/refund side for you).</li>
+        <li><strong>A one-page source for every benchmark</strong>, so the aha-number is rock-solid. Frame it as <em>"based on your inputs vs. role benchmarks"</em> — confident and defensible.</li>
+        <li><strong>Funnel analytics</strong> (visit → start → complete → email → pay) so you can see your wins land and double down on what converts.</li>
+        <li>Connect your <strong>custom domain</strong> — off the vercel.app alias.</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">B</span> Launch asset prep <span style="font-size:.8rem;font-weight:400;color:var(--soft);">— start now</span></h2>
+    <div class="scenarios">
+      <div class="scn ph">
+        <span class="tag">Product Hunt</span>
+        <h4>Lead with the aha-moment</h4>
+        <ul>
+          <li>Your Pareto result is genuinely screenshot-able — the gallery &amp; hero GIF should <em>be</em> that moment, not a feature tour.</li>
+          <li>Build: tagline + one-liner, 4–6 gallery images, a 30–60s demo, your "maker's first comment," logo/thumbnail.</li>
+          <li>Warm the runway: a "notify me on launch" list, 15–20 people excited to engage in hour one, a Tue–Thu launch day.</li>
+          <li>PH delivers a big day — the win is converting that surge into a <strong>lasting email list + backlinks</strong>, so the email-capture path just needs to be smooth.</li>
+        </ul>
+      </div>
+      <div class="scn rd">
+        <span class="tag">Reddit</span>
+        <h4>Lead with the pain you understand</h4>
+        <ul>
+          <li>Your <em>reddit-pain-miner</em> work gives you the real words people use about time-waste — write to that and it lands as recognition.</li>
+          <li>Map your subreddits and post the way each community welcomes — value first, tool as a soft mention or in a comment.</li>
+          <li>Draft 2–3 genuinely useful posts; participate authentically beforehand so you show up as a member, not a marketer.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">✓</span> The green-light</h2>
+    <p>A and B run concurrently. You launch the week these are all true:</p>
+    <ul class="check">
+      <li>A stranger can pay and <strong>instantly unlock</strong> the Focus Table</li>
+      <li>Saved plans <strong>persist to the account</strong> across devices</li>
+      <li>The <strong>monthly return loop</strong> is live</li>
+      <li><strong>Privacy + terms</strong> pages are up alongside email capture</li>
+      <li><strong>Funnel analytics</strong> are firing</li>
+      <li>The <strong>custom domain</strong> is connected</li>
+    </ul>
+    <div class="frame green"><strong>Keep momentum by holding the line on scope.</strong> Anything not on this list is a great <em>post-launch</em> win. Shipping lean and launching into real users beats a longer polish, every time.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">⏱</span> Rough timeline</h2>
+    <p class="lead">At ~5 hrs/day with the content team running Workstream B in parallel, your build hours stay 100% on the money path. AI-assisted estimate:</p>
+    <table>
+      <tr><th>Step</th><th>What</th><th>Est. build time</th></tr>
+      <tr><td><b>A1</b></td><td>Supabase auth + move saved plans to accounts</td><td>~3–4 days</td></tr>
+      <tr><td><b>A2</b></td><td>Lemon Squeezy + paywall gate + unlock (sandbox)</td><td>~2–3 days</td></tr>
+      <tr><td><b>A3</b></td><td>Minimal return loop (re-assessment + before/after)</td><td>~2 days</td></tr>
+      <tr><td><b>A4</b></td><td>Legal pages + benchmark one-pager + analytics + domain</td><td>~2–3 days</td></tr>
+      <tr><td>—</td><td>Testing, integration buffer, dev review</td><td>~2–3 days</td></tr>
+    </table>
+    <div class="frame green"><strong>≈ 2.5–3 weeks to green-light</strong> — target <strong>mid-July 2026</strong>. The only two non-build dependencies are the one-time billing/auth review and plugging in Oren's live Lemon Squeezy account at the very end.</div>
+    <h3>Line up now (parallel, neither blocks the build)</h3>
+    <ul>
+      <li><strong>Heads-up to Oren</strong> — have him create the Lemon Squeezy account so it's ready to plug in at the end.</li>
+      <li><strong>Point the content team at Workstream B</strong> — PH gallery / aha-moment assets and Reddit drafts can start today.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">?</span> Decisions — all resolved</h2>
+    <ol class="decisions">
+      <li><b>Build stack</b> — <span style="color:var(--green);font-weight:700;">✓ Decided:</span> <strong>Supabase</strong> (auth + database/persistence in one platform, covers A1) + <strong>Lemon Squeezy</strong> (merchant-of-record billing, covers A2). The leanest, fastest combo — two platforms total.</li>
+      <li><b>Who builds A</b> — <span style="color:var(--green);font-weight:700;">✓ Decided:</span> Mona drives the AI assistant (same workflow that shipped the analyzer &amp; Focus Table). Recommended safety net: a one-time developer review of the billing/auth layer before green-light.</li>
+      <li><b>Return-loop scope</b> — <span style="color:var(--green);font-weight:700;">✓ Decided:</span> ship the good-enough minimal version first (monthly re-assessment + before/after). Fuller dashboard is a post-launch win.</li>
+      <li><b>PH + Reddit timing</b> — <span style="color:var(--green);font-weight:700;">✓ Decided:</span> same launch week.</li>
+      <li><b>Oren / coach tier</b> — start the prepay outreach during the build so it's ready to switch on, or park it for post-launch?</li>
+      <li><b>Capacity</b> — <span style="color:var(--green);font-weight:700;">✓ Decided:</span> ~5 hrs/day on Workstream A (build). Content team supports Workstream B (PH + Reddit assets) in parallel, so the build time stays focused on the money path.</li>
+    </ol>
+  </div>
+
+  <div class="foot">FocusLab GTM · Option B Launch Plan · v1 · all decisions locked · June 29, 2026 · next: build A1</div>
+
+</div>
+</body>
+</html>

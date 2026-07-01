@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FocusLab — Q3 2026 OKR Launch Plan</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+:root{
+  --waste-orange:#e03e12; --reclaim-pink:#c4186a; --gold:#edb215; --green:#1f8a4c;
+  --cream:#fdf6ee; --dark:#1a1714; --mid:#4a443d; --soft:#6b6358; --border:#e8e0d4;
+  --white:#ffffff; --highlight:#fef9f0;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.65;}
+.hero{background:linear-gradient(135deg,#3a1029 0%,var(--reclaim-pink) 130%);color:#fff;padding:54px 40px 44px;text-align:center;}
+.hero .badge{display:inline-block;background:var(--gold);color:var(--dark);padding:5px 15px;border-radius:16px;font-size:.72rem;font-weight:700;letter-spacing:.04em;margin-bottom:16px;text-transform:uppercase;}
+.hero h1{font-family:'Fraunces',serif;font-size:2.5rem;font-weight:700;color:var(--gold);margin-bottom:10px;line-height:1.1;}
+.hero .subtitle{font-size:1.05rem;color:rgba(255,255,255,.82);max-width:680px;margin:0 auto;}
+.hero .meta{font-size:.78rem;color:rgba(255,255,255,.55);margin-top:18px;}
+.container{max-width:960px;margin:0 auto;padding:34px 22px 60px;}
+.card{background:var(--white);border-radius:14px;padding:30px 34px;margin-bottom:24px;box-shadow:0 2px 12px rgba(0,0,0,.05);}
+.card h2{font-family:'Fraunces',serif;font-size:1.55rem;color:var(--dark);margin-bottom:14px;display:flex;align-items:center;gap:12px;line-height:1.2;}
+.card h2 .num{background:var(--reclaim-pink);color:#fff;font-size:.72rem;font-weight:700;padding:4px 11px;border-radius:14px;font-family:'Plus Jakarta Sans',sans-serif;flex-shrink:0;}
+.card h3{font-family:'Fraunces',serif;font-size:1.12rem;color:var(--dark);margin:22px 0 8px;}
+.card p,.card li{font-size:.92rem;color:var(--mid);}
+.card ul{padding-left:20px;margin:8px 0;}
+.card li{padding:3px 0;}
+.lead{font-size:1rem;color:var(--mid);}
+.frame{background:var(--highlight);border-left:4px solid var(--reclaim-pink);padding:16px 20px;border-radius:0 10px 10px 0;margin:16px 0;font-size:.94rem;color:var(--mid);}
+.frame strong{color:var(--dark);}
+.frame.north{border-left-color:var(--gold);background:#fffaf0;font-family:'Fraunces',serif;font-size:1.06rem;color:var(--dark);line-height:1.5;}
+.frame.green{border-left-color:var(--green);background:#f1f8f3;}
+.frame.kill{border-left-color:var(--waste-orange);background:#fdf0ec;}
+
+.obj{border:1px solid var(--border);border-radius:14px;margin:20px 0;overflow:hidden;}
+.obj .head{padding:20px 24px;color:#fff;}
+.obj.o1 .head{background:linear-gradient(120deg,#3a1029,var(--reclaim-pink));}
+.obj.o2 .head{background:linear-gradient(120deg,#7a2a12,var(--waste-orange));}
+.obj.o3 .head{background:linear-gradient(120deg,#6b3d1a,var(--gold));}
+.obj .head .lab{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.9;}
+.obj .head h3{font-family:'Fraunces',serif;font-size:1.35rem;line-height:1.2;margin:4px 0 6px;color:#fff;}
+.obj .head .desc{font-size:.9rem;opacity:.9;font-style:italic;}
+.obj .head .type{display:inline-block;margin-top:10px;background:rgba(255,255,255,.2);padding:3px 12px;border-radius:12px;font-size:.72rem;font-weight:700;letter-spacing:.03em;}
+.obj .body{padding:6px 0 4px;}
+table{width:100%;border-collapse:collapse;font-size:.86rem;}
+th,td{text-align:left;padding:10px 16px;border-bottom:1px solid var(--border);color:var(--mid);vertical-align:top;}
+th{font-family:'Plus Jakarta Sans',sans-serif;font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;color:var(--reclaim-pink);font-weight:700;}
+td b{color:var(--dark);}
+.kr{font-weight:700;color:var(--dark);white-space:nowrap;}
+.tgt{font-weight:700;color:var(--reclaim-pink);}
+.confirm{display:inline-block;background:#fff4e0;color:#9a6b00;font-size:.66rem;font-weight:700;padding:1px 7px;border-radius:8px;letter-spacing:.02em;border:1px solid #f0d488;white-space:nowrap;}
+.due{white-space:nowrap;font-weight:600;color:var(--dark);}
+
+.wk{width:100%;border-collapse:collapse;font-size:.83rem;margin-top:8px;}
+.wk th,.wk td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+.wk .w{font-weight:700;color:var(--dark);white-space:nowrap;}
+.wk .ph{white-space:nowrap;font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:9px;color:#fff;}
+.ph-build{background:var(--reclaim-pink);}
+.ph-launch{background:var(--waste-orange);}
+.ph-grow{background:#b5850f;}
+.wk tr.now td{background:var(--highlight);}
+
+.score{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0;}
+.score .b{flex:1;min-width:150px;border-radius:10px;padding:12px 16px;color:#fff;}
+.score .b.g{background:var(--green);}
+.score .b.a{background:var(--gold);color:var(--dark);}
+.score .b.r{background:var(--waste-orange);}
+.score .b .t{font-weight:700;font-size:.9rem;}
+.score .b .d{font-size:.78rem;opacity:.92;}
+
+.confirmbox{background:#fffaf0;border:1px dashed #e0b94a;border-radius:12px;padding:18px 22px;margin:14px 0;}
+.confirmbox h3{margin-top:0;color:#8a5a00;}
+.confirmbox li{font-size:.88rem;}
+.footer{text-align:center;font-size:.78rem;color:var(--soft);margin-top:30px;}
+.pill{display:inline-block;background:var(--dark);color:#fff;font-size:.7rem;font-weight:700;padding:2px 10px;border-radius:10px;letter-spacing:.03em;}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="badge">Quarterly Plan · OKRs · For Oren</div>
+  <h1>Q3 2026 — Launch FocusLab</h1>
+  <p class="subtitle">Three objectives, measurable key results, a 13-week breakdown, and a scorecard built for yes/no evaluation. July ships &amp; launches · August earns first dollars · September finds the funnel that scales.</p>
+  <p class="meta">FocusLab · Jul 1 – Sep 30, 2026 · owner: Mona · reviewed with: Oren</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <h2><span class="num">0</span> How to read this plan</h2>
+    <p class="lead">Every Key Result has a <b>number</b> and a <b>date</b>, so evaluation is binary: hit or miss, then <i>why / why not</i>. Two things to know before the numbers:</p>
+    <div class="frame"><strong>Commit vs. Aspire.</strong> <span class="pill">COMMIT</span> objectives (July / launch) must hit 100% — there's no funnel to test if the money path doesn't ship. <span class="pill">ASPIRE</span> objectives (Aug / Sep) are real targets built on cold-traffic assumptions no one can promise; hitting <b>0.7</b> on these is a genuinely good quarter, not a shortfall.</div>
+    <div class="frame kill"><strong>Numbers tagged <span class="confirm">CONFIRM</span> are not locked.</strong> They rest on assumptions only you and Oren can set — ad budget, realistic conversion %, MRR target. I've given a recommended number + rationale for each; the point of this doc is to decide them together, not inherit them. All of them are collected in the box at the bottom.</div>
+    <div class="frame north">One honesty flag that shapes September: a <strong>30-day blended conversion</strong> metric on a funnel test that starts Sep 8 <strong>cannot fully resolve inside September</strong> — the clean verdict lands ~Oct 15. September's KRs are scoped to what's genuinely measurable by Sep 30 (run the test cleanly, get a directional read), with the definitive answer noted as arriving after quarter-end.</div>
+  </div>
+
+  <!-- OBJECTIVE 1 -->
+  <div class="obj o1">
+    <div class="head">
+      <div class="lab">Objective 1 · July</div>
+      <h3>Ship the money path and get FocusLab in front of the world</h3>
+      <div class="desc">Turn a free demo into a real product people can pay for — and launch it in July, not "soon."</div>
+      <div class="type">COMMIT · every KR must hit 1.0</div>
+    </div>
+    <div class="body">
+      <table>
+        <tr><th>KR</th><th>What we measure</th><th>Target</th><th>Due</th></tr>
+        <tr><td class="kr">1.1</td><td>Money path works end-to-end <b>in sandbox</b> — sign up → save analysis → hit paywall → checkout → unlock Focus Table</td><td class="tgt">1 documented, screen-recorded passing run</td><td class="due">Jul 25</td></tr>
+        <tr><td class="kr">1.2</td><td>Accounts + persistence live — a returning user logs back in and sees their saved Pareto result after a session gap</td><td class="tgt">Working in production</td><td class="due">Jul 22</td></tr>
+        <tr><td class="kr">1.3</td><td>Billing live with <b>Oren's real account</b> — live Lemon Squeezy plugged in; one real transaction succeeds &amp; is refunded</td><td class="tgt">1 successful live transaction</td><td class="due">Jul 28</td></tr>
+        <tr><td class="kr">1.4</td><td>Legal &amp; privacy published — privacy + terms live, linked from footer and checkout</td><td class="tgt">Both pages live</td><td class="due">Jul 24</td></tr>
+        <tr><td class="kr">1.5</td><td>Public launch executed — Product Hunt + Reddit in the same week</td><td class="tgt">1 PH launch + ≥1 Reddit post live</td><td class="due">Jul 31</td></tr>
+        <tr><td class="kr">1.6</td><td>Launch stability — no P0 (checkout-blocking or data-loss) bug open &gt;4 hrs during launch week</td><td class="tgt">0 unresolved P0s</td><td class="due">Aug 2</td></tr>
+      </table>
+      <div style="padding:14px 24px;"><div class="frame green" style="margin:0;"><strong>For Oren:</strong> KR 1.3 is your ~30-minute step and it comes <b>last</b> — everything is built and tested in a sandbox first, then we plug your live Lemon Squeezy account in as the final action. You are not in the critical path until the very end.</div></div>
+    </div>
+  </div>
+
+  <!-- OBJECTIVE 2 -->
+  <div class="obj o2">
+    <div class="head">
+      <div class="lab">Objective 2 · August</div>
+      <h3>Earn the first real dollars and prove someone will pay</h3>
+      <div class="desc">Convert launch attention into paying customers who come back — the difference between a demo and a business.</div>
+      <div class="type">ASPIRE · 0.7 attainment = a good quarter</div>
+    </div>
+    <div class="body">
+      <div style="padding:14px 24px 0;"><div class="frame kill" style="margin:0 0 8px;"><strong>Core assumption both later objectives inherit — <span class="confirm">CONFIRM</span>:</strong> planning number ≈ <b>1,500 unique visitors in launch week</b> (PH + Reddit, unknown solo founder, no existing audience). Every downstream customer/MRR number scales off this. If we expect more (a big subreddit, an engaged waitlist), raise it.</div></div>
+      <table>
+        <tr><th>KR</th><th>What we measure</th><th>Target</th><th>Due</th></tr>
+        <tr><td class="kr">2.1</td><td>First paying customers (monthly or annual)</td><td class="tgt">15 <span style="font-weight:500;color:var(--soft)">(floor 8 · stretch 25)</span> <span class="confirm">CONFIRM</span></td><td class="due">Aug 31</td></tr>
+        <tr><td class="kr">2.2</td><td>Real recurring revenue (annual counted at $16.58/mo equiv.)</td><td class="tgt">$375 MRR <span class="confirm">CONFIRM</span></td><td class="due">Aug 31</td></tr>
+        <tr><td class="kr">2.3</td><td>Visitor → email capture rate (blended)</td><td class="tgt">≥ 12% <span class="confirm">CONFIRM</span></td><td class="due">Aug 31</td></tr>
+        <tr><td class="kr">2.4</td><td>Email → paid conversion within 30 days (July launch cohort)</td><td class="tgt">≥ 3% <span class="confirm">CONFIRM</span></td><td class="due">Aug 31</td></tr>
+        <tr><td class="kr">2.5</td><td>Return loop works — % of paying users taking ≥1 in-product action in weeks 2–4</td><td class="tgt">≥ 40% <span class="confirm">CONFIRM</span></td><td class="due">Aug 31</td></tr>
+      </table>
+      <div style="padding:8px 24px 14px;"><div class="frame" style="margin:6px 0 0;"><strong>How 15 / $375 was derived (not a wish):</strong> ~1,500 visitors × 12% email ≈ 180 emails; × 3% email→paid over 30d ≈ 5–6 cold conversions; plus warm PH conversions + August second-wave/word-of-mouth ≈ 15. Cold first-session→paid runs 0.2–1%, so a pure-cold model predicts 3–15 — 15 sits at the honest-optimistic edge, which is why the <b>floor is 8</b>. <span class="confirm">CONFIRM</span> whether we score pure MRR or also report prepaid annual cash (I recommend reporting both, scoring on MRR).</div></div>
+    </div>
+  </div>
+
+  <!-- OBJECTIVE 3 -->
+  <div class="obj o3">
+    <div class="head">
+      <div class="lab">Objective 3 · September</div>
+      <h3>Find the funnel that scales — or prove, on evidence, that it doesn't yet</h3>
+      <div class="desc">Run the email-before-vs-after test on cold paid traffic and leave September with a data-backed decision: scale, iterate, or pause.</div>
+      <div class="type">ASPIRE + LEARNING · success = a defensible decision, not a revenue number</div>
+    </div>
+    <div class="body">
+      <div style="padding:14px 24px 0;"><div class="frame north" style="margin:0 0 8px;"><strong>Timing honesty flag:</strong> a test starting ~Sep 8 gives ~3 weeks of data by Sep 30 — enough for a <b>directional</b> read on visitor→email and early first-session→paid, but the <b>full 30-day blended verdict lands ~Oct 15</b>. Don't score KR 3.3 as "failed" on Sep 30 if the cohort simply hasn't aged 30 days.</div></div>
+      <table>
+        <tr><th>KR</th><th>What we measure</th><th>Target</th><th>Due</th></tr>
+        <tr><td class="kr">3.1</td><td>Test is live &amp; clean — both variants (email-gate before vs. after full Pareto) running on cold paid ads with correct instrumentation</td><td class="tgt">Live + tracking verified</td><td class="due">Sep 8</td></tr>
+        <tr><td class="kr">3.2</td><td>Enough traffic for a directional read — unique visitors per variant</td><td class="tgt">≥ 400 / variant (~800) <span class="confirm">CONFIRM · budget</span></td><td class="due">Sep 30</td></tr>
+        <tr><td class="kr">3.3</td><td>A decision gets made — written "scale / iterate / pause" rec citing 30-day blended conversion + CAC</td><td class="tgt">1 decision doc (directional by Sep 30, confirmed Oct 15)</td><td class="due">Sep 30</td></tr>
+        <tr><td class="kr">3.4</td><td>A channel clears the bar — or is honestly ruled out — identify ≥1 channel with CAC ≤ $60, OR document why none did</td><td class="tgt">Named channel OR ruled-out doc <span class="confirm">CONFIRM · $60</span></td><td class="due">Sep 30</td></tr>
+        <tr><td class="kr">3.5</td><td>Blended economics baseline — first-session → paid across paid traffic</td><td class="tgt">≥ 0.5% <span class="confirm">CONFIRM</span></td><td class="due">Sep 30</td></tr>
+      </table>
+      <div style="padding:8px 24px 14px;"><div class="frame" style="margin:6px 0 0;"><strong>Budget drives 3.2.</strong> Recommended ≈ <b>$1,500 for September</b> at ~$1.80/click ≈ 830 clicks ≈ 400/variant — enough for a <i>directional</i> winner call on visitor→email, <b>not</b> statistical significance on paid conversion (400 visitors × ~0.5% ≈ 2 conversions/variant). A conclusive paid-conversion read inside the quarter needs materially more (est. $5k+) — <span class="confirm">decide now with Oren</span>.</div></div>
+    </div>
+  </div>
+
+  <!-- WEEKLY BREAKDOWN -->
+  <div class="card">
+    <h2><span class="num">4</span> The 13-week breakdown</h2>
+    <p class="lead">Build fills the first four weeks; launch is week 5; August–September is acquisition and the funnel test. Detailed tasks + checklists live in the companion <b>ClickUp Task Breakdown</b> doc.</p>
+    <table class="wk">
+      <tr><th>Week</th><th>Phase</th><th>Focus &amp; the KR it drives</th></tr>
+      <tr class="now"><td class="w">W1 · Jul 1–6</td><td><span class="ph ph-build">BUILD</span></td><td>Reconcile CLAUDE.md (allow backend). Stand up Supabase (A1-T1) + start magic-link auth (A1-T2). Content team starts PH assets + legal drafts. → <b>1.2</b></td></tr>
+      <tr><td class="w">W2 · Jul 7–13</td><td><span class="ph ph-build">BUILD</span></td><td>Finish auth, cloud persistence + "claim your plan" migration (A1-T2/T3/T4). Lemon Squeezy sandbox + products (A2-T1). → <b>1.2</b></td></tr>
+      <tr><td class="w">W3 · Jul 14–20</td><td><span class="ph ph-build">BUILD</span></td><td>Checkout + webhook + paywall on Focus Table (A2-T2/T3/T4). Email gate w/ movable flag (A4-T3). Legal integrate (A4-T1). Analytics (A4-T4). → <b>1.1, 1.4</b></td></tr>
+      <tr><td class="w">W4 · Jul 21–27</td><td><span class="ph ph-build">BUILD</span></td><td>End-to-end sandbox proof (A2-T5). Custom domain (A4-T5). Run <b>green-light checklist</b>. Oren plugs in live LS + refunded test txn (KR 1.3). Final launch prep. → <b>1.1, 1.3</b></td></tr>
+      <tr><td class="w">W5 · Jul 28–Aug 3</td><td><span class="ph ph-launch">LAUNCH</span></td><td><b>Launch week.</b> Product Hunt + Reddit same week. Monitor stability, kill P0s &lt;4h. First customers land. → <b>1.5, 1.6, 2.1</b></td></tr>
+      <tr><td class="w">W6 · Aug 4–10</td><td><span class="ph ph-grow">GROW</span></td><td>Post-launch triage + second Reddit/community wave. Start nurture email sequence to non-buyers. Watch email→paid. → <b>2.1, 2.4</b></td></tr>
+      <tr><td class="w">W7 · Aug 11–17</td><td><span class="ph ph-grow">GROW</span></td><td>Iterate on funnel drop-off from real data. Return-loop nudges live to first cohort. → <b>2.3, 2.5</b></td></tr>
+      <tr><td class="w">W8 · Aug 18–24</td><td><span class="ph ph-grow">GROW</span></td><td>Double down on whatever channel converted at launch. Keep nurturing the July cohort toward the 30-day mark. → <b>2.1, 2.2</b></td></tr>
+      <tr><td class="w">W9 · Aug 25–31</td><td><span class="ph ph-grow">GROW</span></td><td>August close: tally customers, MRR, capture &amp; conversion rates. Score Objective 2. Prep the paid A/B test. → <b>2.1–2.5</b></td></tr>
+      <tr><td class="w">W10 · Sep 1–7</td><td><span class="ph ph-grow">GROW</span></td><td>Build the paid A/B campaigns (2 links, one build, movable email gate). Finalize ad creative + tracking. → <b>3.1</b></td></tr>
+      <tr><td class="w">W11 · Sep 8–14</td><td><span class="ph ph-grow">GROW</span></td><td><b>A/B test goes live</b> on cold paid ads (Sep 8). Verify instrumentation, watch spend + top-of-funnel. → <b>3.1, 3.2</b></td></tr>
+      <tr><td class="w">W12 · Sep 15–21</td><td><span class="ph ph-grow">GROW</span></td><td>Test runs. Directional read on visitor→email per variant. Monitor CAC. → <b>3.2, 3.5</b></td></tr>
+      <tr><td class="w">W13 · Sep 22–30</td><td><span class="ph ph-grow">GROW</span></td><td>Write the decision doc: scale / iterate / pause (directional now, confirmed Oct 15). Name a channel or rule it out. → <b>3.3, 3.4</b></td></tr>
+    </table>
+  </div>
+
+  <!-- SCORING -->
+  <div class="card">
+    <h2><span class="num">5</span> How we score it (built for yes/no + why)</h2>
+    <h3>Per-KR score (0.0 – 1.0)</h3>
+    <ul>
+      <li><b>Binary KRs</b> (all of Objective 1, plus 3.1/3.3/3.4) → <b>1.0 if met, 0.0 if not.</b> Yes or no.</li>
+      <li><b>Numeric KRs</b> (all of Objective 2, plus 3.2/3.5) → <b>score = actual ÷ target, capped at 1.0.</b> Always report the raw number too — the headline stays yes/no, the ratio adds nuance for the debrief.</li>
+    </ul>
+    <h3>Roll-up</h3>
+    <ul>
+      <li><b>Objective score</b> = average of its KRs. <b>Quarter score</b> = average of the three objectives. (Keep it equal-weight for the first quarter.)</li>
+    </ul>
+    <h3>Green / Amber / Red — differs by objective type</h3>
+    <div class="score">
+      <div class="b r"><div class="t">Objective 1 (COMMIT)</div><div class="d">Green = 1.0. Anything under 1.0 is Red — a missed commit. No amber on launch-critical work.</div></div>
+      <div class="b g"><div class="t">Objectives 2 &amp; 3 (ASPIRE)</div><div class="d">Green ≥ 0.7 · Amber 0.4–0.69 · Red &lt; 0.4. A 0.7 on a stretch goal is a win — say it out loud.</div></div>
+    </div>
+    <div class="frame"><strong>The one rule that keeps it honest:</strong> a KR only scores &gt;0 if it's backed by a number pulled from analytics/billing on the due date — not a vibe. If we can't measure it, it scores 0 and we fix the instrumentation.</div>
+  </div>
+
+  <!-- REPORTING -->
+  <div class="card">
+    <h2><span class="num">6</span> Reporting to Oren</h2>
+    <h3>Cadence</h3>
+    <ul>
+      <li><b>July (build + launch): weekly.</b> Fast-moving, high-risk — Oren should never be surprised. Friday async written update.</li>
+      <li><b>August &amp; September: bi-weekly.</b> Alternate Fridays, plus an ad-hoc note the day the funnel test goes live and the day we call a directional winner.</li>
+    </ul>
+    <h3>Format — a KR table, every time</h3>
+    <table>
+      <tr><th>KR</th><th>Target</th><th>Current</th><th>On track?</th><th>Why / why not (1 line)</th></tr>
+      <tr><td class="kr">2.1</td><td>15 by Aug 31</td><td><b>6</b></td><td>🟡 On track</td><td>PH drove 900 visits; email→paid at 3.1%, pacing to ~14</td></tr>
+    </table>
+    <div class="frame north">For each KR, answer three things in order: <strong>(1) Is it met — yes, no, or on-track? (2) Actual number today vs. target? (3) Why — the single biggest reason.</strong> No hedging, no burying a miss in prose. If a KR is going to miss, it appears in the update <b>before</b> the due date with a recommendation — rescope, more budget, or accept the miss — not as a deadline surprise.</div>
+  </div>
+
+  <!-- RISKS -->
+  <div class="card">
+    <h2><span class="num">7</span> Risks to these OKRs</h2>
+    <ul>
+      <li><b>Launch traffic underperforms the 1,500 assumption.</b> Every Objective-2 number scales off it. <i>Mitigation:</i> line up a second Reddit/community wave and a "share your result" loop <b>before</b> launch; treat 8 customers (the floor) as the real commit.</li>
+      <li><b>The build slips past late July.</b> Supabase + billing + paywall + legal is a real 2.5–3 week solo stack; one integration (auth edge cases, webhook reliability) can eat a week. <i>Mitigation:</i> KR 1.1's scripted sandbox test is the go/no-go gate — if it's not green by Jul 25, protect launch by cutting return-loop polish, not by shipping a broken money path.</li>
+      <li><b>The September budget can't produce a real verdict.</b> ~$1,500 gives a directional read but too few paid conversions to call a winner on economics, and the 30-day window bleeds into October. <i>Mitigation:</i> set expectations now — September = directional call + clean instrumentation, confirmed verdict Oct 15.</li>
+      <li><b>Cold economics simply don't close in one quarter.</b> CAC may exceed LTV on every channel — normal for a $29 tool at launch, and a <i>finding</i>, not a failure. <i>Mitigation:</i> KR 3.4 explicitly allows "ruled out with evidence" as a pass.</li>
+    </ul>
+  </div>
+
+  <!-- CONFIRM BOX -->
+  <div class="card">
+    <h2><span class="num">8</span> Decide with Oren before locking</h2>
+    <div class="confirmbox">
+      <h3>🫱 The numbers that need a joint decision</h3>
+      <ul>
+        <li><b>Launch-week traffic assumption:</b> 1,500 unique visitors — raise/lower based on the actual subreddits + any waitlist. <i>(everything downstream scales off this)</i></li>
+        <li><b>First customers (2.1):</b> 15 target / 8 floor / 25 stretch — agree the real commit number.</li>
+        <li><b>MRR (2.2):</b> $375 — and whether to score pure MRR or also report prepaid annual cash.</li>
+        <li><b>Conversion targets (2.3 / 2.4 / 3.5):</b> 12% email capture · 3% email→paid · 0.5% blended paid — accept or adjust to your risk appetite.</li>
+        <li><b>Return-loop engagement (2.5):</b> 40% of paid users active in weeks 2–4.</li>
+        <li><b>September ad budget (3.2):</b> ~$1,500 (directional) vs. $5k+ (conclusive) — this is a real money decision.</li>
+        <li><b>CAC bar (3.4):</b> $60 — depends on the LTV assumption ($150–230); confirm LTV before locking the bar.</li>
+        <li><b>Oren's action items:</b> create the Lemon Squeezy account now (plugged in at the end); confirm who owns the custom domain/DNS.</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="footer">Q3 2026 OKRs · synthesised from a Product Manager draft · companion doc: ClickUp Task Breakdown · FocusLab GTM · 2026-07-01</p>
+
+</div>
+</body>
+</html>

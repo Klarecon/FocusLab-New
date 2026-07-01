@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FocusLab — Stats-section heading options</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f4edde; --ink:#2c2418; --ink-soft:#655b4d; --waste:#e03e12;
+    --reclaim:#c4186a; --gold:#edb215; --line:#ddd4c0;
+    --serif:'Fraunces',Georgia,serif; --sans:'Plus Jakarta Sans',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);padding:0 0 80px;line-height:1.4}
+  .wrap{max-width:860px;margin:0 auto;padding:0 24px}
+  h1{font-family:var(--serif);font-size:40px;font-weight:800;margin:48px 0 6px}
+  .sub{color:var(--ink-soft);font-size:16px;margin-bottom:8px;max-width:640px}
+  .note{color:var(--ink-soft);font-size:14px;margin-bottom:32px;max-width:680px}
+  .opt{margin:26px 0}
+  .tag{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#fff;background:var(--reclaim);padding:4px 10px;border-radius:6px;margin-bottom:10px}
+  .tag.current{background:var(--gold);color:var(--ink)}
+  .why{color:var(--ink-soft);font-size:13px;margin-top:8px;max-width:640px}
+  /* dark stats-section context, exactly like the live BenchmarkProof */
+  .stage{background:var(--ink);color:var(--paper);border-radius:18px;padding:40px 28px 28px;text-align:center}
+  .stage h2{font-family:var(--serif);font-size:30px;font-weight:700;line-height:1.15}
+  .stage p.sline{margin-top:10px;font-size:16px;opacity:.7}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:26px}
+  .card{background:rgba(243,237,225,.06);border:1px solid rgba(243,237,225,.1);border-radius:12px;padding:16px;position:relative;overflow:hidden;text-align:left}
+  .card .accent{position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--waste),var(--gold))}
+  .card .num{font-family:'Courier New',monospace;font-weight:800;font-size:26px;color:var(--waste);margin:10px 0 6px}
+  .card .lbl{font-size:12px;opacity:.8}
+  .card .src{font-size:10px;opacity:.4;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Stats-section heading — options</h1>
+  <p class="sub">The dark stats band on the landing had no heading. Each option below is rendered in the real section, on the real background, in your fonts.</p>
+  <p class="note">Option&nbsp;1 is what's <strong>live right now</strong>. Tell me a number (or a tweak) and I'll swap it. Each shows the heading + a one-line subhead; we can keep or drop the subhead.</p>
+
+  <!-- helper to stamp the same 3 sample cards under each heading -->
+  <div class="opt">
+    <span class="tag current">Option 1 · live now</span>
+    <div class="stage">
+      <h2>You're not imagining it. The data agrees.</h2>
+      <p class="sline">Where everyone's week quietly leaks away.</p>
+      <div class="cards">
+        <div class="card"><div class="accent"></div><div>😴</div><div class="num">25%</div><div class="lbl">of a manager's week is meetings</div><div class="src">Fellow, 2024</div></div>
+        <div class="card"><div class="accent"></div><div>🫠</div><div class="num">28%</div><div class="lbl">of the workday is email &amp; chat</div><div class="src">Microsoft, 2025</div></div>
+        <div class="card"><div class="accent"></div><div>💀</div><div class="num">58%</div><div class="lbl">of the workday is 'work about work'</div><div class="src">Asana, 2023</div></div>
+      </div>
+    </div>
+    <p class="why">Validating + a little cheeky. Says "this is real, and it's not a you-problem." Warmest of the set.</p>
+  </div>
+
+  <div class="opt">
+    <span class="tag">Option 2</span>
+    <div class="stage">
+      <h2>It's not just you. It's everyone's week.</h2>
+      <p class="sline">The hours that vanish before the real work starts.</p>
+      <div class="cards">
+        <div class="card"><div class="accent"></div><div>😴</div><div class="num">25%</div><div class="lbl">of a manager's week is meetings</div><div class="src">Fellow, 2024</div></div>
+        <div class="card"><div class="accent"></div><div>🫠</div><div class="num">28%</div><div class="lbl">of the workday is email &amp; chat</div><div class="src">Microsoft, 2025</div></div>
+        <div class="card"><div class="accent"></div><div>💀</div><div class="num">58%</div><div class="lbl">of the workday is 'work about work'</div><div class="src">Asana, 2023</div></div>
+      </div>
+    </div>
+    <p class="why">Leads with solidarity. Reassures before it alarms — good if you want the tone gentler.</p>
+  </div>
+
+  <div class="opt">
+    <span class="tag">Option 3</span>
+    <div class="stage">
+      <h2>Where the week actually goes.</h2>
+      <p class="sline">Not lazy. Not you. Just how modern work leaks.</p>
+      <div class="cards">
+        <div class="card"><div class="accent"></div><div>😴</div><div class="num">25%</div><div class="lbl">of a manager's week is meetings</div><div class="src">Fellow, 2024</div></div>
+        <div class="card"><div class="accent"></div><div>🫠</div><div class="num">28%</div><div class="lbl">of the workday is email &amp; chat</div><div class="src">Microsoft, 2025</div></div>
+        <div class="card"><div class="accent"></div><div>💀</div><div class="num">58%</div><div class="lbl">of the workday is 'work about work'</div><div class="src">Asana, 2023</div></div>
+      </div>
+    </div>
+    <p class="why">Plainest + most confident. Lets the numbers do the talking. Shortest to read.</p>
+  </div>
+
+  <div class="opt">
+    <span class="tag">Option 4</span>
+    <div class="stage">
+      <h2>The quiet math of a busy week.</h2>
+      <p class="sline">Each number is time you never chose to spend.</p>
+      <div class="cards">
+        <div class="card"><div class="accent"></div><div>😴</div><div class="num">25%</div><div class="lbl">of a manager's week is meetings</div><div class="src">Fellow, 2024</div></div>
+        <div class="card"><div class="accent"></div><div>🫠</div><div class="num">28%</div><div class="lbl">of the workday is email &amp; chat</div><div class="src">Microsoft, 2025</div></div>
+        <div class="card"><div class="accent"></div><div>💀</div><div class="num">58%</div><div class="lbl">of the workday is 'work about work'</div><div class="src">Asana, 2023</div></div>
+      </div>
+    </div>
+    <p class="why">Most literary (Fraunces shines here). A touch slower, more reflective.</p>
+  </div>
+
+  <div class="opt">
+    <span class="tag">Option 5</span>
+    <div class="stage">
+      <h2>Busywork is eating everyone alive.</h2>
+      <p class="sline">The receipts, by the numbers.</p>
+      <div class="cards">
+        <div class="card"><div class="accent"></div><div>😴</div><div class="num">25%</div><div class="lbl">of a manager's week is meetings</div><div class="src">Fellow, 2024</div></div>
+        <div class="card"><div class="accent"></div><div>🫠</div><div class="num">28%</div><div class="lbl">of the workday is email &amp; chat</div><div class="src">Microsoft, 2025</div></div>
+        <div class="card"><div class="accent"></div><div>💀</div><div class="num">58%</div><div class="lbl">of the workday is 'work about work'</div><div class="src">Asana, 2023</div></div>
+      </div>
+    </div>
+    <p class="why">Most provocative / punchy. Highest energy — matches the "🤯" tone elsewhere on the page.</p>
+  </div>
+
+</div>
+</body>
+</html>

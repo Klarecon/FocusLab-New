@@ -1,83 +1,83 @@
 # FocusLab Project State
 
-**Last updated:** 2026-06-29 by Claude via /handover (Session 25)
+**Last updated:** 2026-07-01 by Claude via /handover (Session 27 — Funnel decision, Q3 OKRs, fast-validation plan, ClickUp board)
 
 ## Quick orient
 - **Project:** FocusLab — productivity tool suite. `/analyzer` (find waste) and `/focus` (fix waste — Focus Table + EVI Matrix + Payoff). The two routes are **SEPARATE, not a single flow.**
-- **Repo:** https://github.com/Klarecon/FocusLab-New (PUBLIC)
+- **Repo:** https://github.com/Klarecon/FocusLab-New (PUBLIC) — CLAUDE.md lists a stale remote (`mona2611-alt`); the live one is Klarecon.
 - **Production URL:** https://focuslab-omega.vercel.app
-- **Active branch:** main (origin/main == local == `f7d3f42`). All three app-code commits this session are pushed AND deployed to prod (alias verified live, `/analyzer` 200).
-- **Active work:** Session 25 = two rounds of Mona feedback, all **shipped and live** — (batch A) landing polish + per-section drains + custom-fix rating + sticky budget-bar fix; (batch B) results-message spacing/order, top Back button, custom-drain render fix, and a flat-data nudge on the log screen. (Test blocks are labelled "Session 25" and "Session 26" for traceability — both done this one session.)
-- **Owner:** Mona Mehta (mona@klarecon.com) — non-technical product owner. Wants FAST autonomous execution, NO permission/yes-no questions, deploy without asking, reacts to finished artifacts/visuals. Prefers brevity in replies. **Hard rule: only ever write files inside the `Documents` folder — never the Desktop.**
+- **Active branch:** main (local == origin == `f7d3f42`). **No app code changed this session** — this was another planning/strategy session, plus new ClickUp tooling under `scripts/`.
+- **Active work:** **Going to market (Option B).** Money-path build hasn't started yet. This session nailed down the funnel/paywall strategy, wrote the Q3 OKRs + a fast money-validation plan, and set up a full ClickUp launch board. **Next session still starts by reconciling CLAUDE.md, then building Workstream A1.**
+- **Owner:** Mona Mehta (mona@klarecon.com) — non-technical founder. Wants FAST autonomous execution, NO permission/yes-no questions mid-task, deploy without asking, reacts to finished artifacts/visuals. Prefers brevity. Multi-step plans in **HTML, not markdown**. **Needs PLAIN, non-technical language** (she asked this session to rewrite the ClickUp tasks out of engineer-speak). **Hard rule: only ever write files inside the `Documents` folder — never the Desktop.**
 
-## Branch state (this session's commits, all pushed + deployed)
-- `e8eec4b` **Landing polish + per-section drains + custom-fix rating + sticky bar fix** — pushed + deployed, alias verified.
-- `bcc1a2c` **Fix custom-drain disappearing, add top Back, fix evenly-message spacing** — pushed + deployed, alias verified.
-- `f7d3f42` **Show flat-data nudge on the Log screen, before computing** — pushed + deployed, alias verified (current live build).
+## ⚠️ READ FIRST — two things
+1. **CLAUDE.md still bans the backend.** Option B introduces Supabase + Lemon Squeezy, which contradicts CLAUDE.md §6/§13 ("No Supabase / no backend for v1"). **Before writing any A1 code:** confirm with Mona, then update §6/§11/§13. Do NOT silently build a backend against rules that ban it. (This is the FIRST ClickUp SAFE task and the first "what's next" item.)
+2. **Pricing hypothesis changed — needs Mona+Oren sign-off.** The fast-validation work recommends launching **annual-first at $39/mo · $290/yr** (NOT the old $29/$199), because in a 2-month window annual take-rate is the fastest honest read on recurring value. This is captured as ClickUp decision **D1** and flagged in two HTML docs. The build is price-agnostic, so this doesn't block A1 — but lock it before go-live.
 
-Untracked (NOT committed): `Design Mockups/stats-heading-options.html` (new this session — the heading picker), plus the pre-existing `Design Mockups/` (from S23) and `GTM Plan/2026-06-27-*.html`. See "Open questions".
+## What's done in this session (Session 27, 2026-07-01) — planning + ClickUp tooling, no app code
+1. **Funnel / paywall decision (multi-agent):** Settled the "partial vs full Pareto" question. **Verdict: the mid-funnel gate is always an EMAIL, never a payment; the paywall only ever lands on the Focus Table.** The A/B test is just *where the email step sits* (before vs after the full results) — both variants share identical plumbing via a movable-position config flag, so we build once and don't have to choose A or B before building. Doc: `GTM Plan/2026-07-01-funnel-gate-decision.html`.
+2. **Q3 2026 OKRs (Oren-facing):** 3 objectives — July *Ship & Launch* (COMMIT), Aug *First Dollars* (ASPIRE), Sep *Funnel That Scales* (ASPIRE). Every KR has a number + date (yes/no gradable). Includes a 13-week breakdown, a scoring method (COMMIT=1.0 or red; ASPIRE green≥0.7), a reporting cadence/template, and a "confirm-with-Oren numbers" box. Honesty flag baked in: a 30-day funnel test starting Sep 8 can't fully resolve by Sep 30 (verdict ~Oct 15). Doc: `GTM Plan/2026-07-01-q3-okr-launch-plan.html`.
+3. **ClickUp task breakdown doc:** the full build (A1–A4) + content (B) + launch, each task with owner/effort/blocks-flag/checklist. Doc: `GTM Plan/2026-07-01-clickup-task-breakdown.html`.
+4. **60-day money-making validation plan (multi-agent: pricing + unit-economics + retention):** Answers "can this make money in 2 months?" Core reframe: in ~5–6 weeks you can't measure retention, so **measure conviction.** Moves: launch **annual-first**, consider **higher price ($39/$290)**, run a **$4k / 21-day cold-ad test in August** (quarantine paid traffic from PH/Reddit/friends; kill at day-5/$1k if cold email capture <6%). GO/KILL/keep-testing thresholds in a table. Frame for Oren: "conviction check, not retention proof." Doc: `GTM Plan/2026-07-01-60-day-money-validation.html`.
+5. **Set up the ClickUp launch board via the ClickUp REST API** (Mona wanted it done for her, not manually):
+   - Workspace **Klarecon** (team `25716451`), new Space **"FocusLab Launch — Q3 2026"** (space id `90167342807`).
+   - **32 tasks**, each with a checklist + due date (mapped to the 13-week plan), split into two folders: **🟢 SAFE — Start Now (No-Regrets)** (A1, A2, A3, A4, B, Launch Week) and **🟡 DECISIONS TO LOCK (with Oren)** (D1 price/annual-first · D2 gate position · D3 MRR targets · D4 Sept budget · D5 $4k-test timing · D6 Oren to-dos).
+   - **Rewrote all 32 tasks into plain, non-technical language** ("What it is / Why it matters" + plain checklists with the tech term in brackets) at Mona's request.
+   - Tooling lives in `scripts/clickup/`: `setup.mjs` (build board), `due-dates.mjs`, `plain-language.mjs`, `done.mjs` (mark tasks complete), and `task-map.json` (taskKey→ClickUp id).
+6. **Security housekeeping:** Mona's ClickUp API token moved into `.env.local` (gitignored, chmod 600). Deleted the risky plaintext `Clickup API/click up api.rtf` (it was NOT gitignored, in a PUBLIC repo). Added `Clickup API/` to `.gitignore`.
 
-## What's done in this session (Session 25, 2026-06-29)
-**Batch A (commit `e8eec4b`, test block "Session 25"):**
-1. **[shipped] Hero eyebrow** — dropped "for any kind of work" → just "A waste-reduction tool". `Hero.tsx`.
-2. **[shipped] Stats section heading** — `BenchmarkProof.tsx` had no heading; added "You're not imagining it. The data agrees." + subline "Where everyone's week quietly leaks away." Also built `Design Mockups/stats-heading-options.html` (5 options, rendered on the real dark band) — Mona to pick; Option 1 is live.
-3. **[shipped] Landing gap** — big space between HowItWorks' "The same method…" line and FinalCTA's "A working person loses…" line. Trimmed `FinalCTA` top padding (`py-28` → `pt-12 pb-24 sm:pt-16 sm:pb-28`) and `HowItWorks` bottom padding (`py-16 sm:py-24` → `pt-16 sm:pt-24 pb-10 sm:pb-12`).
-4. **[shipped] Budget bar sticky fix** — it WAS sticky but stuck at `top-4` (16px) **behind the fixed nav** (~67px tall), so only the scale text peeked out. Now `sticky top-[72px]` → fully visible at any scroll depth. `LogStep.tsx`.
-5. **[shipped] Per-section "Add your own drain"** — replaced the single bottom add-box (with a type `<select>`) with a reusable `AddDrainRow` rendered inside EACH waste-type section, pre-targeted to that section's type. `LogStep.tsx` (`AddDrainRow` + `addCustomDrain(label, typeKey)`).
-6. **[shipped] Custom FIXES get rating** — in `SolutionPicker.tsx`, user-added fixes were missing the `<InlineRating />`, so they could never be scored or land on the matrix. Added it to the custom-fix block.
-
-**Batch B (commits `bcc1a2c` + `f7d3f42`, test block "Session 26"):**
-7. **[confirmed, no change] "Evenly spread" message order** — already renders BEFORE the Pareto chart on results. Confirmed in code + screenshot.
-8. **[shipped] Missing space** — results flat-data message rendered "evenly**across**" joined; forced an explicit `<strong>evenly</strong>{" "}across`. `ResultsView.tsx`.
-9. **[shipped] Top Back button** — wizard had Back only at the bottom of each step. Added a matching "← Back" at the TOP of mid steps (`step > 0 && step < 3`) in `AuditWizard.tsx`, after the Stepper.
-10. **[shipped] Custom DRAIN disappearing** — adding your own drain stored it in `activeSources` but `byType` only rendered drains from the role library (`allSources`), so it never showed. Fixed `allSources` to also include active `custom-*` drains (and added `activeSources` to the memo deps). `LogStep.tsx`. (Same class of bug as the custom-fix one in #6.)
-11. **[shipped] Flat-data nudge on the LOG screen** — Mona clarified the "spread evenly" warning should appear WHILE logging (so you fix flat hours in place), not only on results. `LogStep.tsx` now computes `isFlatData` (mirrors `ResultsView.isEvenlySpread`: ≥5 sized drains, distinct rounded hours === 1) and shows a 🫠 gold heads-up above the compute button. The results-screen message stays as a fallback.
-
-- **Verify:** tsc clean, `npx vitest --run` = **353 passed**, `npx next build` clean, gate 11/11, banned-color/window greps clean. Screenshots reviewed for every visual item (eyebrow, stats heading, tightened gap, deep-scroll sticky bar, per-section add rows, custom-fix rating dots, top Back, custom-drain card, "evenly across" spacing, flat-data nudge). Custom-drain + flat-data + CSV behaviors confirmed with throwaway Playwright specs (deleted after).
+## The decision-independent insight (important for the build)
+Because the funnel was designed "gate-movable, paywall always on the Focus Table," **~90% of the build is decision-independent** — the open decisions (A vs B, exact price, budgets, targets) are config values / campaign wiring, not different builds. So A1–A4 can proceed now without waiting on the decisions.
 
 ## What's next (for the NEXT Claude session) — ordered
-1. **Mona is reviewing the live changes.** Next session: ask how batches A + B feel.
-2. **Stats heading pick (item 2).** Option 1 is live; she has `Design Mockups/stats-heading-options.html` with 5 options. If she names one (or a tweak), swap the `<h2>` in `BenchmarkProof.tsx`.
-3. **Carried-over opens:** card-fan landing verdict (`Design Mockups/card-fan-focuslab.html`); whether to commit the `Design Mockups/` folder (now also includes `stats-heading-options.html`); optional CSV/integration follow-ups (per-tool headers, email-to-board, OAuth — needs a backend FocusLab lacks).
-4. **Pending/never-started** (don't start unless asked): calendar week viz, before/after comparison, Lottie animations, shareable scorecard card, landing-page copy overhaul.
+1. **Reconcile CLAUDE.md with the backend decision** (§6/§11/§13). Confirm with Mona, update, then proceed. (ClickUp SAFE task, first up.)
+2. **Build Workstream A1 — accounts + persistence:** Supabase project + schema (profiles / plans / entitlements, RLS) → magic-link auth → move saved plans from Zustand/localStorage to the user's Supabase row → "claim your saved plan on signup" migration. (ClickUp tasks A1-T1 → A1-T4.)
+3. **A2 — billing + paywall (sandbox):** Lemon Squeezy sandbox + both plan variants → single-email checkout (prefilled) → signature-verified webhook that unlocks the user → paywall on the Focus Table only → end-to-end sandbox proof (screen-recorded = KR 1.1). (A2-T1 → A2-T5.)
+4. **A4 enabling infra (parallel with A2):** email gate with movable-position flag (A4-T3) · privacy/terms/consent (A4-T1) · funnel analytics with quarantined traffic buckets (A4-T4) · custom domain (A4-T5).
+5. **A3 — minimal return loop** (non-blocking): snapshots → monthly (or 1-week for cohort #1) re-assessment nudge → before/after view → instrument organic-vs-prompted return.
+6. **Green-light checklist** → launch PH + Reddit same week → then run the **$4k money-math test in August**.
+7. **As tasks complete, mark them done in ClickUp:** `node scripts/clickup/done.mjs A1-T1` (etc.). No action needed from Mona.
 
-## Decisions made (non-obvious)
-- **Two recurring bugs were the same shape:** a user-added item (custom fix in #6, custom drain in #10) gets saved to the store but the UI only renders items from the static library, so it "disappears." Fix pattern: merge active custom-* items into the rendered list. Watch for this anywhere users can add their own entries.
-- **Sticky ≠ visible.** The budget bar was sticky the whole time; the real bug was it sat behind the fixed nav. Always verify sticky elements at DEEP scroll against the nav height (nav = 3px gradient line + `h-16` = ~67px; clear it with `top-[72px]`).
-- **Flat-data nudge lives in BOTH places now** — on the log screen (catch early, per Mona) and on results (fallback if they proceed). Detection logic is duplicated but intentionally identical (rounded-to-0.1h, distinct === 1).
-- **Heading shipped as a default + a picker.** Item 2 asked for "options"; shipped the recommended one live so the section isn't headingless, plus an HTML picker so Mona can swap without a round-trip.
-- **JSX space stripping** — to guarantee a space next to an inline tag, use `{" "}` rather than a literal space (the literal one rendered joined in the wild).
+## Decisions made this session (non-obvious)
+- **Email gate, never a payment gate, for cold traffic.** A payment wall on a partial diagnosis reads as bait-and-switch, spikes bounce, and raises CAC via ad-quality penalties. All three funnel agents agreed.
+- **Paywall lives only on the Focus Table** (the "cure"), never on the Analyzer (the "diagnosis," which stays the free hook).
+- **A/B test = email-step position, built from ONE codebase** via a config flag. Don't build two funnels.
+- **Launch annual-first** — annual take-rate is the fastest honest proxy for recurring value in a 2-month window (someone paying a year upfront is betting it recurs). Recommend a capped "Founding Member" annual.
+- **Consider launching at $39/$290, not $29/$199** — higher prices teach faster (real conviction vs impulse buys), and it's easy to discount down. [Needs Mona+Oren sign-off — ClickUp D1.]
+- **Measure conviction, not retention.** True churn/LTV need 3+ months; be explicit with Oren that a 2-month GO is "they believe it recurs," not "we've shown they stay" (Q4 read).
+- **Pull the $4k cold-ad money-math test forward into August** (right after launch), separate from the September email-gate A/B test.
+- **ClickUp via API token + local scripts, not an MCP** — both need a token anyway; the script keeps the token local (no third-party server) and handles "mark done" fine.
 
 ## Open questions waiting on user
-- Stats-section heading: keep Option 1 or pick another from `Design Mockups/stats-heading-options.html`?
-- Card-fan landing verdict (carried from S23).
-- Commit the `Design Mockups/` folder (incl. the new heading picker)?
-- More CSV/integration (per-tool headers, email-to-board, OAuth)?
+- **OK to update CLAUDE.md to allow the Supabase/Lemon Squeezy backend?** (blocks A1 — still open from S26.)
+- **Lock the price / annual-first decision** (ClickUp D1): $39/$290 annual-first vs $29/$199?
+- **Set the customer + revenue targets with Oren** (ClickUp D3): launch-traffic assumption (~1,500?), customer floor/target/stretch (8/15/25?), MRR target ($375?), MRR-vs-annual-cash reporting, conversion targets.
+- **September ad budget** (ClickUp D4): ~$1,500 directional vs $5k+ conclusive; and the $60 CAC bar.
+- **One-time developer review** of the billing/auth layer before green-light? (recommended, not yet agreed.)
+- **Whether to commit today's artifacts to git** (see below) — asked at end of handover.
+- Carried from S25 (low priority): stats-heading pick; card-fan landing verdict; whether to commit `Design Mockups/`.
 
 ## Critical file paths
-- **Landing:** `src/components/landing/Hero.tsx` (eyebrow), `BenchmarkProof.tsx` (stats heading), `HowItWorks.tsx` + `FinalCTA.tsx` (gap paddings). Assembled in `src/app/page.tsx`.
-- **Nav (height drives sticky offsets):** `src/components/layout/Nav.tsx` (`sticky top-[3px]` + `h-16`).
-- **Waste Log:** `src/components/analyzer/LogStep.tsx` — budget bar (`sticky top-[72px]`, `meterSegments`), `stepHours`, `AddDrainRow` + `addCustomDrain`, `allSources` (now includes custom drains), `isFlatData` nudge.
-- **Wizard / top Back:** `src/components/analyzer/AuditWizard.tsx` (`step > 0 && step < 3` Back after Stepper; `goBack`).
-- **Results:** `src/components/analyzer/ResultsView.tsx` (`isEvenlySpread`, flat-data message before chart, `chartData` useMemo above the `!paretoResult` guard).
-- **Focus / custom-fix rating + CSV export:** `src/components/focus/SolutionPicker.tsx` (`InlineRating` now in custom-fix block), `src/components/focus/EviMatrix.tsx` (`exportCSV`, A2 board lanes).
-- **Tests (353):** `src/__tests__/feedback-regression.test.ts` ("Session 25" + "Session 26" blocks at bottom). Functional download test: `e2e/csv-export.spec.ts`. Screenshot pipeline: `e2e/capture-screens.spec.ts` (drives the stepper).
-- **Engine (UNCHANGED):** `src/lib/engine/pareto.ts`, `audit-logic.ts`, `solutions-logic.ts`.
-- **Mockups/pickers:** `Design Mockups/stats-heading-options.html` (new), `redesign-options.html`, `card-fan-focuslab.html`.
+- **This session's docs (all untracked, in `GTM Plan/`):** `2026-07-01-funnel-gate-decision.html`, `2026-07-01-q3-okr-launch-plan.html`, `2026-07-01-clickup-task-breakdown.html`, `2026-07-01-60-day-money-validation.html`.
+- **ClickUp tooling (untracked, `scripts/clickup/`):** `setup.mjs`, `due-dates.mjs`, `plain-language.mjs`, `done.mjs`, `task-map.json`. To mark a task done: `node scripts/clickup/done.mjs <TASK-KEY>`.
+- **Prior GTM material:** `GTM Plan/2026-06-29-option-b-launch-plan.html` (the locked launch plan); `2026-06-20-gtm-plg-strategy.html` + daily-execution-plan; `2026-06-27-*` pre-mortem/pre-parade.
+- **App rules:** `CLAUDE.md` (§6/§13 "no backend" lines need updating first).
+- **State that migrates for A1:** `src/stores/audit-store.ts` (Zustand + localStorage persist → Supabase-backed).
+- **Paywall gate location:** between `src/components/analyzer/ResultsView.tsx` and the `/focus` route entry.
+- **Tests (353, the ratchet):** `src/__tests__/feedback-regression.test.ts`.
 
 ## Known gotchas
 - **File-writing boundary: Documents only.** Never the Desktop.
-- **Deploy = `npx vercel --prod --yes` then verify the alias** — `git push` alone does NOT deploy. Confirm via `npx vercel inspect focuslab-omega.vercel.app` (the `url` line should point at the new dpl) or curl `/analyzer` for 200. Test-only commits don't need a deploy.
-- **Sticky elements:** verify at DEEP scroll against the nav (use `top-[72px]` to clear it), not just near the top — a half-clipped sticky bar reads as "not sticky."
-- **Stale-screenshot trap:** a flow that stalls (e.g., compute button disabled because <5 drains have hours) leaves OLD screenshots and still "passes." Check screenshot mtimes (`stat`) after a capture run; the compute gate needs ≥5 drains WITH hours.
-- **Capture/verify specs drive the stepper** via `button[aria-label^="More time on"]` (each click = +0.5h). If hours entry changes, update those specs.
-- **whileInView components** (e.g. FinalCTA) render at opacity:0 in a static full-page screenshot until scrolled into view — scroll them into view before judging.
-- **Hooks-order trap (S23):** every hook must sit ABOVE early returns.
-- **Pre-commit hook** `.claude/hooks/verify-done.sh` — 11 checks, all green. Banned: green success, old palette hexes, Hanken Grotesk, corporate emoji (📊📋✅📈🚀💡). Pink `#c4186a` for CTA/success/selected. SCORE_FROM_LEVEL = 2/3/4. Budget-bar segment colors (waste/orange/gold) are allowed.
-- **353 tests is the ratchet — never regress.**
+- **Use PLAIN language with Mona** — she's non-technical; explain "what & why," keep jargon in brackets if needed.
+- **ClickUp:** token in `.env.local` (gitignored). Board = Space `90167342807` in workspace Klarecon (`25716451`). Space's closed status is `complete`. Note: ClickUp doesn't preserve checklist item order on rebuild (wording is right, order may shuffle). There's also a separate pre-existing empty list "FocusLab Launch" in a "Just Capable" space — NOT our board; ours is the "FocusLab Launch — Q3 2026" Space.
+- **Deploy = `npx vercel --prod --yes` then verify the alias** — `git push` alone does NOT deploy. Confirm via `npx vercel inspect focuslab-omega.vercel.app` or curl `/analyzer` for 200.
+- **353 tests is the ratchet — never regress.** New A1–A4 features each get tests (TDD per CLAUDE.md §9).
+- **Pre-commit hook** `.claude/hooks/verify-done.sh` (11 checks) hard-blocks commits: banned green/old palette, Hanken Grotesk, corporate emoji, window globals, SCORE_FROM_LEVEL=2/3/4. Palette: pink `#c4186a` for CTA/success/selected.
+- **Backend secrets** (A1/A2): Supabase URL/keys + Lemon Squeezy API key + webhook secret → Vercel env / `.env.local`, never commit. Lemon Squeezy LIVE account belongs to **Oren** (plugged in as the final ~30-min step).
+- **Uncommitted right now:** modified `.gitignore` + `.claude/PROJECT_STATE.md`; untracked `scripts/`, all `GTM Plan/2026-07-01-*` + `2026-06-27/29/30-*` docs, `Plans/`, `Design Mockups/`, Session 26 log + feedback log.
 
 ## How to resume work
-1. Read this file top to bottom + memory [[feedback_solve_hard_problems]], [[feedback_vercel_deploy]], [[feedback_never_break_working_features]], [[feedback_documents_only_writes]].
-2. `git status` (Design Mockups + GTM Plan untracked) + `git log --oneline -6` (newest = `f7d3f42`).
-3. `npx vitest --run` → **353 passed**; `npx tsc --noEmit` clean.
-4. Ask Mona how the live changes feel + whether she's picking a different stats heading. Act on her feedback. Keep replies SHORT. Write files only under Documents. Ship green, deploy with `vercel --prod`, verify the live alias.
+1. Read this file top to bottom, especially "READ FIRST" and the decisions. Skim `GTM Plan/2026-07-01-60-day-money-validation.html` and `2026-07-01-funnel-gate-decision.html`.
+2. `git status` + `git log --oneline -10` (newest = `f7d3f42`).
+3. `npx vitest --run` → **353 passed**; `npx tsc --noEmit` clean (baseline before touching anything).
+4. Confirm with Mona: OK to update CLAUDE.md and start A1 (Supabase auth + persistence)? Then execute. Keep replies SHORT and in PLAIN language, write only under Documents, ship green, deploy with `vercel --prod` + verify the alias, and mark finished ClickUp tasks done via `scripts/clickup/done.mjs`.

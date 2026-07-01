@@ -44,3 +44,6 @@ next-env.d.ts
 /e2e/screenshots/
 /test-results/
 /playwright-report/
+
+# secrets — never commit
+Clickup API/
